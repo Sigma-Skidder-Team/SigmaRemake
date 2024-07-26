@@ -25,7 +25,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	implementation "meteordevelopment:orbit:${project.orbit_version}"
-	implementation "io.github.racoondog:norbit:${project.norbit_version}"
+
+	implementation "org.reflections:reflections:${project.reflections_version}"
 }
 
 processResources {

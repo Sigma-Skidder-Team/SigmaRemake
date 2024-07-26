@@ -1,5 +1,6 @@
 package info.opensigma.mixin;
 
+import info.opensigma.OpenSigma;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,8 +14,16 @@ public class MinecraftClientMixin {
             method = "<init>",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;instance:Lnet/minecraft/client/MinecraftClient;")
     )
-    public final void injectOnMinecraftStartup(CallbackInfo callbackInfo) {
+    public final void injectOnMinecraftStartup(final CallbackInfo callbackInfo) {
+        OpenSigma.getInstance().onMinecraftStartup();
+    }
 
+    @Inject(
+            method = "<init>",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V", shift = At.Shift.BEFORE)
+    )
+    public final void injectOnMinecraftLoad(final CallbackInfo callbackInfo) {
+        OpenSigma.getInstance().onMinecraftLoad();
     }
 
 }

@@ -28,7 +28,7 @@ public class AsynchronousWorker extends Worker {
                 try {
                     runnable.run();
                 } catch (Exception e) {
-                    this.loggerInterface.accept("Worker {} has crashed", e, null);
+                    this.loggerInterface.accept(false, "Worker {} has crashed", e, this.name);
                     crashed = true;
                 }
             });
@@ -53,7 +53,7 @@ public class AsynchronousWorker extends Worker {
 
             finished = true;
 
-            this.loggerInterface.accept("Worker {} finished!", null, null);
+            this.loggerInterface.accept(false, "Worker {} finished!", null, this.name);
 
             for (Object o : waiting) {
                 synchronized (o) {
