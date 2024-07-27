@@ -1,19 +1,16 @@
 package info.opensigma;
 
+import info.opensigma.bind.BindManager;
 import info.opensigma.module.Module;
 import info.opensigma.system.ElementRepository;
 import info.opensigma.system.IClientInitialize;
 import meteordevelopment.orbit.EventBus;
 import net.fabricmc.api.ModInitializer;
-
 import net.jezevcik.workers.Worker;
 import net.jezevcik.workers.impl.AsynchronousWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Async;
-import org.lwjgl.system.CallbackI;
 import org.reflections.Reflections;
-import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
@@ -46,7 +43,14 @@ public final class OpenSigma implements ModInitializer, IClientInitialize {
 	public final Reflections reflections = new Reflections("info.opensigma");
 	public final EventBus eventBus = new EventBus();
 
-	public final ElementRepository<Module> modules = new ElementRepository<>("modules", Module.class);
+	public final BindManager bindManager = new BindManager();
+	public final ElementRepository<Module> modules = new ElementRepository<>("modules", Module.class) {
+		@Override
+		public void onMinecraftLoad() {
+			super.onMinecraftLoad();
+			this.forEach(Module::init);
+		}
+	};
 
 	/**
 	 * DON'T USE THIS !
@@ -64,6 +68,8 @@ public final class OpenSigma implements ModInitializer, IClientInitialize {
 		clientStartup.addTask(() -> {
 			eventBus.registerLambdaFactory("info.opensigma", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 		});
+
+		clientStartup.addTask(bindManager::init);
 
 		clientStartup.addTask(modules::onMinecraftStartup);
 

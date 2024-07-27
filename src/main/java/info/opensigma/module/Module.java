@@ -1,9 +1,12 @@
 package info.opensigma.module;
 
 import info.opensigma.OpenSigma;
+import info.opensigma.setting.owner.SettingOwner;
 import info.opensigma.system.INameable;
 
 public class Module implements INameable {
+
+    protected final SettingOwner settings;
 
     public final String name, description;
     private boolean enabled;
@@ -14,10 +17,18 @@ public class Module implements INameable {
         this.description = description;
         this.enabled = false;
         this.key = key;
+
+        this.settings = new SettingOwner(this);
+
+        OpenSigma.getInstance().bindManager.add(() -> key, this::toggle);
     }
 
     public Module(String name, String description) {
         this(name, description, 0);
+    }
+
+    public final void init() {
+        this.settings.onMinecraftLoad();
     }
 
     public final void toggle() {
