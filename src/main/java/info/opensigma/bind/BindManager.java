@@ -14,6 +14,9 @@ public final class BindManager {
 
     @EventHandler
     private void onKey(KeyPressEvent keyPressEvent) {
+        if (keyPressEvent.keyAction != 0)
+            return;
+
         this.map.forEach((key, value) -> {
             if (key.get() == keyPressEvent.key)
                 value.run();
