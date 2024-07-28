@@ -2,9 +2,10 @@ package info.opensigma.module;
 
 import info.opensigma.OpenSigma;
 import info.opensigma.setting.owner.SettingOwner;
+import info.opensigma.system.IMinecraft;
 import info.opensigma.system.INameable;
 
-public class Module implements INameable {
+public class Module implements INameable, IMinecraft {
 
     protected final SettingOwner settings;
 
@@ -46,11 +47,12 @@ public class Module implements INameable {
         if (this.enabled)
             return;
 
+        enabled = true;
+
         onEnable();
 
         OpenSigma.getInstance().eventBus.subscribe(this);
 
-        enabled = true;
     }
 
     public final void disable() {

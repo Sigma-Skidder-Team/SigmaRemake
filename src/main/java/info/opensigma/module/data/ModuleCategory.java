@@ -1,15 +1,14 @@
 package info.opensigma.module.data;
 
 public enum ModuleCategory {
-    RENDER("Render"),
-    PLAYER("Player"),
+    GUI("Gui"),
     COMBAT("Combat"),
+    RENDER("Render"),
     WORLD("World"),
     MISC("Misc"),
-    EXPLOIT("Exploit"),
-    MOVEMENT("Movement"),
-    GUI("GUI"),
-    ITEM("Item");
+    PLAYER("Player"),
+    ITEM("Item"),
+    MOVEMENT("Movement");
 
     public final String name;
 
