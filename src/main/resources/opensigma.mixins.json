@@ -9,6 +9,7 @@
   },
   "client": [
     "KeyboardMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "WindowMixin"
   ]
 }
