@@ -1,71 +1,49 @@
-package info.opensigma.setting.impl.primitive;
+package info.opensigma.setting.impl.primitive
 
-import info.opensigma.setting.Setting;
-
-import java.util.function.Predicate;
+import info.opensigma.setting.Setting
+import java.util.function.Predicate
 
 /**
  * A simple setting that just sets one and gets one single value without any additional information.
  *
- * @param <T> The type of the setting.
+ * @param T The type of the setting.
  */
-public class PrimitiveSetting<T> extends Setting<T> {
+open class PrimitiveSetting<T>(
+    name: String,
+    description: String,
+    override var value: T,
+    var type: PrimitiveSettingType? = null,
+    private val verifier: Predicate<T>? = null
+) : Setting<T>(name, description) {
 
-    /**
-     * The core value being manipulated.
-     */
-    private T value;
-
-    /**
-     * The purpose of the setting's type is to indicate to ClickGUIs how to render this setting.
-     */
-    public final PrimitiveSettingType type;
-
-    /**
-     * Verifies if a new value for the setting is possible.
-     * Is used mostly by extenders of this setting.
-     * Is null if no predicate is set.
-     */
-    private final Predicate<T> verifier;
-    
-    public PrimitiveSetting(final String name, final String description, final T value, final PrimitiveSettingType type, final Predicate<T> verifier) {
-        super(name, description);
-
-        this.value = value;
-        this.type = type;
-        this.verifier = verifier;
-    }
-
-    public PrimitiveSetting(final String name, final String description, final T value, final PrimitiveSettingType type) {
-        this(name, description, value, type, null);
-    }
-
-    public PrimitiveSetting(final String name, final String description, final T value) {
-        super(name, description);
-
-        if (value == null) {
-            type = null;
-        } else if (value.getClass() == Boolean.class) {
-            type = PrimitiveSettingType.BOOLEAN;
-        } else if (value.getClass() == Integer.class) {
-            type = PrimitiveSettingType.COLOR;
-        } else {
-            type = null;
+    init {
+        if (type == null && value != null) {
+            this.type = when (value!!::class) {
+                Boolean::class -> PrimitiveSettingType.BOOLEAN
+                Int::class -> PrimitiveSettingType.COLOR
+                else -> null
+            }
         }
-
-        this.value = value;
-        this.verifier = null;
     }
 
-    @Override
-    public T getValue() {
-        return value;
+    constructor(name: String, description: String, value: T, type: PrimitiveSettingType) :
+        this(name, description, value, type, null)
+
+    constructor(name: String, description: String, value: T) :
+        this(name, description, value, null, null)
+
+    fun getValue(): T {
+        return value
     }
 
-    @Override
-    public void setValue(T value) {
-        if (this.verifier.test(value))
-            this.value = value;
+    override fun setValue(value: T) {
+        if (verifier?.test(value) == true) {
+            this.value = value
+        }
     }
 
+    @Deprecated("Use the name field instead", replaceWith = ReplaceWith("name"))
+    override fun getName(): String {
+        return name
+    }
 }

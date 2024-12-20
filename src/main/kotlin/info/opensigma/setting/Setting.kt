@@ -1,21 +1,12 @@
-package info.opensigma.setting;
+package info.opensigma.setting
 
-public abstract class Setting<T> implements INameable {
+import info.opensigma.system.INameable
 
-    public final String name, description;
+abstract class Setting<T>(
+    override val name: String,
+    val description: String
+) : INameable {
 
-    public Setting(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public abstract T getValue();
-
-    public abstract void setValue(final T value);
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
+    abstract val value: T
+    abstract fun setValue(value: T)
 }

@@ -1,53 +1,51 @@
-package info.opensigma.setting.owner;
+package info.opensigma.setting.owner
 
-import info.opensigma.setting.Setting;
-import info.opensigma.system.ElementRepository;
-import net.jezevcik.argon.utils.objects.NullUtils;
+import info.opensigma.setting.Setting
+import info.opensigma.system.ElementRepository
+import info.opensigma.system.INameable
+import net.jezevcik.argon.utils.objects.NullUtils
 
-public class SettingOwner extends ElementRepository<Setting> {
+class SettingOwner(owner: INameable) : ElementRepository<Setting>(
+    "${owner.name}-settings", Setting::class.java as Class<T>, arrayOf(owner)
+) {
 
-    public SettingOwner(final INameable owner) {
-        super(String.format("%s-settings", owner.getName()), new Object[] { owner }, Setting.class);
+    fun getBooleanValue(name: String): Boolean {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Boolean
     }
 
-    public final boolean getBooleanValue(final String name) {
-        return (boolean) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getIntValue(name: String): Int {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Int
     }
 
-    public final int getIntValue(final String name) {
-        return (int) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getFloatValue(name: String): Float {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Float
     }
 
-    public final float getFloatValue(final String name) {
-        return (float) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getDoubleValue(name: String): Double {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Double
     }
 
-    public final double getDoubleValue(final String name) {
-        return (double) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getLongValue(name: String): Long {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Long
     }
 
-    public final long getLongValue(final String name) {
-        return (long) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getShortValue(name: String): Short {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Short
     }
 
-    public final short getShortValue(final String name) {
-        return (short) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getByteValue(name: String): Byte {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Byte
     }
 
-    public final byte getByteValue(final String name) {
-        return (byte) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getCharValue(name: String): Char {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as Char
     }
 
-    public final char getCharValue(final String name) {
-        return (char) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getStringValue(name: String): String {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!") as String
     }
 
-    public final String getStringValue(final String name) {
-        return (String) NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
+    fun getObjectValue(name: String): Any {
+        return NullUtils.requireNotNull(getByName(name)?.getValue(), "Setting $name does not exist!")
     }
-
-    public final Object getObjectValue(final String name) {
-        return NullUtils.requireNotNull(getByName(name).getValue(), String.format("Setting %s does not exist!", name));
-    }
-
 }

@@ -1,31 +1,33 @@
-package info.opensigma.setting.impl;
+package info.opensigma.setting.impl
 
-import info.opensigma.setting.Setting;
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.system.CallbackI;
+import info.opensigma.setting.Setting
+import org.apache.commons.lang3.ArrayUtils
 
-public class ModeSetting extends Setting<String> {
+class ModeSetting(
+    override val name: String,
+    description: String,
+    val values: Array<String>,
+    initialValue: String
+) : Setting<String>(name, description) {
 
-    public final String[] values;
+    override var value: String = initialValue
+        set(value) {
+            if (!ArrayUtils.contains(values, value)) return
+            field = value
+        }
 
-    private String value;
-
-    public ModeSetting(String name, String description, String[] values, String value) {
-        super(name, description);
-        this.values = values;
-        this.value = value;
+    @Deprecated("Use the value field instead", replaceWith = ReplaceWith("value"))
+    fun getValue(): String {
+        return value
     }
 
-    @Override
-    public String getValue() {
-        return value;
+    @Deprecated("Use the value field instead", replaceWith = ReplaceWith("value"))
+    override fun setValue(value: String) {
+        this.value = value
     }
 
-    @Override
-    public void setValue(final String value) {
-        if (!ArrayUtils.contains(values, value))
-            return;
-
-        this.value = value;
+    @Deprecated("Use the name field instead", replaceWith = ReplaceWith("name"))
+    override fun getName(): String {
+        return name
     }
 }

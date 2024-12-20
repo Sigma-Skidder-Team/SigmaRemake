@@ -1,14 +1,11 @@
-package info.opensigma.setting.impl;
+package info.opensigma.setting.impl
 
-import info.opensigma.setting.impl.primitive.PrimitiveSetting;
+import info.opensigma.setting.impl.primitive.PrimitiveSetting
 
-public class DoubleSetting extends PrimitiveSetting<Double> {
-
-    public final double min, max;
-
-    public DoubleSetting(String name, String description, Double value, final double min, final double max) {
-        super(name, description, value, null, v -> v > min && v < max);
-        this.min = min;
-        this.max = max;
-    }
-}
+class DoubleSetting(
+    name: String,
+    description: String,
+    value: Double,
+    private val min: Double,
+    private val max: Double
+) : PrimitiveSetting<Double>(name, description, value, null, { it in min..max })
