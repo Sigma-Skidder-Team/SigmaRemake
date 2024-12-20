@@ -19,6 +19,11 @@ open class OpenSigma : ModInitializer, IClientInitialize {
 
     companion object {
         val instance: OpenSigma = OpenSigma()
+        // this is just for migration
+        @Deprecated("Please directly get the instance instead", replaceWith = ReplaceWith("instance"))
+        fun getInstance(): OpenSigma {
+            return instance
+        }
     }
 
     private val clientStartup = AsynchronousWorker(
