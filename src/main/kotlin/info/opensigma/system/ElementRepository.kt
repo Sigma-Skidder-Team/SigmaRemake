@@ -42,7 +42,7 @@ open class ElementRepository<T>(
                 try {
                     this.add(klass.getDeclaredConstructor().newInstance())
                 } catch (e: Exception) {
-                    OpenSigma.getInstance().fatal("Failed to initialize stored classes in repository {}", e, this.id)
+                    OpenSigma.instance.fatal("Failed to initialize stored classes in repository {}", e, this.id)
                 }
             }
         }
