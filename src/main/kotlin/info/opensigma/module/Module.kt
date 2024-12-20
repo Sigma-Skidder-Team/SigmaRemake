@@ -11,7 +11,7 @@ open class Module(
     var key: Int = 0
 ) : INameable, IMinecraft {
 
-    protected val settings: SettingOwner = SettingOwner(this)
+    protected val settings: SettingOwner<Any> = SettingOwner(this)
     private var enabled: Boolean = false
 
     init {
@@ -47,8 +47,4 @@ open class Module(
     protected open fun onEnable() {}
 
     protected open fun onDisable() {}
-
-    override fun getName(): String {
-        return name
-    }
 }

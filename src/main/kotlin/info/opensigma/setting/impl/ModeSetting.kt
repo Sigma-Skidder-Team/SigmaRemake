@@ -15,19 +15,4 @@ class ModeSetting(
             if (!ArrayUtils.contains(values, value)) return
             field = value
         }
-
-    @Deprecated("Use the value field instead", replaceWith = ReplaceWith("value"))
-    fun getValue(): String {
-        return value
-    }
-
-    @Deprecated("Use the value field instead", replaceWith = ReplaceWith("value"))
-    override fun setValue(value: String) {
-        this.value = value
-    }
-
-    @Deprecated("Use the name field instead", replaceWith = ReplaceWith("name"))
-    override fun getName(): String {
-        return name
-    }
 }

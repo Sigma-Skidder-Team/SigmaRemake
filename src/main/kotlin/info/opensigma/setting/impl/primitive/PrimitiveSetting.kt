@@ -31,19 +31,4 @@ open class PrimitiveSetting<T>(
 
     constructor(name: String, description: String, value: T) :
         this(name, description, value, null, null)
-
-    fun getValue(): T {
-        return value
-    }
-
-    override fun setValue(value: T) {
-        if (verifier?.test(value) == true) {
-            this.value = value
-        }
-    }
-
-    @Deprecated("Use the name field instead", replaceWith = ReplaceWith("name"))
-    override fun getName(): String {
-        return name
-    }
 }

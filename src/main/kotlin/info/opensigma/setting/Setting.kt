@@ -8,5 +8,4 @@ abstract class Setting<T>(
 ) : INameable {
 
     abstract val value: T
-    abstract fun setValue(value: T)
 }

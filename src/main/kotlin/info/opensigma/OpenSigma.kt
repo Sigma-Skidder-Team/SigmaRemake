@@ -16,13 +16,9 @@ import kotlin.system.exitProcess
 
 open class OpenSigma : ModInitializer, IClientInitialize {
     companion object {
+        @JvmStatic
         val instance: OpenSigma = OpenSigma()
         val LOGGER: Logger = LogManager.getLogger()
-    }
-    // this is just for migration
-    @Deprecated("Please directly get the instance instead", replaceWith = ReplaceWith("instance"))
-    fun getInstance(): OpenSigma {
-        return instance
     }
 
     private val clientStartup = AsynchronousWorker(
