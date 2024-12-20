@@ -1,22 +1,17 @@
-package info.opensigma.module.impl;
+package info.opensigma.module.impl
 
-import info.opensigma.module.Module;
-import info.opensigma.ui.clickgui.ClickGui;
-import org.lwjgl.glfw.GLFW;
+import info.opensigma.module.Module
+import info.opensigma.ui.clickgui.ClickGui
+import org.lwjgl.glfw.GLFW
 
-public class ClickGuiModule extends Module {
+class ClickGuiModule : Module("ClickGui", "ClickGui", GLFW.GLFW_KEY_RIGHT_SHIFT) {
 
-    private final ClickGui clickGui = new ClickGui();
+    private val clickGui = ClickGui()
 
-    public ClickGuiModule() {
-        super("ClickGui", "ClickGui", GLFW.GLFW_KEY_RIGHT_SHIFT);
-    }
+    override fun onEnable() {
+        client?.openScreen(clickGui)
 
-    @Override
-    public void onEnable() {
-        client.openScreen(clickGui);
-
-        toggle();
+        toggle()
     }
 
 }

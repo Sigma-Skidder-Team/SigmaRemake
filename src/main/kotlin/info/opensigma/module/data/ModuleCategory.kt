@@ -1,6 +1,6 @@
-package info.opensigma.module.data;
+package info.opensigma.module.data
 
-public enum ModuleCategory {
+enum class ModuleCategory(val categoryName: String) {
     GUI("Gui"),
     COMBAT("Combat"),
     RENDER("Render"),
@@ -8,11 +8,5 @@ public enum ModuleCategory {
     MISC("Misc"),
     PLAYER("Player"),
     ITEM("Item"),
-    MOVEMENT("Movement");
-
-    public final String name;
-
-    ModuleCategory(String name) {
-        this.name = name;
-    }
+    MOVEMENT("Movement")
 }
