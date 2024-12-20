@@ -20,6 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
     @Inject(method = "renderWorld", at = @At(value = "HEAD"))
     public void onRenderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-        OpenSigma.getInstance().eventBus.post(new Render2DEvent(tickDelta, limitTime));
+        OpenSigma.getInstance().getEventBus().post(new Render2DEvent(tickDelta, limitTime));
     }
 }

@@ -16,7 +16,7 @@ public class KeyboardMixin {
     public void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
         if (key != GLFW.GLFW_KEY_UNKNOWN) {
             final KeyPressEvent keyPressEvent = new KeyPressEvent(key, modifiers, action);
-            OpenSigma.getInstance().eventBus.post(keyPressEvent);
+            OpenSigma.getInstance().getEventBus().post(keyPressEvent);
         }
     }
 
