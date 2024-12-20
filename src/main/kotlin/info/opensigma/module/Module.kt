@@ -1,9 +1,6 @@
 package info.opensigma.module;
 
-import info.opensigma.OpenSigma;
 import info.opensigma.setting.owner.SettingOwner;
-import info.opensigma.system.IMinecraft;
-import info.opensigma.system.INameable;
 
 public class Module implements INameable, IMinecraft {
 

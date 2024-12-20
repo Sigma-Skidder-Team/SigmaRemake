@@ -2,7 +2,6 @@ package info.opensigma.setting.owner;
 
 import info.opensigma.setting.Setting;
 import info.opensigma.system.ElementRepository;
-import info.opensigma.system.INameable;
 import net.jezevcik.argon.utils.objects.NullUtils;
 
 public class SettingOwner extends ElementRepository<Setting> {

@@ -1,7 +1,5 @@
 package info.opensigma.setting;
 
-import info.opensigma.system.INameable;
-
 public abstract class Setting<T> implements INameable {
 
     public final String name, description;

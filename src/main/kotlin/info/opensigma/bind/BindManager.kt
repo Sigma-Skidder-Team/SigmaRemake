@@ -1,6 +1,5 @@
 package info.opensigma.bind;
 
-import info.opensigma.OpenSigma;
 import info.opensigma.event.KeyPressEvent;
 import meteordevelopment.orbit.EventHandler;
 
