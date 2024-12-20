@@ -1,33 +1,34 @@
-package info.opensigma.bind;
+package info.opensigma.bind
 
-import info.opensigma.event.KeyPressEvent;
-import meteordevelopment.orbit.EventHandler;
+import info.opensigma.OpenSigma
+import info.opensigma.event.KeyPressEvent
+import meteordevelopment.orbit.EventHandler
+import java.util.HashMap
+import java.util.function.Supplier
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
-public final class BindManager {
-
-    private final Map<Supplier<Integer>, Runnable> map = new HashMap<>();
+class BindManager private constructor() {
+    private val map = HashMap<Supplier<Int>, Runnable>()
 
     @EventHandler
-    private void onKey(KeyPressEvent keyPressEvent) {
+    private fun onKey(keyPressEvent: KeyPressEvent) {
         if (keyPressEvent.keyAction != 0)
-            return;
+            return
 
-        this.map.forEach((key, value) -> {
-            if (key.get() == keyPressEvent.key)
-                value.run();
-        });
+        map.forEach { (key, value) ->
+            if (key == keyPressEvent.key)
+                value.run()
+        }
     }
 
-    public void init() {
-        OpenSigma.getInstance().eventBus.subscribe(this);
+    fun init() {
+        OpenSigma.instance.eventBus.subscribe(this)
     }
 
-    public void add(final Supplier<Integer> integer, final Runnable runnable) {
-        this.map.put(integer, runnable);
+    fun add(integer: Supplier<Int>, runnable: Runnable) {
+        map[integer] = runnable
     }
 
+    companion object {
+        val instance = BindManager()
+    }
 }

@@ -1,74 +1,54 @@
-package info.opensigma.module;
+package info.opensigma.module
 
-import info.opensigma.setting.owner.SettingOwner;
+import info.opensigma.setting.owner.SettingOwner
+import info.opensigma.system.INameable
+import info.opensigma.system.IMinecraft
+import info.opensigma.OpenSigma
 
-public class Module implements INameable, IMinecraft {
+open class Module(
+    override val name: String,
+    val description: String,
+    var key: Int = 0
+) : INameable, IMinecraft {
 
-    protected final SettingOwner settings;
+    protected val settings: SettingOwner = SettingOwner(this)
+    private var enabled: Boolean = false
 
-    public final String name, description;
-    private boolean enabled;
-    public int key;
-
-    public Module(String name, String description, int key) {
-        this.name = name;
-        this.description = description;
-        this.enabled = false;
-        this.key = key;
-
-        this.settings = new SettingOwner(this);
-
-        OpenSigma.getInstance().bindManager.add(() -> key, this::toggle);
+    init {
+        OpenSigma.instance.bindManager.add({ key }, this::toggle)
     }
 
-    public Module(String name, String description) {
-        this(name, description, 0);
+    fun init() {
+        settings.onMinecraftLoad()
     }
 
-    public final void init() {
-        this.settings.onMinecraftLoad();
+    fun toggle() {
+        setEnabled(!enabled)
     }
 
-    public final void toggle() {
-        setEnabled(!enabled);
+    fun setEnabled(enabled: Boolean) {
+        if (enabled) enable() else disable()
     }
 
-    public final void setEnabled(boolean enabled) {
-        if (enabled)
-            enable();
-        else
-            disable();
+    fun enable() {
+        if (this.enabled) return
+        enabled = true
+        onEnable()
+        OpenSigma.instance.eventBus.subscribe(this)
     }
 
-    public final void enable() {
-        if (this.enabled)
-            return;
-
-        enabled = true;
-
-        onEnable();
-
-        OpenSigma.getInstance().eventBus.subscribe(this);
-
+    fun disable() {
+        if (!this.enabled) return
+        enabled = false
+        OpenSigma.instance.eventBus.subscribe(false)
+        onDisable()
     }
 
-    public final void disable() {
-        if (!this.enabled)
-            return;
+    protected open fun onEnable() {}
 
-        enabled = false;
+    protected open fun onDisable() {}
 
-        OpenSigma.getInstance().eventBus.subscribe(false);
-
-        onDisable();
-    }
-
-    protected void onEnable() { }
-
-    protected void onDisable() { }
-
-    @Override
-    public String getName() {
-        return name;
+    override fun getName(): String {
+        return name
     }
 }
