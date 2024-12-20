@@ -5,6 +5,7 @@ import info.opensigma.system.ElementRepository
 import info.opensigma.system.INameable
 import net.jezevcik.argon.utils.objects.NullUtils
 
+// TODO: fix all these errors
 class SettingOwner(owner: INameable) : ElementRepository<Setting>(
     "${owner.name}-settings", Setting::class.java as Class<T>, arrayOf(owner)
 ) {
