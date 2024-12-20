@@ -1,6 +1,5 @@
 package info.opensigma.mixin;
 
-import info.opensigma.OpenSigma;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

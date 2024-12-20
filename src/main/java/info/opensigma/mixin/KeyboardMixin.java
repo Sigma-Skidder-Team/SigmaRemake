@@ -1,6 +1,5 @@
 package info.opensigma.mixin;
 
-import info.opensigma.OpenSigma;
 import info.opensigma.event.KeyPressEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;

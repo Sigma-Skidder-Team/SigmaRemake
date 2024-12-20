@@ -1,9 +1,9 @@
-package info.opensigma.util.math;
+package info.opensigma.util.math
 
 /**
  * A set of methods used for helping with geometry.
  */
-public class GeometryUtils {
+object GeometryUtils {
 
     /**
      * Checks whether the provided X and Y coordinates are in the provided bounds.
@@ -17,11 +17,8 @@ public class GeometryUtils {
      * @param relative Whether the right and down points are relative to the left and up points.
      * @return Whether the X and Y coordinates are in the provided bounds.
      */
-    public static boolean isInBounds(final double x, final double y, final double left, final double up, final double right, final double down, final boolean relative) {
-        if (relative)
-            return x >= left && x <= left + right && y >= up && y <= up + down;
-        else
-            return x >= left && x <= right && y >= up && y <= down;
-    }
+    fun isInBounds(x: Double, y: Double, left: Double, up: Double, right: Double, down: Double, relative: Boolean) =
+        if (relative) x in left..(left + right) && y in up..(up + down)
+        else x in left..right && y in up..down
 
 }
