@@ -45,8 +45,8 @@ open class OpenSigma : ModInitializer, IClientInitialize {
         this
     )
 
-    private val reflections = Reflections("info.opensigma")
-    private val eventBus = EventBus()
+    val reflections = Reflections("info.opensigma")
+    val eventBus = EventBus()
 
     val bindManager = BindManager()
     val modules = ElementRepository<Module>("modules", Module::class.java);

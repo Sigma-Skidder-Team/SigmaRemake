@@ -20,7 +20,7 @@ open class ElementRepository<T>(
 
     override fun onMinecraftStartup() {
         if (reflectClasses) {
-            OpenSigma.getInstance().reflections.getSubTypesOf(mainClass).forEach { klass ->
+            OpenSigma.instance.reflections.getSubTypesOf(mainClass).forEach { klass ->
                 if (ClassUtils.hasParameterlessPublicConstructor(klass)) {
                     foundClasses.add(klass)
                 }
