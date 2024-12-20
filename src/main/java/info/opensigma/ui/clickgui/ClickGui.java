@@ -14,6 +14,11 @@ public class ClickGui extends Screen {
 
     private final List<Frame> frames = new ArrayList<>();
 
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
     public ClickGui() {
         super(Text.of("ClickGui"));
 
