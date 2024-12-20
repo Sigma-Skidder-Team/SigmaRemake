@@ -10,6 +10,9 @@ import net.minecraft.text.Text
 class ClickGui : Screen(Text.of("ClickGui")) {
 
     private val frames = mutableListOf<Frame>()
+    override fun isPauseScreen(): Boolean {
+        return false;
+    }
 
     init {
         var x = 15f
