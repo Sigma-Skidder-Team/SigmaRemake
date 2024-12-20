@@ -15,15 +15,14 @@ import java.lang.invoke.MethodHandles
 import kotlin.system.exitProcess
 
 open class OpenSigma : ModInitializer, IClientInitialize {
-    val LOGGER: Logger = LogManager.getLogger()
-
     companion object {
         val instance: OpenSigma = OpenSigma()
-        // this is just for migration
-        @Deprecated("Please directly get the instance instead", replaceWith = ReplaceWith("instance"))
-        fun getInstance(): OpenSigma {
-            return instance
-        }
+        val LOGGER: Logger = LogManager.getLogger()
+    }
+    // this is just for migration
+    @Deprecated("Please directly get the instance instead", replaceWith = ReplaceWith("instance"))
+    fun getInstance(): OpenSigma {
+        return instance
     }
 
     private val clientStartup = AsynchronousWorker(
