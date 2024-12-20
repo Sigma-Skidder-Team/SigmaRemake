@@ -1,34 +1,38 @@
 {
-	"schemaVersion": 1,
-	"id": "opensigma",
-	"version": "${version}",
-	"name": "opensigma",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "MIT",
-	"icon": "assets/opensigma/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-          "info.opensigma.OpenSigma"
-		]
-	},
-	"mixins": [
-		"opensigma.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.16.4",
-		"java": ">=8",
-		"fabric": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "opensigma",
+  "version": "${version}",
+  "name": "opensigma",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/opensigma/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "info.opensigma.OpenSigma"
+      }
+    ]
+  },
+  "mixins": [
+    "opensigma.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric-language-kotlin": ">=1.13.0+kotlin.${kotlin_version}",
+    "minecraft": "~1.16.4",
+    "java": ">=8",
+    "fabric": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }

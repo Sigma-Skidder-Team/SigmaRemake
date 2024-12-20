@@ -1,8 +1,11 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
+	id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
+kotlin_version = project.kotlin_version
+fabric_kt_version = project.fabric_kt_version
 version = project.mod_version
 group = project.maven_group
 
@@ -15,6 +18,11 @@ repositories {
 		name = "meteor-maven"
 		url = "https://maven.meteordev.org/releases"
 	}
+	maven {
+		name = "fabricmc-maven"
+		url = "https://maven.fabricmc.net/"
+	}
+	mavenCentral()
 }
 
 dependencies {
@@ -27,6 +35,8 @@ dependencies {
 	implementation "meteordevelopment:orbit:${project.orbit_version}"
 
 	implementation "org.reflections:reflections:${project.reflections_version}"
+	modImplementation "net.fabricmc:fabric-language-kotlin:$fabric_kt_version+kotlin.$kotlin_version"
+	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
 }
 
 processResources {
@@ -34,6 +44,7 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
+		expand "kotlin_version": kotlin_version
 	}
 }
 
@@ -47,8 +58,6 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
@@ -73,4 +82,7 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+kotlin {
+	jvmToolchain(21)
 }
