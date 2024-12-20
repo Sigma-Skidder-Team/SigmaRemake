@@ -17,6 +17,7 @@ object GeometryUtils {
      * @param relative Whether the right and down points are relative to the left and up points.
      * @return Whether the X and Y coordinates are in the provided bounds.
      */
+    @JvmStatic
     fun isInBounds(x: Double, y: Double, left: Double, up: Double, right: Double, down: Double, relative: Boolean) =
         if (relative) x in left..(left + right) && y in up..(up + down)
         else x in left..right && y in up..down
