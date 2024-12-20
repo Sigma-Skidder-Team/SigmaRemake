@@ -6,7 +6,7 @@ import meteordevelopment.orbit.EventHandler
 import java.util.HashMap
 import java.util.function.Supplier
 
-class BindManager private constructor() {
+class BindManager {
     private val map = HashMap<Supplier<Int>, Runnable>()
 
     @EventHandler
