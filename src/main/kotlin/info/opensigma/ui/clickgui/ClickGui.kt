@@ -1,67 +1,40 @@
-package info.opensigma.ui.clickgui;
+package info.opensigma.ui.clickgui
 
-import info.opensigma.module.data.ModuleCategory;
-import info.opensigma.ui.clickgui.frame.Frame;
-import info.opensigma.ui.clickgui.frame.impl.CategoryFrame;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import info.opensigma.module.data.ModuleCategory
+import info.opensigma.ui.clickgui.frame.Frame
+import info.opensigma.ui.clickgui.frame.impl.CategoryFrame
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.Text
 
-import java.util.ArrayList;
-import java.util.List;
+class ClickGui : Screen(Text.of("ClickGui")) {
 
-public class ClickGui extends Screen {
+    private val frames = mutableListOf<Frame>()
 
-    private final List<Frame> frames = new ArrayList<>();
+    init {
+        var x = 15f
+        var y = 15f
+        var count = 0
 
-    @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
+        ModuleCategory.entries.forEach { category ->
+            frames += CategoryFrame(category, x.toDouble(), y.toDouble())
 
-    public ClickGui() {
-        super(Text.of("ClickGui"));
-
-        float x = 15, y = 15;
-        int count = 0;
-
-        for (final ModuleCategory category : ModuleCategory.values()) {
-
-            frames.add(new CategoryFrame(category, x, y));
-
-            if (count == 3) {
-                x = 15;
-                y = 160 + 5 + 15;
+            if (++count == 4) {
+                x = 15f
+                y += 165f
             } else {
-                x += 100 + 5;
+                x += 105f
             }
-
-            count++;
         }
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        frames.forEach(frame -> frame.draw(matrices, mouseX, mouseY));
-    }
+    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) =
+        frames.forEach { it.draw(matrices, mouseX, mouseY) }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (final Frame frame : frames) {
-            if (frame.mouseClick(mouseX, mouseY, button))
-                return true;
-        }
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean =
+        frames.any { it.mouseClick(mouseX, mouseY, button) }
 
-        return false;
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        for (final Frame frame : frames) {
-            if (frame.mouseRelease(mouseX, mouseY, button))
-                return true;
-        }
-
-        return false;
-    }
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean =
+        frames.any { it.mouseRelease(mouseX, mouseY, button) }
 
 }

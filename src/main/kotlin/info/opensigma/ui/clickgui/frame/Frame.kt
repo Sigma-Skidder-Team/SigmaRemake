@@ -1,56 +1,58 @@
-package info.opensigma.ui.clickgui.frame;
+package info.opensigma.ui.clickgui.frame
 
-import info.opensigma.system.IMinecraft;
-import info.opensigma.util.math.GeometryUtils;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import info.opensigma.system.IMinecraft
+import info.opensigma.util.math.GeometryUtils
+import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.util.math.MatrixStack
 
-public abstract class Frame extends DrawableHelper implements IMinecraft {
+abstract class Frame : DrawableHelper(), IMinecraft {
 
-    protected double posX, posY;
+    open var posX = 0.0
+    open var posY = 0.0
 
-    private boolean dragging;
-    private double dragX, dragY;
+    private var dragging = false
+    private var dragX = 0.0
+    private var dragY = 0.0
 
-    public final void draw(final MatrixStack matrices, final int mouseX, final int mouseY) {
+    fun draw(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         if (dragging) {
-            posX = mouseX - dragX;
-            posY = mouseY - dragY;
+            posX = mouseX - dragX
+            posY = mouseY - dragY
         }
 
-        drawFrame(matrices, mouseX, mouseY);
+        drawFrame(matrices, mouseX, mouseY)
     }
 
-    protected abstract void drawFrame(final MatrixStack matrices, final int mouseX, final int mouseY);
+    protected abstract fun drawFrame(matrices: MatrixStack, mouseX: Int, mouseY: Int)
 
-    public final boolean mouseClick(final double mouseX, final double mouseY, int button) {
+    fun mouseClick(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (GeometryUtils.isInBounds(mouseX, mouseY, posX, posY, getInteractionBounds()[0], getInteractionBounds()[1], true)) {
-            dragX = mouseX - posX;
-            dragY = mouseY - posY;
-            dragging = true;
+            dragX = mouseX - posX
+            dragY = mouseY - posY
+            dragging = true
 
-            return true;
+            return true
         }
 
-        return mouseClickFrame(mouseX, mouseY, button);
+        return mouseClickFrame(mouseX, mouseY, button)
     }
 
-    protected abstract boolean mouseClickFrame(final double mouseX, final double mouseY, final int button);
+    protected abstract fun mouseClickFrame(mouseX: Double, mouseY: Double, button: Int): Boolean
 
-    public final boolean mouseRelease(final double mouseX, final double mouseY, final int button) {
+    fun mouseRelease(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (dragging) {
-            dragging = false;
-            dragX = 0;
-            dragY = 0;
+            dragging = false
+            dragX = 0.0
+            dragY = 0.0
 
-            return true;
+            return true
         }
 
-        return mouseReleaseFrame(mouseX, mouseY, button);
+        return mouseReleaseFrame(mouseX, mouseY, button)
     }
 
-    protected abstract boolean mouseReleaseFrame(final double mouseX, final double mouseY, final int button);
+    protected abstract fun mouseReleaseFrame(mouseX: Double, mouseY: Double, button: Int): Boolean
 
-    protected abstract double[] getInteractionBounds();
+    protected abstract fun getInteractionBounds(): DoubleArray
 
 }
