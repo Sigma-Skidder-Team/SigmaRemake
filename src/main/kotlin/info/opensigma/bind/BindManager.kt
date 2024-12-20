@@ -15,7 +15,7 @@ class BindManager private constructor() {
             return
 
         map.forEach { (key, value) ->
-            if (key == keyPressEvent.key)
+            if (key.get() == keyPressEvent.key)
                 value.run()
         }
     }
