@@ -4,11 +4,13 @@ import info.opensigma.setting.owner.SettingOwner
 import info.opensigma.system.INameable
 import info.opensigma.system.IMinecraft
 import info.opensigma.OpenSigma
+import info.opensigma.module.data.ModuleCategory
 
 open class Module(
     override val name: String,
     val description: String,
-    var key: Int = 0
+    var key: Int = 0,
+    val category: ModuleCategory = ModuleCategory.MISC
 ) : INameable, IMinecraft {
 
     protected val settings: SettingOwner<Any> = SettingOwner(this)
