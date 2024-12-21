@@ -1,4 +1,4 @@
-package info.opensigma.module.impl
+package info.opensigma.module.impl.misc
 
 import info.opensigma.module.Module
 import info.opensigma.setting.impl.primitive.PrimitiveSetting

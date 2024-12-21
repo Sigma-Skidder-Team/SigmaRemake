@@ -1,4 +1,4 @@
-package info.opensigma.module.impl
+package info.opensigma.module.impl.render
 
 import info.opensigma.module.Module
 import info.opensigma.ui.clickgui.ClickGui
