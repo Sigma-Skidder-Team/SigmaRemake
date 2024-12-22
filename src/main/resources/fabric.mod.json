@@ -2,16 +2,17 @@
   "schemaVersion": 1,
   "id": "opensigma",
   "version": "${version}",
-  "name": "opensigma",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Open Sigma",
+  "description": "Open Sigma is an awesome open source recreation of the Sigma Client for 1.16.4 Fabric.",
   "authors": [
-    "Me!"
+    "lexi",
+    "DataM0del"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/Sigma-Skidder-Team/",
+    "sources": "https://github.com/Sigma-Skidder-Team/SigmaRemake/"
   },
-  "license": "MIT",
+  "license": "GPL",
   "icon": "assets/opensigma/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -31,8 +32,5 @@
     "minecraft": "~1.16.4",
     "java": ">=8",
     "fabric": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
