@@ -248,21 +248,21 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
      * Draw a textured quad
      *
      * @param drawX
-     *            The left x position to draw to
+     *            The left x position to render to
      * @param drawY
-     *            The top y position to draw to
+     *            The top y position to render to
      * @param drawX2
-     *            The right x position to draw to
+     *            The right x position to render to
      * @param drawY2
-     *            The bottom y position to draw to
+     *            The bottom y position to render to
      * @param srcX
-     *            The left source x position to draw from
+     *            The left source x position to render from
      * @param srcY
-     *            The top source y position to draw from
+     *            The top source y position to render from
      * @param srcX2
-     *            The right source x position to draw from
+     *            The right source x position to render from
      * @param srcY2
-     *            The bottom source y position to draw from
+     *            The bottom source y position to render from
      */
     private void drawQuad(float drawX, float drawY, float drawX2, float drawY2,
                           float srcX, float srcY, float srcX2, float srcY2) {
@@ -342,13 +342,13 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
      * Draw a string
      *
      * @param x
-     *            The x position to draw the string
+     *            The x position to render the string
      * @param y
-     *            The y position to draw the string
+     *            The y position to render the string
      * @param whatchars
-     *            The string to draw
+     *            The string to render
      * @param color
-     *            The color to draw the text
+     *            The color to render the text
      */
     public void drawString(float x, float y, String whatchars,
                            org.newdawn.slick.Color color) {
@@ -396,11 +396,11 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
      * Draw a string
      *
      * @param x
-     *            The x position to draw the string
+     *            The x position to render the string
      * @param y
-     *            The y position to draw the string
+     *            The y position to render the string
      * @param whatchars
-     *            The string to draw
+     *            The string to render
      */
     public void drawString(float x, float y, String whatchars) {
         drawString(x, y, whatchars, org.newdawn.slick.Color.white);

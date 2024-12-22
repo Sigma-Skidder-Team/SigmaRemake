@@ -3,14 +3,14 @@ package info.opensigma.ui.clickgui
 import info.opensigma.module.data.ModuleCategory
 import info.opensigma.ui.clickgui.frame.Frame
 import info.opensigma.ui.clickgui.frame.impl.CategoryFrame
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 
 class ClickGui : Screen(Text.of("ClickGui")) {
 
     private val frames = mutableListOf<Frame>()
-    override fun isPauseScreen(): Boolean {
+    override fun shouldPause(): Boolean {
         return false
     }
 
@@ -31,8 +31,8 @@ class ClickGui : Screen(Text.of("ClickGui")) {
         }
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) =
-        frames.forEach { it.draw(matrices, mouseX, mouseY) }
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) =
+        frames.forEach { it.render(context, mouseX, mouseY, delta) }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean =
         frames.any { it.mouseClick(mouseX, mouseY, button) }

@@ -33,8 +33,8 @@ public interface Font {
    /**
     * Draw a string to the screen
     *
-    * @param x The x location at which to draw the string
-    * @param y The y location at which to draw the string
+    * @param x The x location at which to render the string
+    * @param y The y location at which to render the string
     * @param text The text to be displayed
     */
    public abstract void drawString(float x, float y, String text);
@@ -42,10 +42,10 @@ public interface Font {
    /**
     * Draw a string to the screen
     *
-    * @param x The x location at which to draw the string
-    * @param y The y location at which to draw the string
+    * @param x The x location at which to render the string
+    * @param y The y location at which to render the string
     * @param text The text to be displayed
-    * @param col The colour to draw with
+    * @param col The colour to render with
     */
    public abstract void drawString(float x, float y, String text, Color col);
 
@@ -54,12 +54,12 @@ public interface Font {
     * Draw part of a string to the screen. Note that this will
     * still position the text as though it's part of the bigger string.
     *
-    * @param x The x location at which to draw the string
-    * @param y The y location at which to draw the string
+    * @param x The x location at which to render the string
+    * @param y The y location at which to render the string
     * @param text The text to be displayed
-    * @param col The colour to draw with
-    * @param startIndex The index of the first character to draw
-    * @param endIndex The index of the last character from the string to draw
+    * @param col The colour to render with
+    * @param startIndex The index of the first character to render
+    * @param endIndex The index of the last character from the string to render
     */
    public abstract void drawString(float x, float y, String text, Color col, int startIndex, int endIndex);
 }

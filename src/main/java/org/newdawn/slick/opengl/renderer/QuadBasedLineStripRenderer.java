@@ -13,13 +13,13 @@ public class QuadBasedLineStripRenderer implements LineStripRenderer {
    public static int MAX_POINTS = 10000;
    /** True if antialiasing is currently enabled */
    private boolean antialias;
-   /** The width of the lines to draw */
+   /** The width of the lines to render */
    private float width = 1;
-   /** The points to draw */
+   /** The points to render */
    private float[] points;
-   /** The colours to draw */
+   /** The colours to render */
    private float[] colours;
-   /** The number of points to draw */
+   /** The number of points to render */
    private int pts;
    /** The number of colour points recorded */
    private int cpt;
@@ -165,7 +165,7 @@ public class QuadBasedLineStripRenderer implements LineStripRenderer {
          float x2 = points[(next*2)];
          float y2 = points[(next*2)+1];
 
-         // draw the next segment
+         // render the next segment
          float dx = x2 - x1;
          float dy = y2 - y1;
 
