@@ -1,3 +1,5 @@
+package net.jezevcik.workers.impl
+
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
@@ -8,13 +10,14 @@ class AsynchronousWorker(
 ) {
     private val tasks = mutableListOf<suspend () -> Unit>()
     private val scope = CoroutineScope(Dispatchers.Default + Job())
+    private lateinit var job: Job
 
     fun addTask(task: suspend () -> Unit) {
         tasks.add(task)
     }
 
     fun start() {
-        scope.launch {
+        job = scope.launch {
             try {
                 val time = measureTimeMillis {
                     tasks.forEach { task ->
@@ -30,5 +33,9 @@ class AsynchronousWorker(
                 }
             }
         }
+    }
+
+    suspend fun awaitCompletion() {
+        job.join()
     }
 }

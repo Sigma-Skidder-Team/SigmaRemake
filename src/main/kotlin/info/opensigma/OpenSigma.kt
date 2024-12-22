@@ -4,9 +4,9 @@ import info.opensigma.bind.BindManager
 import info.opensigma.module.Module
 import info.opensigma.system.ElementRepository
 import info.opensigma.system.IClientInitialize
+import kotlinx.coroutines.runBlocking
 import meteordevelopment.orbit.EventBus
 import net.fabricmc.api.ModInitializer
-import net.jezevcik.workers.Worker
 import net.jezevcik.workers.impl.AsynchronousWorker
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -85,16 +85,13 @@ open class OpenSigma : ModInitializer, IClientInitialize {
      * All required resources should be accessible by now.
      */
     override fun onMinecraftLoad() {
-        if (clientStartup.state != Worker.State.FINISHED) {
-            synchronized(this) {
-                try {
-                    (this as Object).wait()
-                } catch (e: InterruptedException) {
-                    fatal("An exception occurred during client startup", e)
-                }
+        runBlocking {
+            try {
+                clientStartup.awaitCompletion()
+            } catch (e: Exception) {
+                fatal("An exception occurred during client startup", e)
             }
         }
-
         modules.onMinecraftLoad()
     }
 
