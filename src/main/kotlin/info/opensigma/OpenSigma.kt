@@ -65,15 +65,15 @@ open class OpenSigma : ModInitializer, IClientInitialize {
     override fun onMinecraftStartup() {
         clientStartup.addTask {
             eventBus.registerLambdaFactory(
-                "info.opensigma",
-                { lookupInMethod,
-                  klass ->
-                    lookupInMethod.invoke(
-                        null,
-                        klass,
-                        MethodHandles.lookup()
-                    ) as MethodHandles.Lookup
-                })
+                "info.opensigma"
+            ) { lookupInMethod,
+                klass ->
+                lookupInMethod.invoke(
+                    null,
+                    klass,
+                    MethodHandles.lookup()
+                ) as MethodHandles.Lookup
+            }
         }
         clientStartup.addTask(bindManager::init)
         clientStartup.addTask(modules::onMinecraftStartup)

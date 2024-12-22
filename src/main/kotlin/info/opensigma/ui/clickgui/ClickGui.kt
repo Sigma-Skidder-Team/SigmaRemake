@@ -11,7 +11,7 @@ class ClickGui : Screen(Text.of("ClickGui")) {
 
     private val frames = mutableListOf<Frame>()
     override fun isPauseScreen(): Boolean {
-        return false;
+        return false
     }
 
     init {
@@ -20,7 +20,7 @@ class ClickGui : Screen(Text.of("ClickGui")) {
         var count = 0
 
         ModuleCategory.entries.forEach { category ->
-            frames += CategoryFrame(category, x.toDouble(), y.toDouble())
+            frames += CategoryFrame(x.toDouble(), y.toDouble())
 
             if (++count == 4) {
                 x = 15f

@@ -14,7 +14,7 @@ open class PrimitiveSetting<T>(
     override var value: T,
     var type: PrimitiveSettingType? = null,
     private val verifier: Predicate<T>? = null
-) : Setting<T>(name, description) {
+) : Setting<T>(name) {
 
     init {
         if (type == null && value != null) {
@@ -25,9 +25,6 @@ open class PrimitiveSetting<T>(
             }
         }
     }
-
-    constructor(name: String, description: String, value: T, type: PrimitiveSettingType) :
-        this(name, description, value, type, null)
 
     constructor(name: String, description: String, value: T) :
         this(name, description, value, null, null)

@@ -8,7 +8,7 @@ class ModeSetting(
     description: String,
     val values: Array<String>,
     initialValue: String
-) : Setting<String>(name, description) {
+) : Setting<String>(name) {
 
     override var value: String = initialValue
         set(value) {

@@ -2,11 +2,8 @@ package info.opensigma.system
 
 import info.opensigma.OpenSigma
 import info.opensigma.util.reflections.ClassUtils
-
-import java.lang.reflect.Field
-import java.util.ArrayList
-import java.util.List
 import java.util.concurrent.CopyOnWriteArrayList
+
 open class ElementRepository<T>(
     protected val id: String,
     protected val mainClass: Class<T>,
@@ -76,11 +73,6 @@ open class ElementRepository<T>(
         }
 
         OpenSigma.LOGGER.info("Repository {} loaded {} elements", id, size)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun <O : T> getByClass(klass: Class<O>): O? {
-        return this.stream().filter { it?.javaClass == klass }.findAny().orElse(null) as O?
     }
 
     @Suppress("UNCHECKED_CAST")

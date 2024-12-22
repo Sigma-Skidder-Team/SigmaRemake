@@ -1,6 +1,6 @@
 package info.opensigma.module.data
 
-enum class ModuleCategory(val categoryName: String) {
+enum class ModuleCategory() {
     GUI("Gui"),
     COMBAT("Combat"),
     RENDER("Render"),

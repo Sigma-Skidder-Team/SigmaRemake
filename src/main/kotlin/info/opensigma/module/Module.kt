@@ -20,10 +20,6 @@ open class Module(
         OpenSigma.instance.bindManager.add({ key }, this::toggle)
     }
 
-    fun init() {
-        settings.onMinecraftLoad()
-    }
-
     fun toggle() {
         setEnabled(!enabled)
     }
