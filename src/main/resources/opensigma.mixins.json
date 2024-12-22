@@ -9,6 +9,7 @@
   },
   "client": [
     "ClientConnectionMixin",
+    "GameRendererMixin",
     "InGameHudMixin",
     "KeyboardMixin",
     "MinecraftClientMixin",

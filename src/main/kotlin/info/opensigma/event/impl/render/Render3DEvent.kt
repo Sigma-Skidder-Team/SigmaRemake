@@ -1,3 +1,3 @@
 package info.opensigma.event.impl.render
 
-class Render3DEvent
+data class Render3DEvent(val tickDelta: Float, val startTime: Long)
