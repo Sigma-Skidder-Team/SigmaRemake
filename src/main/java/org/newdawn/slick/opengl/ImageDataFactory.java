@@ -1,8 +1,5 @@
 package org.newdawn.slick.opengl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import org.newdawn.slick.util.Log;
 
 /**
@@ -30,19 +27,14 @@ public class ImageDataFactory {
          pngLoaderPropertyChecked = true;
 
          try {
-            AccessController.doPrivileged(new PrivilegedAction() {
-               public Object run() {
-                  String val = System.getProperty(PNG_LOADER);
-                  if ("false".equalsIgnoreCase(val)) {
-                     usePngLoader = false;
-                  }
-
-                  Log.info("Use Java PNG Loader = " + usePngLoader);
-                  return null;
-               }
-            });
-         } catch (Throwable e) {
-            // ignore, security failure - probably an applet
+            String val = System.getProperty(PNG_LOADER);
+            if ("false".equalsIgnoreCase(val)) {
+               usePngLoader = false;
+            }
+            Log.info("Use Java PNG Loader = " + usePngLoader);
+         } catch (SecurityException e) {
+            // Handle the case where reading system properties is restricted
+            Log.warn("Unable to read system property: " + PNG_LOADER, e);
          }
       }
    }

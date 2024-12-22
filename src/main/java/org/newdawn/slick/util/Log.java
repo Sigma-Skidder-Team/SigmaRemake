@@ -65,18 +65,13 @@ public final class Log {
     */
    public static void checkVerboseLogSetting() {
       try {
-         AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-               String val = System.getProperty(Log.forceVerboseProperty);
-               if ((val != null) && (val.equalsIgnoreCase(Log.forceVerbosePropertyOnValue))) {
-                  Log.setForcedVerboseOn();
-               }
-
-               return null;
-            }
-         });
-      } catch (Throwable e) {
-         // ignore, security failure - probably an applet
+         String val = System.getProperty(Log.forceVerboseProperty);
+         if (val != null && val.equalsIgnoreCase(Log.forceVerbosePropertyOnValue)) {
+            Log.setForcedVerboseOn();
+         }
+      } catch (SecurityException e) {
+         // Handle the case where reading system properties is restricted
+         Log.warn("Unable to read system property: " + Log.forceVerboseProperty, e);
       }
    }
 
