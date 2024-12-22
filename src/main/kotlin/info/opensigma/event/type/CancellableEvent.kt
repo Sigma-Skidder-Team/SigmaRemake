@@ -1,4 +1,3 @@
 package info.opensigma.event.type
 
-data class CancellableEvent(var cancelled: Boolean = false) {
-}
+open class CancellableEvent(var cancelled: Boolean = false)
