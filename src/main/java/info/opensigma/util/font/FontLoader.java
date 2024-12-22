@@ -19,7 +19,7 @@ public class FontLoader {
 
     public static InputStream readInputStream(String fileName) {
         try {
-            String assetPath = "assets/sigma-reborn/" + fileName;
+            String assetPath = "assets/opensigma/fonts/" + fileName;
             InputStream resourceStream = FontLoader.class.getClassLoader().getResourceAsStream(assetPath);
 
             if (resourceStream != null) {
