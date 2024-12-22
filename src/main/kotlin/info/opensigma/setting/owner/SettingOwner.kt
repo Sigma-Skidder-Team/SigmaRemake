@@ -6,6 +6,4 @@ import info.opensigma.system.INameable
 
 @Suppress("UNCHECKED_CAST")
 class SettingOwner<T>(owner: INameable) : ElementRepository<Setting<T>>("${owner.name}-settings",
-    toScan = arrayOf(owner)) {
-
-}
+    toScan = arrayOf(owner))

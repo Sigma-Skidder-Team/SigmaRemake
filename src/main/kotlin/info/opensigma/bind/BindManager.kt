@@ -15,6 +15,5 @@ class BindManager {
         map[integer] = runnable
     }
 
-    companion object {
-    }
+    companion object
 }
