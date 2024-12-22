@@ -178,6 +178,11 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
         // size should be calculated dynamicaly by looking at character sizes.
 
         try {
+            BufferedImage bufferedImage = getFontImage('\u0000');
+            if (bufferedImage.getHeight() > 60) {
+                textureWidth *= 2;
+                textureHeight *= 2;
+            }
 
             BufferedImage imgTemp = new BufferedImage(textureWidth, textureHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = (Graphics2D) imgTemp.getGraphics();
@@ -230,8 +235,6 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
                 } else { // custom characters
                     customChars.put(ch, newIntObject);
                 }
-
-                fontImage = null;
             }
 
             fontTexture = BufferedImageUtil
@@ -296,7 +299,7 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
     public int getWidth(String whatchars) {
         int totalwidth = 0;
         IntObject intObject = null;
-        int currentChar = 0;
+        char currentChar = 0;
         for (int i = 0; i < whatchars.length(); i++) {
             currentChar = whatchars.charAt(i);
             if (currentChar < 256) {
@@ -364,13 +367,12 @@ public class TrueTypeFont implements org.newdawn.slick.Font {
         fontTexture.bind();
 
         IntObject intObject = null;
-        int charCurrent;
 
         GL.glBegin(SGL.GL_QUADS);
 
         int totalwidth = 0;
         for (int i = 0; i < whatchars.length(); i++) {
-            charCurrent = whatchars.charAt(i);
+            char charCurrent = whatchars.charAt(i);
             if (charCurrent < 256) {
                 intObject = charArray[charCurrent];
             } else {
