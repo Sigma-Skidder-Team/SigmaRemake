@@ -7,13 +7,11 @@ import info.opensigma.util.font.Font
 import meteordevelopment.orbit.EventHandler
 import org.lwjgl.glfw.GLFW
 
-class TestModule : Module {
+class TestModule : Module("Test", "A module purely for testing purposes",GLFW.GLFW_KEY_V) {
 
     private val jelloLight = Font("helvetica-neue-light.ttf", 15)
 
     val testSetting = PrimitiveSetting("Hello", "Purely for testing purposes", true)
-
-    constructor() : super("Test", "A module purely for testing purposes", GLFW.GLFW_KEY_V)
 
     override fun onEnable() {
         if (testSetting.value) {
