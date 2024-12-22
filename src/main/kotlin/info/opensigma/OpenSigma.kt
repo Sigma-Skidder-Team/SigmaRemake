@@ -49,7 +49,7 @@ open class OpenSigma : ModInitializer, IClientInitialize {
     val eventBus = EventBus()
 
     val bindManager = BindManager()
-    val modules = ElementRepository<Module>("modules", Module::class.java);
+    val modules = ElementRepository<Module>("modules", Module::class.java)
 
     /**
      * DON'T USE THIS !
