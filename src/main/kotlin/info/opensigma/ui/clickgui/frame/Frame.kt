@@ -2,10 +2,10 @@ package info.opensigma.ui.clickgui.frame
 
 import info.opensigma.system.IMinecraft
 import info.opensigma.util.math.GeometryUtils
-import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Drawable
 
-abstract class Frame : DrawableHelper(), IMinecraft {
+abstract class Frame : Drawable, IMinecraft {
 
     open var posX = 0.0
     open var posY = 0.0
@@ -14,16 +14,16 @@ abstract class Frame : DrawableHelper(), IMinecraft {
     private var dragX = 0.0
     private var dragY = 0.0
 
-    fun draw(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         if (dragging) {
             posX = mouseX - dragX
             posY = mouseY - dragY
         }
 
-        drawFrame(matrices, mouseX, mouseY)
+        drawFrame(context, mouseX, mouseY, delta)
     }
 
-    protected abstract fun drawFrame(matrices: MatrixStack, mouseX: Int, mouseY: Int)
+    protected abstract fun drawFrame(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float)
 
     fun mouseClick(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (GeometryUtils.isInBounds(mouseX, mouseY, posX, posY, getInteractionBounds()[0], getInteractionBounds()[1], true)) {

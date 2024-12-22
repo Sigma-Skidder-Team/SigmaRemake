@@ -9,7 +9,7 @@ class ClickGuiModule : Module("ClickGui", "ClickGui", GLFW.GLFW_KEY_RIGHT_SHIFT)
     private val clickGui = ClickGui()
 
     override fun onEnable() {
-        client?.openScreen(clickGui)
+        client?.setScreen(clickGui)
 
         toggle()
     }
