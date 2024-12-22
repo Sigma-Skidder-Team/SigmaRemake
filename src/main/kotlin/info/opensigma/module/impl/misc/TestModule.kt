@@ -1,5 +1,6 @@
 package info.opensigma.module.impl.misc
 
+import info.opensigma.OpenSigma
 import info.opensigma.event.impl.render.Render2DEvent
 import info.opensigma.module.Module
 import info.opensigma.setting.impl.primitive.PrimitiveSetting
@@ -19,6 +20,11 @@ class TestModule : Module("Test", "A module purely for testing purposes",GLFW.GL
         } else {
             println("My bind is $key")
         }
+    }
+
+    override fun onDisable() {
+        super.onDisable()
+        OpenSigma.instance.eventBus.unsubscribe(this::on2D)
     }
 
     @EventHandler
