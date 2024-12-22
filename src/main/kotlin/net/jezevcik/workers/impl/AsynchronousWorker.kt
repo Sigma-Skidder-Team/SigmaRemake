@@ -1,47 +1,34 @@
-package net.jezevcik.workers.impl
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
 
-import net.jezevcik.workers.log.WorkerLoggerInterface
-import java.util.concurrent.CopyOnWriteArrayList
+class AsynchronousWorker(
+    private val loggerInterface: (Boolean, String, Exception?, Array<out Any>?) -> Unit,
+    private val name: String,
+    private vararg val waiting: Any
+) {
+    private val tasks = mutableListOf<suspend () -> Unit>()
+    private val scope = CoroutineScope(Dispatchers.Default + Job())
 
-/**
- * Runs all tasks in a different thread.
- */
-class AsynchronousWorker(loggerInterface: WorkerLoggerInterface, name: String, vararg waiting: Any)
-    : Worker(loggerInterface, name, *waiting) {
+    fun addTask(task: suspend () -> Unit) {
+        tasks.add(task)
+    }
 
-    /**
-     * The list of created threads.
-     */
-    private val threads = CopyOnWriteArrayList<Thread>()
-
-    override fun run() {
-        tasks.forEach { runnable ->
-            val thread = Thread {
-                try {
-                    runnable.run()
-                } catch (e: Exception) {
-                    loggerInterface.accept(false, "Worker {} has crashed", e, name)
-                    crashed = true
+    fun start() {
+        scope.launch {
+            try {
+                val time = measureTimeMillis {
+                    tasks.forEach { task ->
+                        launch { task() }
+                    }
+                }
+                loggerInterface(false, "Worker $name finished in $time ms!", null, emptyArray())
+            } catch (e: Exception) {
+                loggerInterface(true, "Worker $name has crashed", e, emptyArray())
+            } finally {
+                waiting.forEach {
+                    synchronized(it) { (it as Object).notify() }
                 }
             }
-            thread.start()
-            threads.add(thread)
         }
-
-        Thread {
-            while (!finished || crashed) {
-                val iterator = threads.iterator()
-                if (!iterator.hasNext()) break
-
-                while (iterator.hasNext()) {
-                    if (!iterator.next().isAlive) iterator.remove()
-                }
-            }
-
-            finished = true
-            loggerInterface.accept(false, "Worker {} finished!", null, name)
-
-            waiting.forEach { synchronized(it) { it.notify() } }
-        }.start()
     }
 }
