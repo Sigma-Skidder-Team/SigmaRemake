@@ -5,7 +5,7 @@ import org.newdawn.slick.TrueTypeFont
 
 class Font(name: String, size: Int) {
 
-    private val trueTypeFont: TrueTypeFont = FontRegistry.getFont("fonts/$name", 0, size.toFloat())
+    private val trueTypeFont: TrueTypeFont = FontLoader.getFont("fonts/$name", 0, size.toFloat())
 
     fun drawString(text: String, x: Float, y: Float, color: Color) {
         trueTypeFont.drawString(x, y, text, color)
