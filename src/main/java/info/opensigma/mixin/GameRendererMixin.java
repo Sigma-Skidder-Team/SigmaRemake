@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Hooks [{@link GameRenderer#renderWorld(RenderTickCounter)}] to post [{@link Render2DEvent}] events.
- * We aren't hooking [{@link GameRenderer#render(float, long, boolean)}
+ * We aren't hooking [{@link GameRenderer#render(RenderTickCounter, boolean)}
  * because something else could call this, & we wouldn't send the event when we should've,
  * even though it doesn't really matter.
  */
