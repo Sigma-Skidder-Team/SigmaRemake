@@ -1,7 +1,7 @@
 package info.opensigma.mixin;
 
 import info.opensigma.OpenSigma;
-import info.opensigma.event.Render2DEvent;
+import info.opensigma.event.impl.Render2DEvent;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;

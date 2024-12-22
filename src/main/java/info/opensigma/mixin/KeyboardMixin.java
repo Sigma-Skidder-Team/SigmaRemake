@@ -1,7 +1,7 @@
 package info.opensigma.mixin;
 
 import info.opensigma.OpenSigma;
-import info.opensigma.event.KeyPressEvent;
+import info.opensigma.event.impl.KeyPressEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.Keyboard;
