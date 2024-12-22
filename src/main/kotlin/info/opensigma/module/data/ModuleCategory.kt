@@ -1,6 +1,7 @@
 package info.opensigma.module.data
 
-enum class ModuleCategory() {
+@Suppress("unused")
+enum class ModuleCategory(val categoryName: String) {
     GUI("Gui"),
     COMBAT("Combat"),
     RENDER("Render"),
