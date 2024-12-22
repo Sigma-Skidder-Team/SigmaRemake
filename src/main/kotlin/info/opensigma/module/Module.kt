@@ -42,7 +42,9 @@ open class Module(
         onDisable()
     }
 
+    @Suppress("EmptyMethod")
     protected open fun onEnable() {}
 
+    @Suppress("EmptyMethod")
     protected open fun onDisable() {}
 }

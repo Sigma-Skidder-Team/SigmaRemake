@@ -37,6 +37,7 @@ abstract class Frame : DrawableHelper(), IMinecraft {
         return mouseClickFrame(mouseX, mouseY, button)
     }
 
+    @Suppress("SameReturnValue")
     protected abstract fun mouseClickFrame(mouseX: Double, mouseY: Double, button: Int): Boolean
 
     fun mouseRelease(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -51,6 +52,7 @@ abstract class Frame : DrawableHelper(), IMinecraft {
         return mouseReleaseFrame(mouseX, mouseY, button)
     }
 
+    @Suppress("SameReturnValue")
     protected abstract fun mouseReleaseFrame(mouseX: Double, mouseY: Double, button: Int): Boolean
 
     protected abstract fun getInteractionBounds(): DoubleArray
