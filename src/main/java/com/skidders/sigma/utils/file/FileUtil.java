@@ -52,9 +52,6 @@ public class FileUtil {
 
     public static void copyResourceToFile(String sourceFileName, String destinationPath) throws IOException {
         try (InputStream in = FileUtil.class.getResourceAsStream(sourceFileName); OutputStream out = new FileOutputStream(destinationPath)) {
-            System.out.println("Getting " + sourceFileName);
-            System.out.println("Sending to " + destinationPath);
-
             if (in == null) {
                 throw new FileNotFoundException("Resource not found: " + sourceFileName);
             }
