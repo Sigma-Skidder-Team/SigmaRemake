@@ -13,6 +13,10 @@ import java.awt.*;
 
 public class RenderUtil implements IMinecraft {
 
+    public static boolean hovered(double mouseX, double mouseY, float x, float y, float width, float height) {
+        return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+    }
+
     public static void drawRectangle(MatrixStack matrixStack, float x, float y, float width, float height, int color) {
         fill(matrixStack.peek().getModel(), x, y, x + width, y + height, color);
     }
