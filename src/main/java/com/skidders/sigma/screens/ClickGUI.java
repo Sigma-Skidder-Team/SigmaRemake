@@ -20,8 +20,15 @@ import java.util.Map;
 
 public class ClickGUI extends Screen implements IMinecraft {
 
+    public final Renderer moduleName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Medium", 40);
+    public final Renderer settingName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 24);
+    public final Renderer sliderValue = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
+    public final Renderer stringValue = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 18);
+    public final Renderer settingS = SigmaReborn.INSTANCE.fontManager.getFont("SFUIDisplay-Regular", 17);
+    public final Renderer settingSB = SigmaReborn.INSTANCE.fontManager.getFont("SFUIDisplay-Bold", 17);
+
     private final Renderer light25 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 25);
-    private final Renderer light20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
+    public final Renderer light20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
 
     private final Map<Category, Point> categoryPositions = new HashMap<>();
     private final int moduleHeight = 14;
@@ -32,6 +39,8 @@ public class ClickGUI extends Screen implements IMinecraft {
     private final float frameWidth = 110, frameHeight = 120, categoryHeight = 27;
 
     private Module hoveredModule = null;
+
+    public SettingGUI settingGUI;
 
     public ClickGUI(String title) {
         super(Text.of(title));
@@ -71,18 +80,20 @@ public class ClickGUI extends Screen implements IMinecraft {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) { //left mouse button
-            for (Map.Entry<Category, Point> entry : categoryPositions.entrySet()) {
-                Category category = entry.getKey();
-                Point position = entry.getValue();
+        if (button != -1) { //left mouse button
+            if (button == 0) {
+                for (Map.Entry<Category, Point> entry : categoryPositions.entrySet()) {
+                    Category category = entry.getKey();
+                    Point position = entry.getValue();
 
-                if (mouseX >= position.x && mouseX <= position.x + frameWidth &&
-                        mouseY >= position.y && mouseY <= position.y + categoryHeight) {
-                    draggingCategory = category;
-                    dragOffsetX = (int) (mouseX - position.x);
-                    dragOffsetY = (int) (mouseY - position.y);
+                    if (mouseX >= position.x && mouseX <= position.x + frameWidth &&
+                            mouseY >= position.y && mouseY <= position.y + categoryHeight) {
+                        draggingCategory = category;
+                        dragOffsetX = (int) (mouseX - position.x);
+                        dragOffsetY = (int) (mouseY - position.y);
 
-                    return true;
+                        return true;
+                    }
                 }
             }
 
@@ -96,13 +107,23 @@ public class ClickGUI extends Screen implements IMinecraft {
                 float modOffset = yOffset + categoryHeight;
                 for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {
                     if (RenderUtil.hovered(mouseX, mouseY, xOffset, modOffset, frameWidth, moduleHeight)) {
-                        hoveredModule = module;
-                        return true;
+                        if (button == 0) {
+                            hoveredModule = module;
+                        } else if (button == 1) {
+                            settingGUI = new SettingGUI(module);
+                            System.out.println("hi!");
+                        }
                     }
+
                     modOffset += moduleHeight;
                 }
             }
         }
+
+        if (settingGUI != null) {
+            settingGUI.click(mouseX, mouseY, button);
+        }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -153,7 +174,6 @@ public class ClickGUI extends Screen implements IMinecraft {
             float xOffset = position.x;
             float yOffset = position.y;
 
-
             RenderUtil.drawRectangle(matrices, xOffset, yOffset, frameWidth, categoryHeight, new Color(250, 250, 250, 230));
             RenderUtil.drawRectangle(matrices, xOffset, yOffset + categoryHeight, frameWidth, frameHeight, new Color(250, 250, 250));
             light25.drawString(category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124).getRGB());
@@ -180,5 +200,18 @@ public class ClickGUI extends Screen implements IMinecraft {
                 }
             }
         }
+
+        if (settingGUI != null) {
+            settingGUI.draw(matrices, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && settingGUI != null) {
+            settingGUI = null;
+            return false;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
