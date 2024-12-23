@@ -35,7 +35,7 @@ public class WindowMixin {
     private void injectSetIcon(InputStream icon16, InputStream icon32, CallbackInfo ci) {
         if (!glfwInit()) System.out.println("Could not initialise opengl4.5.");
 
-        ImageParser logo = ImageParser.loadImage("/assets/sigma-reborn/icon.png", "sigma/icon.png");
+        ImageParser logo = ImageParser.loadImage("/assets/sigma-reborn/icon_hd.png", "sigma/icon_hd.png");
 
         GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
         image.set(logo.width(), logo.height(), logo.image());
