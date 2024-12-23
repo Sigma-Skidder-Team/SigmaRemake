@@ -2,7 +2,6 @@ package info.opensigma.ui.clickgui.frame.impl
 
 import info.opensigma.ui.clickgui.frame.Frame
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
 import java.awt.Color
 
 class CategoryFrame(
