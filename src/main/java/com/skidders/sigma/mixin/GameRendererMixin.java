@@ -26,7 +26,7 @@ public abstract class GameRendererMixin implements GameRendererAccessor {
     }
 
     @Override
-    public void invokeLoadShader(Identifier identifier) {
+    public void sigmaRemake$invokeLoadShader(Identifier identifier) {
         loadShader(identifier);
     }
 

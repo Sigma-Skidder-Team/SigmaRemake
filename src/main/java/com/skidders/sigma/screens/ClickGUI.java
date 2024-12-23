@@ -22,7 +22,6 @@ public class ClickGUI extends Screen implements IMinecraft {
     private Category draggingCategory = null;
     private int dragOffsetX = 0, dragOffsetY = 0;
 
-
     public ClickGUI(String title) {
         super(Text.of(title));
     }
@@ -33,7 +32,7 @@ public class ClickGUI extends Screen implements IMinecraft {
         GameRenderer gameRenderer = mc.gameRenderer;
 
         if (gameRenderer instanceof GameRendererAccessor accessor) {
-            accessor.invokeLoadShader(new Identifier("shaders/post/blur.json"));
+            accessor.sigmaRemake$invokeLoadShader(new Identifier("shaders/post/blur.json"));
         } else {
             throw new IllegalStateException("GameRenderer does not implement GameRendererAccessor");
         }
