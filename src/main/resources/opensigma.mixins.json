@@ -9,6 +9,7 @@
   },
   "client": [
     "ClientConnectionMixin",
+    "EntityMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "KeyboardMixin",
