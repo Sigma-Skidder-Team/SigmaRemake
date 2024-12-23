@@ -107,7 +107,7 @@ dependencies {
 	implementation "meteordevelopment:orbit:${project.orbit_version}"
 	implementation "org.reflections:reflections:${project.reflections_version}"
 	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:null"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_version"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
