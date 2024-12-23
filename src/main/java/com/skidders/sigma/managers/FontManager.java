@@ -42,7 +42,7 @@ public class FontManager {
             if (folder.exists() && folder.isDirectory()) {
                 for (File file : folder.listFiles()) {
                     if (file.isFile()) {
-                        copyResourceToFile(file.getName(), destinationPath + file.getName());
+                        FileUtil.copyResourceToFile("/assets/sigma-reborn/fonts/" + file.getName(), destinationPath + file.getName());
                     }
                 }
             } else {
@@ -53,7 +53,7 @@ public class FontManager {
         }
 
         this.textureQueue = new ConcurrentLinkedQueue<>();
-        this.defaultFont = new Renderer(textureQueue, new Font("Roboto-Regular", Font.PLAIN, 16));
+        this.defaultFont = new Renderer(textureQueue, new Font("Dialog.plain", Font.PLAIN, 16));
         SigmaReborn.LOGGER.info("set the default font to: {}", defaultFont.font.getFontName());
 
         try {
@@ -68,21 +68,6 @@ public class FontManager {
         }
 
         SigmaReborn.LOGGER.info("Finished loading fonts");
-    }
-
-    private void copyResourceToFile(String sourceFileName, String destinationPath) throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/assets/sigma-reborn/fonts/" + sourceFileName);
-             OutputStream out = new FileOutputStream(destinationPath)) {
-            if (in == null) {
-                throw new FileNotFoundException("Font resource not found: " + sourceFileName);
-            }
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesRead);
-            }
-        }
     }
 
     private void loadFont(String fontPath, String fontName, int[] sizes) {
