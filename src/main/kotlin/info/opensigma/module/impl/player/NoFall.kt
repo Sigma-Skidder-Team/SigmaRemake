@@ -33,14 +33,10 @@ class NoFall : Module(
     @EventHandler
     @Suppress("unused")
     fun onTickEvent(event: TickEvent) {
-        if (player.fallDistance >= 0.1F && player.age > 20) {
-            player.fallDistance = 0F
-            player.isOnGround = true
-            network.sendPacket(
-                PlayerMoveC2SPacket.OnGroundOnly(
-                    true, player.horizontalCollision
-                )
+        network.sendPacket(
+            PlayerMoveC2SPacket.OnGroundOnly(
+                true, player.horizontalCollision
             )
-        }
+        )
     }
 }
