@@ -2,13 +2,13 @@ package com.skidders.sigma.module;
 
 public enum Category {
     GUI("Gui"),
-    COMBAT("Combat"),
+    MOVEMENT("Movement"),
     RENDER("Render"),
-    WORLD("World"),
+    COMBAT("Combat"),
+    MISC("Misc"),
     PLAYER("Player"),
     ITEM("Item"),
-    MOVEMENT("Movement"),
-    MISC("Misc");
+    WORLD("World");
 
     public final String name;
 
