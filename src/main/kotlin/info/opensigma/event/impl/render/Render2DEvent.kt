@@ -1,8 +1,8 @@
 package info.opensigma.event.impl.render
 
-import net.minecraft.client.util.math.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 
 data class Render2DEvent(
-    val matrices: MatrixStack,
+    val matrices: PoseStack,
     val tickDelta: Float = 0.0f
 )

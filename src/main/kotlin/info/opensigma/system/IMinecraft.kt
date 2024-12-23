@@ -1,8 +1,8 @@
 package info.opensigma.system
 
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 
 interface IMinecraft {
-    val client: MinecraftClient?
-        get() = MinecraftClient.getInstance()
+    val client: Minecraft?
+        get() = Minecraft.getInstance()
 }

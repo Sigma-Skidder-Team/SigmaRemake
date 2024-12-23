@@ -2,19 +2,18 @@ package info.opensigma.mixin;
 
 import info.opensigma.OpenSigma;
 import info.opensigma.event.impl.render.Render2DEvent;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public class InGameHudMixin {
     @Inject(method = "render", at = @At("TAIL"))
-    private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        OpenSigma.getInstance().getEventBus().post(new Render2DEvent(context.getMatrices(), tickCounter.getTickDelta(true)));
+    private void onRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        OpenSigma.getInstance().getEventBus().post(new Render2DEvent(guiGraphics.pose(), deltaTracker.getGameTimeDeltaPartialTick(true)));
     }
 }

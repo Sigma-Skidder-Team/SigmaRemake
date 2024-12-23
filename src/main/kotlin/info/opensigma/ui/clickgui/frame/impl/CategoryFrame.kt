@@ -1,15 +1,14 @@
 package info.opensigma.ui.clickgui.frame.impl
 
 import info.opensigma.ui.clickgui.frame.Frame
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.GuiGraphics
 import java.awt.Color
 
 class CategoryFrame(
     override var posX: Double,
     override var posY: Double
 ) : Frame() {
-    override fun drawFrame(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun drawFrame(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         context.fill(
             posX.toInt(), posY.toInt(),
             (posX + 100).toInt(), (posY + 30).toInt(),

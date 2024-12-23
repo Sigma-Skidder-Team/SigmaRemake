@@ -33,6 +33,10 @@ repositories {
 	}
 	mavenCentral()
 	mavenLocal()
+	maven {
+		name = "Kotlin for Forge"
+		setUrl("https://thedarkcolour.github.io/KotlinForForge/")
+	}
 }
 
 
@@ -107,7 +111,7 @@ dependencies {
 	implementation "meteordevelopment:orbit:${project.orbit_version}"
 	implementation "org.reflections:reflections:${project.reflections_version}"
 	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_version"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -118,6 +122,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 			minecraft_version_range: minecraft_version_range,
 			neo_version            : neo_version,
 			neo_version_range      : neo_version_range,
+			kff_version            : kff_version,
+			kff_version_range      : kff_version_range,
 			loader_version_range   : loader_version_range,
 			mod_id                 : mod_id,
 			mod_name               : mod_name,

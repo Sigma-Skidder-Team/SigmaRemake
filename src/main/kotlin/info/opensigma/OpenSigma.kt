@@ -7,16 +7,18 @@ import info.opensigma.system.IClientInitialize
 import kotlinx.coroutines.runBlocking
 import lexi.fontrenderer.FontManager
 import meteordevelopment.orbit.EventBus
-import net.fabricmc.api.ModInitializer
 import net.jezevcik.workers.impl.AsynchronousWorker
+import net.neoforged.fml.common.Mod
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.reflections.Reflections
 import java.lang.invoke.MethodHandles
 import kotlin.system.exitProcess
 
-open class OpenSigma : ModInitializer, IClientInitialize {
+@Mod(OpenSigma.MOD_ID)
+open class OpenSigma : IClientInitialize {
     companion object {
+        const val MOD_ID = "opensigma"
         @JvmStatic
         val instance: OpenSigma = OpenSigma()
         val LOGGER: Logger = LogManager.getLogger()
@@ -53,11 +55,6 @@ open class OpenSigma : ModInitializer, IClientInitialize {
     //val fontManager = FontManager()
     val modules = ElementRepository<Module>("modules", Module::class.java)
 
-    /**
-     * DON'T USE THIS !
-     * Use the injected initialization methods instead.
-     */
-    override fun onInitialize() {}
 
     /**
      * Ran when Minecraft is still starting up.

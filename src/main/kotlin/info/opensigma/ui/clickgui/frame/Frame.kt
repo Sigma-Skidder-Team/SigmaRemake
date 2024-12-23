@@ -2,10 +2,10 @@ package info.opensigma.ui.clickgui.frame
 
 import info.opensigma.system.IMinecraft
 import info.opensigma.util.math.GeometryUtils
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.Drawable
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.Renderable
 
-abstract class Frame : Drawable, IMinecraft {
+abstract class Frame : Renderable, IMinecraft {
 
     open var posX = 0.0
     open var posY = 0.0
@@ -14,7 +14,7 @@ abstract class Frame : Drawable, IMinecraft {
     private var dragX = 0.0
     private var dragY = 0.0
 
-    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         if (dragging) {
             posX = mouseX - dragX
             posY = mouseY - dragY
@@ -23,7 +23,7 @@ abstract class Frame : Drawable, IMinecraft {
         drawFrame(context, mouseX, mouseY, delta)
     }
 
-    protected abstract fun drawFrame(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float)
+    protected abstract fun drawFrame(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float)
 
     fun mouseClick(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (GeometryUtils.isInBounds(mouseX, mouseY, posX, posY, getInteractionBounds()[0], getInteractionBounds()[1], true)) {

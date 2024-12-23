@@ -3,14 +3,14 @@ package info.opensigma.ui.clickgui
 import info.opensigma.module.data.ModuleCategory
 import info.opensigma.ui.clickgui.frame.Frame
 import info.opensigma.ui.clickgui.frame.impl.CategoryFrame
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.text.Text
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.network.chat.Component
 
-class ClickGui : Screen(Text.of("ClickGui")) {
+class ClickGui : Screen(Component.nullToEmpty("ClickGui")) {
 
     private val frames = mutableListOf<Frame>()
-    override fun shouldPause(): Boolean {
+    override fun isPauseScreen(): Boolean {
         return false
     }
 
@@ -31,7 +31,7 @@ class ClickGui : Screen(Text.of("ClickGui")) {
         }
     }
 
-    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) =
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) =
         frames.forEach { it.render(context, mouseX, mouseY, delta) }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean =
