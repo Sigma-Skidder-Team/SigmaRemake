@@ -1,36 +1,30 @@
 {
-  "schemaVersion": 1,
-  "id": "opensigma",
-  "version": "${version}",
-  "name": "Open Sigma",
-  "description": "Open Sigma is an awesome open source recreation of the Sigma Client for 1.16.4 Fabric.",
-  "authors": [
-    "lexi",
-    "DataM0del"
-  ],
-  "contact": {
-    "homepage": "https://github.com/Sigma-Skidder-Team/",
-    "sources": "https://github.com/Sigma-Skidder-Team/SigmaRemake/"
-  },
-  "license": "GPL",
-  "icon": "assets/opensigma/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      {
-        "adapter": "kotlin",
-        "value": "info.opensigma.OpenSigma"
-      }
-    ]
-  },
-  "mixins": [
-    "opensigma.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.15.11",
-    "fabric-language-kotlin": ">=1.13.0+kotlin.${kotlin_version}",
-    "minecraft": "~1.21.1",
-    "java": ">=8",
-    "fabric": "*"
-  }
+	"schemaVersion": 1,
+	"id": "sigma-reborn",
+	"version": "${version}",
+	"name": "Sigma Reborn",
+	"description": "Sigma Reborn is an awesome recreation of the Sigma Client for 1.16.4 Fabric.",
+	"authors": [
+		"lexi"
+	],
+	"contact": {
+		"homepage": "https://github.com/Sigma-Skidder-Team/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/sigma-reborn/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.skidders.SigmaReborn"
+		]
+	},
+	"mixins": [
+		"sigma-reborn.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.16.4",
+		"java": ">=8",
+		"fabric": "*"
+	}
 }

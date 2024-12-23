@@ -1,8 +1,0 @@
-# stolen from https://github.com/CCBlueX/LiquidBounce/blob/nextgen/.github/dependabot.yml
-version: 2
-updates:
-  - package-ecosystem: gradle
-    directory: "/"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 5

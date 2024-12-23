@@ -1,11 +1,8 @@
 plugins {
-	id 'fabric-loom' version '1.9.2'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
-	id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
-kotlin_version = project.kotlin_version
-fabric_kt_version = project.fabric_kt_version
 version = project.mod_version
 group = project.maven_group
 
@@ -14,14 +11,6 @@ base {
 }
 
 repositories {
-	maven {
-		name = "meteor-maven"
-		url = "https://maven.meteordev.org/releases"
-	}
-	maven {
-		name = "fabricmc-maven"
-		url = "https://maven.fabricmc.net/"
-	}
 	mavenCentral()
 }
 
@@ -32,22 +21,18 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation "meteordevelopment:orbit:${project.orbit_version}"
+	compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
-	implementation "org.reflections:reflections:${project.reflections_version}"
-	modImplementation "net.fabricmc:fabric-language-kotlin:$fabric_kt_version+kotlin.$kotlin_version"
-	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
+	testCompileOnly 'org.projectlombok:lombok:1.18.36'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 
 processResources {
 	inputs.property "version", project.version
-	inputs.property "kotlin_version", project.kotlin_version
 
 	filesMatching("fabric.mod.json") {
-		expand([
-		        version: project.version,
-				kotlin_version: project.kotlin_version
-		])
+		expand "version": project.version
 	}
 }
 
@@ -60,7 +45,6 @@ java {
 	// if it is present.
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
-
 }
 
 jar {
@@ -85,7 +69,4 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
-}
-kotlin {
-	jvmToolchain(21)
 }
