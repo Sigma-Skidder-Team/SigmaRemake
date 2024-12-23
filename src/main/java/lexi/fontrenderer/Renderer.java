@@ -6,6 +6,7 @@ import lexi.fontrenderer.data.CharacterData;
 import lexi.fontrenderer.data.TextureData;
 import lexi.fontrenderer.utils.GLUtils;
 import lexi.fontrenderer.utils.MathUtil;
+import net.minecraft.world.phys.Vec2;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -252,11 +253,11 @@ public class Renderer {
                     CharacterData charData = characterData[character];
 
                     if (strikethrough) {
-                        GLUtils.drawLine(new Vec2f(0.0f, charData.height() / 2.0f), new Vec2f(charData.width(), charData.height() / 2.0f), 3.0f);
+                        GLUtils.drawLine(new Vec2(0.0f, charData.height() / 2.0f), new Vec2(charData.width(), charData.height() / 2.0f), 3.0f);
                     }
 
                     if (underlined) {
-                        GLUtils.drawLine(new Vec2f(0.0f, charData.height() - 15.0f), new Vec2f(charData.width(), charData.height() - 15.0f), 3.0f);
+                        GLUtils.drawLine(new Vec2(0.0f, charData.height() - 15.0f), new Vec2(charData.width(), charData.height() - 15.0f), 3.0f);
                     }
 
                     x += charData.width() - 8.0f;
@@ -264,7 +265,7 @@ public class Renderer {
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
 
         RenderSystem.disableBlend();
         RenderSystem.bindTexture(0);
