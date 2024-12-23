@@ -2,6 +2,7 @@ package info.opensigma.mixin;
 
 import info.opensigma.OpenSigma;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,6 +35,14 @@ public class MinecraftClientMixin {
     )
     public final void injectMultiplayerBypass(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
+    }
+
+    @Inject(
+            method = "<init>",
+            at = @At(value = "TAIL")
+    )
+    public final void onMinecraftClientInitEnd(RunArgs args, CallbackInfo ci) {
+        //OpenSigma.getInstance().getFontManager().init();
     }
 
 }
