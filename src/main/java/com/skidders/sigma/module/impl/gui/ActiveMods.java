@@ -14,21 +14,25 @@ import java.awt.*;
 
 public class ActiveMods extends Module {
 
-    private Renderer font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
+    private Renderer font;
+    private final Renderer
+            font20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20),
+            font18 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 18),
+            font14 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
 
     public ActiveMods() {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);
         registerSetting(new StringSetting("Size", "The font size", "Normal", new String[]{"Normal", "Small", "Tiny"}));
         registerSetting(new BooleanSetting("Animations", "Scale in animation", true));
+        font = font20;
     }
 
     @Override
     public void onEnable() {
-        System.out.println("hi");
         switch ((String) getSettingByName("Size").value) {
-            case "Normal" -> font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
-            case "Small" -> font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 18);
-            case "Tiny" -> font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
+            case "Normal" -> font = font20;
+            case "Small" -> font = font18;
+            case "Tiny" -> font = font14;
         }
     }
 
