@@ -2,6 +2,7 @@ package com.skidders.sigma.screens;
 
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.module.Category;
+import com.skidders.sigma.module.Module;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.font.Renderer;
 import com.skidders.sigma.utils.render.RenderUtil;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class ClickGUI extends Screen implements IMinecraft {
 
     private final Renderer light25 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 25);
+    private final Renderer light20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
     private final Map<Category, Point> categoryPositions = new HashMap<>();
     private Category draggingCategory = null;
     private int dragOffsetX = 0, dragOffsetY = 0;
@@ -70,7 +72,24 @@ public class ClickGUI extends Screen implements IMinecraft {
                     draggingCategory = category;
                     dragOffsetX = (int) (mouseX - position.x);
                     dragOffsetY = (int) (mouseY - position.y);
+
                     return true;
+                }
+            }
+
+            for (Category category : Category.values()) {
+                Point position = categoryPositions.get(category);
+                if (position == null) continue;
+
+                float xOffset = position.x;
+                float yOffset = position.y;
+
+                float modOffset = yOffset + 27;
+                for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {
+                    if (RenderUtil.hovered(mouseX, mouseY, xOffset, modOffset, 110, 14)) {
+                        module.setEnabled(!module.enabled);
+                    }
+                    modOffset += 14;
                 }
             }
         }
@@ -88,7 +107,7 @@ public class ClickGUI extends Screen implements IMinecraft {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (button == 0 && draggingCategory != null) { // Left mouse button dragging
+        if (button == 0 && draggingCategory != null) { //left mouse button dragging
             Point position = categoryPositions.get(draggingCategory);
             if (position != null) {
                 position.setLocation(mouseX - dragOffsetX, mouseY - dragOffsetY);
@@ -109,9 +128,22 @@ public class ClickGUI extends Screen implements IMinecraft {
             float xOffset = position.x;
             float yOffset = position.y;
 
-            RenderUtil.drawRectangle(matrices, xOffset, yOffset, 110, 27, new Color(255, 255, 255, 230));
-            RenderUtil.drawRectangle(matrices, xOffset, yOffset + 27, 110, 140, new Color(255, 255, 255));
+            RenderUtil.drawRectangle(matrices, xOffset, yOffset, 110, 27, new Color(250, 250, 250, 230));
+            RenderUtil.drawRectangle(matrices, xOffset, yOffset + 27, 110, 140, new Color(250, 250, 250));
             light25.drawString(category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124).getRGB());
+
+            float modOffset = yOffset + 27;
+            for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {
+                RenderUtil.drawRectangle(matrices, xOffset, modOffset, 110, 14, module.enabled ? new Color(41, 166, 255) : new Color(250, 250, 250));
+                light20.drawString(module.name, xOffset + (module.enabled ? 10 : 8), modOffset + 2, module.enabled ? Color.WHITE.getRGB() : Color.BLACK.getRGB());
+                modOffset += 14;
+            }
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        //detect which category I am hovering over,
+        return super.mouseScrolled(mouseX, mouseY, amount);
     }
 }
