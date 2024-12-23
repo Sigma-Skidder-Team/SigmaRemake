@@ -171,6 +171,22 @@ public class Renderer {
         renderString(text, x - width, y, color, false);
     }
 
+    public void drawString(String text, float x, float y, Color color) {
+        drawString(text, x, y, color.getRGB());
+    }
+
+    public void drawCenteredString(String text, float x, float y, Color color) {
+        drawCenteredString(text, x, y, color.getRGB());
+    }
+
+    public void drawStringWithShadow(String text, float x, float y, Color color) {
+        drawStringWithShadow(text, x, y, color.getRGB());
+    }
+
+    public void drawCenteredStringWithShadow(String text, float x, float y, Color color) {
+        drawCenteredStringWithShadow(text, x, y, color.getRGB());
+    }
+
     private void renderString(String text, float x, float y, int color, boolean shadow) {
         if (text.isEmpty()) {
             return;
