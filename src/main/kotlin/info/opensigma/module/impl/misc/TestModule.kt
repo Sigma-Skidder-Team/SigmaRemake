@@ -38,21 +38,12 @@ class TestModule : Module("Test", "A module purely for testing purposes",GLFW.GL
         if (renderer == null)
             renderer = FontRenderer(font, 10f)
         renderer?.roundCoordinates(true)
-        val theText = Text.literal("The quick brown fox jumps over the lazy dog\n")
-            .append(Text.literal("italic\n").styled { it.withItalic(true) })
-            .append(Text.literal("bold\n").styled { it.withBold(true) })
-            .append(Text.literal("bold italic\n").styled { it.withBold(true).withItalic(true) })
-            .append(Text.literal("under\n").styled { it.withUnderline(true) })
-            .append(Text.literal("strikethrough\nwith nl\n").styled { it.withStrikethrough(true) })
-            .append(Text.literal("Special chars: 1234@æððħſ.ĸ|aa{a}()"));
+        val theText = Text.literal("OpenSigma\nJello");
         var x = 5.0f
         var y = 5.0f
-        val width = (renderer as FontRenderer).getTextWidth(theText)
-        val height = (renderer as FontRenderer).getTextHeight(theText)
         val mat = event.context.matrices
         mat.push()
 //		mat.scale(6, 6, 0)
-        Renderer2d.renderQuad(mat, Color.RED, x.toDouble(), y.toDouble(), (x + width).toDouble(), (y + height).toDouble())
         renderer?.drawText(mat, theText, x, y, 1f)
     }
 
