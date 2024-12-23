@@ -5,6 +5,7 @@ import info.opensigma.module.Module
 import info.opensigma.system.ElementRepository
 import info.opensigma.system.IClientInitialize
 import kotlinx.coroutines.runBlocking
+import lexi.fontrenderer.FontManager
 import meteordevelopment.orbit.EventBus
 import net.fabricmc.api.ModInitializer
 import net.jezevcik.workers.impl.AsynchronousWorker
@@ -49,6 +50,7 @@ open class OpenSigma : ModInitializer, IClientInitialize {
     val eventBus = EventBus()
 
     val bindManager = BindManager()
+    //val fontManager = FontManager()
     val modules = ElementRepository<Module>("modules", Module::class.java)
 
     /**
