@@ -3,8 +3,8 @@ package com.skidders.sigma.managers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.utils.file.FileUtil;
-import com.skidders.sigma.utils.font.FontData;
-import com.skidders.sigma.utils.font.FontRenderer;
+import com.skidders.sigma.utils.font.Renderer;
+import com.skidders.sigma.utils.font.data.TextureData;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -24,9 +24,9 @@ public class FontManager {
 
     public final List<String> availableFonts = new ArrayList<>();
 
-    private final HashMap<String, FontRenderer> fonts = new HashMap<>();
-    private final FontRenderer defaultFont;
-    private final ConcurrentLinkedQueue<FontData> textureQueue;
+    private final HashMap<String, Renderer> fonts = new HashMap<>();
+    private final Renderer defaultFont;
+    private final ConcurrentLinkedQueue<TextureData> textureQueue;
 
     public FontManager() {
         String sourcePath = "/assets/sigma-reborn/fonts/";
@@ -53,7 +53,7 @@ public class FontManager {
         }
 
         this.textureQueue = new ConcurrentLinkedQueue<>();
-        this.defaultFont = new FontRenderer(textureQueue, new Font("Roboto-Regular", Font.PLAIN, 16));
+        this.defaultFont = new Renderer(textureQueue, new Font("Roboto-Regular", Font.PLAIN, 16));
         SigmaReborn.LOGGER.info("set the default font to: {}", defaultFont.font.getFontName());
 
         try {
@@ -92,7 +92,7 @@ public class FontManager {
                 try (InputStream iStream = Files.newInputStream(fontFile)) {
                     Font myFont = Font.createFont(Font.TRUETYPE_FONT, iStream);
                     myFont = myFont.deriveFont(Font.PLAIN, (float) size);
-                    this.fonts.put(fontName + " " + size, new FontRenderer(textureQueue, myFont));
+                    this.fonts.put(fontName + " " + size, new Renderer(textureQueue, myFont));
                     return;
                 } catch (IOException | FontFormatException e) {
                     SigmaReborn.LOGGER.error("Failed to load font: {} due to {}", fontPath, e.getMessage());
@@ -104,7 +104,7 @@ public class FontManager {
     }
 
 
-    public FontRenderer getFont(final String key, final int size) {
+    public Renderer getFont(final String key, final int size) {
         if (this.fonts.containsKey(key)) {
             return this.fonts.get(key);
         } else {
@@ -119,7 +119,7 @@ public class FontManager {
                 loadFont(path, family + "-" + style, new int[]{size});
 
                 while (!textureQueue.isEmpty()) {
-                    final FontData textureData = textureQueue.poll();
+                    final TextureData textureData = textureQueue.poll();
                     GlStateManager.bindTexture(textureData.textureId());
                     GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                     GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

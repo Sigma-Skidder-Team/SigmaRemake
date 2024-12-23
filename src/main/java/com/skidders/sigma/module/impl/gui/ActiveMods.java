@@ -7,14 +7,14 @@ import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.StringSetting;
-import com.skidders.sigma.utils.font.FontRenderer;
+import com.skidders.sigma.utils.font.Renderer;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
 public class ActiveMods extends Module {
 
-    private FontRenderer font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
+    private Renderer font = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
 
     public ActiveMods() {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);

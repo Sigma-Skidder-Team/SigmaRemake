@@ -1,4 +1,4 @@
-package com.skidders.sigma.utils.math;
+package com.skidders.sigma.utils.font.utils;
 
 public class MathUtil {
 
@@ -7,10 +7,6 @@ public class MathUtil {
 
     public static int ceil(float x) {
         return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - x);
-    }
-
-    public static int ceiling_float_int(float value) {
-        return ceil(value);
     }
 
     public static int ceiling_double_int(double value) {
