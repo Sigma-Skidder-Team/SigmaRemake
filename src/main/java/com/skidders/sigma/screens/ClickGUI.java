@@ -24,18 +24,6 @@ public class ClickGUI extends Screen implements IMinecraft {
 
     public ClickGUI(String title) {
         super(Text.of(title));
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        GameRenderer gameRenderer = mc.gameRenderer;
-
-        if (gameRenderer instanceof GameRendererAccessor accessor) {
-            accessor.sigmaRemake$invokeLoadShader(new Identifier("shaders/post/blur.json"));
-        } else {
-            throw new IllegalStateException("GameRenderer does not implement GameRendererAccessor");
-        }
 
         float xOffsetStart = 7;
         float xOffset = xOffsetStart, yOffset = 10;
@@ -49,6 +37,18 @@ public class ClickGUI extends Screen implements IMinecraft {
                 xOffset = xOffsetStart;
                 yOffset += 27 + 140 + 5;
             }
+        }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        GameRenderer gameRenderer = mc.gameRenderer;
+
+        if (gameRenderer instanceof GameRendererAccessor accessor) {
+            accessor.sigmaRemake$invokeLoadShader(new Identifier("shaders/post/blur.json"));
+        } else {
+            throw new IllegalStateException("GameRenderer does not implement GameRendererAccessor");
         }
     }
 
