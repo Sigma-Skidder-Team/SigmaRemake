@@ -4,8 +4,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lexi.fontrenderer.Renderer;
 import lexi.fontrenderer.data.CharacterData;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec2;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -30,7 +30,7 @@ public class GLUtils {
         GL11.glEnd();
     }
 
-    public static void drawLine(final Vec2f start, final Vec2f end) {
+    public static void drawLine(final Vec2 start, final Vec2 end) {
         GL11.glDisable(3553);
         GL11.glLineWidth((float) 3.0);
         GL11.glBegin(1);
@@ -40,7 +40,7 @@ public class GLUtils {
         GL11.glEnable(3553);
     }
 
-    public static void drawLine(final Vec2f start, final Vec2f end, final float width) {
+    public static void drawLine(final Vec2 start, final Vec2 end, final float width) {
         GL11.glDisable(3553);
         GL11.glLineWidth(width);
         GL11.glBegin(1);
@@ -52,12 +52,12 @@ public class GLUtils {
 
     public static void enableAlphaBlending() {
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     public static void ensureOpenGLContext() {
         if (GLFW.glfwGetCurrentContext() == 0L) {
-            GLFW.glfwMakeContextCurrent(MinecraftClient.getInstance().getWindow().getHandle());
+            GLFW.glfwMakeContextCurrent(Minecraft.getInstance().getWindow().getWindow());
             GL.createCapabilities();
         }
     }

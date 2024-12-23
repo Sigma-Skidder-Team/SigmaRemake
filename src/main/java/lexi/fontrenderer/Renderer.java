@@ -1,12 +1,11 @@
 package lexi.fontrenderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lexi.fontrenderer.data.CharacterData;
 import lexi.fontrenderer.data.TextureData;
 import lexi.fontrenderer.utils.GLUtils;
 import lexi.fontrenderer.utils.MathUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec2f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -147,16 +146,16 @@ public class Renderer {
         }
     }
 
-    public void drawString(MatrixStack matrixStack, String text, float x, float y, int color) {
+    public void drawString(PoseStack matrixStack, String text, float x, float y, int color) {
         GLUtils.enableAlphaBlending();
         renderString(matrixStack, text, x, y, color, false);
     }
 
-    public void drawString(MatrixStack matrixStack, String text, int x, int y, int color) {
+    public void drawString(PoseStack matrixStack, String text, int x, int y, int color) {
         drawString(matrixStack, text, (float) x, (float) y, color);
     }
 
-    public void drawStringWithShadow(MatrixStack matrixStack, String text, float x, float y, int color) {
+    public void drawStringWithShadow(PoseStack matrixStack, String text, float x, float y, int color) {
         GL11.glTranslated(0.5, 0.5, 0.0);
         renderString(matrixStack, text, x, y, color, true);
 
@@ -164,11 +163,11 @@ public class Renderer {
         renderString(matrixStack, text, x, y, color, false);
     }
 
-    public void drawStringWithShadow(MatrixStack matrixStack, String text, int x, int y, int color) {
+    public void drawStringWithShadow(PoseStack matrixStack, String text, int x, int y, int color) {
         drawStringWithShadow(matrixStack, text, (float) x, (float) y, color);
     }
 
-    private void renderString(MatrixStack matrixStack, String text, float x, float y, int color, boolean shadow) {
+    private void renderString(PoseStack matrixStack, String text, float x, float y, int color, boolean shadow) {
         if (text.isEmpty()) {
             return;
         }
@@ -176,7 +175,7 @@ public class Renderer {
         x = Math.round(x * 10.0F) / 10.0F;
         y = Math.round(y * 10.0F) / 10.0F;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.scale(0.5f, 0.5f, 1.0f);
         GLUtils.enableAlphaBlending();
 

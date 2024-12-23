@@ -1,7 +1,7 @@
 package lexi.fontrenderer.utils;
 
 import info.opensigma.OpenSigma;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -22,7 +22,7 @@ public class FileUtil {
     }
 
     public static Path getRunningPath() {
-        return Paths.get(MinecraftClient.getInstance().runDirectory.getPath(), "sigma");
+        return Paths.get(Minecraft.getInstance().gameDirectory.getPath(), "sigma");
     }
 
     public static java.util.List<String> getFilesInDirectory(String directoryPath) throws IOException {

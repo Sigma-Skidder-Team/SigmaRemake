@@ -1,20 +1,20 @@
 package info.opensigma.mixin;
 
 import info.opensigma.OpenSigma;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public class MinecraftClientMixin {
 
     @Inject(
             method = "<init>",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;instance:Lnet/minecraft/client/MinecraftClient;")
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;instance:Lnet/minecraft/client/Minecraft;")
     )
     public final void injectOnMinecraftStartup(final CallbackInfo callbackInfo) {
         OpenSigma.getInstance().onMinecraftStartup();
@@ -22,14 +22,14 @@ public class MinecraftClientMixin {
 
     @Inject(
             method = "<init>",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V", shift = At.Shift.BEFORE)
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeDisplay()V", shift = At.Shift.BEFORE)
     )
     public final void injectOnMinecraftLoad(final CallbackInfo callbackInfo) {
         OpenSigma.getInstance().onMinecraftLoad();
     }
 
     @Inject(
-            method = "isMultiplayerEnabled",
+            method = "allowsMultiplayer",
             at = @At("HEAD"),
             cancellable = true
     )
@@ -41,7 +41,7 @@ public class MinecraftClientMixin {
             method = "<init>",
             at = @At(value = "TAIL")
     )
-    public final void onMinecraftClientInitEnd(RunArgs args, CallbackInfo ci) {
+    public final void onMinecraftClientInitEnd(GameConfig gameConfig, CallbackInfo ci) {
         //OpenSigma.getInstance().getFontManager().init();
     }
 
