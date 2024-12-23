@@ -4,10 +4,8 @@ import com.google.common.eventbus.Subscribe;
 import com.skidders.sigma.events.impl.KeyPressEvent;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
-import com.skidders.sigma.module.impl.gui.ActiveMods;
-import com.skidders.sigma.module.impl.gui.BrainFreeze;
-import com.skidders.sigma.module.impl.gui.Compass;
-import com.skidders.sigma.module.impl.gui.Cords;
+import com.skidders.sigma.module.impl.gui.*;
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -20,14 +18,11 @@ public class ModuleManager {
 
     public ModuleManager() {
         modules.add(new ActiveMods());
-        modules.add(new BrainFreeze());
-        modules.add(new Compass());
-        modules.add(new Cords());
     }
 
     @Subscribe
     public void onKey(KeyPressEvent event) {
-        if (event.action == GLFW.GLFW_RELEASE)
+        if (event.action == GLFW.GLFW_RELEASE && MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().currentScreen == null)
             this.modules.forEach(m -> {
                 if (m.key == event.key) {
                     m.setEnabled(!m.enabled);
