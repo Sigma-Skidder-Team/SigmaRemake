@@ -15,7 +15,6 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 kotlin_version = project.kotlin_version
-fabric_kt_version = project.fabric_kt_version
 version = project.mod_version
 
 base {
@@ -26,10 +25,6 @@ repositories {
 	maven {
 		name = "meteor-maven"
 		url = "https://maven.meteordev.org/releases"
-	}
-	maven {
-		name = "fabricmc-maven"
-		url = "https://maven.fabricmc.net/"
 	}
 	mavenCentral()
 	mavenLocal()
