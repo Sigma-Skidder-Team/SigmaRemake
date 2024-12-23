@@ -24,7 +24,7 @@ public class ScreenProcessor implements IMinecraft {
 
     @Subscribe
     public void onKey(KeyPressEvent event) {
-        if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind) {
+        if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind && mc.world != null) {
             mc.openScreen(clickGUI);
         }
     }
