@@ -9,10 +9,11 @@
     "defaultRequire": 1
   },
   "client": [
+    "GameMenuScreenMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "KeyboardMixin",
     "MinecraftClientMixin",
     "WindowMixin"
-    ]
+  ]
 }
