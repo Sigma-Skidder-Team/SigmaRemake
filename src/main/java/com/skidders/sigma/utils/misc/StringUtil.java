@@ -1,8 +1,5 @@
 package com.skidders.sigma.utils.misc;
 
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 public class StringUtil {
