@@ -2,7 +2,7 @@ package com.skidders.sigma.mixin;
 
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.events.impl.Render3DEvent;
-import com.skidders.sigma.screens.GameRendererAccessor;
+import com.skidders.sigma.utils.render.GameRendererAccessor;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;

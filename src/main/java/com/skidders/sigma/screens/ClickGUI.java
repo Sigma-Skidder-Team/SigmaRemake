@@ -2,6 +2,7 @@ package com.skidders.sigma.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.SigmaReborn;
+import com.skidders.sigma.utils.render.GameRendererAccessor;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.utils.IMinecraft;

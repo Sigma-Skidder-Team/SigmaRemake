@@ -1,4 +1,4 @@
-package com.skidders.sigma.screens;
+package com.skidders.sigma.utils.render;
 
 import net.minecraft.util.Identifier;
 
