@@ -6,6 +6,7 @@ import com.skidders.sigma.events.impl.KeyPressEvent;
 import com.skidders.sigma.events.impl.Render2DEvent;
 import com.skidders.sigma.screens.ClickGUI;
 import com.skidders.sigma.utils.IMinecraft;
+import com.skidders.sigma.utils.misc.StringUtil;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -15,17 +16,20 @@ public class ScreenProcessor implements IMinecraft {
 
     public ClickGUI clickGUI;
     public int clickGuiBind = 344;
+    public String clickGuiBindName = "Unknown";
 
     public static int scaleFactor = 1;
 
     public ScreenProcessor() {
         clickGUI = new ClickGUI("Jello ClickGUI");
+        clickGuiBindName = StringUtil.convertKeyToName(clickGuiBind);
     }
 
     @Subscribe
     public void onKey(KeyPressEvent event) {
         if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind && mc.world != null && mc.currentScreen == null) {
             mc.openScreen(clickGUI);
+            clickGuiBindName = StringUtil.convertKeyToName(clickGuiBind);
         }
     }
 
