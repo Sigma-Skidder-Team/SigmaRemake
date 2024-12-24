@@ -1,6 +1,6 @@
 # Sigma Remake
 
-Sigma 5.0 remake using fabric 1.16.4 written in Kotlin.
+Sigma 5.0 remake using fabric 1.21.4 written in Kotlin.
 
 ## Progress
 
