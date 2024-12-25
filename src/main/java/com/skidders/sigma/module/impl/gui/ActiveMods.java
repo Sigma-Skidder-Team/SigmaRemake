@@ -6,8 +6,8 @@ import com.skidders.sigma.events.impl.Render2DEvent;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
-import com.skidders.sigma.module.settings.impl.StringSetting;
-import com.skidders.sigma.utils.font.Renderer;
+import com.skidders.sigma.module.settings.impl.ModeSetting;
+import com.skidders.sigma.utils.render.font.Renderer;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -22,7 +22,7 @@ public class ActiveMods extends Module {
 
     public ActiveMods() {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);
-        registerSetting(new StringSetting("Size", "The font size", "Normal", new String[]{"Normal", "Small", "Tiny"}));
+        registerSetting(new ModeSetting("Size", "The font size", "Normal", new String[]{"Normal", "Small", "Tiny"}));
         registerSetting(new BooleanSetting("Animations", "Scale in animation", true));
         font = font20;
     }
