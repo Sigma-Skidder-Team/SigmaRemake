@@ -62,11 +62,7 @@ public class RenderUtil implements IMinecraft {
     private static final int STEPS = 60;
     private static final double ANGLE =  Math.PI * 2 / STEPS;
 
-    public static void drawCircle(float x, float y, Color color) {
-        circle(x, y, 12, color);
-    }
-
-    public static void circle(float x, float y, double radius, Color color) {
+    public static void drawCircle(float x, float y, double radius, Color color) {
         drawSetup();
         GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, color.getAlpha() / 255.0f);
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);

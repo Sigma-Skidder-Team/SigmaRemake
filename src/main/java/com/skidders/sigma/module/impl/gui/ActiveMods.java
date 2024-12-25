@@ -7,6 +7,7 @@ import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.ModeSetting;
+import com.skidders.sigma.module.settings.impl.NumberSetting;
 import com.skidders.sigma.utils.render.font.Renderer;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,6 +25,7 @@ public class ActiveMods extends Module {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);
         registerSetting(new ModeSetting("Size", "The font size", "Normal", new String[]{"Normal", "Small", "Tiny"}));
         registerSetting(new BooleanSetting("Animations", "Scale in animation", true));
+        registerSetting(new NumberSetting("Slider", "OMG, it's a slider!", 3, 1, 5, 1.0f));
         font = font20;
     }
 
