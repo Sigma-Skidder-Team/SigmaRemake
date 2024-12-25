@@ -1,5 +1,6 @@
 package com.skidders.sigma.utils.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.sigma.utils.IMinecraft;
 import net.minecraft.client.render.BufferBuilder;
@@ -8,6 +9,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -55,6 +57,51 @@ public class RenderUtil implements IMinecraft {
         BufferRenderer.draw(bufferBuilder);
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+    }
+
+    private static final int STEPS = 60;
+    private static final double ANGLE =  Math.PI * 2 / STEPS;
+
+    public static void drawCircle(float x, float y, Color color) {
+        circle(x, y, 12, color);
+    }
+
+    public static void circle(float x, float y, double radius, Color color) {
+        drawSetup();
+        GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, color.getAlpha() / 255.0f);
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        for(int i = 0; i <= STEPS; i++) {
+            GL11.glVertex2d(x + radius * Math.sin(ANGLE * i),
+                    y + radius * Math.cos(ANGLE * i)
+            );
+        }
+        GL11.glEnd();
+
+        GL11.glLineWidth(1.5f);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        for(int i = 0; i <= STEPS; i++) {
+            GL11.glVertex2d(x + radius * Math.sin(ANGLE * i),
+                    y + radius * Math.cos(ANGLE * i)
+            );
+        }
+        GL11.glEnd();
+
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        drawFinish();
+    }
+
+    private static void drawSetup() {
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.field_22545, GlStateManager.SrcFactor.ONE_MINUS_SRC_ALPHA.field_22545);
+    }
+
+    private static void drawFinish() {
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.clearCurrentColor();
     }
 
 }
