@@ -3,11 +3,13 @@ package com.skidders.sigma.utils.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.sigma.utils.IMinecraft;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -98,6 +100,15 @@ public class RenderUtil implements IMinecraft {
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
         RenderSystem.clearCurrentColor();
+    }
+
+    public static void drawImage(String image, MatrixStack matrices, int x, int y, float width, float height, float u, float v) {
+        mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", image));
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) width, (int) height, (int) width, (int) height);
+        RenderSystem.disableBlend();
     }
 
 }
