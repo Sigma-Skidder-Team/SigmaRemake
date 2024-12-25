@@ -1,6 +1,6 @@
-package com.skidders.sigma.utils.font.utils;
+package com.skidders.sigma.utils.render.font.utils;
 
-import com.skidders.sigma.utils.font.data.CharacterData;
+import com.skidders.sigma.utils.render.font.data.CharacterData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec2f;
 import org.lwjgl.glfw.GLFW;

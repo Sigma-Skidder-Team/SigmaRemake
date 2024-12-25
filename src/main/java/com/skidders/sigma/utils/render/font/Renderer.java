@@ -1,10 +1,10 @@
-package com.skidders.sigma.utils.font;
+package com.skidders.sigma.utils.render.font;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.skidders.sigma.utils.font.data.CharacterData;
-import com.skidders.sigma.utils.font.data.TextureData;
-import com.skidders.sigma.utils.font.utils.GLUtils;
-import com.skidders.sigma.utils.font.utils.MathUtil;
+import com.skidders.sigma.utils.render.font.data.CharacterData;
+import com.skidders.sigma.utils.render.font.data.TextureData;
+import com.skidders.sigma.utils.render.font.utils.GLUtils;
+import com.skidders.sigma.utils.render.font.utils.MathUtil;
 import net.minecraft.util.math.Vec2f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;

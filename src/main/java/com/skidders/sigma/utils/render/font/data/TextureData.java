@@ -1,4 +1,4 @@
-package com.skidders.sigma.utils.font.data;
+package com.skidders.sigma.utils.render.font.data;
 
 import java.nio.ByteBuffer;
 

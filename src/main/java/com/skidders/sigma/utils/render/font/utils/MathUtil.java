@@ -1,4 +1,4 @@
-package com.skidders.sigma.utils.font.utils;
+package com.skidders.sigma.utils.render.font.utils;
 
 public class MathUtil {
 

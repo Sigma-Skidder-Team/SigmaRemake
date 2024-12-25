@@ -3,8 +3,8 @@ package com.skidders.sigma.managers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.utils.file.FileUtil;
-import com.skidders.sigma.utils.font.Renderer;
-import com.skidders.sigma.utils.font.data.TextureData;
+import com.skidders.sigma.utils.render.font.Renderer;
+import com.skidders.sigma.utils.render.font.data.TextureData;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
