@@ -1,8 +1,7 @@
 package com.skidders;
 
 import com.google.common.eventbus.EventBus;
-import com.skidders.sigma.managers.FontManager;
-import com.skidders.sigma.managers.ModuleManager;
+import com.skidders.sigma.managers.*;
 import com.skidders.sigma.processors.ScreenProcessor;
 import net.fabricmc.api.ModInitializer;
 

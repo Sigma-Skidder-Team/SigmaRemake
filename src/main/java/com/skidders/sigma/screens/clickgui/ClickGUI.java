@@ -1,4 +1,4 @@
-package com.skidders.sigma.screens;
+package com.skidders.sigma.screens.clickgui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.SigmaReborn;

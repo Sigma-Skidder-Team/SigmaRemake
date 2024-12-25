@@ -3,8 +3,7 @@ package com.skidders.sigma.processors;
 import com.google.common.eventbus.Subscribe;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.sigma.events.impl.KeyPressEvent;
-import com.skidders.sigma.events.impl.Render2DEvent;
-import com.skidders.sigma.screens.ClickGUI;
+import com.skidders.sigma.screens.clickgui.ClickGUI;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.misc.StringUtil;
 import net.minecraft.client.gui.DrawableHelper;
@@ -17,6 +16,8 @@ public class ScreenProcessor implements IMinecraft {
     public ClickGUI clickGUI;
     public int clickGuiBind = 344;
     public String clickGuiBindName = "Unknown";
+
+    public boolean guiBlur = true, gpuAccelerated = true;
 
     public static int scaleFactor = 1;
 

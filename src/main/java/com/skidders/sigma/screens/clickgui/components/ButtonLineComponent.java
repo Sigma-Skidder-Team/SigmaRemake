@@ -1,4 +1,4 @@
-package com.skidders.sigma.screens.components;
+package com.skidders.sigma.screens.clickgui.components;
 
 import com.skidders.sigma.utils.render.font.Renderer;
 import com.skidders.sigma.utils.render.RenderUtil;

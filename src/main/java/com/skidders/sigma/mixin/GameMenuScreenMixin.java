@@ -1,6 +1,6 @@
 package com.skidders.sigma.mixin;
 
-import com.skidders.sigma.screens.InGameOptionsScreen;
+import com.skidders.sigma.screens.pages.JelloOptionsPage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,7 +26,7 @@ public abstract class GameMenuScreenMixin extends Screen {
                 204,
                 20,
                 Text.of("Jello for Sigma Options"),
-                button -> MinecraftClient.getInstance().openScreen(new InGameOptionsScreen("Jello Options"))
+                button -> MinecraftClient.getInstance().openScreen(new JelloOptionsPage("Jello Options"))
         ));
     }
 
