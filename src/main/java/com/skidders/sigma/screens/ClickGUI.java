@@ -6,7 +6,7 @@ import com.skidders.sigma.utils.render.GameRendererAccessor;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.utils.IMinecraft;
-import com.skidders.sigma.utils.font.Renderer;
+import com.skidders.sigma.utils.render.font.Renderer;
 import com.skidders.sigma.utils.render.RenderUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -112,7 +112,6 @@ public class ClickGUI extends Screen implements IMinecraft {
                             hoveredModule = module;
                         } else if (button == 1) {
                             settingGUI = new SettingGUI(module);
-                            System.out.println("hi!");
                         }
                     }
 
