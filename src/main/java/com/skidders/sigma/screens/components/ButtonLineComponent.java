@@ -1,6 +1,6 @@
 package com.skidders.sigma.screens.components;
 
-import com.skidders.sigma.utils.font.Renderer;
+import com.skidders.sigma.utils.render.font.Renderer;
 import com.skidders.sigma.utils.render.RenderUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;

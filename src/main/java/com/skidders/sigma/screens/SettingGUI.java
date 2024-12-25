@@ -4,8 +4,10 @@ import com.skidders.SigmaReborn;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.Setting;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
-import com.skidders.sigma.utils.font.Renderer;
+import com.skidders.sigma.module.settings.impl.ModeSetting;
+import com.skidders.sigma.utils.misc.MouseHandler;
 import com.skidders.sigma.utils.render.RenderUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.awt.*;
@@ -13,10 +15,12 @@ import java.awt.*;
 public class SettingGUI {
     private final Module parent;
     private final ClickGUI screen;
+    private final MouseHandler mouseHandler;
 
     public SettingGUI(Module parent) {
         this.parent = parent;
         this.screen = SigmaReborn.INSTANCE.screenProcessor.clickGUI;
+        this.mouseHandler = new MouseHandler(MinecraftClient.getInstance().getWindow().getHandle());
     }
 
     public void draw(MatrixStack matrices, double mouseX, double mouseY) {
@@ -40,7 +44,9 @@ public class SettingGUI {
                     screen.settingS.drawString(setting.desc, x + 7 + screen.settingSB.getWidth(setting.name), y + height + 7, new Color(255, 255, 255, 127));
                 }
 
-                if (setting instanceof BooleanSetting) {
+                if (setting instanceof BooleanSetting bruh) {
+                    bruh.value = bruh.checkboxComponent.draw(mouseHandler, bruh.value, mouseX, mouseY, x + width - 20, yOffset + 1.3f);
+                } else if (setting instanceof ModeSetting bruh) {
 
                 }
 
