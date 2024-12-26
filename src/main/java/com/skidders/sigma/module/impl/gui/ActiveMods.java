@@ -29,8 +29,6 @@ public class ActiveMods extends Module {
         font = font20;
     }
 
-
-
     @Override
     public void onEnable() {
         switch ((String) getSettingByName("Size").value) {
@@ -43,7 +41,6 @@ public class ActiveMods extends Module {
     @Subscribe
     public void on2D(Render2DEvent event) {
         if (mc.options.debugEnabled) {
-            System.out.println("just test");
             return;
         }
 
