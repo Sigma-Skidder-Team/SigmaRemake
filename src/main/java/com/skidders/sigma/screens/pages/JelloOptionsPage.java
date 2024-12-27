@@ -38,9 +38,9 @@ public class JelloOptionsPage extends Screen {
     protected void init() {
         super.init();
 
-        keybind = new ButtonLineComponent("Open Keybind Manager", width / 2 - 80, height / 2 + 113, JelloLightFont24, new Color(254, 254, 254), this);
-        clickGui = new ButtonLineComponent("Open Jello's Click GUI", width / 2 + 80, height / 2 + 113, JelloLightFont24, new Color(254, 254, 254), this);
-        credits = new ButtonLineComponent("Credits", width / 2, height / 2 + 20, JelloLightFont18, new Color(254, 254, 254), this);
+        keybind = new ButtonLineComponent("Open Keybind Manager", width / 2 - 80, height / 2 + 113, new Color(254, 254, 254), this);
+        clickGui = new ButtonLineComponent("Open Jello's Click GUI", width / 2 + 80, height / 2 + 113, new Color(254, 254, 254), this);
+        credits = new ButtonLineComponent("Credits", width / 2, height / 2 + 20, new Color(254, 254, 254), this);
         mouseHandler = new MouseHandler(MinecraftClient.getInstance().getWindow().getHandle());
     }
 
@@ -74,9 +74,9 @@ public class JelloOptionsPage extends Screen {
         String configure = "Configure all your keybinds in the keybind manager!";
         JelloLightFont14.drawString(configure, (float) width / 2 - JelloLightFont14.getWidth(configure) / 2, (float) height / 2 + 75, new Color(103, 105, 103));
 
-        clickGui.draw(matrices, mouseX, mouseY);
-        keybind.draw(matrices, mouseX, mouseY);
-        credits.draw(matrices, mouseX, mouseY);
+        clickGui.draw(JelloLightFont24, matrices, mouseX, mouseY);
+        keybind.draw(JelloLightFont24, matrices, mouseX, mouseY);
+        credits.draw(JelloLightFont18, matrices, mouseX, mouseY);
     }
 
     @Override
