@@ -102,12 +102,12 @@ public class RenderUtil implements IMinecraft {
         RenderSystem.clearCurrentColor();
     }
 
-    public static void drawImage(String image, MatrixStack matrices, int x, int y, float width, float height, float u, float v) {
+    public static void drawImage(String image, MatrixStack matrices, int x, int y, float width, float height, int xd, int xd2) {
         mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", image));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) width, (int) height, (int) width, (int) height);
+        DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) width, (int) height, xd, xd2);
         RenderSystem.disableBlend();
     }
 
