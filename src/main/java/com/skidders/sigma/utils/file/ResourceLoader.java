@@ -15,8 +15,6 @@ import java.io.InputStream;
 
 public class ResourceLoader {
 
-
-
     public static Texture loadTexture(String filePath) {
         try {
             String extension = filePath.substring(filePath.lastIndexOf(".") + 1).toUpperCase();
@@ -132,7 +130,7 @@ public class ResourceLoader {
         int height = inputImage.getHeight();
 
         // Create a new BufferedImage with swapped width and height
-        BufferedImage wrappedImage = new BufferedImage(width, height, inputImage.getType());
+        BufferedImage wrappedImage = new BufferedImage(height, width, inputImage.getType());
 
         // Copy pixels from the input image to the wrapped image with reversed coordinates
         for (int x = 0; x < width; x++) {
