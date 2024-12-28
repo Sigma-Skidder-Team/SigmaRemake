@@ -15,15 +15,18 @@ public class ScreenProcessor implements IMinecraft {
 
     public ClickGUI clickGUI;
     public int clickGuiBind = 344;
-    public String clickGuiBindName = "Unknown";
+    public String clickGuiBindName;
 
     public boolean guiBlur = true, gpuAccelerated = true;
 
-    public static int scaleFactor = 1;
+    public int guiScaleFactor = 1;
+    public float resizingScaleFactor = 1.0F;
 
     public ScreenProcessor() {
         clickGUI = new ClickGUI("Jello ClickGUI");
         clickGuiBindName = StringUtil.convertKeyToName(clickGuiBind);
+
+        resizingScaleFactor = (float) (mc.getWindow().getFramebufferHeight() / mc.getWindow().getHeight());
     }
 
     @Subscribe
@@ -35,13 +38,18 @@ public class ScreenProcessor implements IMinecraft {
     }
 
     public void onResize() {
-        //
+        if (mc.getWindow().getWidth() != 0 && mc.getWindow().getHeight() != 0) {
+            resizingScaleFactor = (float) Math.max(
+                    mc.getWindow().getFramebufferWidth() / mc.getWindow().getWidth(),
+                    mc.getWindow().getFramebufferHeight() / mc.getWindow().getHeight()
+            );
+        }
     }
 
     public void renderWatermark() {
-        scaleFactor = (int) mc.getWindow().getScaleFactor();
+        guiScaleFactor = (int) mc.getWindow().getScaleFactor();
 
-        if (scaleFactor > 2) {
+        if (guiScaleFactor > 2) {
             mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", "jello/jello_watermark2x.png"));
         } else {
             mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", "jello/jello_watermark.png"));
