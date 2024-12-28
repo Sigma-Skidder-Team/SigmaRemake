@@ -21,9 +21,7 @@ public class LoadingPage extends Overlay {
     private final Consumer<Optional<Throwable>> exceptionHandler;
     private final boolean reloading;
 
-    public static Texture sigmaLogo;
-    public static Texture back;
-    public static Texture background;
+    private static Texture logo, blurredBackground;
 
     private float progress;
     private long applyCompleteTime = -1L;
@@ -35,9 +33,8 @@ public class LoadingPage extends Overlay {
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;
 
-        //sigmaLogo = ResourceLoader.loadTexture("jello/loading/logo.png");
-        //back = ResourceLoader.loadTexture("jello/loading/back.png");
-        //background = ResourceLoader.generateTexture("jello/loading/back.png", 0.25F, 25);
+        logo = ResourceLoader.loadTexture("jello/loading/logo.png");
+        blurredBackground = ResourceLoader.generateTexture("jello/loading/back.png", 0.25F, 25);
     }
 
     @Override
@@ -61,8 +58,8 @@ public class LoadingPage extends Overlay {
 
         float guiScale = (float) this.client.getWindow().calculateScaleFactor(this.client.options.guiScale, this.client.options.forceUnicodeFont) * framebufferRatio;
         GL11.glScalef(1.0F / guiScale, 1.0F / guiScale, 0.0F);
-        renderLoadingScreen(scaleFactor, this.progress);
-        GL11.glPopMatrix();
+        renderLoadingScreen(matrices, scaleFactor, this.progress);
+        matrices.pop();
 
         if (applyCompleteProgress >= 2.0F) {
             this.client.setOverlay(null);
@@ -83,33 +80,29 @@ public class LoadingPage extends Overlay {
         }
     }
 
-    public static void renderLoadingScreen(float opacity, float progress) {
+    public static void renderLoadingScreen(MatrixStack matrices, float opacity, float progress) {
+        matrices.push();
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
-        //RenderUtil.drawImage(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), background, opacity);
+        RenderUtil.drawImage(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), blurredBackground, opacity);
         RenderUtil.drawRoundedRect2(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), ColorUtil.applyAlpha(0, 0.75F));
 
         int logoWidth = 455;
         int logoHeight = 78;
-        int logoX = (MinecraftClient.getInstance().getWindow().getWidth() - logoWidth) / 2;
-        int logoY = Math.round((float) ((MinecraftClient.getInstance().getWindow().getHeight() - logoHeight) / 2) - 14.0F * opacity);
-        float logoScale = 0.75F + opacity * opacity * opacity * opacity * 0.25F;
+        float logoX = (float) (MinecraftClient.getInstance().getWindow().getWidth() - logoWidth) / 2;
+        float logoY = (float) (MinecraftClient.getInstance().getWindow().getHeight() - logoHeight) / 2 - 14.0F * opacity;
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) (MinecraftClient.getInstance().getWindow().getWidth() / 2), (float) (MinecraftClient.getInstance().getWindow().getHeight() / 2), 0.0F);
-        GL11.glScalef(logoScale, logoScale, 0.0F);
-        GL11.glTranslatef((float) (-MinecraftClient.getInstance().getWindow().getWidth() / 2), (float) (-MinecraftClient.getInstance().getWindow().getHeight() / 2), 0.0F);
-        //RenderUtil.drawImage((float) logoX, (float) logoY, (float) logoWidth, (float) logoHeight, sigmaLogo, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), opacity));
+        RenderUtil.drawImage((float) logoX, (float) logoY, (float) logoWidth, (float) logoHeight, logo, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), opacity));
 
         float clampedProgress = Math.min(1.0F, progress * 1.02F);
         float progressBarOffset = 80;
 
         if (opacity == 1.0F) {
             RenderUtil.drawRoundedRect(
-                    (float) logoX, logoY + logoHeight + progressBarOffset, (float) logoWidth, 20.0F, 10.0F, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F * opacity)
+                    logoX, logoY + logoHeight + progressBarOffset, (float) logoWidth, 20.0F, 10.0F, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F * opacity)
             );
             RenderUtil.drawRoundedRect(
-                    (float) (logoX + 1),
+                    logoX + 1,
                     logoY + logoHeight + progressBarOffset + 1,
                     (float) (logoWidth - 2),
                     18.0F,
@@ -119,14 +112,14 @@ public class LoadingPage extends Overlay {
         }
 
         RenderUtil.drawRoundedRect(
-                (float) (logoX + 2),
+                logoX + 2,
                 logoY + logoHeight + progressBarOffset + 2,
                 (float) ((int) ((float) (logoWidth - 4) * clampedProgress)),
                 16.0F,
                 8.0F,
                 ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.9F * opacity)
         );
-        GL11.glPopMatrix();
+        matrices.pop();
     }
 
 }

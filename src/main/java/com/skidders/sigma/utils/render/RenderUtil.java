@@ -115,12 +115,30 @@ public class RenderUtil implements IMinecraft {
         RenderSystem.disableBlend();
     }
 
+    public static void drawRoundedRect(float x, float y, float width, float height, float cornerRadius, int color) {
+        drawRoundedRect(x, y + cornerRadius, x + width, y + height - cornerRadius, color);
+        drawRoundedRect(x + cornerRadius, y, x + width - cornerRadius, y + cornerRadius, color);
+        drawRoundedRect(x + cornerRadius, y + height - cornerRadius, x + width - cornerRadius, y + height, color);
+        applyScaledScissor(x, y, x + cornerRadius, y + cornerRadius);
+        drawPoint(x + cornerRadius, y + cornerRadius, cornerRadius * 2.0F, color);
+        restoreScissor();
+        applyScaledScissor(x + width - cornerRadius, y, x + width, y + cornerRadius);
+        drawPoint(x - cornerRadius + width, y + cornerRadius, cornerRadius * 2.0F, color);
+        restoreScissor();
+        applyScaledScissor(x, y + height - cornerRadius, x + cornerRadius, y + height);
+        drawPoint(x + cornerRadius, y - cornerRadius + height, cornerRadius * 2.0F, color);
+        restoreScissor();
+        applyScaledScissor(x + width - cornerRadius, y + height - cornerRadius, x + width, y + height);
+        drawPoint(x - cornerRadius + width, y - cornerRadius + height, cornerRadius * 2.0F, color);
+        restoreScissor();
+    }
+
     public static void drawImage(float x, float y, float var2, float var3, Texture tex, float alphaValue) {
         drawImage(x, y, var2, var3, tex, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaValue));
     }
 
     public static void drawImage(float var0, float var1, float var2, float var3, Texture var4, int var5) {
-        drawImage(var0, var1, var2, var3, var4, var5, 0.0F, 0.0F, (float)var4.getImageWidth(), (float)var4.getImageHeight(), true);
+        drawImage(var0, var1, var2, var3, var4, var5, 0.0F, 0.0F, (float) var4.getImageWidth(), (float) var4.getImageHeight(), true);
     }
 
     public static void drawImage(float var0, float var1, float var2, float var3, Texture var4, int var5, float var6, float var7, float var8, float var9, boolean var10) {
@@ -169,24 +187,6 @@ public class RenderUtil implements IMinecraft {
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
         }
-    }
-
-    public static void drawRoundedRect(float x, float y, float width, float height, float cornerRadius, int color) {
-        drawRoundedRect(x, y + cornerRadius, x + width, y + height - cornerRadius, color);
-        drawRoundedRect(x + cornerRadius, y, x + width - cornerRadius, y + cornerRadius, color);
-        drawRoundedRect(x + cornerRadius, y + height - cornerRadius, x + width - cornerRadius, y + height, color);
-        applyScaledScissor(x, y, x + cornerRadius, y + cornerRadius);
-        drawPoint(x + cornerRadius, y + cornerRadius, cornerRadius * 2.0F, color);
-        restoreScissor();
-        applyScaledScissor(x + width - cornerRadius, y, x + width, y + cornerRadius);
-        drawPoint(x - cornerRadius + width, y + cornerRadius, cornerRadius * 2.0F, color);
-        restoreScissor();
-        applyScaledScissor(x, y + height - cornerRadius, x + cornerRadius, y + height);
-        drawPoint(x + cornerRadius, y - cornerRadius + height, cornerRadius * 2.0F, color);
-        restoreScissor();
-        applyScaledScissor(x + width - cornerRadius, y + height - cornerRadius, x + width, y + height);
-        drawPoint(x - cornerRadius + width, y - cornerRadius + height, cornerRadius * 2.0F, color);
-        restoreScissor();
     }
 
     public static void applyScaledScissor(float x, float y, float width, float height) {
