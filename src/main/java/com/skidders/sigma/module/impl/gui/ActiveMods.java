@@ -38,9 +38,7 @@ public class ActiveMods extends Module {
             return;
         }
 
-        DrawHelper.drawRoundedGradientRect(5, 5 + 18, 120, 18, 5, new Color(125, 0, 255), new Color(255,255,255), new Color(192,30,66), new Color(0, 255, 0));
-
-
+        DrawHelper.drawRoundedHorizontalGradientRect(5, 5 + 18, 120, 18, 5, new Color(255,255,255), new Color(192,30,66));
 
         float offsetY = 3;
         int screenWidth = mc.getWindow().getWidth();
