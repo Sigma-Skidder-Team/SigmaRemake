@@ -8,6 +8,7 @@ import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.ModeSetting;
 import com.skidders.sigma.module.settings.impl.NumberSetting;
+import dev.sxmurxy.renderutil.TemplateMod;
 import dev.sxmurxy.renderutil.util.render.DrawHelper;
 import org.lwjgl.glfw.GLFW;
 
@@ -51,6 +52,8 @@ public class ActiveMods extends Module {
 
             offsetY += 12;
         }
+
+        TemplateMod.onRender(event.matrixStack);
     }
 
 }
