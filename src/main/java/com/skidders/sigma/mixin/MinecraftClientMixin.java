@@ -1,7 +1,6 @@
 package com.skidders.sigma.mixin;
 
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.managers.FontManager;
 import com.skidders.sigma.managers.ModuleManager;
 import com.skidders.sigma.processors.ScreenProcessor;
 import com.skidders.sigma.screens.pages.LoadingPage;
@@ -125,8 +124,6 @@ public abstract class MinecraftClientMixin {
             at = @At(value = "TAIL")
     )
     public final void onMinecraftClientInitEnd(RunArgs args, CallbackInfo ci) {
-        SigmaReborn.INSTANCE.fontManager = new FontManager();
-
         SigmaReborn.INSTANCE.moduleManager = new ModuleManager();
         SigmaReborn.INSTANCE.screenProcessor = new ScreenProcessor();
         SigmaReborn.EVENT_BUS.register(SigmaReborn.INSTANCE.moduleManager);

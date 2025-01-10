@@ -16,7 +16,6 @@ public class SigmaReborn implements ModInitializer {
 	public static EventBus EVENT_BUS = new EventBus(MOD_ID);
 
 	public ModuleManager moduleManager;
-	public FontManager fontManager;
 	public ScreenProcessor screenProcessor;
 
 	@Override

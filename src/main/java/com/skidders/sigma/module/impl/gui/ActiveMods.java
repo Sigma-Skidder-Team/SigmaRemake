@@ -8,33 +8,27 @@ import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.ModeSetting;
 import com.skidders.sigma.module.settings.impl.NumberSetting;
-import com.skidders.sigma.utils.render.font.Renderer;
+import dev.sxmurxy.renderutil.util.render.DrawHelper;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
 public class ActiveMods extends Module {
 
-    private Renderer font;
-    private final Renderer
-            font20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20),
-            font18 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 18),
-            font14 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
-
     public ActiveMods() {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);
         registerSetting(new ModeSetting("Size", "The font size", "Normal", new String[]{"Normal", "Small", "Tiny"}));
         registerSetting(new BooleanSetting("Animations", "Scale in animation", true));
         registerSetting(new NumberSetting("Slider", "OMG, it's a slider!", 3, 1, 5, 1.0f));
-        font = font20;
+        //font = font20;
     }
 
     @Override
     public void onEnable() {
         switch ((String) getSettingByName("Size").value) {
-            case "Normal" -> font = font20;
-            case "Small" -> font = font18;
-            case "Tiny" -> font = font14;
+            //case "Normal" -> font = font20;
+            //case "Small" -> font = font18;
+            //case "Tiny" -> font = font14;
         }
     }
 
@@ -44,14 +38,18 @@ public class ActiveMods extends Module {
             return;
         }
 
+        DrawHelper.drawRoundedGradientRect(5, 5 + 18, 120, 18, 5, new Color(125, 0, 255), new Color(255,255,255), new Color(192,30,66), new Color(0, 255, 0));
+
+
+
         float offsetY = 3;
         int screenWidth = mc.getWindow().getWidth();
         for (Module module : SigmaReborn.INSTANCE.moduleManager.modules) {
             float x, y = offsetY;
 
-            x = (float) screenWidth / 2 - font.getWidth(module.name) - 3;
+            //x = (float) screenWidth / 2 - font.getWidth(module.name) - 3;
 
-            font.drawString(module.name, x, y, new Color(255,255,255, 150).getRGB());
+            //font.drawString(module.name, x, y, new Color(255,255,255, 150).getRGB());
 
             offsetY += 12;
         }

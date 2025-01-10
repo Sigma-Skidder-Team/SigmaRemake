@@ -6,7 +6,6 @@ import com.skidders.sigma.utils.render.GameRendererAccessor;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.utils.IMinecraft;
-import com.skidders.sigma.utils.render.font.Renderer;
 import com.skidders.sigma.utils.render.RenderUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -21,6 +20,7 @@ import java.util.Map;
 
 public class ClickGUI extends Screen implements IMinecraft {
 
+    /*
     public final Renderer moduleName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Medium", 40);
     public final Renderer settingName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 24);
     public final Renderer sliderValue = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
@@ -30,7 +30,7 @@ public class ClickGUI extends Screen implements IMinecraft {
 
     private final Renderer light25 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 25);
     public final Renderer light20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
-
+     */
     private final Map<Category, Point> categoryPositions = new HashMap<>();
     private final int moduleHeight = 14;
 
@@ -176,7 +176,7 @@ public class ClickGUI extends Screen implements IMinecraft {
 
             RenderUtil.drawRectangle(matrices, xOffset, yOffset, frameWidth, categoryHeight, new Color(250, 250, 250, 230));
             RenderUtil.drawRectangle(matrices, xOffset, yOffset + categoryHeight, frameWidth, frameHeight, new Color(250, 250, 250));
-            light25.drawString(category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124).getRGB());
+            //light25.drawString(category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124).getRGB());
 
             float modOffset = yOffset + categoryHeight;
             for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {
@@ -190,8 +190,8 @@ public class ClickGUI extends Screen implements IMinecraft {
                 RenderUtil.drawRectangle(matrices, xOffset, modOffset, frameWidth, moduleHeight,
                         module.enabled ? hover ? mouse ? new Color(41, 193, 255) : new Color(41, 182, 255) : new Color(41, 166, 255)
                                 : hover ? mouse ? new Color(221, 221, 221) : new Color(231, 231, 231) : new Color(250, 250, 250));
-                light20.drawString(module.name, xOffset + (module.enabled ? 10 : 8), modOffset + 2,
-                        module.enabled ? Color.WHITE.getRGB() : Color.BLACK.getRGB());
+                //light20.drawString(module.name, xOffset + (module.enabled ? 10 : 8), modOffset + 2,
+                       // module.enabled ? Color.WHITE.getRGB() : Color.BLACK.getRGB());
 
                 modOffset += moduleHeight;
 
