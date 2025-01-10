@@ -294,17 +294,17 @@ public class DrawHelper implements Wrapper {
         ROUNDED.setUniformf("size", (float) width * 2, (float) height * 2);
         ROUNDED.setUniformf("round", (float) radius * 2);
         ROUNDED.setUniformf("color", c[0], c[1], c[2], c[3]);
-        Shader.draw(x, y - height, width, height);
+        Shader.draw(x, y, width, height);
         ROUNDED.unload();
 
         drawFinish();
     }
 
-    public static void drawRoundedGradientRect(double x, double y, double width, double height, double radius, Color... colors) {
-        float[] c = ColorHelper.getColorComps(colors[0]);
-        float[] c1 = ColorHelper.getColorComps(colors[1]);
-        float[] c2 = ColorHelper.getColorComps(colors[2]);
-        float[] c3 = ColorHelper.getColorComps(colors[3]);
+    public static void drawRoundedHorizontalGradientRect(double x, double y, double width, double height, double radius, Color topLeftColor, Color bottomLeftColor, Color topRightColor, Color bottomRightColor) {
+        float[] c = ColorHelper.getColorComps(topLeftColor); //top left
+        float[] c1 = ColorHelper.getColorComps(bottomLeftColor); //bottom left
+        float[] c2 = ColorHelper.getColorComps(topRightColor); //top right
+        float[] c3 = ColorHelper.getColorComps(bottomRightColor); //bottom right
 
         drawSetup();
 
@@ -315,15 +315,17 @@ public class DrawHelper implements Wrapper {
         ROUNDED_GRADIENT.setUniformf("color2", c1[0], c1[1], c1[2], c1[3]);
         ROUNDED_GRADIENT.setUniformf("color3", c2[0], c2[1], c2[2], c2[3]);
         ROUNDED_GRADIENT.setUniformf("color4", c3[0], c3[1], c3[2], c3[3]);
-        Shader.draw(x, y - height, width, height);
+        Shader.draw(x, y, width, height);
         ROUNDED_GRADIENT.unload();
 
         drawFinish();
     }
 
-    public static void drawRoundedGradientRect(double x, double y, double width, double height, double radius, Color color1, Color color2) {
-        float[] c = ColorHelper.getColorComps(color1);
-        float[] c1 = ColorHelper.getColorComps(color2);
+    public static void drawRoundedVerticalGradientRect(double x, double y, double width, double height, double radius, Color color1, Color color2) {
+        float[] c = ColorHelper.getColorComps(color1); //top left
+        float[] c1 = ColorHelper.getColorComps(color2); //bottom left
+        float[] c2 = ColorHelper.getColorComps(color1); //top right
+        float[] c3 = ColorHelper.getColorComps(color2); //bottom right
 
         drawSetup();
 
@@ -332,7 +334,30 @@ public class DrawHelper implements Wrapper {
         ROUNDED_GRADIENT.setUniformf("round", (float) radius * 2);
         ROUNDED_GRADIENT.setUniformf("color1", c[0], c[1], c[2], c[3]);
         ROUNDED_GRADIENT.setUniformf("color2", c1[0], c1[1], c1[2], c1[3]);
-        Shader.draw(x, y - height, width, height);
+        ROUNDED_GRADIENT.setUniformf("color3", c2[0], c2[1], c2[2], c2[3]);
+        ROUNDED_GRADIENT.setUniformf("color4", c3[0], c3[1], c3[2], c3[3]);
+        Shader.draw(x, y, width, height);
+        ROUNDED_GRADIENT.unload();
+
+        drawFinish();
+    }
+
+    public static void drawRoundedHorizontalGradientRect(double x, double y, double width, double height, double radius, Color color1, Color color2) {
+        float[] c = ColorHelper.getColorComps(color1); //top left
+        float[] c1 = ColorHelper.getColorComps(color1); //bottom left
+        float[] c2 = ColorHelper.getColorComps(color2); //top right
+        float[] c3 = ColorHelper.getColorComps(color2); //bottom right
+
+        drawSetup();
+
+        ROUNDED_GRADIENT.load();
+        ROUNDED_GRADIENT.setUniformf("size", (float) width * 2, (float) height * 2);
+        ROUNDED_GRADIENT.setUniformf("round", (float) radius * 2);
+        ROUNDED_GRADIENT.setUniformf("color1", c[0], c[1], c[2], c[3]);
+        ROUNDED_GRADIENT.setUniformf("color2", c1[0], c1[1], c1[2], c1[3]);
+        ROUNDED_GRADIENT.setUniformf("color3", c2[0], c2[1], c2[2], c2[3]);
+        ROUNDED_GRADIENT.setUniformf("color4", c3[0], c3[1], c3[2], c3[3]);
+        Shader.draw(x, y, width, height);
         ROUNDED_GRADIENT.unload();
 
         drawFinish();
@@ -350,7 +375,7 @@ public class DrawHelper implements Wrapper {
         ROUNDED_BLURRED.setUniformf("softness", blurR);
         ROUNDED_BLURRED.setUniformf("radius", (float) roundR);
         ROUNDED_BLURRED.setUniformf("color", c[0], c[1], c[2], c[3]);
-        Shader.draw(x - blurR, y - height - blurR, width + blurR * 2, height + blurR * 2);
+        Shader.draw(x - blurR, y - blurR, width + blurR * 2, height + blurR * 2);
         ROUNDED_BLURRED.unload();
 
         glDisable(GL_ALPHA_TEST);
@@ -375,7 +400,7 @@ public class DrawHelper implements Wrapper {
         ROUNDED_BLURRED_GRADIENT.setUniformf("color2", c1[0], c1[1], c1[2], c1[3]);
         ROUNDED_BLURRED_GRADIENT.setUniformf("color3", c2[0], c2[1], c2[2], c2[3]);
         ROUNDED_BLURRED_GRADIENT.setUniformf("color4", c3[0], c3[1], c3[2], c3[3]);
-        Shader.draw(x - blurR, y - height - blurR, width + blurR * 2, height + blurR * 2);
+        Shader.draw(x - blurR, y - blurR, width + blurR * 2, height + blurR * 2);
         ROUNDED_BLURRED_GRADIENT.unload();
 
         glDisable(GL_ALPHA_TEST);
@@ -396,7 +421,7 @@ public class DrawHelper implements Wrapper {
         ROUNDED_OUTLINE.setUniformf("round", (float) radius * 2);
         ROUNDED_OUTLINE.setUniformf("thickness", thickness);
         ROUNDED_OUTLINE.setUniformf("color", c[0], c[1], c[2], c[3]);
-        Shader.draw(x, y - height, width, height);
+        Shader.draw(x, y, width, height);
         ROUNDED_OUTLINE.unload();
 
         drawFinish();
@@ -492,7 +517,7 @@ public class DrawHelper implements Wrapper {
         ROUNDED_TEXTURE.setUniformf("size", (float) width * 2, (float) height * 2);
         ROUNDED_TEXTURE.setUniformf("round", (float) radius * 2);
         bindTexture(texId);
-        Shader.draw(x, y - height, width, height);
+        Shader.draw(x, y, width, height);
         bindTexture(0);
         ROUNDED_TEXTURE.unload();
 
@@ -510,7 +535,7 @@ public class DrawHelper implements Wrapper {
         width += glowRadius * 2;
         height += glowRadius * 2;
         x -= glowRadius;
-        y -= height - glowRadius;
+        y -= glowRadius;
 
         applyColor(color);
         glBegin(GL_QUADS);

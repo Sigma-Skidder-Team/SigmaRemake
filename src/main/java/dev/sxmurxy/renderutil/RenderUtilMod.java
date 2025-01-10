@@ -23,7 +23,7 @@ public class RenderUtilMod implements Wrapper {
 
 		DrawHelper.drawRect(50, 200, 70, 40, Color.GRAY);
 		DrawHelper.drawRoundedRect(140, 200, 70, 40, 7, Color.CYAN);
-		DrawHelper.drawRoundedGradientRect(230, 200, 70, 40, 7, Color.BLUE, Color.CYAN, Color.BLUE, Color.CYAN);
+		DrawHelper.drawRoundedHorizontalGradientRect(230, 200, 70, 40, 7, Color.BLUE, Color.CYAN, Color.BLUE, Color.CYAN);
 		DrawHelper.drawRoundedBlurredRect(320, 210, 80, 60, 7, 10, Color.BLACK);
 		DrawHelper.drawRoundedGradientBlurredRect(520, 200, 90, 40, 8, 7, Color.CYAN, Color.CYAN, Color.WHITE, Color.WHITE);
 		DrawHelper.drawRoundedRectOutline(420, 210, 70, 55, 6, 2, Color.WHITE);
