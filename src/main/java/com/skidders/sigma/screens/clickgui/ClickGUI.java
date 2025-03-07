@@ -2,16 +2,18 @@ package com.skidders.sigma.screens.clickgui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.utils.render.GameRendererAccessor;
+import com.skidders.sigma.utils.render.font.styled.StyledFont;
+import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.render.RenderUtil;
+import com.skidders.sigma.utils.render.interfaces.IFontRegistry;
+import com.skidders.sigma.utils.render.shader.ShaderRenderUtil;
+import com.skidders.sigma.utils.render.shader.shader.impl.BlurShader;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -20,17 +22,16 @@ import java.util.Map;
 
 public class ClickGUI extends Screen implements IMinecraft {
 
-    /*
-    public final Renderer moduleName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Medium", 40);
-    public final Renderer settingName = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 24);
-    public final Renderer sliderValue = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 14);
-    public final Renderer stringValue = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 18);
-    public final Renderer settingS = SigmaReborn.INSTANCE.fontManager.getFont("SFUIDisplay-Regular", 17);
-    public final Renderer settingSB = SigmaReborn.INSTANCE.fontManager.getFont("SFUIDisplay-Bold", 17);
+    public final StyledFont moduleName = IFontRegistry.Medium40;
+    public final StyledFont settingName = IFontRegistry.Light24;
+    public final StyledFont sliderValue = IFontRegistry.Light14;
+    public final StyledFont stringValue = IFontRegistry.Light18;
+    public final StyledFont settingS = IFontRegistry.SRegular17;
+    public final StyledFont settingSB = IFontRegistry.SBold17;
 
-    private final Renderer light25 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 25);
-    public final Renderer light20 = SigmaReborn.INSTANCE.fontManager.getFont("HelveticaNeue-Light", 20);
-     */
+    private final StyledFont light25 = IFontRegistry.Light25;
+    public final StyledFont light20 = IFontRegistry.Light20;
+
     private final Map<Category, Point> categoryPositions = new HashMap<>();
     private final int moduleHeight = 14;
 
@@ -59,24 +60,6 @@ public class ClickGUI extends Screen implements IMinecraft {
                 yOffset += categoryHeight + frameWidth + yOffsetStart + 5;
             }
         }
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        GameRenderer gameRenderer = mc.gameRenderer;
-
-        if (gameRenderer instanceof GameRendererAccessor accessor) {
-            accessor.sigmaRemake$invokeLoadShader(new Identifier("shaders/post/blur.json"));
-        } else {
-            throw new IllegalStateException("GameRenderer does not implement GameRendererAccessor");
-        }
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        mc.gameRenderer.disableShader();
     }
 
     @Override
@@ -165,7 +148,11 @@ public class ClickGUI extends Screen implements IMinecraft {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
+
+        BlurShader.registerRenderCall(() -> {
+            ShaderRenderUtil.drawRect(0, 0, width, height, new Color(255, 255, 255, 150));
+        });
+        BlurShader.draw(5);
 
         for (Category category : Category.values()) {
             Point position = categoryPositions.get(category);
@@ -176,7 +163,7 @@ public class ClickGUI extends Screen implements IMinecraft {
 
             RenderUtil.drawRectangle(matrices, xOffset, yOffset, frameWidth, categoryHeight, new Color(250, 250, 250, 230));
             RenderUtil.drawRectangle(matrices, xOffset, yOffset + categoryHeight, frameWidth, frameHeight, new Color(250, 250, 250));
-            //light25.drawString(category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124).getRGB());
+            StyledFontRenderer.drawString(matrices, light25, category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124));
 
             float modOffset = yOffset + categoryHeight;
             for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {
@@ -190,8 +177,9 @@ public class ClickGUI extends Screen implements IMinecraft {
                 RenderUtil.drawRectangle(matrices, xOffset, modOffset, frameWidth, moduleHeight,
                         module.enabled ? hover ? mouse ? new Color(41, 193, 255) : new Color(41, 182, 255) : new Color(41, 166, 255)
                                 : hover ? mouse ? new Color(221, 221, 221) : new Color(231, 231, 231) : new Color(250, 250, 250));
-                //light20.drawString(module.name, xOffset + (module.enabled ? 10 : 8), modOffset + 2,
-                       // module.enabled ? Color.WHITE.getRGB() : Color.BLACK.getRGB());
+
+                StyledFontRenderer.drawString(matrices, light20, module.name, xOffset + (module.enabled ? 10 : 8), modOffset + 2,
+                        module.enabled ? Color.WHITE : Color.BLACK);
 
                 modOffset += moduleHeight;
 

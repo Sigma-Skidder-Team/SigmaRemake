@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "sigma-reborn",
-	"version": "${version}",
+	"version": "1.0.0",
 	"name": "Sigma Reborn",
 	"description": "Sigma Reborn is an awesome recreation of the Sigma Client for 1.16.4 Fabric.",
 	"authors": [

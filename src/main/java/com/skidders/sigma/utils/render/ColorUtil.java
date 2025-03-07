@@ -1,11 +1,24 @@
 package com.skidders.sigma.utils.render;
 
-public class ColorUtil {
+import lombok.Getter;
 
+import java.awt.*;
+
+public class ColorUtil {
     public static int applyAlpha(int color, float alpha) {
         return (int)(alpha * 255.0F) << 24 | color & 16777215;
     }
 
+    // alpha [0, 255]
+    public static Color injectAlpha(Color color, int alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    }
+
+    public static float[] getColorComps(Color color) {
+        return new float[]{color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, color.getAlpha() / 255.0f};
+    }
+
+    @Getter
     public enum ClientColors {
         DEEP_TEAL(-16711423),
         DARK_BLUE_GREY(-16723258),
@@ -28,14 +41,8 @@ public class ColorUtil {
         BRIGHT_PINK(-16724271);
 
         private final int color;
-
         private ClientColors(int color) {
             this.color = color;
         }
-
-        public int getColor() {
-            return color;
-        }
     }
-
 }

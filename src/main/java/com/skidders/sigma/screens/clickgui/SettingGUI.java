@@ -7,6 +7,7 @@ import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.NumberSetting;
 import com.skidders.sigma.utils.misc.MouseHandler;
 import com.skidders.sigma.utils.render.RenderUtil;
+import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
@@ -32,8 +33,8 @@ public class SettingGUI {
         RenderUtil.drawRectangle(matrices, 0, 0, screen.width, screen.height, new Color(0, 0, 0, 150));
 
         RenderUtil.drawRectangle(matrices, x, y, width, height, new Color(254, 254, 254));
-        //screen.moduleName.drawString(parent.name, x, y - 30, new Color(254, 254, 254));
-        //screen.light20.drawString(parent.desc, x + 12, y + 15, new Color(100, 100, 100));
+        StyledFontRenderer.drawString(matrices, screen.light20, parent.name, x, y - 30, new Color(254, 254, 254));
+        StyledFontRenderer.drawString(matrices, screen.light20, parent.desc, x + 12, y + 15, new Color(100, 100, 100));
 
         boolean mouseDown = GLFW.glfwGetMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
@@ -41,10 +42,11 @@ public class SettingGUI {
             float offset = y + 35;
             for (Setting<?> setting : parent.settings) {
                 //full setting bounds - x, offset - 2, width, 18
-                //screen.settingName.drawString(setting.name, x + 12, offset, Color.BLACK);
+                StyledFontRenderer.drawString(matrices, screen.settingName, setting.name, x + 12, offset, Color.BLACK);
+
                 if (RenderUtil.hovered(mouseX, mouseY, x, offset - 2, width, 18)) {
-                    //screen.settingSB.drawString("§l" + setting.name, x + 7, y + height + 7, new Color(255, 255, 255, 127));
-                    //screen.settingS.drawString(setting.desc, x + 7 + screen.settingSB.getWidth(setting.name), y + height + 7, new Color(255, 255, 255, 127));
+                    StyledFontRenderer.drawString(matrices, screen.settingSB, "§l" + setting.name, x + 7, y + height + 7, new Color(255, 255, 255, 127));
+                    StyledFontRenderer.drawString(matrices, screen.settingS, setting.desc, x + 7 + screen.settingSB.getWidth(setting.name), y + height + 7, new Color(255, 255, 255, 127));
                 }
 
                 if (setting instanceof BooleanSetting sett) {
@@ -69,8 +71,8 @@ public class SettingGUI {
                     boolean hoverSlider = RenderUtil.hovered(mouseX, mouseY, x + width - 69, offset + 2, 55, 10);
                     if (hoverSlider) {
                         int textOffset = val <= min + (max - min) * 0.07 ? -5 : 0;
-                        //screen.sliderValue.drawString(numb.value.toString(), x + width - 70 - screen.sliderValue.getWidth(numb.value.toString()) + textOffset, (float) (offset + 4.25), new Color(125, 125, 125));
 
+                        StyledFontRenderer.drawString(matrices, screen.sliderValue, numb.value.toString(), x + width - 70 - screen.sliderValue.getWidth(numb.value.toString()) + textOffset, (float) (offset + 4.25), new Color(125, 125, 125));
                         if (mouseDown) {
                             double normalizedX = (mouseX - (x + width - 66)) / (50);
                             double newValue = min + normalizedX * (max - min);
