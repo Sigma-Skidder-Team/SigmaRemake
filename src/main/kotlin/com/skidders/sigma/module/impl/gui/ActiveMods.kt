@@ -39,7 +39,7 @@ class ActiveMods : Module {
     }
 
     @Override
-    public override fun onEnable() {
+    override fun onEnable() {
         when (getSettingByName("Size").value as String) {
             "Normal" -> font = IFontRegistry.Light20
             "Small" -> font = IFontRegistry.Light18
@@ -48,7 +48,7 @@ class ActiveMods : Module {
     }
 
     @Subscribe
-    public fun on2D(event: Render2DEvent) {
+    fun on2D(event: Render2DEvent) {
         if (mc.options.debugEnabled) {
             return
         }

@@ -8,10 +8,10 @@ import java.util.ArrayList
 
 open class Module : IMinecraft {
 
+    var enabled: Boolean
     var name: String
     var desc: String
     val category: Category
-    var enabled: Boolean
     var key: Int? = null
 
     constructor(name: String, desc: String, category: Category) {
