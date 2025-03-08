@@ -15,7 +15,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.skidders.SigmaReborn"
+			{
+				"adapter": "kotlin",
+				"value": "com.skidders.SigmaReborn"
+			}
 		]
 	},
 	"mixins": [
@@ -23,6 +26,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.9",
+		"fabric-language-kotlin": ">=1.13.0+kotlin.${kotlin_version}",
 		"minecraft": "~1.16.4",
 		"java": ">=8",
 		"fabric": "*"

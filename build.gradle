@@ -1,8 +1,11 @@
 plugins {
 	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
+	id 'org.jetbrains.kotlin.jvm'
 }
 
+kotlin_version = project.kotlin_version
+fabric_kt_version = project.fabric_kt_version
 version = project.mod_version
 group = project.maven_group
 
@@ -11,6 +14,10 @@ base {
 }
 
 repositories {
+	maven {
+		name = "fabricmc-maven"
+		url = "https://maven.fabricmc.net/"
+	}
 	mavenCentral()
 }
 
@@ -26,13 +33,20 @@ dependencies {
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.36'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	modImplementation "net.fabricmc:fabric-language-kotlin:$fabric_kt_version+kotlin.$kotlin_version"
+	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
 }
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "kotlin_version", project.kotlin_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand([
+				version: project.version,
+				kotlin_version: project.kotlin_version
+		])
 	}
 }
 
@@ -51,6 +65,10 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
+}
+
+kotlin {
+	jvmToolchain(22)
 }
 
 // configure the maven publication
