@@ -65,6 +65,10 @@ class ClickGUI(title: String) : Screen(Text.of(title)), IMinecraft {
         }
     }
 
+    override fun isPauseScreen(): Boolean {
+        return false
+    }
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button != -1) {
             if (button == 0) {
