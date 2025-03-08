@@ -1,33 +1,33 @@
-package com.skidders.sigma.screens.clickgui.components;
+package com.skidders.sigma.screens.clickgui.components
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.util.math.MatrixStack
 
-import java.awt.*;
+import java.awt.*
 
-public class ButtonLineComponent {
+class ButtonLineComponent {
 
-    public final String text;
-    public final float x, y;
-    private final Color color;
+    val text: String
+    val x: Float
+    val y: Float
+    private val color: Color
+    private val parent: Screen
 
-    private final Screen parent;
-
-    public ButtonLineComponent(String text, float x, float y, Color color, Screen parent) {
-        this.text = text;
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.parent = parent;
+    constructor(text: String, x: Float, y: Float, color: Color, parent: Screen) {
+        this.text = text
+        this.x = x
+        this.y = y
+        this.color = color
+        this.parent = parent
     }
 
 
-    public void draw(MatrixStack matrices, int mouseX, int mouseY) {
+    fun draw(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
 
     }
 
-    public boolean click(double mouseX, double mouseY, int button) {
-        return true;
+    fun click(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        return true
     }
 
 }
