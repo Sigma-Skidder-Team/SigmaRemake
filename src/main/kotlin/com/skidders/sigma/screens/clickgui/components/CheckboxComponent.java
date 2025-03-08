@@ -3,7 +3,6 @@ package com.skidders.sigma.screens.clickgui.components;
 import com.skidders.sigma.utils.misc.MouseHandler;
 import com.skidders.sigma.utils.render.RenderUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
