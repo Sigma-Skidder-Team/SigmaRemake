@@ -1,5 +1,5 @@
 package com.skidders.sigma.events;
 
-public class Event {
+open class Event {
 
 }

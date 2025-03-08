@@ -219,7 +219,7 @@ public class RenderUtil implements IMinecraft {
         GL11.glEnable(2832);  // Enable point smoothing
         GL11.glEnable(3042);  // Enable blending
 
-        GL11.glPointSize(size * SigmaReborn.INSTANCE.screenProcessor.resizingScaleFactor);
+        GL11.glPointSize(size * SigmaReborn.INSTANCE.screenProcessor.getResizingScaleFactor());
         GL11.glBegin(GL11.GL_POINTS);
         GL11.glVertex2f(x, y);
         GL11.glEnd();
@@ -271,10 +271,11 @@ public class RenderUtil implements IMinecraft {
 
     public static void applyScissorArea(int x, int y, int width, int height, boolean isScaled) {
         if (!isScaled) {
-            x = (int) ((float) x * SigmaReborn.INSTANCE.screenProcessor.resizingScaleFactor);
-            y = (int) ((float) y * SigmaReborn.INSTANCE.screenProcessor.resizingScaleFactor);
-            width = (int) ((float) width * SigmaReborn.INSTANCE.screenProcessor.resizingScaleFactor);
-            height = (int) ((float) height * SigmaReborn.INSTANCE.screenProcessor.resizingScaleFactor);
+            x = (int) ((float) x * SigmaReborn.INSTANCE.screenProcessor.getResizingScaleFactor());
+            y = (int) ((float) y * SigmaReborn.INSTANCE.screenProcessor.getResizingScaleFactor());
+            width = (int) ((float) width * SigmaReborn.INSTANCE.screenProcessor.getResizingScaleFactor());
+            height = (int) ((float) height * SigmaReborn.INSTANCE.screenProcessor.getResizingScaleFactor());
+
         } else {
             float[] scaledPosition1 = getScaledPosition(x, y);
             x = (int) scaledPosition1[0];
