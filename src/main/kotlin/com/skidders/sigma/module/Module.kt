@@ -8,7 +8,17 @@ import java.util.ArrayList
 
 open class Module : IMinecraft {
 
-    var enabled: Boolean
+    var enabled: Boolean = false
+        set(enabled) {
+            field = enabled
+            if (enabled) {
+                SigmaReborn.EVENT_BUS.register(this)
+                onEnable()
+            } else {
+                onDisable()
+                SigmaReborn.EVENT_BUS.unregister(this)
+            }
+        }
     var name: String
     var desc: String
     val category: Category
@@ -27,18 +37,6 @@ open class Module : IMinecraft {
 
     open fun onEnable() {}
     open fun onDisable() {}
-
-    fun setEnabled(enabled: Boolean) {
-        this.enabled = enabled
-
-        if (enabled) {
-            SigmaReborn.EVENT_BUS.register(this)
-            onEnable()
-        } else {
-            onDisable()
-            SigmaReborn.EVENT_BUS.unregister(this)
-        }
-    }
 
     val settings: ArrayList<Setting<*>> = ArrayList<Setting<*>>()
 
