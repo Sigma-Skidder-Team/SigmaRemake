@@ -1,4 +1,4 @@
-package com.skidders;
+package com.skidders
 
 import com.google.common.eventbus.EventBus
 import com.skidders.sigma.managers.*

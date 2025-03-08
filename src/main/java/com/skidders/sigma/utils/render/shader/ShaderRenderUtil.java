@@ -39,10 +39,10 @@ public class ShaderRenderUtil implements IMinecraft {
         THIRD_HALF(2, 3 * Math.PI / 2),
         FOURTH_HALF(2, 0d);
 
-        private int ratio;
-        private double additionalAngle;
+        private final int ratio;
+        private final double additionalAngle;
 
-        private Part(int ratio, double addAngle) {
+        Part(int ratio, double addAngle) {
             this.ratio = ratio;
             this.additionalAngle = addAngle;
         }
@@ -560,11 +560,11 @@ public class ShaderRenderUtil implements IMinecraft {
         int texId = glowCache.getOrDefault(identifier, -1);
 
         if (texId == -1) {
-            BufferedImage original = new BufferedImage((int) (width + blurRadius * 2), (int) (height + blurRadius * 2), BufferedImage.TYPE_INT_ARGB_PRE);
+            BufferedImage original = new BufferedImage(width + blurRadius * 2, height + blurRadius * 2, BufferedImage.TYPE_INT_ARGB_PRE);
 
             Graphics g = original.getGraphics();
             g.setColor(Color.WHITE);
-            g.fillRect(blurRadius, blurRadius, (int) width, (int) height);
+            g.fillRect(blurRadius, blurRadius, width, height);
             g.dispose();
 
             GlowShader glow = new GlowShader(blurRadius);

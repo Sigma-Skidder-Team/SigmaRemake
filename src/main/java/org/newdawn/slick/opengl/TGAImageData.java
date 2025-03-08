@@ -252,9 +252,10 @@ public class TGAImageData implements LoadableImageData {
          for (int i=0;i<rawData.length;i+=4) {
             boolean match = true;
             for (int c=0;c<3;c++) {
-               if (rawData[i+c] != transparent[c]) {
-                  match = false;
-               }
+				if (rawData[i + c] != transparent[c]) {
+					match = false;
+					break;
+				}
             }
 
             if (match) {

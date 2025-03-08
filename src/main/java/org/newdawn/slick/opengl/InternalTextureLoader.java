@@ -37,9 +37,9 @@ public class InternalTextureLoader {
    }
 
    /** The table of textures that have been loaded in this loader */
-   private HashMap texturesLinear = new HashMap();
+   private final HashMap texturesLinear = new HashMap();
    /** The table of textures that have been loaded in this loader */
-   private HashMap texturesNearest = new HashMap();
+   private final HashMap texturesNearest = new HashMap();
    /** The destination pixel format */
    private int dstPixelFormat = SGL.GL_RGBA8;
    /** True if we're using deferred loading */
@@ -314,8 +314,8 @@ public class InternalTextureLoader {
          texture.setTextureData(srcPixelFormat, componentCount, minFilter, magFilter, textureBuffer);
       }
 
-      GL.glTexParameteri(target, GL.GL_TEXTURE_MIN_FILTER, minFilter);
-      GL.glTexParameteri(target, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+      GL.glTexParameteri(target, SGL.GL_TEXTURE_MIN_FILTER, minFilter);
+      GL.glTexParameteri(target, SGL.GL_TEXTURE_MAG_FILTER, magFilter);
 
       // produce a texture from the byte buffer
       GL.glTexImage2D(target,

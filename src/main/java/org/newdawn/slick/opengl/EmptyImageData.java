@@ -5,8 +5,8 @@ import org.lwjgl.BufferUtils;
 import java.nio.ByteBuffer;
 
 public class EmptyImageData implements ImageData {
-   private int width;
-   private int height;
+   private final int width;
+   private final int height;
 
    public EmptyImageData(int width, int height) {
       this.width = width;

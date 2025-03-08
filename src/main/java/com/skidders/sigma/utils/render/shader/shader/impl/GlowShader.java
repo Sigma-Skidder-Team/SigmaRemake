@@ -10,7 +10,7 @@ public class GlowShader {
     private static final HashMap<Integer, Kernel> kernelCache = new HashMap<>();
     public final static int CLAMP_EDGES = 1;
     public final static int WRAP_EDGES = 2;
-    private float radius;
+    private final float radius;
     private boolean alpha = true;
     private boolean premultiplyAlpha = true;
     private Kernel kernel;

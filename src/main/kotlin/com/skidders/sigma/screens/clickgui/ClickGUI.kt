@@ -130,16 +130,16 @@ class ClickGUI(title: String) : Screen(Text.of(title)), IMinecraft {
                 hoveredModule = null
             }
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(mouseX, mouseY, button)
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         if (button == 0 && draggingCategory != null) { //left mouse button dragging
-            val position = categoryPositions[draggingCategory];
+            val position = categoryPositions[draggingCategory]
             position?.setLocation(mouseX - dragOffsetX, mouseY - dragOffsetY)
-            return true;
+            return true
         }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
     }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {

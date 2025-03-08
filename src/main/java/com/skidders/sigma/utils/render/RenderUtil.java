@@ -259,10 +259,10 @@ public class RenderUtil implements IMinecraft {
         RenderSystem.color4f(red, green, blue, alpha);
 
         bufferBuilder.begin(7, VertexFormats.POSITION);
-        bufferBuilder.vertex((double) x1, (double) y2, 0.0).next();
-        bufferBuilder.vertex((double) x2, (double) y2, 0.0).next();
-        bufferBuilder.vertex((double) x2, (double) y1, 0.0).next();
-        bufferBuilder.vertex((double) x1, (double) y1, 0.0).next();
+        bufferBuilder.vertex(x1, y2, 0.0).next();
+        bufferBuilder.vertex(x2, y2, 0.0).next();
+        bufferBuilder.vertex(x2, y1, 0.0).next();
+        bufferBuilder.vertex(x1, y1, 0.0).next();
         tessellator.draw();
 
         RenderSystem.enableTexture();

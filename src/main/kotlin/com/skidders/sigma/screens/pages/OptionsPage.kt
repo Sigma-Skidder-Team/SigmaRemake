@@ -51,25 +51,25 @@ class OptionsPage(text: String) : Screen(Text.of(text)) {
 
         //float x = (width - combinedWidth) / 2f
        // float x = ((float) width - combinedWidth) / 2;
-        val y = (height.toFloat() / 2) - 140;
+        (height.toFloat() / 2) - 140
 
         //JelloMediumFont40.drawString("Jello", x, y, new Color(254, 254, 254));
         //JelloLightFont25.drawString("for Sigma", x + jelloWidth + 2, y + 7, new Color(220, 220, 220));
 
-        val version = "You're currently using Sigma Reborn";
+        "You're currently using Sigma Reborn"
         //JelloLightFont20.drawString(version, (float) width / 2 - JelloLightFont20.getWidth(version) / 2, y + 28, new Color(110, 111, 112));
 
         //JelloLightFont20.drawString("GUI Blur:", width / 2 - 80, height / 2 + 40, new Color(136, 137, 136));
         //JelloLightFont20.drawString("GPU Accelerated:", width / 2 - 16, height / 2 + 40, new Color(136, 137, 136));
 
         SigmaReborn.INSTANCE.screenProcessor.guiBlur = guiBlur.draw(mouseHandler, SigmaReborn.INSTANCE.screenProcessor.guiBlur,
-            mouseX.toDouble(), mouseY.toDouble(), (width / 2 - 38).toFloat(), height / 2 + 39.5f);
+            mouseX.toDouble(), mouseY.toDouble(), (width / 2 - 38).toFloat(), height / 2 + 39.5f)
         SigmaReborn.INSTANCE.screenProcessor.gpuAccelerated = gpuAccel.draw(mouseHandler, SigmaReborn.INSTANCE.screenProcessor.gpuAccelerated,
-            mouseX.toDouble(), mouseY.toDouble(), (width / 2 + 63).toFloat(), height / 2 + 39.5f);
+            mouseX.toDouble(), mouseY.toDouble(), (width / 2 + 63).toFloat(), height / 2 + 39.5f)
 
-        val clickguiBound = "Click GUI is currently bound to: " + SigmaReborn.INSTANCE.screenProcessor.clickGuiBindName + " Key";
+        "Click GUI is currently bound to: " + SigmaReborn.INSTANCE.screenProcessor.clickGuiBindName + " Key"
         //JelloLightFont20.drawString(clickguiBound, (float) width / 2 - JelloLightFont20.getWidth(clickguiBound) / 2, (float) height / 2 + 60, new Color(160, 161, 160));
-        val configure = "Configure all your keybinds in the keybind manager!";
+        "Configure all your keybinds in the keybind manager!"
         //JelloLightFont14.drawString(configure, (float) width / 2 - JelloLightFont14.getWidth(configure) / 2, (float) height / 2 + 75, new Color(103, 105, 103));
 
         //clickGui.draw(JelloLightFont24, matrices, mouseX, mouseY);
@@ -77,10 +77,10 @@ class OptionsPage(text: String) : Screen(Text.of(text)) {
         //credits.draw(JelloLightFont18, matrices, mouseX, mouseY);
     }
 
-    public override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button == 0) {
             if (clickGui.click(mouseX, mouseY, button)) {
-                MinecraftClient.getInstance().openScreen(SigmaReborn.INSTANCE.screenProcessor.clickGUI);
+                MinecraftClient.getInstance().openScreen(SigmaReborn.INSTANCE.screenProcessor.clickGUI)
             }
 
 //            if (keybind.click(mouseX, mouseY, button)) {
@@ -92,6 +92,6 @@ class OptionsPage(text: String) : Screen(Text.of(text)) {
 //            }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button)
     }
 }

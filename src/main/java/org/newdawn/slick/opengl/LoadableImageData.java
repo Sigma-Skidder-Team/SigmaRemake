@@ -16,7 +16,7 @@ public interface LoadableImageData extends ImageData {
     *
     * @param edging True if we should edge
     */
-   public void configureEdging(boolean edging);
+   void configureEdging(boolean edging);
 
    /**
     * Load a image from the specified stream
@@ -25,7 +25,7 @@ public interface LoadableImageData extends ImageData {
     * @throws IOException Indicates a failure to read the TGA
     * @return The byte buffer containing texture data
     */
-   public ByteBuffer loadImage(InputStream fis) throws IOException;
+   ByteBuffer loadImage(InputStream fis) throws IOException;
 
    /**
     * Load a image from the specified stream
@@ -36,7 +36,7 @@ public interface LoadableImageData extends ImageData {
     * @return The byte buffer containing texture data
     * @throws IOException Indicates a failure to read the TGA
     */
-   public ByteBuffer loadImage(InputStream fis, boolean flipped, int[] transparent)
+   ByteBuffer loadImage(InputStream fis, boolean flipped, int[] transparent)
            throws IOException;
 
    /**
@@ -49,6 +49,6 @@ public interface LoadableImageData extends ImageData {
     * @return The byte buffer containing texture data
     * @throws IOException Indicates a failure to read the TGA
     */
-   public ByteBuffer loadImage(InputStream fis, boolean flipped, boolean forceAlpha, int[] transparent)
+   ByteBuffer loadImage(InputStream fis, boolean flipped, boolean forceAlpha, int[] transparent)
            throws IOException;
 }

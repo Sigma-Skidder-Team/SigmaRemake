@@ -13,7 +13,7 @@ import java.net.URL;
  */
 public class FileSystemLocation implements ResourceLocation {
     /** The root of the file system to search */
-    private File root;
+    private final File root;
 
     /**
      * Create a new resoruce location based on the file system

@@ -38,7 +38,7 @@ public class ColorUtil {
         BRIGHT_PINK(-16724271);
 
         public final int color;
-        private ClientColors(int color) {
+        ClientColors(int color) {
             this.color = color;
         }
     }

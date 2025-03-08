@@ -193,9 +193,8 @@ public class Color implements Serializable {
     * @see Object#equals(Object)
     */
    public boolean equals(Object other) {
-      if (other instanceof Color) {
-         Color o = (Color) other;
-         return ((o.r == r) && (o.g == g) && (o.b == b) && (o.a == a));
+      if (other instanceof Color o) {
+		  return ((o.r == r) && (o.g == g) && (o.b == b) && (o.a == a));
       }
 
       return false;

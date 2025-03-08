@@ -183,9 +183,10 @@ public class ImageIOImageData implements LoadableImageData {
             boolean match = true;
             for (int c=0;c<3;c++) {
                int value = data[i+c] < 0 ? 256 + data[i+c] : data[i+c];
-               if (value != transparent[c]) {
-                  match = false;
-               }
+				if (value != transparent[c]) {
+					match = false;
+					break;
+				}
             }
 
             if (match) {

@@ -8,28 +8,28 @@ public interface LogSystem {
     * @param message The message describing the error
     * @param e The exception causing the error
     */
-   public void error(String message, Throwable e);
+   void error(String message, Throwable e);
 
    /**
     * Log an error
     *
     * @param e The exception causing the error
     */
-   public void error(Throwable e);
+   void error(Throwable e);
 
    /**
     * Log an error
     *
     * @param message The message describing the error
     */
-   public void error(String message);
+   void error(String message);
 
    /**
     * Log a warning
     *
     * @param message The message describing the warning
     */
-   public void warn(String message);
+   void warn(String message);
 
    /**
     * Log a warning
@@ -37,19 +37,19 @@ public interface LogSystem {
     * @param message The message describing the warning
     * @param e The cause of the warning
     */
-   public void warn(String message, Throwable e);
+   void warn(String message, Throwable e);
 
    /**
     * Log an information message
     *
     * @param message The message describing the infomation
     */
-   public void info(String message);
+   void info(String message);
 
    /**
     * Log a debug message
     *
     * @param message The message describing the debug
     */
-   public void debug(String message);
+   void debug(String message);
 }

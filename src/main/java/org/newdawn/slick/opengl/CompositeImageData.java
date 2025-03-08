@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class CompositeImageData implements LoadableImageData  {
    /** The list of images sources in order of preference to try loading the data with */
-   private ArrayList sources = new ArrayList();
+   private final ArrayList sources = new ArrayList();
    /** The data source that worked and was used - or null if no luck */
    private LoadableImageData picked;
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class CompositeIOException extends IOException {
    /** The list of exceptions causing this one */
-   private ArrayList exceptions = new ArrayList();
+   private final ArrayList exceptions = new ArrayList();
 
    /**
     * Create a new composite IO Exception
