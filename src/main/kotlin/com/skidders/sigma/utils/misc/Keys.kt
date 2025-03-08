@@ -1,6 +1,6 @@
 package com.skidders.sigma.utils.misc;
 
-public enum Keys {
+public enum class Keys {
     GRAVE(0, 63, "`", 96, 1),
     ONE(73, 63, "1", 49, 1),
     TWO(145, 63, "2", 50, 1),
@@ -63,15 +63,17 @@ public enum Keys {
     MENU(905, 63, "Menu", 348, 5),
     RIGHT_CONTROL(978, 82, "Ctrl", 345, 5);
 
-    public final int x, y;
-    public final String name;
-    public final boolean enabled;
-    public final int keyCode, row;
+    val x: Int
+    val y: Int;
+    val key: String;
+    val enabled: Boolean;
+    val keyCode: Int
+    val row: Int;
 
-    Keys(int x, int y, String name, int keyCode, int row) {
+    constructor(x: Int, y: Int, name: String, keyCode: Int, row: Int) {
         this.x = x;
         this.y = y;
-        this.name = name;
+        this.key = name;
         this.enabled = true;
         this.keyCode = keyCode;
         this.row = row;

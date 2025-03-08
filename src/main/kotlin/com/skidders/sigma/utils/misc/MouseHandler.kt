@@ -4,16 +4,16 @@ import org.lwjgl.glfw.GLFW;
 
 public class MouseHandler {
 
-    private final long windowHandle;
-    private boolean mouseClicked = false;
+    private val windowHandle: Long;
+    private var mouseClicked = false;
 
-    public MouseHandler(long windowHandle) {
+    constructor(windowHandle: Long) {
         this.windowHandle = windowHandle;
     }
 
-    public boolean isMouseClicked() {
+    public fun isMouseClicked(): Boolean {
         // Check if the left mouse button is pressed
-        boolean mouseButtonPressed = GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
+        var mouseButtonPressed = GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
         if (mouseButtonPressed && !mouseClicked) {
             mouseClicked = true;
