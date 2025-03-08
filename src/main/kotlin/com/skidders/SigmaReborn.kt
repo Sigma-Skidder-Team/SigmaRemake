@@ -14,8 +14,10 @@ class SigmaReborn : ModInitializer {
 
 		val LOGGER: Logger = LogManager.getLogger(MOD_ID)
 		val INSTANCE: SigmaReborn = SigmaReborn()
+		@JvmField
 		val EVENT_BUS = EventBus(MOD_ID)
 	}
+
 	lateinit var moduleManager: ModuleManager
 	lateinit var screenProcessor: ScreenProcessor
 
