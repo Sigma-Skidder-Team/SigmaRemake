@@ -134,7 +134,7 @@ public class RenderUtil implements IMinecraft {
     }
 
     public static void drawImage(float x, float y, float var2, float var3, Texture tex, float alphaValue) {
-        drawImage(x, y, var2, var3, tex, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaValue));
+        drawImage(x, y, var2, var3, tex, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.color, alphaValue));
     }
 
     public static void drawImage(float var0, float var1, float var2, float var3, Texture var4, int var5) {
