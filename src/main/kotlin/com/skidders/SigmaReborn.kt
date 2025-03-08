@@ -16,11 +16,11 @@ class SigmaReborn : ModInitializer {
 		val INSTANCE: SigmaReborn = SigmaReborn()
 		val EVENT_BUS = EventBus(MOD_ID)
 	}
-	lateinit var moduleManager: ModuleManager;
-	lateinit var screenProcessor: ScreenProcessor;
+	lateinit var moduleManager: ModuleManager
+	lateinit var screenProcessor: ScreenProcessor
 
 	override fun onInitialize() {
-		LOGGER.info("Initializing Sigma Reborn");
+		LOGGER.info("Initializing Sigma Reborn")
 
 	}
 }
