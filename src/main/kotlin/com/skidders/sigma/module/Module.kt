@@ -10,6 +10,8 @@ open class Module : IMinecraft {
 
     var enabled: Boolean = false
         set(enabled) {
+            if (field == enabled)
+                return
             field = enabled
             if (enabled) {
                 SigmaReborn.EVENT_BUS.register(this)
