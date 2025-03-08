@@ -4,8 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.skidders.SigmaReborn
 import com.skidders.sigma.module.Category
 import com.skidders.sigma.module.Module
-import com.skidders.sigma.utils.IMinecraft
-import com.skidders.sigma.utils.IMinecraft.mc
 import com.skidders.sigma.utils.render.RenderUtil
 import com.skidders.sigma.utils.render.font.styled.StyledFont
 import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer
@@ -19,7 +17,7 @@ import org.lwjgl.glfw.GLFW
 import java.awt.Color
 import java.awt.Point
 
-class ClickGUI(title: String) : Screen(Text.of(title)), IMinecraft {
+class ClickGUI(title: String) : Screen(Text.of(title)) {
 
     val moduleName: StyledFont = IFontRegistry.Medium40
     val settingName: StyledFont = IFontRegistry.Light24

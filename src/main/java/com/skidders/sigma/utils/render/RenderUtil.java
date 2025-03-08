@@ -3,7 +3,6 @@ package com.skidders.sigma.utils.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.utils.IMinecraft;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -21,7 +20,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Stack;
 
-public class RenderUtil implements IMinecraft {
+public class RenderUtil {
 
     private static final Stack<IntBuffer> buffer = new Stack<>();
 

@@ -5,11 +5,11 @@ import com.skidders.SigmaReborn
 import com.skidders.sigma.events.impl.Render2DEvent
 import com.skidders.sigma.module.Category
 import com.skidders.sigma.module.Module
-import com.skidders.sigma.utils.IMinecraft.mc
 import com.skidders.sigma.utils.render.font.styled.StyledFont
 import com.skidders.sigma.module.settings.impl.BooleanSetting
 import com.skidders.sigma.module.settings.impl.ModeSetting
 import com.skidders.sigma.module.settings.impl.NumberSetting
+import com.skidders.sigma.utils.mc
 import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer
 import com.skidders.sigma.utils.render.interfaces.IFontRegistry
 import org.lwjgl.glfw.GLFW

@@ -2,7 +2,6 @@ package com.skidders.sigma.utils.render.font.icon;
 
 import java.awt.Color;
 
-import com.skidders.sigma.utils.IMinecraft;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL30;
@@ -10,7 +9,7 @@ import org.lwjgl.opengl.GL30;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 @Deprecated
-public final class IconRenderer implements IMinecraft {
+public final class IconRenderer {
 
 	public static float drawIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
 		return renderIcon(matrices, font, c, x, y, color);

@@ -4,15 +4,14 @@ import com.google.common.eventbus.Subscribe;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.sigma.events.impl.KeyPressEvent;
 import com.skidders.sigma.screens.clickgui.ClickGUI;
-import com.skidders.sigma.utils.IMinecraft
-import com.skidders.sigma.utils.IMinecraft.mc
+import com.skidders.sigma.utils.mc
 import com.skidders.sigma.utils.misc.StringUtil;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-class ScreenProcessor : IMinecraft {
+class ScreenProcessor {
 
     var clickGUI: ClickGUI = ClickGUI("Jello ClickGUI");
     val clickGuiBind: Int = 344;

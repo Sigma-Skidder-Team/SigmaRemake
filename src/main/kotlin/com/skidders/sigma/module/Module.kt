@@ -2,12 +2,9 @@ package com.skidders.sigma.module
 
 import com.skidders.SigmaReborn
 import com.skidders.sigma.module.settings.Setting
-import com.skidders.sigma.utils.IMinecraft
-
 import java.util.ArrayList
 
-open class Module : IMinecraft {
-
+open class Module {
     var enabled: Boolean = false
         set(enabled) {
             if (field == enabled)
