@@ -1,8 +1,6 @@
 package com.skidders.sigma.utils.render.font.styled;
 
-import java.awt.Color;
-import java.util.Locale;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.sigma.utils.IMinecraft;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -10,7 +8,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL30;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import java.awt.*;
+import java.util.Locale;
 
 public final class StyledFontRenderer implements IMinecraft {
 	

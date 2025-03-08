@@ -1,18 +1,16 @@
 package com.skidders.sigma.utils.render.shader.shader.impl;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import com.google.common.collect.Queues;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.render.interfaces.IRenderCall;
+import com.skidders.sigma.utils.render.shader.StencilUtils;
 import com.skidders.sigma.utils.render.shader.shader.Shader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import org.lwjgl.opengl.GL30;
 
-import com.google.common.collect.Queues;
-import com.mojang.blaze3d.platform.GlStateManager;
-
-import com.skidders.sigma.utils.render.shader.StencilUtils;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BloomShader implements IMinecraft {
 

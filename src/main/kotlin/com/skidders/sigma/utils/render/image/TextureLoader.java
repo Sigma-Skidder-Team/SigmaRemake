@@ -1,12 +1,6 @@
 package com.skidders.sigma.utils.render.image;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.nio.ReadOnlyBufferException;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.file.FileUtil;
 import net.minecraft.client.texture.AbstractTexture;
@@ -15,9 +9,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
-
-import com.mojang.blaze3d.platform.GlStateManager;
 import org.lwjgl.system.MemoryStack;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.ReadOnlyBufferException;
 
 import static org.lwjgl.stb.STBImage.stbi_load;
 

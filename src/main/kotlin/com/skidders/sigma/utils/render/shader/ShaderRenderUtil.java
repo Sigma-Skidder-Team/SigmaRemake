@@ -1,13 +1,5 @@
 package com.skidders.sigma.utils.render.shader;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
-import static org.lwjgl.opengl.GL11.*;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.util.HashMap;
-
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.render.ColorUtil;
@@ -15,6 +7,13 @@ import com.skidders.sigma.utils.render.image.TextureLoader;
 import com.skidders.sigma.utils.render.shader.shader.Shader;
 import com.skidders.sigma.utils.render.shader.shader.impl.GlowShader;
 import net.minecraft.util.Identifier;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+
+import static com.mojang.blaze3d.platform.GlStateManager.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public class ShaderRenderUtil implements IMinecraft {
     public static final HashMap<Integer, Integer> glowCache = new HashMap<Integer, Integer>();

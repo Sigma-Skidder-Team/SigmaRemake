@@ -1,15 +1,13 @@
 package com.skidders.sigma.utils.render.font.icon;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.skidders.sigma.utils.render.font.common.AbstractFont;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Locale;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
 
 @Deprecated
 public final class IconFont extends AbstractFont {

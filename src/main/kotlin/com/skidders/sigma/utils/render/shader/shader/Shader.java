@@ -1,6 +1,9 @@
 package com.skidders.sigma.utils.render.shader.shader;
 
-import static org.lwjgl.opengl.GL11.GL_QUADS;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.skidders.SigmaReborn;
+import com.skidders.sigma.utils.IMinecraft;
+import org.lwjgl.opengl.GL30;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,11 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.stream.Collectors;
 
-import com.skidders.SigmaReborn;
-import com.skidders.sigma.utils.IMinecraft;
-import org.lwjgl.opengl.GL30;
-
-import com.mojang.blaze3d.platform.GlStateManager;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class Shader implements IMinecraft {
 

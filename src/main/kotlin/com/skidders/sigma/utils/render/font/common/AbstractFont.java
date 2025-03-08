@@ -1,23 +1,18 @@
 package com.skidders.sigma.utils.render.font.common;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.platform.GlStateManager;
-
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.render.image.TextureLoader;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.Matrix4f;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractFont implements IMinecraft {
 	

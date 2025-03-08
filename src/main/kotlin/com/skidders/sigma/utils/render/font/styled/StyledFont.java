@@ -4,7 +4,7 @@ import com.skidders.sigma.utils.render.font.common.AbstractFont;
 import com.skidders.sigma.utils.render.font.common.FontLanguage;
 import net.minecraft.util.math.Matrix4f;
 
-import java.awt.Font;
+import java.awt.*;
 import java.util.Locale;
 
 public final class StyledFont {

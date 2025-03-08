@@ -1,12 +1,11 @@
 package com.skidders.sigma.utils.render.font.icon;
 
-import java.awt.Color;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL30;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import java.awt.*;
 
 @Deprecated
 public final class IconRenderer {

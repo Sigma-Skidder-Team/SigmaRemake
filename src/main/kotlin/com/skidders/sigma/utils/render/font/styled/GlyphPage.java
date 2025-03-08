@@ -1,17 +1,14 @@
 package com.skidders.sigma.utils.render.font.styled;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.skidders.sigma.utils.render.font.common.AbstractFont;
+import net.minecraft.util.math.Matrix4f;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Locale;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
-import net.minecraft.util.math.Matrix4f;
 
 public final class GlyphPage extends AbstractFont {
 	

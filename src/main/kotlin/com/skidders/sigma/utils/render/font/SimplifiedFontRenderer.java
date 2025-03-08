@@ -1,13 +1,13 @@
 package com.skidders.sigma.utils.render.font;
 
-import java.awt.Color;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.sigma.utils.IMinecraft;
 import com.skidders.sigma.utils.render.font.simplified.TextFont;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL30;
+
+import java.awt.*;
 
 public final class SimplifiedFontRenderer implements IMinecraft {
 

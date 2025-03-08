@@ -1,16 +1,14 @@
 package com.skidders.sigma.utils.render.font.simplified;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.skidders.sigma.utils.render.font.common.AbstractFont;
+import com.skidders.sigma.utils.render.font.common.FontLanguage;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Locale;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
-import com.skidders.sigma.utils.render.font.common.FontLanguage;
 
 public final class TextFont extends AbstractFont {
 	

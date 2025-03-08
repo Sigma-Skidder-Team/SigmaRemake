@@ -1,13 +1,12 @@
 package com.skidders.sigma.utils.render.shader;
 
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.skidders.sigma.utils.IMinecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 public class StencilUtils implements IMinecraft {
 
