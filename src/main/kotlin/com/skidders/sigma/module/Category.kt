@@ -1,6 +1,6 @@
-package com.skidders.sigma.module;
+package com.skidders.sigma.module
 
-public enum Category {
+enum class Category {
     GUI("Gui"),
     MOVEMENT("Movement"),
     RENDER("Render"),
@@ -10,9 +10,9 @@ public enum Category {
     ITEM("Item"),
     WORLD("World");
 
-    public final String name;
+    val categoryName: String
 
-    Category(String name) {
-        this.name = name;
+    constructor(name: String) {
+        this.categoryName = name
     }
 }

@@ -18,7 +18,7 @@ public class ImageDataFactory {
    /** True if the PNG loader property has been checked */
    private static boolean pngLoaderPropertyChecked = false;
 
-   /** The name of the PNG loader configuration property */
+   /** The categoryName of the PNG loader configuration property */
    private static final String PNG_LOADER = "org.newdawn.org.newdawn.slick.slick.pngloader";
 
    /**

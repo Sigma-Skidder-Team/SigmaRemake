@@ -58,7 +58,7 @@ public class TextureImpl implements Texture {
    private boolean alpha;
    /** The reference this texture was loaded from */
    private String ref;
-   /** The name the texture has in the cache */
+   /** The categoryName the texture has in the cache */
    private String cacheName;
 
    /** Data used to reload this texture */
@@ -85,9 +85,9 @@ public class TextureImpl implements Texture {
    }
 
    /**
-    * Set the name this texture is stored against in the cache
+    * Set the categoryName this texture is stored against in the cache
     *
-    * @param cacheName The name the texture is stored against in the cache
+    * @param cacheName The categoryName the texture is stored against in the cache
     */
    public void setCacheName(String cacheName) {
       this.cacheName = cacheName;

@@ -163,7 +163,7 @@ public class ClickGUI extends Screen implements IMinecraft {
 
             RenderUtil.drawRectangle(matrices, xOffset, yOffset, frameWidth, categoryHeight, new Color(250, 250, 250, 230));
             RenderUtil.drawRectangle(matrices, xOffset, yOffset + categoryHeight, frameWidth, frameHeight, new Color(250, 250, 250));
-            StyledFontRenderer.drawString(matrices, light25, category.name, xOffset + 8, yOffset + 8, new Color(119, 121, 124));
+            StyledFontRenderer.drawString(matrices, light25, category.categoryName, xOffset + 8, yOffset + 8, new Color(119, 121, 124));
 
             float modOffset = yOffset + categoryHeight;
             for (Module module : SigmaReborn.INSTANCE.moduleManager.getModulesByCategory(category)) {

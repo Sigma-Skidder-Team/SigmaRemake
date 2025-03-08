@@ -85,7 +85,7 @@ public class InternalTextureLoader {
    /**
     * Remove a particular named image from the cache
     *
-    * @param name The name of the image to be cleared
+    * @param name The categoryName of the image to be cleared
     */
    public void clear(String name) {
       texturesLinear.remove(name);
@@ -186,7 +186,7 @@ public class InternalTextureLoader {
     * Get a texture from a image file
     *
     * @param in The stream from which we can load the image
-    * @param resourceName The name to give this image in the internal cache
+    * @param resourceName The categoryName to give this image in the internal cache
     * @param flipped True if we should flip the image on the y-axis while loading
     * @param filter The filter to use when scaling the texture
     * @return The texture loaded
@@ -200,7 +200,7 @@ public class InternalTextureLoader {
     * Get a texture from a image file
     *
     * @param in The stream from which we can load the image
-    * @param resourceName The name to give this image in the internal cache
+    * @param resourceName The categoryName to give this image in the internal cache
     * @param flipped True if we should flip the image on the y-axis while loading
     * @param filter The filter to use when scaling the texture
     * @param transparent The colour to interpret as transparent or null if none
@@ -262,7 +262,7 @@ public class InternalTextureLoader {
     * Get a texture from a image file
     *
     * @param in The stream from which we can load the image
-    * @param resourceName The name to give this image in the internal cache
+    * @param resourceName The categoryName to give this image in the internal cache
     * @param flipped True if we should flip the image on the y-axis while loading
     * @param target The texture target we're loading this texture into
     * @param minFilter The scaling down filter
