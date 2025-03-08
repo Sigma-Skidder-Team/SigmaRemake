@@ -24,7 +24,7 @@ class ModuleManager {
         if (event.action == GLFW.GLFW_RELEASE && MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().currentScreen == null)
             this.modules.forEach {
                 if (it.key == event.key) {
-                    it.setEnabled(!it.enabled)
+                    it.enabled = !it.enabled
                 }
             }
     }
