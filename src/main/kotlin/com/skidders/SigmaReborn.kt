@@ -12,7 +12,9 @@ class SigmaReborn : ModInitializer {
 	companion object {
 		const val MOD_ID = "sigma-reborn"
 
+		@JvmField
 		val LOGGER: Logger = LogManager.getLogger(MOD_ID)
+		@JvmField
 		val INSTANCE: SigmaReborn = SigmaReborn()
 		@JvmField
 		val EVENT_BUS = EventBus(MOD_ID)
@@ -23,6 +25,5 @@ class SigmaReborn : ModInitializer {
 
 	override fun onInitialize() {
 		LOGGER.info("Initializing Sigma Reborn")
-
 	}
 }
