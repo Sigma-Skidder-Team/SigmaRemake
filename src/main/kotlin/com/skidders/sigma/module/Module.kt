@@ -6,10 +6,10 @@ import com.skidders.sigma.utils.IMinecraft
 
 import java.util.ArrayList
 
-class Module : IMinecraft {
+open class Module : IMinecraft {
 
-    lateinit var name: String
-    lateinit var desc: String
+    var name: String
+    var desc: String
     val category: Category
     var enabled: Boolean
     var key: Int? = null
@@ -25,8 +25,8 @@ class Module : IMinecraft {
         this.key = key
     }
 
-    fun onEnable() {}
-    fun onDisable() {}
+    open fun onEnable() {}
+    open fun onDisable() {}
 
     fun setEnabled(enabled: Boolean) {
         this.enabled = enabled
