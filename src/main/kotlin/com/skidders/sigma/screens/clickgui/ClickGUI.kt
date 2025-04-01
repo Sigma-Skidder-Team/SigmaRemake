@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.skidders.SigmaReborn
 import com.skidders.sigma.module.Category
 import com.skidders.sigma.module.Module
+import com.skidders.sigma.utils.mc
 import com.skidders.sigma.utils.render.RenderUtil
 import com.skidders.sigma.utils.render.font.styled.StyledFont
 import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer

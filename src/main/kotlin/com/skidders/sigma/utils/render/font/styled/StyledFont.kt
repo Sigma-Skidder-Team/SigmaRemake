@@ -1,100 +1,120 @@
-package com.skidders.sigma.utils.render.font.styled;
+package com.skidders.sigma.utils.render.font.styled
 
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
-import com.skidders.sigma.utils.render.font.common.FontLanguage;
-import net.minecraft.util.math.Matrix4f;
+import com.skidders.sigma.utils.render.font.common.AbstractFont
+import com.skidders.sigma.utils.render.font.common.FontLanguage
+import net.minecraft.util.math.Matrix4f
+import java.awt.Font
 
-import java.awt.*;
-import java.util.Locale;
+class StyledFont(
+    fileName: String,
+    size: Int,
+    stretching: Float,
+    spacing: Float,
+    lifting: Float,
+    fontLanguage: FontLanguage
+) {
+    private val regular: GlyphPage
+    private val bold: GlyphPage
+    private val italic: GlyphPage
+    private val boldItalic: GlyphPage
 
-public final class StyledFont {
-	
-	private final GlyphPage regular, bold, italic, boldItalic;
-	
-	public StyledFont(String fileName, int size, float stretching, float spacing, float lifting, FontLanguage fontLanguage) {
-		int[] codes = fontLanguage.charCodes;
-		char[] chars = new char[(codes[1] - codes[0] + codes[3] - codes[2])];
-		
-		int c = 0;
-		for (int d = 0; d <= 2; d += 2) {
-			for(int i = codes[d]; i <= codes[d + 1] - 1; i++) {
-				chars[c] = (char) i;
-				c++;
-			}
-		}
-		
-		this.regular = new GlyphPage(AbstractFont.getFont(fileName, Font.PLAIN, size), chars, stretching, spacing, lifting);
-		this.bold = new GlyphPage(AbstractFont.getFont(fileName, Font.BOLD, size), chars, stretching, spacing, lifting);
-		this.italic = new GlyphPage(AbstractFont.getFont(fileName, Font.ITALIC, size), chars, stretching, spacing, lifting);
-		this.boldItalic = new GlyphPage(AbstractFont.getFont(fileName, Font.BOLD | Font.ITALIC, size), chars, stretching, spacing, lifting);
-	}
-	
-	public float renderGlyph(Matrix4f matrix, char c, float x, float y, boolean bold, boolean italic, float red, float green, float blue, float alpha) {
-		return getGlyphPage(bold, italic).renderGlyph(matrix, c, x, y, red, green, blue, alpha);
-	}
-	
-	public float getWidth(String text) {
-		boolean bold = false;
-		boolean italic = false;
-		float width = 0.0f;
-		
-		for(int i = 0; i < text.length(); i++) {
-			char c0 = text.charAt(i);
+    init {
+        val codes: IntArray = fontLanguage.charCodes
+        val chars: CharArray = CharArray((codes[1] - codes[0] + codes[3] - codes[2]))
 
-			if (c0 == 167 && i + 1 < text.length() &&
-					 StyledFontRenderer.STYLE_CODES.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1)) != -1) {
-				int i1 = StyledFontRenderer.STYLE_CODES.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1));
+        var c: Int = 0
+        var d: Int = 0
+        while (d <= 2) {
+            for (i in codes[d]..<codes[d + 1]) {
+                chars[c] = i.toChar()
+                c++
+            }
+            d += 2
+        }
 
-				if(i1 < 16) {
-					bold = false;
-					italic = false;
-				} else if(i1 == 17) {
-					bold = true;
-				} else if(i1 == 20) {
-					italic = true;
-				} else if(i1 == 21) {
-					bold = false;
-					italic = false;
-				}
+        this.regular = GlyphPage(AbstractFont.getFont(fileName, Font.PLAIN, size)!!, chars, stretching, spacing, lifting)
+        this.bold = GlyphPage(AbstractFont.getFont(fileName, Font.BOLD, size)!!, chars, stretching, spacing, lifting)
+        this.italic = GlyphPage(AbstractFont.getFont(fileName, Font.ITALIC, size)!!, chars, stretching, spacing, lifting)
+        this.boldItalic = GlyphPage(
+            AbstractFont.getFont(fileName, Font.BOLD or Font.ITALIC, size)!!,
+            chars,
+            stretching,
+            spacing,
+            lifting
+        )
+    }
 
-				i ++;
-			} else {
-				width += getGlyphPage(bold, italic).getWidth(c0) + regular.getSpacing();
-			}
-		}
-		
-		return (width - regular.getSpacing()) / 2.0f;
-	}
-	
-	private GlyphPage getGlyphPage(boolean boldStyle, boolean italicStyle) {
-		if(boldStyle && italicStyle)
-			return boldItalic;
-		else if(boldStyle)
-			return bold;
-		else if(italicStyle)
-			return italic;
-		else
-			return regular;
-	}
-	
-	public String getFontName() {
-		return regular.getFontName();
-	}
-	
-	public float getFontHeight() {
-		return regular.getFontHeight();
-	}
-	
-	public float getStretching() {
-		return regular.getStretching();
-	}
-	
-	public float getSpacing() {
-		return regular.getSpacing();
-	}
-	
-	public float getLifting() {
-		return regular.getLifting();
-	}
-	
+    fun renderGlyph(
+        matrix: Matrix4f?,
+        c: Char,
+        x: Float,
+        y: Float,
+        bold: Boolean,
+        italic: Boolean,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ): Float {
+        return getGlyphPage(bold, italic).renderGlyph(matrix, c, x, y, red, green, blue, alpha)
+    }
+
+    fun getWidth(text: String): Float {
+        var bold: Boolean = false
+        var italic: Boolean = false
+        var width: Float = 0.0f
+
+        var i: Int = 0
+        while (i < text.length) {
+            val c0: Char = text.get(i)
+
+            if (c0.code == 167 && i + 1 < text.length && StyledFontRenderer.STYLE_CODES.indexOf(
+                    text.lowercase().get(i + 1)
+                ) != -1
+            ) {
+                val i1: Int = StyledFontRenderer.STYLE_CODES.indexOf(text.lowercase().get(i + 1))
+
+                if (i1 < 16) {
+                    bold = false
+                    italic = false
+                } else if (i1 == 17) {
+                    bold = true
+                } else if (i1 == 20) {
+                    italic = true
+                } else if (i1 == 21) {
+                    bold = false
+                    italic = false
+                }
+
+                i++
+            } else {
+                width += getGlyphPage(bold, italic).getWidth(c0) + regular.spacing
+            }
+            i++
+        }
+
+        return (width - regular.spacing) / 2.0f
+    }
+
+    private fun getGlyphPage(boldStyle: Boolean, italicStyle: Boolean): GlyphPage {
+        return if (boldStyle && italicStyle) boldItalic
+        else if (boldStyle) bold
+        else if (italicStyle) italic
+        else regular
+    }
+
+    val fontName: String
+        get() = regular.fontName!!
+
+    val fontHeight: Float
+        get() = regular.fontHeight
+
+    val stretching: Float
+        get() = regular.stretching
+
+    val spacing: Float
+        get() = regular.spacing
+
+    val lifting: Float
+        get() = regular.lifting
 }

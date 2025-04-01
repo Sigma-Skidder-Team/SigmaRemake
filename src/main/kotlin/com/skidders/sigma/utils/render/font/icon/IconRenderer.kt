@@ -1,56 +1,81 @@
-package com.skidders.sigma.utils.render.font.icon;
+package com.skidders.sigma.utils.render.font.icon
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.opengl.GL30;
+import com.mojang.blaze3d.platform.GlStateManager
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Matrix4f
+import org.lwjgl.opengl.GL30
 
-import java.awt.*;
+@Deprecated("")
+object IconRenderer {
+    fun drawIcon(matrices: MatrixStack, font: IconFont, c: Char, x: Double, y: Double, color: java.awt.Color): Float {
+        return renderIcon(matrices, font, c, x, y, color)
+    }
 
-@Deprecated
-public final class IconRenderer {
+    fun drawCenteredXIcon(
+        matrices: MatrixStack,
+        font: IconFont,
+        c: Char,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderIcon(matrices, font, c, x - font.getWidth(c) / 2.0f, y, color)
+    }
 
-	public static float drawIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
-		return renderIcon(matrices, font, c, x, y, color);
-	}
-	
-	public static float drawCenteredXIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
-		return renderIcon(matrices, font, c, x - font.getWidth(c) / 2.0f, y, color);
-	}
+    fun drawCenteredYIcon(
+        matrices: MatrixStack,
+        font: IconFont,
+        c: Char,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderIcon(matrices, font, c, x, y + font.lifting / 2.0f + 0.5f, color)
+    }
 
-	public static float drawCenteredYIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
-		return renderIcon(matrices, font, c, x, y + font.getLifting() / 2.0f + 0.5f, color);
-	}
-	
-	public static float drawCenteredXYIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
-		return renderIcon(matrices, font, c, x - font.getWidth(c) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color);
-	}
-	
-	private static float renderIcon(MatrixStack matrices, IconFont font, char c, double x, double y, Color color) {
-		y -= font.getLifting();
+    fun drawCenteredXYIcon(
+        matrices: MatrixStack,
+        font: IconFont,
+        c: Char,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderIcon(matrices, font, c, x - font.getWidth(c) / 2.0f, y + font.lifting / 2.0f + 0.5f, color)
+    }
 
-		float red = color.getRed() / 255.0f;
-		float green = color.getGreen() / 255.0f;
-		float blue = color.getBlue() / 255.0f;
-		float alpha = color.getAlpha() / 255.0f;
-		
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
-		matrices.push();
-		matrices.scale(0.5f, 0.5f, 1f);
-		
-		Matrix4f matrix = matrices.peek().getModel();
-		
-		font.bindTex();
-		
-		float w = font.renderGlyph(matrix, c, (float) x * 2f, (float) y * 2f, red, green, blue, alpha);
-		
-		font.unbindTex();
-		
-		matrices.pop();
-		GlStateManager.disableBlend();
-		
-		return w / 2.0f;
-	}
+    private fun renderIcon(
+        matrices: MatrixStack,
+        font: IconFont,
+        c: Char,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        var y: Double = y
+        y -= font.lifting
 
+        val red: Float = color.getRed() / 255.0f
+        val green: Float = color.getGreen() / 255.0f
+        val blue: Float = color.getBlue() / 255.0f
+        val alpha: Float = color.getAlpha() / 255.0f
+
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA)
+        matrices.push()
+        matrices.scale(0.5f, 0.5f, 1f)
+
+        val matrix: Matrix4f = matrices.peek().model
+
+        font.bindTex()
+
+        val w: Float = font.renderGlyph(matrix, c, x.toFloat() * 2f, y.toFloat() * 2f, red, green, blue, alpha)
+
+        font.unbindTex()
+
+        matrices.pop()
+        GlStateManager.disableBlend()
+
+        return w / 2.0f
+    }
 }

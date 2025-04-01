@@ -1,91 +1,93 @@
-package com.skidders.sigma.utils.render.font.styled;
+package com.skidders.sigma.utils.render.font.styled
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
-import net.minecraft.util.math.Matrix4f;
+import com.mojang.blaze3d.systems.RenderSystem
+import com.skidders.sigma.utils.render.font.common.AbstractFont
+import net.minecraft.util.math.Matrix4f
+import java.awt.Font
+import java.awt.FontMetrics
+import java.awt.Graphics2D
+import java.awt.font.FontRenderContext
+import java.awt.geom.Rectangle2D
+import java.awt.image.BufferedImage
+import java.util.*
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.sqrt
 
-import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.Locale;
+class GlyphPage(font: Font, chars: CharArray, stretching: Float, spacing: Float, lifting: Float) :
+    AbstractFont() {
+    private val italicSpacing: Int
+    override val stretching: Float
+    override val spacing: Float
+    override val lifting: Float
+        get() = fontHeight + field
 
-public final class GlyphPage extends AbstractFont {
-	
-	private final int italicSpacing;
-	private final float stretching, spacing, lifting;
+    init {
+        val fontRenderContext = FontRenderContext(font.getTransform(), true, true)
+        var maxWidth = 0.0
+        var maxHeight = 0.0
 
-	public GlyphPage(Font font, char[] chars, float stretching, float spacing, float lifting) {
-		FontRenderContext fontRenderContext = new FontRenderContext(font.getTransform(), true, true);
-		double maxWidth = 0;
-		double maxHeight = 0;
-		
-		for(char c : chars) {
-			Rectangle2D bound = font.getStringBounds(Character.toString(c), fontRenderContext);
-			maxWidth = Math.max(maxWidth, bound.getWidth());
-			maxHeight = Math.max(maxHeight, bound.getHeight());
-		}
-		
-		this.italicSpacing = font.isItalic() ? 5 : 0;
-		int d = (int)Math.ceil(Math.sqrt((maxHeight + 2) * (maxWidth + 2 + italicSpacing) * chars.length));
-		
-		this.fontName = font.getFontName(Locale.ENGLISH);
-		this.fontHeight = (float)(maxHeight / 2);
-		this.imgHeight = d;
-		this.imgWidth = d;
-		this.stretching = stretching;
-		this.spacing = spacing;
-		this.lifting = lifting;
-		
-		BufferedImage image = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = setupGraphics(image, font);
-		
-		FontMetrics fontMetrics = graphics.getFontMetrics();
-		int posX = 1;
-		int posY = 2;
-		
-		for(char c : chars) {
-			Glyph glyph = new Glyph();
-			Rectangle2D bounds = fontMetrics.getStringBounds(Character.toString(c), graphics);
-			glyph.width = (int)bounds.getWidth() + 1 + italicSpacing;
-			glyph.height = (int)bounds.getHeight() + 2;
+        for (c: Char in chars) {
+            val bound: Rectangle2D = font.getStringBounds(c.toString(), fontRenderContext)
+            maxWidth = max(maxWidth, bound.width)
+            maxHeight = max(maxHeight, bound.height)
+        }
 
-			if(posX + glyph.width >= imgWidth) {
-				posX = 1;
-				posY += maxHeight + fontMetrics.getDescent() + 2;
-			}
+        this.italicSpacing = if (font.isItalic) 5 else 0
+        val d: Int = ceil(sqrt((maxHeight + 2) * (maxWidth + 2 + italicSpacing) * chars.size)).toInt()
 
-			glyph.x = posX;
-			glyph.y = posY;
+        this.fontName = font.getFontName(Locale.ENGLISH)
+        this.fontHeight = (maxHeight / 2).toFloat()
+        this.imgHeight = d
+        this.imgWidth = d
+        this.stretching = stretching
+        this.spacing = spacing
+        this.lifting = lifting
 
-			graphics.drawString(Character.toString(c), posX, posY + fontMetrics.getAscent());
+        val image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB)
+        val graphics = setupGraphics(image, font)
 
-			posX += glyph.width + 4;
-			glyphs.put(c, glyph);
-		}
+        val fontMetrics: FontMetrics = graphics.fontMetrics
+        var posX = 1
+        var posY = 2
 
-		RenderSystem.recordRenderCall(() -> setTexture(image));
-	}
+        for (c: Char in chars) {
+            val glyph = Glyph()
+            val bounds: Rectangle2D = fontMetrics.getStringBounds(c.toString(), graphics)
+            glyph.width = bounds.width.toInt() + 1 + italicSpacing
+            glyph.height = bounds.height.toInt() + 2
 
-	public float renderGlyph(Matrix4f matrix, char c, float x, float y, float red, float green, float blue, float alpha) {
-		bindTex();
-		float w = super.renderGlyph(matrix, c, x, y, red, green, blue, alpha) - italicSpacing;
-		unbindTex();
-		
-		return w;
-	}
-	
-	public float getStretching() {
-		return stretching;
-	}
+            if (posX + glyph.width >= imgWidth) {
+                posX = 1
+                posY = (posY + (maxHeight + fontMetrics.descent + 2)).toInt()
+            }
 
-	public float getSpacing() {
-		return spacing;
-	}
+            glyph.x = posX
+            glyph.y = posY
 
-	public float getLifting() {
-		return fontHeight + lifting;
-	}
-	
+            graphics.drawString(c.toString(), posX, posY + fontMetrics.ascent)
+
+            posX += glyph.width + 4
+            glyphs[c] = glyph
+        }
+
+        RenderSystem.recordRenderCall { setTexture(image) }
+    }
+
+    override fun renderGlyph(
+        matrix: Matrix4f?,
+        c: Char,
+        x: Float,
+        y: Float,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ): Float {
+        bindTex()
+        val w: Float = super.renderGlyph(matrix, c, x, y, red, green, blue, alpha) - italicSpacing
+        unbindTex()
+
+        return w
+    }
 }
-	

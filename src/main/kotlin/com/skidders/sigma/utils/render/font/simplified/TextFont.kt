@@ -1,91 +1,95 @@
-package com.skidders.sigma.utils.render.font.simplified;
+package com.skidders.sigma.utils.render.font.simplified
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
-import com.skidders.sigma.utils.render.font.common.FontLanguage;
+import com.mojang.blaze3d.systems.RenderSystem
+import com.skidders.sigma.utils.render.font.common.AbstractFont
+import com.skidders.sigma.utils.render.font.common.FontLanguage
+import java.awt.Font
+import java.awt.FontMetrics
+import java.awt.Graphics2D
+import java.awt.font.FontRenderContext
+import java.awt.geom.Rectangle2D
+import java.awt.image.BufferedImage
+import java.util.Locale
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.sqrt
 
-import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.Locale;
+class TextFont(
+    fileName: String,
+    size: Int,
+    stretching: Float,
+    spacing: Float,
+    lifting: Float,
+    fontLanguage: FontLanguage
+) :
+    AbstractFont() {
+    override val stretching: Float
+    override val spacing: Float
+    override val lifting: Float
+        get() = fontHeight + field
 
-public final class TextFont extends AbstractFont {
-	
-	private final float stretching, spacing, lifting;
+    init {
+        val font: Font = getFont(fileName, Font.PLAIN, size)!!
+        val fontRenderContext = FontRenderContext(font.getTransform(), true, true)
 
-	public TextFont(String fileName, int size, float stretching, float spacing, float lifting, FontLanguage fontLanguage) {
-		Font font = getFont(fileName, Font.PLAIN, size);
-		FontRenderContext fontRenderContext = new FontRenderContext(font.getTransform(), true, true);
-		
-		double maxWidth = 0;
-		double maxHeight = 0;
+        var maxWidth = 0.0
+        var maxHeight = 0.0
 
-		int[] codes = fontLanguage.charCodes;
-		char[] chars = new char[(codes[1] - codes[0] + codes[3] - codes[2])];
+        val codes: IntArray = fontLanguage.charCodes
+        val chars = CharArray((codes.get(1) - codes.get(0) + codes.get(3) - codes[2]))
 
-		int n = 0;
-		for (int d = 0; d <= 2; d += 2) {
-			for(int i = codes[d]; i <= codes[d + 1] - 1; i++) {
-				chars[n] = (char) i;
-				Rectangle2D bound = font.getStringBounds(Character.toString(chars[n]), fontRenderContext);
-				maxWidth = Math.max(maxWidth, bound.getWidth());
-				maxHeight = Math.max(maxHeight, bound.getHeight());
-				n++;
-			}
-		}
+        var n = 0
+        run {
+            var d = 0
+            while (d <= 2) {
+                for (i in codes[d]..<codes[d + 1]) {
+                    chars[n] = i.toChar()
+                    val bound: Rectangle2D = font.getStringBounds(chars[n].toString(), fontRenderContext)
+                    maxWidth = max(maxWidth, bound.width)
+                    maxHeight = max(maxHeight, bound.height)
+                    n++
+                }
+                d += 2
+            }
+        }
 
-		int d = (int)Math.ceil(Math.sqrt((maxHeight + 2) * (maxWidth + 2) * chars.length));
-		
-		this.stretching = stretching;
-		this.spacing = spacing;
-		this.lifting = lifting;
-		this.fontName = font.getFontName(Locale.ENGLISH);
-		this.fontHeight = (float)(maxHeight / 2);
-		this.imgHeight = d;
-		this.imgWidth = d;
-		
-		BufferedImage image = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = setupGraphics(image, font);
-		
-		FontMetrics fontMetrics = graphics.getFontMetrics();
-		int posX = 1;
-		int posY = 2;
-		
-		for (char c : chars) {
-			Glyph glyph = new Glyph();
-			Rectangle2D bounds = fontMetrics.getStringBounds(Character.toString(c), graphics);
-			glyph.width = (int)bounds.getWidth() + 1;
-			glyph.height = (int)bounds.getHeight() + 2;
+        val d: Int = ceil(sqrt((maxHeight + 2) * (maxWidth + 2) * chars.size)).toInt()
 
-			if (posX + glyph.width >= imgWidth) {
-				posX = 1;
-				posY += maxHeight + fontMetrics.getDescent() + 2;
-			}
+        this.stretching = stretching
+        this.spacing = spacing
+        this.lifting = lifting
+        this.fontName = font.getFontName(Locale.ENGLISH)
+        this.fontHeight = (maxHeight / 2).toFloat()
+        this.imgHeight = d
+        this.imgWidth = d
 
-			glyph.x = posX;
-			glyph.y = posY;
+        val image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB)
+        val graphics = setupGraphics(image, font)
 
-			graphics.drawString(Character.toString(c), posX, posY + fontMetrics.getAscent());
+        val fontMetrics = graphics.fontMetrics
+        var posX = 1
+        var posY = 2
 
-			posX += glyph.width + 4;
-			glyphs.put(c, glyph);
-		}
-		
-		RenderSystem.recordRenderCall(() -> setTexture(image));
-	}
-	
-	public float getStretching() {
-		return stretching;
-	}
-	
-	public float getSpacing() {
-		return spacing;
-	}
-	
-	public float getLifting() {
-		return fontHeight + lifting;
-	}
-	
+        for (c: Char in chars) {
+            val glyph = Glyph()
+            val bounds: Rectangle2D = fontMetrics.getStringBounds(c.toString(), graphics)
+            glyph.width = bounds.getWidth().toInt() + 1
+            glyph.height = bounds.getHeight().toInt() + 2
+
+            if (posX + glyph.width >= imgWidth) {
+                posX = 1
+                posY = (posY + (maxHeight + fontMetrics.getDescent() + 2)).toInt()
+            }
+
+            glyph.x = posX
+            glyph.y = posY
+
+            graphics.drawString(c.toString(), posX, posY + fontMetrics.getAscent())
+
+            posX += glyph.width + 4
+            glyphs[c] = glyph
+        }
+
+        RenderSystem.recordRenderCall { setTexture(image) }
+    }
 }
-

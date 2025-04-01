@@ -1,104 +1,251 @@
-package com.skidders.sigma.utils.render.font;
+package com.skidders.sigma.utils.render.font
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.skidders.sigma.utils.IMinecraft;
-import com.skidders.sigma.utils.render.font.simplified.TextFont;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.opengl.GL30;
+import com.mojang.blaze3d.platform.GlStateManager
+import com.skidders.sigma.utils.render.font.simplified.TextFont
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Matrix4f
+import org.lwjgl.opengl.GL30
+import java.awt.Color
 
-import java.awt.*;
+object SimplifiedFontRenderer {
+    fun drawString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderString(matrices, font, text, x, y, color)
+    }
 
-public final class SimplifiedFontRenderer implements IMinecraft {
+    fun drawCenteredXString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color)
+    }
 
-	public static float drawString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x, y, color);
-	}
-	
-	public static float drawCenteredXString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color);
-	}
+    fun drawCenteredYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderString(matrices, font, text, x, y + font.lifting
+                / 2.0f + 0.5f, color)
+    }
 
-	public static float drawCenteredYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, color);
-	}
-	
-	public static float drawCenteredXYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color);
-	}
-	
-	public static float drawShadowedString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x, y, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredXString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredXYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x, y, color, shadowColor);
-	}
-	
-	public static float drawShadowedCenteredXString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, shadowColor);
-	}
-	
-	public static float drawShadowedCenteredYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, color, shadowColor);
-	}
-	
-	public static float drawShadowedCenteredXYString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color, shadowColor);
-	}
-	
-	private static float renderStringWithShadow(MatrixStack matrices, TextFont font, String text, double x, double y, Color color, Color shadowColor) {
-		renderString(matrices, font, text, x + 1.0F, y, shadowColor);
-		return renderString(matrices, font, text, x, y -= 1.0f, color) + 1.0f;
-	}
+    fun drawCenteredXYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderString(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting
+                    / 2.0f + 0.5f,
+            color
+        )
+    }
 
-	// returns string width
-	private static float renderString(MatrixStack matrices, TextFont font, String text, double x, double y, Color color) {
-		y -= font.getLifting();
+    fun drawShadowedString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y, color, getShadowColor(color))
+    }
 
-		float startPos = (float) x * 2f;
-		float posX = startPos;
-		float posY = (float) y * 2f;
-		float red = color.getRed() / 255.0f;
-		float green = color.getGreen() / 255.0f;
-		float blue = color.getBlue() / 255.0f;
-		float alpha = color.getAlpha() / 255.0f;
-		
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
-		matrices.push();
-		matrices.scale(0.5f, 0.5f, 1f);
-		
-		Matrix4f matrix = matrices.peek().getModel();
-		
-		font.bindTex();
-		
-		for (int i = 0; i < text.length(); i++) {
-			posX += font.renderGlyph(matrix, text.charAt(i), posX, posY, red, green, blue, alpha);
-		}
-		
-		font.unbindTex();
-		
-		matrices.pop();
-		GlStateManager.disableBlend();
-		
-		return (posX - startPos) / 2.0f;
-	}
-	
-	public static Color getShadowColor(Color color) {
-		return new Color((color.getRGB() & 16579836) >> 2 | color.getRGB()  & -16777216);
-	}
+    fun drawShadowedCenteredXString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y,
+            color,
+            getShadowColor(color)
+        )
+    }
 
+    fun drawShadowedCenteredYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x,
+            y + font.lifting
+                    / 2.0f + 0.5f,
+            color,
+            getShadowColor(color)
+        )
+    }
+
+    fun drawShadowedCenteredXYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting
+                    / 2.0f + 0.5f,
+            color,
+            getShadowColor(color)
+        )
+    }
+
+    fun drawShadowedString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color,
+        shadowColor: Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y, color, shadowColor)
+    }
+
+    fun drawShadowedCenteredXString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color,
+        shadowColor: Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, shadowColor)
+    }
+
+    fun drawShadowedCenteredYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color,
+        shadowColor: Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y + font.lifting
+                / 2.0f + 0.5f, color, shadowColor)
+    }
+
+    fun drawShadowedCenteredXYString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color,
+        shadowColor: Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting
+                    / 2.0f + 0.5f,
+            color,
+            shadowColor
+        )
+    }
+
+    private fun renderStringWithShadow(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color,
+        shadowColor: Color
+    ): Float {
+        var y: Double = y
+        renderString(matrices, font, text, x + 1.0f, y, shadowColor)
+        return renderString(matrices, font, text, x, 1.0f.let { y -= it; y }, color) + 1.0f
+    }
+
+    // returns string width
+    private fun renderString(
+        matrices: MatrixStack,
+        font: TextFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: Color
+    ): Float {
+        var y: Double = y
+        y -= font.lifting
+
+
+        val startPos: Float = x.toFloat() * 2f
+        var posX: Float = startPos
+        val posY: Float = y.toFloat() * 2f
+        val red: Float = color.getRed() / 255.0f
+        val green: Float = color.getGreen() / 255.0f
+        val blue: Float = color.getBlue() / 255.0f
+        val alpha: Float = color.getAlpha() / 255.0f
+
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA)
+        matrices.push()
+        matrices.scale(0.5f, 0.5f, 1f)
+
+        val matrix: Matrix4f = matrices.peek().getModel()
+
+        font.bindTex()
+
+        for (i in 0..<text.length) {
+            posX += font.renderGlyph(matrix, text.get(i), posX, posY, red, green, blue, alpha)
+        }
+
+        font.unbindTex()
+
+        matrices.pop()
+        GlStateManager.disableBlend()
+
+        return (posX - startPos) / 2.0f
+    }
+
+    fun getShadowColor(color: Color): Color {
+        return Color((color.getRGB() and 16579836) shr 2 or (color.getRGB() and -16777216))
+    }
 }

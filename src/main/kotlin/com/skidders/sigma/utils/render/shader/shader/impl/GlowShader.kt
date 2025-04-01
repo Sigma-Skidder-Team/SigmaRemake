@@ -1,155 +1,178 @@
-package com.skidders.sigma.utils.render.shader.shader.impl;
+package com.skidders.sigma.utils.render.shader.shader.impl
 
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.Kernel;
-import java.util.HashMap;
+import java.awt.image.BufferedImage
+import java.awt.image.Kernel
+import kotlin.math.ceil
+import kotlin.math.exp
+import kotlin.math.sqrt
 
-public class GlowShader {
+class GlowShader(radius: Int) {
+    private val radius: Float
+    private var alpha: Boolean = true
+    private var premultiplyAlpha: Boolean = true
+    private var kernel: Kernel
 
-    private static final HashMap<Integer, Kernel> kernelCache = new HashMap<>();
-    public final static int CLAMP_EDGES = 1;
-    public final static int WRAP_EDGES = 2;
-    private final float radius;
-    private boolean alpha = true;
-    private boolean premultiplyAlpha = true;
-    private Kernel kernel;
-
-    public GlowShader(int radius) {
-        this.radius = radius;
-        kernel = kernelCache.getOrDefault(radius, null);
-        if (kernel == null) {
-            kernel = makeKernel(radius);
-            kernelCache.put(radius, kernel);
-        }
+    init {
+        this.radius = radius.toFloat()
+        kernel = kernelCache.getOrDefault(radius, null) ?: makeKernel(radius.toFloat()); kernelCache[radius] =
+            kernel
     }
 
-    public void setUseAlpha(boolean useAlpha) {
-        this.alpha = useAlpha;
+    fun setUseAlpha(useAlpha: Boolean) {
+        this.alpha = useAlpha
     }
 
-    public void setPremultiplyAlpha(boolean premultiplyAlpha) {
-        this.premultiplyAlpha = premultiplyAlpha;
+    fun setPremultiplyAlpha(premultiplyAlpha: Boolean) {
+        this.premultiplyAlpha = premultiplyAlpha
     }
 
-    public BufferedImage filter(BufferedImage src, BufferedImage dst) {
-        int width = src.getWidth();
-        int height = src.getHeight();
+    fun filter(src: BufferedImage, pDst: BufferedImage?): BufferedImage {
+        val dst: BufferedImage = pDst ?: createCompatibleDestImage(src)
+        val width: Int = src.width
+        val height: Int = src.height
 
-        if (dst == null)
-            dst = createCompatibleDestImage(src, null);
-
-        int[] inPixels = new int[width * height];
-        int[] outPixels = new int[width * height];
-        src.getRGB(0, 0, width, height, inPixels, 0, width);
+        val inPixels = IntArray(width * height)
+        val outPixels = IntArray(width * height)
+        src.getRGB(0, 0, width, height, inPixels, 0, width)
 
         if (radius > 0) {
-            convolveAndTranspose(kernel, inPixels, outPixels, width, height, alpha, alpha && premultiplyAlpha, false, CLAMP_EDGES);
-            convolveAndTranspose(kernel, outPixels, inPixels, height, width, alpha, false, alpha && premultiplyAlpha, CLAMP_EDGES);
+            convolveAndTranspose(
+                kernel,
+                inPixels,
+                outPixels,
+                width,
+                height,
+                alpha,
+                alpha && premultiplyAlpha,
+                false,
+                CLAMP_EDGES
+            )
+            convolveAndTranspose(
+                kernel,
+                outPixels,
+                inPixels,
+                height,
+                width,
+                alpha,
+                false,
+                alpha && premultiplyAlpha,
+                CLAMP_EDGES
+            )
         }
 
-        dst.setRGB(0, 0, width, height, inPixels, 0, width);
-        return dst;
+        dst.setRGB(0, 0, width, height, inPixels, 0, width)
+        return dst
     }
 
-    public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM) {
-        if (dstCM == null)
-            dstCM = src.getColorModel();
-        return new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()), dstCM.isAlphaPremultiplied(), null);
+    private fun createCompatibleDestImage(src: BufferedImage, dstCM: java.awt.image.ColorModel = src.colorModel): BufferedImage {
+        return BufferedImage(
+            dstCM,
+            dstCM.createCompatibleWritableRaster(src.width, src.height),
+            dstCM.isAlphaPremultiplied,
+            null
+        )
     }
 
-    public static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha, boolean premultiply, boolean unpremultiply, int edgeAction) {
-        float[] matrix = kernel.getKernelData(null);
-        int cols = kernel.getWidth();
-        int cols2 = cols / 2;
+    companion object {
+        private val kernelCache: HashMap<Int, Kernel> = HashMap<Int, Kernel>()
+        const val CLAMP_EDGES: Int = 1
+        private const val WRAP_EDGES: Int = 2
+        fun convolveAndTranspose(
+            kernel: Kernel,
+            inPixels: IntArray,
+            outPixels: IntArray,
+            width: Int,
+            height: Int,
+            alpha: Boolean,
+            premultiply: Boolean,
+            unPremultiply: Boolean,
+            edgeAction: Int
+        ) {
+            val matrix: FloatArray = kernel.getKernelData(null)
+            val cols: Int = kernel.width
+            val cols2: Int = cols / 2
 
-        for (int y = 0; y < height; y++) {
-            int index = y;
-            int ioffset = y * width;
-            for (int x = 0; x < width; x++) {
-                float r = 0, g = 0, b = 0, a = 0;
-                int moffset = cols2;
-                for (int col = -cols2; col <= cols2; col++) {
-                    float f = matrix[moffset + col];
+            for (y in 0..<height) {
+                var index: Int = y
+                val iOffset: Int = y * width
+                for (x in 0..<width) {
+                    var r: Float = 0f
+                    var g: Float = 0f
+                    var b: Float = 0f
+                    var a: Float = 0f
+                    val mOffset: Int = cols2
+                    for (col in -cols2..cols2) {
+                        val f: Float = matrix[mOffset + col]
 
-                    if (f != 0) {
-                        int ix = x + col;
-                        if (ix < 0) {
-                            if (edgeAction == CLAMP_EDGES)
-                                ix = 0;
-                            else if (edgeAction == WRAP_EDGES)
-                                ix = (x + width) % width;
-                        } else if (ix >= width) {
-                            if (edgeAction == CLAMP_EDGES)
-                                ix = width - 1;
-                            else if (edgeAction == WRAP_EDGES)
-                                ix = (x + width) % width;
+                        if (f != 0f) {
+                            var ix: Int = x + col
+                            if (ix < 0) {
+                                if (edgeAction == CLAMP_EDGES) ix = 0
+                                else if (edgeAction == WRAP_EDGES) ix = (x + width) % width
+                            } else if (ix >= width) {
+                                if (edgeAction == CLAMP_EDGES) ix = width - 1
+                                else if (edgeAction == WRAP_EDGES) ix = (x + width) % width
+                            }
+                            val rgb: Int = inPixels.get(iOffset + ix)
+                            val pa: Int = (rgb shr 24) and 0xff
+                            var pr: Int = (rgb shr 16) and 0xff
+                            var pg: Int = (rgb shr 8) and 0xff
+                            var pb: Int = rgb and 0xff
+                            if (premultiply) {
+                                val a255: Float = pa * (1.0f / 255.0f)
+                                pr = (pr * a255).toInt()
+                                pg = (pg * a255).toInt()
+                                pb = (pb * a255).toInt()
+                            }
+                            a += f * pa
+                            r += f * pr
+                            g += f * pg
+                            b += f * pb
                         }
-                        int rgb = inPixels[ioffset + ix];
-                        int pa = (rgb >> 24) & 0xff;
-                        int pr = (rgb >> 16) & 0xff;
-                        int pg = (rgb >> 8) & 0xff;
-                        int pb = rgb & 0xff;
-                        if (premultiply) {
-                            float a255 = pa * (1.0f / 255.0f);
-                            pr *= a255;
-                            pg *= a255;
-                            pb *= a255;
-                        }
-                        a += f * pa;
-                        r += f * pr;
-                        g += f * pg;
-                        b += f * pb;
                     }
+                    if (unPremultiply && a != 0f && a != 255f) {
+                        val f: Float = 255.0f / a
+                        r *= f
+                        g *= f
+                        b *= f
+                    }
+                    val ia: Int = if (alpha) clamp((a + 0.5).toInt()) else 0xff
+                    val ir: Int = clamp((r + 0.5).toInt())
+                    val ig: Int = clamp((g + 0.5).toInt())
+                    val ib: Int = clamp((b + 0.5).toInt())
+                    outPixels[index] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
+                    index += height
                 }
-                if (unpremultiply && a != 0 && a != 255) {
-                    float f = 255.0f / a;
-                    r *= f;
-                    g *= f;
-                    b *= f;
-                }
-                int ia = alpha ? clamp((int) (a + 0.5)) : 0xff;
-                int ir = clamp((int) (r + 0.5));
-                int ig = clamp((int) (g + 0.5));
-                int ib = clamp((int) (b + 0.5));
-                outPixels[index] = (ia << 24) | (ir << 16) | (ig << 8) | ib;
-                index += height;
             }
         }
-    }
 
-    public static int clamp(int c) {
-        if (c < 0)
-            return 0;
-        if (c > 255)
-            return 255;
-        return c;
-    }
-
-    public static Kernel makeKernel(float radius) {
-        int r = (int) Math.ceil(radius);
-        int rows = r * 2 + 1;
-        float[] matrix = new float[rows];
-        float sigma = radius / 3;
-        float sigma22 = 2 * sigma * sigma;
-        float sigmaPi2 = 2 * (float) Math.PI * sigma;
-        float sqrtSigmaPi2 = (float) Math.sqrt(sigmaPi2);
-        float radius2 = radius * radius;
-        float total = 0;
-        int index = 0;
-        for (int row = -r; row <= r; row++) {
-            float distance = row * row;
-            if (distance > radius2)
-                matrix[index] = 0;
-            else
-                matrix[index] = (float) Math.exp(-(distance) / sigma22) / sqrtSigmaPi2;
-            total += matrix[index];
-            index++;
+        private fun clamp(c: Int): Int {
+            if (c < 0) return 0
+            if (c > 255) return 255
+            return c
         }
-        for (int i = 0; i < rows; i++)
-            matrix[i] /= total;
 
-        return new Kernel(rows, 1, matrix);
+        fun makeKernel(radius: Float): Kernel {
+            val r: Int = ceil(radius).toInt()
+            val rows: Int = r * 2 + 1
+            val matrix = FloatArray(rows)
+            val sigma: Float = radius / 3
+            val sigma22: Float = 2 * sigma * sigma
+            val sigmaPi2: Float = 2 * Math.PI.toFloat() * sigma
+            val sqrtSigmaPi2: Float = sqrt(sigmaPi2)
+            val radius2: Float = radius * radius
+            var total: Float = 0f
+            var index: Int = 0
+            for (row in -r..r) {
+                val distance: Float = (row * row).toFloat()
+                if (distance > radius2) matrix[index] = 0f
+                else matrix[index] = exp(-(distance) / sigma22) as Float / sqrtSigmaPi2
+                total += matrix[index]
+                index++
+            }
+            for (i in 0..<rows) matrix[index] /= total
+
+            return Kernel(rows, 1, matrix)
+        }
     }
-
 }

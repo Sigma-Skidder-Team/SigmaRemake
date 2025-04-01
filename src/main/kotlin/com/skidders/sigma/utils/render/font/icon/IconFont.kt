@@ -1,71 +1,68 @@
-package com.skidders.sigma.utils.render.font.icon;
+package com.skidders.sigma.utils.render.font.icon
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.skidders.sigma.utils.render.font.common.AbstractFont;
+import com.mojang.blaze3d.systems.RenderSystem
+import com.skidders.sigma.utils.render.font.common.AbstractFont
+import java.awt.Font
+import java.awt.FontMetrics
+import java.awt.Graphics2D
+import java.awt.font.FontRenderContext
+import java.awt.geom.Rectangle2D
+import java.awt.image.BufferedImage
+import java.util.*
+import kotlin.math.max
 
-import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.Locale;
+@Deprecated("")
+class IconFont(fileName: String, size: Int, vararg chars: Char) : AbstractFont() {
+    init {
+        val font: Font = getFont(fileName, Font.PLAIN, size)!!
 
-@Deprecated
-public final class IconFont extends AbstractFont {
+        val fontRenderContext = FontRenderContext(font.getTransform(), true, true)
+        var maxWidth = 0.0
+        var maxHeight = 0.0
 
-	public IconFont(String fileName, int size, char... chars) {
-		Font font = AbstractFont.getFont(fileName, Font.PLAIN, size);
+        for (c: Char in chars) {
+            val bound: Rectangle2D = font.getStringBounds(c.toString(), fontRenderContext)
+            maxWidth = max(maxWidth, bound.width)
+            maxHeight = max(maxHeight, bound.height)
+        }
 
-		FontRenderContext fontRenderContext = new FontRenderContext(font.getTransform(), true, true);
-		double maxWidth = 0;
-		double maxHeight = 0;
+        this.fontName = font.getFontName(Locale.ENGLISH)
+        this.fontHeight = (maxHeight / 2.0f).toFloat()
+        this.imgHeight = maxHeight.toInt() + 4
+        this.imgWidth = (maxWidth.toInt() + 4) * chars.size
 
-		for (char c : chars) {
-			Rectangle2D bound = font.getStringBounds(Character.toString(c), fontRenderContext);
-			maxWidth = Math.max(maxWidth, bound.getWidth());
-			maxHeight = Math.max(maxHeight, bound.getHeight());
-		}
+        val image: BufferedImage = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB)
+        val graphics: Graphics2D = setupGraphics(image, font)
 
-		this.fontName = font.getFontName(Locale.ENGLISH);
-		this.fontHeight = (float)(maxHeight / 2.0f);
-		this.imgHeight = (int)maxHeight + 4;
-		this.imgWidth = ((int)maxWidth + 4) * chars.length;
-		
-		BufferedImage image = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = setupGraphics(image, font);
+        val fontMetrics: FontMetrics = graphics.fontMetrics
+        var posX: Int = 2
+        val posY: Int = 2
 
-		FontMetrics fontMetrics = graphics.getFontMetrics();
-		int posX = 2;
-		int posY = 2;
+        for (c: Char in chars) {
+            val glyph = Glyph()
+            val bounds: Rectangle2D = fontMetrics.getStringBounds(c.toString(), graphics)
+            glyph.width = bounds.width.toInt() + 1
+            glyph.height = bounds.height.toInt() + 2
 
-		for (char c : chars) {
-			Glyph glyph = new Glyph();
-			Rectangle2D bounds = fontMetrics.getStringBounds(Character.toString(c), graphics);
-			glyph.width = (int)bounds.getWidth() + 1;
-			glyph.height = (int)bounds.getHeight() + 2;
+            glyph.x = posX
+            glyph.y = posY
 
-			glyph.x = posX;
-			glyph.y = posY;
+            graphics.drawString(c.toString(), posX, posY + fontMetrics.ascent)
 
-			graphics.drawString(Character.toString(c), posX, posY + fontMetrics.getAscent());
+            super.glyphs[c] = glyph
 
-			glyphs.put(c, glyph);
-			
-			posX += glyph.width + 2;
-		}
-		
-		RenderSystem.recordRenderCall(() -> setTexture(image));
-	}
-	
-	public float getStretching() {
-		return 0.0f;
-	}
-	
-	public float getSpacing() {
-		return 0.0f;
-	}
-	
-	public float getLifting() {
-		return fontHeight;
-	}
-	
+            posX += glyph.width + 2
+        }
+
+        RenderSystem.recordRenderCall { setTexture(image) }
+    }
+
+    override val stretching: Float
+        get() = 0.0f
+
+    override val spacing: Float
+        get() = 0.0f
+
+    override val lifting: Float
+        get() = fontHeight
 }

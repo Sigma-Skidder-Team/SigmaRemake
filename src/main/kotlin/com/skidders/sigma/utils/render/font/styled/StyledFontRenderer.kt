@@ -1,200 +1,345 @@
-package com.skidders.sigma.utils.render.font.styled;
+package com.skidders.sigma.utils.render.font.styled
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.skidders.sigma.utils.IMinecraft;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.opengl.GL30;
+import com.mojang.blaze3d.platform.GlStateManager
+import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Matrix4f
+import org.lwjgl.opengl.GL30
 
-import java.awt.*;
-import java.util.Locale;
+object StyledFontRenderer {
+    const val STYLE_CODES: String = "0123456789abcdefklmnor"
+    private val COLOR_CODES: IntArray = IntArray(32)
 
-public final class StyledFontRenderer implements IMinecraft {
-	
-	public static final String STYLE_CODES = "0123456789abcdefklmnor";
-	public static final int[] COLOR_CODES = new int[32];
-	
-	static {
-		for (int i = 0; i < 32; ++i) {
-			int j = (i >> 3 & 1) * 85;
-			int k = (i >> 2 & 1) * 170 + j;
-			int l = (i >> 1 & 1) * 170 + j;
-			int i1 = (i & 1) * 170 + j;
+    init {
+        for (i in 0..31) {
+            val j: Int = (i shr 3 and 1) * 85
+            var k: Int = (i shr 2 and 1) * 170 + j
+            var l: Int = (i shr 1 and 1) * 170 + j
+            var i1: Int = (i and 1) * 170 + j
 
-			if (i == 6) {
-				k += 85;
-			}
+            if (i == 6) {
+                k += 85
+            }
 
-			if (i >= 16) {
-				k /= 4;
-				l /= 4;
-				i1 /= 4;
-			}
+            if (i >= 16) {
+                k /= 4
+                l /= 4
+                i1 /= 4
+            }
 
-			COLOR_CODES[i] = (k & 255) << 16 | (l & 255) << 8 | i1 & 255;
-		}
-	}
-	
-	public static float drawString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x, y, false, color);
-	}
-	
-	public static float drawCenteredXString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y, false, color);
-	}
-	
-	public static float drawCenteredYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, false, color);
-	}
-	
-	public static float drawCenteredXYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, false, color);
-	}
+            COLOR_CODES[i] = (k and 255) shl 16 or ((l and 255) shl 8) or (i1 and 255)
+        }
+    }
 
-	public static float drawShadowedString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x, y, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredXString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedCenteredXYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color, getShadowColor(color));
-	}
-	
-	public static float drawShadowedString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x, y, color, shadowColor);
-	}
-	
-	public static float drawShadowedCenteredXString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, shadowColor);
-	}
-	
-	public static float drawShadowedCenteredYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x, y + font.getLifting() / 2.0f + 0.5f, color, shadowColor);
-	}
+    fun drawString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderString(matrices, font, text, x, y, false, color)
+    }
 
-	public static float drawShadowedCenteredXYString(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color, Color shadowColor) {
-		return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y + font.getLifting() / 2.0f + 0.5f, color, shadowColor);
-	}
+    fun drawCenteredXString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderString(matrices, font, text, x - font.getWidth(text) / 2.0f, y, false, color)
+    }
 
-	private static float renderStringWithShadow(MatrixStack matrices, StyledFont font, String text, double x, double y, Color color, Color shadowColor) {
-		renderString(matrices, font, text, x + 1.0f, y, true, shadowColor);
-		return renderString(matrices, font, text, x, y - 1.0f, false, color) + 1.0f;
-	}
+    fun drawCenteredYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderString(matrices, font, text, x, y + font.lifting / 2.0f + 0.5f, false, color)
+    }
 
-	// returns string width
-	private static float renderString(MatrixStack matrices, StyledFont font, String text, double x, double y, boolean shadow, Color color) {
+    fun drawCenteredXYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderString(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting / 2.0f + 0.5f,
+            false,
+            color
+        )
+    }
 
+    fun drawShadowedString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y, color, getShadowColor(color))
+    }
 
-		float startPos = (float) x * 2.0f;
-		float posX = startPos;
-		float posY = (float) y * 2.0f;
-		float red = color.getRed() / 255.0f;
-		float green = color.getGreen() / 255.0f;
-		float blue = color.getBlue() / 255.0f;
-		float alpha = color.getAlpha() / 255.0f;
-		boolean bold = false;
-		boolean italic = false;
-		boolean strikethrough = false;
-		boolean underline = false;
-		
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
-		matrices.push();
-		matrices.scale(0.5f, 0.5f, 1f);
-		
-		Matrix4f matrix = matrices.peek().getModel();
-		
-		for(int i = 0; i < text.length(); i++) {
-			char c0 = text.charAt(i);
-			
-			if (c0 == 167 && i + 1 < text.length() &&
-					STYLE_CODES.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1)) != -1) {
-				int i1 = STYLE_CODES.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1));
+    fun drawShadowedCenteredXString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y,
+            color,
+            getShadowColor(color)
+        )
+    }
 
-				if (i1 < 16) {
-					bold = false;
-					strikethrough = false;
-					underline = false;
-					italic = false;
+    fun drawShadowedCenteredYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x,
+            y + font.lifting / 2.0f + 0.5f,
+            color,
+            getShadowColor(color)
+        )
+    }
 
-					if(shadow) {
-						i1 += 16;
-					}
-					
-					int j1 = COLOR_CODES[i1];
+    fun drawShadowedCenteredXYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting / 2.0f + 0.5f,
+            color,
+            getShadowColor(color)
+        )
+    }
 
-					red = (float) (j1 >> 16 & 255) / 255.0F;
-					green = (float) (j1 >> 8 & 255) / 255.0F;
-					blue = (float) (j1 & 255) / 255.0F;
-					alpha = 1f;
-				} else if (i1 == 16) {
-				} else if (i1 == 17) {
-					bold = true;
-				} else if (i1 == 18) {
-					strikethrough = true;
-				} else if (i1 == 19) {
-					underline = true;
-				} else if (i1 == 20) {
-					italic = true;
-				} else if(i1 == 21) {
-					bold = false;
-					strikethrough = false;
-					underline = false;
-					italic = false;
-				}
+    fun drawShadowedString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color,
+        shadowColor: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y, color, shadowColor)
+    }
 
-				i++;
-			} else {
-				float f = font.renderGlyph(matrix, c0, posX, posY, bold, italic, red, green, blue, alpha);
-				
-				if(strikethrough) {
-					float h = font.getLifting() + 2;
-					GlStateManager.disableTexture();
-					
-					Tessellator.getInstance().getBuffer().begin(7, VertexFormats.POSITION_COLOR);
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX, posY + h + 3, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX + f, posY + h + 3, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX + f, posY + h, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX, posY + h, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().draw();
-					
-					GlStateManager.enableTexture();
-				}
+    fun drawShadowedCenteredXString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color,
+        shadowColor: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x - font.getWidth(text) / 2.0f, y, color, shadowColor)
+    }
 
-				if(underline) {
-					float y1 = posY + font.getLifting() * 2.0f - 4;
-					GlStateManager.disableTexture();
-					
-					Tessellator.getInstance().getBuffer().begin(7, VertexFormats.POSITION_COLOR);
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX, y1 + 4, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX + f, y1 + 4, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX + f, y1 + 2, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().getBuffer().vertex(matrix, posX, y1 + 2, 0).color(red, green, blue, alpha).next();
-					Tessellator.getInstance().draw();
-					
-					GlStateManager.enableTexture();
-				}
-				posX += f;
-			}
-		}
+    fun drawShadowedCenteredYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color,
+        shadowColor: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(matrices, font, text, x, y + font.lifting / 2.0f + 0.5f, color, shadowColor)
+    }
 
-		matrices.pop();
-		GlStateManager.disableBlend();
-		
-		return (posX - startPos) / 2.0f;
-	}
+    fun drawShadowedCenteredXYString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color,
+        shadowColor: java.awt.Color
+    ): Float {
+        return renderStringWithShadow(
+            matrices,
+            font,
+            text,
+            x - font.getWidth(text) / 2.0f,
+            y + font.lifting / 2.0f + 0.5f,
+            color,
+            shadowColor
+        )
+    }
 
-	public static Color getShadowColor(Color color) {
-		return new Color((color.getRGB() & 16579836) >> 2 | color.getRGB()  & -16777216);
-	}
+    private fun renderStringWithShadow(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        color: java.awt.Color,
+        shadowColor: java.awt.Color
+    ): Float {
+        renderString(matrices, font, text, x + 1.0f, y, true, shadowColor)
+        return renderString(matrices, font, text, x, y - 1.0f, false, color) + 1.0f
+    }
 
+    // returns string width
+    private fun renderString(
+        matrices: MatrixStack,
+        font: StyledFont,
+        text: String,
+        x: Double,
+        y: Double,
+        shadow: Boolean,
+        color: java.awt.Color
+    ): Float {
+        val startPos: Float = x.toFloat() * 2.0f
+        var posX: Float = startPos
+        val posY: Float = y.toFloat() * 2.0f
+        var red: Float = color.getRed() / 255.0f
+        var green: Float = color.getGreen() / 255.0f
+        var blue: Float = color.getBlue() / 255.0f
+        var alpha: Float = color.getAlpha() / 255.0f
+        var bold: Boolean = false
+        var italic: Boolean = false
+        var strikethrough: Boolean = false
+        var underline: Boolean = false
+
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA)
+        matrices.push()
+        matrices.scale(0.5f, 0.5f, 1f)
+
+        val matrix: Matrix4f = matrices.peek().getModel()
+
+        var i: Int = 0
+        while (i < text.length) {
+            val c0: Char = text.get(i)
+
+            if (c0.code == 167 && i + 1 < text.length && STYLE_CODES.indexOf(text.lowercase().get(i + 1)) != -1) {
+                var i1: Int = STYLE_CODES.indexOf(text.lowercase().get(i + 1))
+
+                if (i1 < 16) {
+                    bold = false
+                    strikethrough = false
+                    underline = false
+                    italic = false
+
+                    if (shadow) {
+                        i1 += 16
+                    }
+
+                    val j1: Int = COLOR_CODES.get(i1)
+
+                    red = (j1 shr 16 and 255).toFloat() / 255.0f
+                    green = (j1 shr 8 and 255).toFloat() / 255.0f
+                    blue = (j1 and 255).toFloat() / 255.0f
+                    alpha = 1f
+                } else if (i1 == 16) {
+                } else if (i1 == 17) {
+                    bold = true
+                } else if (i1 == 18) {
+                    strikethrough = true
+                } else if (i1 == 19) {
+                    underline = true
+                } else if (i1 == 20) {
+                    italic = true
+                } else if (i1 == 21) {
+                    bold = false
+                    strikethrough = false
+                    underline = false
+                    italic = false
+                }
+
+                i++
+            } else {
+                val f: Float = font.renderGlyph(matrix, c0, posX, posY, bold, italic, red, green, blue, alpha)
+
+                if (strikethrough) {
+                    val h: Float = font.lifting + 2
+                    GlStateManager.disableTexture()
+
+                    Tessellator.getInstance().buffer.begin(7, VertexFormats.POSITION_COLOR)
+                    Tessellator.getInstance().buffer.vertex(matrix, posX, posY + h + 3, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX + f, posY + h + 3, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX + f, posY + h, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX, posY + h, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().draw()
+
+                    GlStateManager.enableTexture()
+                }
+
+                if (underline) {
+                    val y1: Float = posY + font.lifting * 2.0f - 4
+                    GlStateManager.disableTexture()
+
+                    Tessellator.getInstance().buffer.begin(7, VertexFormats.POSITION_COLOR)
+                    Tessellator.getInstance().buffer.vertex(matrix, posX, y1 + 4, 0f).color(red, green, blue, alpha)
+                        .next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX + f, y1 + 4, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX + f, y1 + 2, 0f)
+                        .color(red, green, blue, alpha).next()
+                    Tessellator.getInstance().buffer.vertex(matrix, posX, y1 + 2, 0f).color(red, green, blue, alpha)
+                        .next()
+                    Tessellator.getInstance().draw()
+
+                    GlStateManager.enableTexture()
+                }
+                posX += f
+            }
+            i++
+        }
+
+        matrices.pop()
+        GlStateManager.disableBlend()
+
+        return (posX - startPos) / 2.0f
+    }
+
+    fun getShadowColor(color: java.awt.Color): java.awt.Color {
+        return java.awt.Color((color.getRGB() and 16579836) shr 2 or (color.getRGB() and -16777216))
+    }
 }

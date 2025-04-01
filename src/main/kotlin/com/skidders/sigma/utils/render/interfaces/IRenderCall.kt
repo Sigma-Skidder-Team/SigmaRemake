@@ -1,6 +1,5 @@
-package com.skidders.sigma.utils.render.interfaces;
+package com.skidders.sigma.utils.render.interfaces
 
-@FunctionalInterface
-public interface IRenderCall {
-    void execute();
+fun interface IRenderCall {
+    fun execute()
 }

@@ -1,7 +1,7 @@
-package com.skidders.sigma.utils.render.interfaces;
+package com.skidders.sigma.utils.render.interfaces
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Identifier
 
-public interface GameRendererAccessor {
-    void sigmaRemake$invokeLoadShader(Identifier identifier);
+interface GameRendererAccessor {
+    fun `sigmaRemake$invokeLoadShader`(identifier: Identifier?)
 }
