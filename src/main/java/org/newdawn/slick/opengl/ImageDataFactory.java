@@ -36,8 +36,6 @@ public class ImageDataFactory implements ILogger {
                 if ("false".equalsIgnoreCase(val)) {
                     usePngLoader = false;
                 }
-
-                logger.info("Use Java PNG Loader = {}", usePngLoader);
             } catch (SecurityException e) {
                 // Ignore, likely due to security restrictions
             }
