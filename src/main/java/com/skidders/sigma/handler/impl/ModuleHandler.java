@@ -37,16 +37,6 @@ public class ModuleHandler extends Handler<Module> {
         return list.stream().filter(m -> m.enabled).collect(Collectors.toList());
     }
 
-    public <V extends Module> V getModuleByClass(Class<V> clazz) {
-        Module mod = list.stream().filter(m -> m.getClass().equals(clazz)).findFirst().orElse(null);
-
-        if (mod == null) {
-            return null;
-        }
-
-        return clazz.cast(mod);
-    }
-
     public List<Module> getModulesByCategory(Category input) {
         return list.stream().filter(mod ->
                 mod.category.equals(input)).collect(Collectors.toList()

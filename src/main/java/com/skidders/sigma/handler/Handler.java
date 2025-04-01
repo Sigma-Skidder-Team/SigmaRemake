@@ -13,4 +13,14 @@ public class Handler<T> implements ISubscriber {
     public void init() {
         bus.register(this);
     }
+
+    public <V extends T> V getByClass(Class<V> clazz) {
+        T obj = list.stream().filter(t -> t.getClass().equals(clazz)).findFirst().orElse(null);
+
+        if (obj == null) {
+            return null;
+        }
+
+        return clazz.cast(obj);
+    }
 }
