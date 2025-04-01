@@ -1,15 +1,15 @@
 package com.skidders.sigma.module;
 
-import com.skidders.SigmaReborn;
 import com.skidders.sigma.module.settings.Setting;
-import com.skidders.sigma.utils.IMinecraft;
+import com.skidders.sigma.util.client.interfaces.IMinecraft;
+import com.skidders.sigma.util.client.interfaces.ISubscriber;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class Module implements IMinecraft {
+public class Module implements IMinecraft, ISubscriber {
 
     public final String name,desc;
     public final Category category;
@@ -28,11 +28,11 @@ public class Module implements IMinecraft {
         this.enabled = enabled;
 
         if (enabled) {
-            SigmaReborn.EVENT_BUS.register(this);
+            bus.register(this);
             onEnable();
         } else {
             onDisable();
-            SigmaReborn.EVENT_BUS.unregister(this);
+            bus.unregister(this);
         }
     }
 

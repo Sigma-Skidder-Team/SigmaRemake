@@ -1,6 +1,6 @@
 package com.skidders.sigma.mixin;
 
-import com.skidders.sigma.screens.pages.OptionsPage;
+import com.skidders.sigma.screen.pages.OptionsPage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;

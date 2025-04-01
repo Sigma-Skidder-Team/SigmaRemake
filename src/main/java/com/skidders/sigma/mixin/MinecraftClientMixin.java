@@ -1,10 +1,8 @@
 package com.skidders.sigma.mixin;
 
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.managers.ModuleManager;
-import com.skidders.sigma.processors.ScreenProcessor;
-import com.skidders.sigma.screens.pages.LoadingPage;
-import com.skidders.sigma.utils.file.FileUtil;
+import com.skidders.sigma.screen.pages.LoadingPage;
+import com.skidders.sigma.util.system.file.FileUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
@@ -124,10 +122,7 @@ public abstract class MinecraftClientMixin {
             at = @At(value = "TAIL")
     )
     public final void onMinecraftClientInitEnd(RunArgs args, CallbackInfo ci) {
-        SigmaReborn.INSTANCE.moduleManager = new ModuleManager();
-        SigmaReborn.INSTANCE.screenProcessor = new ScreenProcessor();
-        SigmaReborn.EVENT_BUS.register(SigmaReborn.INSTANCE.moduleManager);
-        SigmaReborn.EVENT_BUS.register(SigmaReborn.INSTANCE.screenProcessor);
+        SigmaReborn.INSTANCE.onFinish();
     }
 
 }

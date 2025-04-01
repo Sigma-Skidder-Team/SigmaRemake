@@ -1,19 +1,20 @@
 package org.newdawn.slick.opengl.renderer;
 
+@SuppressWarnings("unused")
 public interface LineStripRenderer {
-   boolean applyGLLineFixes();
+    boolean applyGLLineFixes();
 
-   void start();
+    void start();
 
-   void end();
+    void end();
 
-   void vertex(float x, float y);
+    void vertex(float x, float y);
 
-   void color(float r, float g, float b, float a);
+    void color(float r, float g, float b, float a);
 
-   void setWidth(float width);
+    void setWidth(float width);
 
-   void setAntiAlias(boolean antialias);
+    void setAntiAlias(boolean antialias);
 
-   void setLineCaps(boolean caps);
+    void setLineCaps(boolean caps);
 }

@@ -3,15 +3,15 @@ package org.newdawn.slick.opengl;
 import java.nio.ByteBuffer;
 
 public interface ImageData {
-   int getDepth();
+    int getDepth();
 
-   int getWidth();
+    int getWidth();
 
-   int getHeight();
+    int getHeight();
 
-   int getTexWidth();
+    int getTexWidth();
 
-   int getTexHeight();
+    int getTexHeight();
 
-   ByteBuffer getImageBufferData();
+    ByteBuffer getImageBufferData();
 }

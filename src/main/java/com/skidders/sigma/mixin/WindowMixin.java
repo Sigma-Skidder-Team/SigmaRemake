@@ -1,7 +1,7 @@
 package com.skidders.sigma.mixin;
 
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.utils.render.image.TextureLoader;
+import com.skidders.sigma.util.client.render.image.TextureLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFWImage;
@@ -22,7 +22,7 @@ public class WindowMixin {
             at = @At("TAIL")
     )
     public final void onWindowSizeUpdate(long window, int width, int height, CallbackInfo ci) {
-        SigmaReborn.INSTANCE.screenProcessor.onResize();
+        SigmaReborn.INSTANCE.screenHandler.onResize();
     }
 
     @Inject(

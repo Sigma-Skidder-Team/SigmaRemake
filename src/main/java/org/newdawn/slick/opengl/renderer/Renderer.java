@@ -1,5 +1,6 @@
 package org.newdawn.slick.opengl.renderer;
 
+@SuppressWarnings("unused")
 public class Renderer {
     public static final int IMMEDIATE_RENDERER = 1;
     public static final int VERTEX_ARRAY_RENDERER = 2;
@@ -44,9 +45,5 @@ public class Renderer {
 
     public static SGL get() {
         return renderer;
-    }
-
-    public static LineStripRenderer getLineStripRenderer() {
-        return lineStripRenderer;
     }
 }

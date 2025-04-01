@@ -20,76 +20,53 @@ import java.nio.ByteBuffer;
  * @author Jeremy Adams (elias_naur)
  * @author Kevin Glass (kevglass)
  */
-
+@SuppressWarnings("unused")
 public class BufferedImageUtil {
-
     /**
      * Load a texture
      *
-     * @param resourceName
-     *            The location of the resource to load
-     * @param resourceImage
-     *            The BufferedImage we are converting
+     * @param resourceName  The location of the resource to load
+     * @param resourceImage The BufferedImage we are converting
      * @return The loaded texture
-     * @throws IOException
-     *             Indicates a failure to access the resource
+     * @throws IOException Indicates a failure to access the resource
      */
-    public static Texture getTexture(String resourceName,
-                                     BufferedImage resourceImage) throws IOException {
-        Texture tex = getTexture(resourceName, resourceImage,
+    public static Texture getTexture(String resourceName, BufferedImage resourceImage) throws IOException {
+        return getTexture(resourceName, resourceImage,
                 SGL.GL_TEXTURE_2D, // target
                 SGL.GL_RGBA8, // dest pixel format
                 SGL.GL_LINEAR, // min filter (unused)
                 SGL.GL_LINEAR);
-
-        return tex;
     }
 
     /**
      * Load a texture
      *
-     * @param resourceName
-     *            The location of the resource to load
-     * @param resourceImage
-     *            The BufferedImage we are converting
+     * @param resourceName  The location of the resource to load
+     * @param resourceImage The BufferedImage we are converting
      * @return The loaded texture
-     * @throws IOException
-     *             Indicates a failure to access the resource
      */
-    public static Texture getTexture(String resourceName,
-                                     BufferedImage resourceImage, int filter) throws IOException {
-        Texture tex = getTexture(resourceName, resourceImage,
+    public static Texture getTexture(String resourceName, BufferedImage resourceImage, int filter) {
+        return getTexture(resourceName, resourceImage,
                 SGL.GL_TEXTURE_2D, // target
                 SGL.GL_RGBA8, // dest pixel format
                 filter, // min filter (unused)
                 filter);
-
-        return tex;
     }
 
     /**
      * Load a texture into OpenGL from a BufferedImage
      *
-     * @param resourceName
-     *            The location of the resource to load
-     * @param resourceimage
-     *            The BufferedImage we are converting
-     * @param target
-     *            The GL target to load the texture against
-     * @param dstPixelFormat
-     *            The pixel format of the screen
-     * @param minFilter
-     *            The minimising filter
-     * @param magFilter
-     *            The magnification filter
+     * @param resourceName   The location of the resource to load
+     * @param resourceImage  The BufferedImage we are converting
+     * @param target         The GL target to load the texture against
+     * @param dstPixelFormat The pixel format of the screen
+     * @param minFilter      The minimising filter
+     * @param magFilter      The magnification filter
      * @return The loaded texture
-     * @throws IOException
-     *             Indicates a failure to access the resource
      */
-    public static Texture getTexture(String resourceName,
-                                     BufferedImage resourceimage, int target, int dstPixelFormat,
-                                     int minFilter, int magFilter) throws IOException {
-        ImageIOImageData data = new ImageIOImageData();int srcPixelFormat = 0;
+    public static Texture getTexture(String resourceName, BufferedImage resourceImage, int target, int dstPixelFormat, int minFilter, int magFilter) {
+        ImageIOImageData data = new ImageIOImageData();
+        int srcPixelFormat;
 
         // create the texture ID for this texture
         int textureID = InternalTextureLoader.createTextureID();
@@ -101,18 +78,17 @@ public class BufferedImageUtil {
         // bind this texture
         Renderer.get().glBindTexture(target, textureID);
 
-        BufferedImage bufferedImage = resourceimage;
-        texture.setWidth(bufferedImage.getWidth());
-        texture.setHeight(bufferedImage.getHeight());
+        texture.setWidth(resourceImage.getWidth());
+        texture.setHeight(resourceImage.getHeight());
 
-        if (bufferedImage.getColorModel().hasAlpha()) {
+        if (resourceImage.getColorModel().hasAlpha()) {
             srcPixelFormat = SGL.GL_RGBA;
         } else {
             srcPixelFormat = SGL.GL_RGB;
         }
 
         // convert that image into a byte buffer of texture data
-        ByteBuffer textureBuffer = data.imageToByteBuffer(bufferedImage, false, false, null);
+        ByteBuffer textureBuffer = data.imageToByteBuffer(resourceImage, false, false, null);
         texture.setTextureHeight(data.getTexHeight());
         texture.setTextureWidth(data.getTexWidth());
         texture.setAlpha(data.getDepth() == 32);
@@ -146,17 +122,17 @@ public class BufferedImageUtil {
     /**
      * Implement of transform copy area for 1.4
      *
-     * @param image The image to copy
-     * @param x The x position to copy to
-     * @param y The y position to copy to
-     * @param width The width of the image
+     * @param image  The image to copy
+     * @param x      The x position to copy to
+     * @param y      The y position to copy to
+     * @param width  The width of the image
      * @param height The height of the image
-     * @param dx The transform on the x axis
-     * @param dy The transform on the y axis
+     * @param dx     The transform on the x-axis
+     * @param dy     The transform on the y-axis
      */
     private static void copyArea(BufferedImage image, int x, int y, int width, int height, int dx, int dy) {
         Graphics2D g = (Graphics2D) image.getGraphics();
 
-        g.drawImage(image.getSubimage(x, y, width, height),x+dx,y+dy,null);
+        g.drawImage(image.getSubimage(x, y, width, height), x + dx, y + dy, null);
     }
 }

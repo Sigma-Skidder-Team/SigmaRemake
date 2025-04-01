@@ -1,24 +1,18 @@
 package com.skidders.sigma.module.impl.gui;
 
-import com.google.common.eventbus.Subscribe;
 import com.skidders.SigmaReborn;
-import com.skidders.sigma.events.impl.Render2DEvent;
+import com.skidders.sigma.event.impl.Render2DEvent;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.settings.impl.BooleanSetting;
 import com.skidders.sigma.module.settings.impl.ModeSetting;
 import com.skidders.sigma.module.settings.impl.NumberSetting;
-import com.skidders.sigma.utils.render.font.styled.StyledFont;
-import com.skidders.sigma.utils.render.font.styled.StyledFontRenderer;
-import com.skidders.sigma.utils.render.interfaces.IFontRegistry;
-import com.skidders.sigma.utils.render.shader.ShaderRenderUtil;
+import com.skidders.sigma.util.client.events.Listen;
 import org.lwjgl.glfw.GLFW;
-
-import java.awt.*;
 
 public class ActiveMods extends Module {
 
-    private StyledFont font = IFontRegistry.Light20;
+    //private StyledFont font = IFontRegistry.Light20;
 
     public ActiveMods() {
         super("ActiveMods", "Renders active mods", Category.GUI, GLFW.GLFW_KEY_V);
@@ -27,6 +21,7 @@ public class ActiveMods extends Module {
         registerSetting(new NumberSetting("Slider", "OMG, it's a slider!", 3, 1, 5, 1.0f));
     }
 
+    /*
     @Override
     public void onEnable() {
         switch ((String) getSettingByName("Size").value) {
@@ -35,8 +30,9 @@ public class ActiveMods extends Module {
             case "Tiny" -> font = IFontRegistry.Light14;
         }
     }
+     */
 
-    @Subscribe
+    @Listen
     public void on2D(Render2DEvent event) {
         if (mc.options.debugEnabled) {
             return;
@@ -44,12 +40,12 @@ public class ActiveMods extends Module {
 
         float offsetY = 3;
         int screenWidth = mc.getWindow().getWidth();
-        for (Module module : SigmaReborn.INSTANCE.moduleManager.modules) {
+        for (Module module : SigmaReborn.INSTANCE.moduleManager.getEnabledModules()) {
             float x, y = offsetY;
 
-            x = (float) screenWidth / 2 - font.getWidth(module.name) - 3;
+            //x = (float) screenWidth / 2 - font.getWidth(module.name) - 3;
 
-            StyledFontRenderer.drawString(event.matrixStack, font, module.name, x, y, new Color(255, 255, 255, 150));
+            //StyledFontRenderer.drawString(event.matrixStack, font, module.name, x, y, new Color(255, 255, 255, 150));
 
             offsetY += 12;
         }

@@ -1,26 +1,30 @@
 package com.skidders;
 
-import com.google.common.eventbus.EventBus;
-import com.skidders.sigma.managers.*;
-import com.skidders.sigma.processors.ScreenProcessor;
+import com.skidders.sigma.manager.impl.ModuleHandler;
+import com.skidders.sigma.manager.impl.ScreenHandler;
+import com.skidders.sigma.util.client.interfaces.ISubscriber;
 import net.fabricmc.api.ModInitializer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SigmaReborn implements ModInitializer {
+public class SigmaReborn implements ModInitializer, ISubscriber {
 	public static final String MOD_ID = "sigma-reborn";
 
+	//making everything final for performance $$
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static SigmaReborn INSTANCE = new SigmaReborn();
-	public static EventBus EVENT_BUS = new EventBus(MOD_ID);
+	public static final SigmaReborn INSTANCE = new SigmaReborn();
 
-	public ModuleManager moduleManager;
-	public ScreenProcessor screenProcessor;
+	public final ModuleHandler moduleManager = new ModuleHandler();
+	public final ScreenHandler screenHandler = new ScreenHandler();
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Sigma Reborn");
+	}
 
+	public void onFinish() {
+		moduleManager.init();
+		screenHandler.init();
 	}
 }
