@@ -1,7 +1,7 @@
-package com.skidders.sigma.manager.impl;
+package com.skidders.sigma.handler.impl;
 
 import com.skidders.sigma.event.impl.KeyPressEvent;
-import com.skidders.sigma.manager.Handler;
+import com.skidders.sigma.handler.Handler;
 import com.skidders.sigma.module.Category;
 import com.skidders.sigma.module.Module;
 import com.skidders.sigma.module.impl.gui.*;
@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModuleHandler extends Handler<Module> {
-
     @Override
     public void init() {
         super.init();
@@ -21,7 +20,7 @@ public class ModuleHandler extends Handler<Module> {
     }
 
     @Listen
-    public void onKey(KeyPressEvent event) {
+    private void onKey(KeyPressEvent event) {
         if (event.action == GLFW.GLFW_RELEASE && MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().currentScreen == null)
             this.list.forEach(m -> {
                 if (m.key == event.key) {
@@ -53,5 +52,4 @@ public class ModuleHandler extends Handler<Module> {
                 mod.category.equals(input)).collect(Collectors.toList()
         );
     }
-
 }

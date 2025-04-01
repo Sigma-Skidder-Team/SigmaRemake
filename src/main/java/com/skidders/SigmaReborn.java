@@ -1,7 +1,7 @@
 package com.skidders;
 
-import com.skidders.sigma.manager.impl.ModuleHandler;
-import com.skidders.sigma.manager.impl.ScreenHandler;
+import com.skidders.sigma.handler.impl.ModuleHandler;
+import com.skidders.sigma.handler.impl.ScreenHandler;
 import com.skidders.sigma.util.client.interfaces.ISubscriber;
 import net.fabricmc.api.ModInitializer;
 

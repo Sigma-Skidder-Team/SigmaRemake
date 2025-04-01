@@ -1,4 +1,4 @@
-package com.skidders.sigma.manager;
+package com.skidders.sigma.handler;
 
 import com.skidders.sigma.util.client.interfaces.ISubscriber;
 import lombok.Getter;
