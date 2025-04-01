@@ -1,6 +1,7 @@
 package com.skidders.sigma.mixin;
 
 import com.skidders.SigmaReborn;
+import com.skidders.sigma.event.impl.RunEvent;
 import com.skidders.sigma.screen.pages.LoadingPage;
 import com.skidders.sigma.util.system.file.FileUtil;
 import net.minecraft.SharedConstants;
@@ -104,8 +105,17 @@ public abstract class MinecraftClientMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    public final void injectMultiplayerBypass(final CallbackInfoReturnable<Boolean> cir) {
+    public final void isMultiplayerEnabled(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
+    }
+
+    @Inject(
+            method = "isDemo",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public final void isDemo(final CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(false);
     }
 
     @Inject(
@@ -122,11 +132,16 @@ public abstract class MinecraftClientMixin {
             at = @At(value = "TAIL")
     )
     public final void onMinecraftClientInitEnd(RunArgs args, CallbackInfo ci) {
-        SigmaReborn.INSTANCE.onFinish();
+        SigmaReborn.INSTANCE.onLastInitialize();
     }
 
     @Inject(method = "isModded", at = @At(value = "HEAD"), cancellable = true)
     public void isModded(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
+    }
+
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;startMonitor(ZLnet/minecraft/util/TickDurationMonitor;)V"))
+    public void run(CallbackInfo cir) {
+        new RunEvent().post();
     }
 }

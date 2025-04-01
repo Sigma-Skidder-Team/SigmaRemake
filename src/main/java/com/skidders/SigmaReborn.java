@@ -25,7 +25,7 @@ public class SigmaReborn implements ModInitializer, ISubscriber {
 		LOGGER.info("Initializing Sigma Reborn");
 	}
 
-	public void onFinish() {
+	public void onLastInitialize() {
 		moduleManager.init();
 		screenHandler.init();
 	}
