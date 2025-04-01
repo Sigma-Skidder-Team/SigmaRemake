@@ -125,4 +125,8 @@ public abstract class MinecraftClientMixin {
         SigmaReborn.INSTANCE.onFinish();
     }
 
+    @Inject(method = "isModded", at = @At(value = "HEAD"), cancellable = true)
+    public void isModded(CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(false);
+    }
 }
