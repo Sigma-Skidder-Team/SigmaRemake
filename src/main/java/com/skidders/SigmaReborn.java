@@ -10,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 public class SigmaReborn implements ModInitializer, ISubscriber {
 	public static final String MOD_ID = "sigma-reborn";
+	public static final Mode MODE = Mode.NONE;
+
 
 	//making everything final for performance $$
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
@@ -26,5 +28,12 @@ public class SigmaReborn implements ModInitializer, ISubscriber {
 	public void onFinish() {
 		moduleManager.init();
 		screenHandler.init();
+	}
+
+	public enum Mode {
+		NONE,
+		CLASSIC,
+		JELLO,
+		NOADDONS
 	}
 }
