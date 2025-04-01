@@ -110,12 +110,21 @@ public class RenderUtil implements IMinecraft {
         drawImage(x, y, width, height, texture, -1);
     }
 
-    public static void drawImage(String image, int x, int y, float width, float height, int xd, int xd2) {
+    public static void drawImage(String image, float x, float y, float width, float height) {
         mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", image));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) width, (int) height, xd, xd2);
+        DrawableHelper.drawTexture(new MatrixStack(), (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width, (int) height);
+        RenderSystem.disableBlend();
+    }
+
+    public static void drawImage(String image, float x, float y, float width, float height, int color) {
+        mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", image));
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f(color, color, color, color);
+        DrawableHelper.drawTexture(new MatrixStack(), (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width, (int) height);
         RenderSystem.disableBlend();
     }
 
