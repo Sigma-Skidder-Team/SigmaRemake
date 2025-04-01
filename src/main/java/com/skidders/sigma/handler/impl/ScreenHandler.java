@@ -1,6 +1,8 @@
 package com.skidders.sigma.handler.impl;
 
+import com.skidders.SigmaReborn;
 import com.skidders.sigma.event.impl.KeyPressEvent;
+import com.skidders.sigma.event.impl.RunEvent;
 import com.skidders.sigma.event.impl.WindowSizeChangeEvent;
 import com.skidders.sigma.handler.Handler;
 import com.skidders.sigma.screen.guis.SwitchGUI;
@@ -8,6 +10,7 @@ import com.skidders.sigma.util.client.events.Listen;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
 import com.skidders.sigma.util.system.StringUtil;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import org.lwjgl.glfw.GLFW;
 
 public class ScreenHandler extends Handler<Screen> implements IMinecraft {
@@ -35,9 +38,17 @@ public class ScreenHandler extends Handler<Screen> implements IMinecraft {
 
     @Listen
     private void onKey(KeyPressEvent event) {
-        if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind && mc.world != null && mc.currentScreen == null) {
+        if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind) {
             //mc.openScreen(clickGUI);
             clickGuiBindName = StringUtil.convertKeyToName(clickGuiBind);
+
+        }
+    }
+
+    @Listen
+    private void onRun(RunEvent event) {
+        if (SigmaReborn.MODE.equals(SigmaReborn.Mode.NONE) && mc.currentScreen instanceof TitleScreen) {
+            mc.openScreen(getByClass(SwitchGUI.class));
         }
     }
 
