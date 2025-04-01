@@ -1,5 +1,6 @@
 package com.skidders.sigma.util.system.file;
 
+import com.skidders.sigma.util.client.interfaces.ILogger;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.BufferedImageUtil;
@@ -13,16 +14,13 @@ import java.awt.image.Kernel;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ResourceLoader {
-
+public class ResourceLoader implements ILogger {
     public static Texture loadTexture(String filePath) {
         try {
             String extension = filePath.substring(filePath.lastIndexOf(".") + 1).toUpperCase();
             return loadTexture(filePath, extension);
         } catch (Exception e) {
-            System.err.println(
-                    "Unable to load texture " + filePath +
-                            ". Please make sure it is a valid path and has a valid extension.");
+            logger.error("Unable to load texture {}. Please make sure it is a valid path and has a valid extension.", filePath);
             throw e;
         }
     }
