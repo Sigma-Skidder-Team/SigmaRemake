@@ -106,6 +106,10 @@ public class RenderUtil implements IMinecraft {
         RenderSystem.clearCurrentColor();
     }
 
+    public static void drawImage(float x, float y, float width, float height, Texture texture) {
+        drawImage(x, y, width, height, texture, -1);
+    }
+
     public static void drawImage(String image, int x, int y, float width, float height, int xd, int xd2) {
         mc.getTextureManager().bindTexture(new Identifier("sigma-reborn", image));
         RenderSystem.enableBlend();
