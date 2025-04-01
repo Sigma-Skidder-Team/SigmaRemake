@@ -33,8 +33,8 @@ public class LoadingPage extends Overlay {
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;
 
-        logo = ResourceLoader.loadTexture("jello/loading/logo.png");
-        blurredBackground = ResourceLoader.generateTexture("jello/loading/back.png", 0.25F, 25);
+        logo = ResourceLoader.loadTexture("loading/logo.png");
+        blurredBackground = ResourceLoader.generateTexture("loading/back.png", 0.25F, 25);
     }
 
     @Override
