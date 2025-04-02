@@ -154,6 +154,30 @@ public class Loader {
         }
     }
 
+    public static Texture createProcessedTexture(String imagePath, float scale, int padding) {
+        try {
+            BufferedImage originalImage = ImageIO.read(readInputStream(imagePath));
+            int scaledWidth = (int) (scale * originalImage.getWidth());
+            int scaledHeight = (int) (scale * originalImage.getHeight());
+
+            BufferedImage scaledImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = scaledImage.createGraphics();
+            graphics.scale(scale, scale);
+            graphics.drawImage(originalImage, 0, 0, null);
+            graphics.dispose();
+
+            BufferedImage paddedImage = ImageUtil.addPadding(scaledImage, padding);
+            BufferedImage blurredImage = BlurUtil.applyGaussianBlur(paddedImage, padding);
+            BufferedImage adjustedImage = ImageUtil.adjustImageHSB(blurredImage, 0.0F, 1.1F, 0.0F);
+
+            return BufferedImageUtil.getTexture(imagePath, adjustedImage);
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Unable to find " + imagePath + ". You've probably obfuscated the archive and forgot to transfer the assets or keep package names."
+            );
+        }
+    }
+
     public record ImageParser(int width, int height, ByteBuffer image) {
         public static ImageParser loadImage(String resource, String path) {
             try {

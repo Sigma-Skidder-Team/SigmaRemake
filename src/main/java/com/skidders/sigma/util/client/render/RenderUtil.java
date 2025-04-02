@@ -5,15 +5,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.skidders.SigmaReborn;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Stack;
@@ -21,6 +17,10 @@ import java.util.Stack;
 public class RenderUtil implements IMinecraft {
 
     private static final Stack<IntBuffer> buffer = new Stack<>();
+
+    public static boolean hovered(double mouseX, double mouseY, float x, float y, float width, float height) {
+        return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+    }
 
     public static void drawRoundedRect(float x, float y, float width, float height, float cornerRadius, int color) {
         drawRoundedRect(x, y + cornerRadius, x + width, y + height - cornerRadius, color);
@@ -41,7 +41,7 @@ public class RenderUtil implements IMinecraft {
     }
 
     public static void applyScaledScissor(float x, float y, float width, float height) {
-        applyScissorArea((int) x, (int) y, (int) width, (int) height, true);
+        startScissor((int) x, (int) y, (int) width, (int) height, true);
     }
 
     public static void restoreScissor() {
@@ -124,7 +124,11 @@ public class RenderUtil implements IMinecraft {
         drawRoundedRect(var0, var1, var0 + var2, var1 + var3, var4);
     }
 
-    public static void applyScissorArea(int x, int y, int width, int height, boolean isScaled) {
+    public static void startScissor(float var0, float var1, float var2, float var3) {
+        startScissor((int) var0, (int) var1, (int) var0 + (int) var2, (int) var1 + (int) var3, true);
+    }
+
+    public static void startScissor(int x, int y, int width, int height, boolean isScaled) {
         if (!isScaled) {
             x = (int) ((float) x * SigmaReborn.INSTANCE.screenHandler.resizingScaleFactor);
             y = (int) ((float) y * SigmaReborn.INSTANCE.screenHandler.resizingScaleFactor);
@@ -199,5 +203,9 @@ public class RenderUtil implements IMinecraft {
 
     public static float getWindowScaleFactor() {
         return (float) mc.getWindow().getScaleFactor();
+    }
+
+    public static void begin() {
+
     }
 }
