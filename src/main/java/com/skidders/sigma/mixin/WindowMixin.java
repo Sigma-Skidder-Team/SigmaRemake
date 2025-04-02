@@ -5,7 +5,7 @@ import com.skidders.sigma.event.impl.WindowSizeChangeEvent;
 import com.skidders.sigma.screen.guis.SwitchGUI;
 import com.skidders.sigma.util.client.interfaces.ILogger;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
-import com.skidders.sigma.util.client.render.image.TextureLoader;
+import com.skidders.sigma.util.client.render.Loader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFWImage;
@@ -38,7 +38,7 @@ public class WindowMixin implements ILogger, IMinecraft {
     private void injectSetIcon(InputStream icon16, InputStream icon32, CallbackInfo ci) {
         if (!glfwInit()) logger.error("Could not initialise opengl4.5!");
 
-        TextureLoader.ImageParser logo = TextureLoader.ImageParser.loadImage("/assets/sigma-reborn/icon_hd.png", "sigma/icon_hd.png");
+        Loader.ImageParser logo = Loader.ImageParser.loadImage("/assets/sigma-reborn/icon_hd.png", "sigma/icon_hd.png");
 
         GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
         image.set(logo.width(), logo.height(), logo.image());

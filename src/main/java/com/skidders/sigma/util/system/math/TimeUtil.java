@@ -1,4 +1,4 @@
-package com.skidders.sigma.util.system;
+package com.skidders.sigma.util.system.math;
 
 import java.util.function.LongSupplier;
 

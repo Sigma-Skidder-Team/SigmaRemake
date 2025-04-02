@@ -3,7 +3,8 @@ package com.skidders.sigma.screen.guis;
 import com.skidders.sigma.screen.Animation;
 import com.skidders.sigma.util.client.render.ColorUtil;
 import com.skidders.sigma.util.client.render.RenderUtil;
-import com.skidders.sigma.util.system.SmoothInterpolator;
+import com.skidders.sigma.util.client.render.image.ImageUtil;
+import com.skidders.sigma.util.system.math.SmoothInterpolator;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -24,7 +25,7 @@ public class SwitchGUI extends Screen {
 
         anim.changeDirection(Animation.Direction.FORWARDS);
         //TODO: Parallax/background follows mouse
-        RenderUtil.drawImage(
+        ImageUtil.drawImage(
                 "loading/back.png",
                 0,
                 0,
@@ -42,7 +43,7 @@ public class SwitchGUI extends Screen {
 
         super.render(matrices, mouseX, mouseY, delta);
 
-        RenderUtil.drawImage(
+        ImageUtil.drawImage(
                 "loading/back.png",
                 0,
                 0,
@@ -67,7 +68,7 @@ public class SwitchGUI extends Screen {
 
         float logoY = centeredLogoY - (centeredLogoY - 40) * smoothPercent;
 
-        RenderUtil.drawImage("loading/logo.png", logoX, logoY, logoWidth, logoHeight);
+        ImageUtil.drawImage("loading/logo.png", logoX, logoY, logoWidth, logoHeight);
     }
 
     @Override

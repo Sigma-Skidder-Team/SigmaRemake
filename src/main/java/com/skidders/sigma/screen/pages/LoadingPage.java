@@ -1,7 +1,8 @@
 package com.skidders.sigma.screen.pages;
 
-import com.skidders.sigma.util.system.file.ResourceLoader;
-import com.skidders.sigma.util.system.TimeUtil;
+import com.skidders.sigma.util.client.render.Loader;
+import com.skidders.sigma.util.client.render.image.ImageUtil;
+import com.skidders.sigma.util.system.math.TimeUtil;
 import com.skidders.sigma.util.client.render.ColorUtil;
 import com.skidders.sigma.util.client.render.RenderUtil;
 import net.minecraft.client.MinecraftClient;
@@ -33,8 +34,8 @@ public class LoadingPage extends Overlay {
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;
 
-        logo = ResourceLoader.loadTexture("loading/logo.png");
-        blurredBackground = ResourceLoader.generateTexture("loading/back.png", 0.25F, 25);
+        logo = Loader.loadTexture("loading/logo.png");
+        blurredBackground = Loader.generateTexture("loading/back.png", 0.25F, 25);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class LoadingPage extends Overlay {
         matrices.push();
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
-        RenderUtil.drawImage(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), blurredBackground, opacity);
+        ImageUtil.drawImage(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), blurredBackground, opacity);
         RenderUtil.drawRoundedRect2(0.0F, 0.0F, (float) MinecraftClient.getInstance().getWindow().getWidth(), (float) MinecraftClient.getInstance().getWindow().getHeight(), ColorUtil.applyAlpha(0, 0.75F));
 
         int logoWidth = 455;
@@ -92,7 +93,7 @@ public class LoadingPage extends Overlay {
         float logoX = (float) (MinecraftClient.getInstance().getWindow().getWidth() - logoWidth) / 2;
         float logoY = (float) (MinecraftClient.getInstance().getWindow().getHeight() - logoHeight) / 2 - 14.0F * opacity;
 
-        RenderUtil.drawImage((float) logoX, (float) logoY, (float) logoWidth, (float) logoHeight, logo, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), opacity));
+        ImageUtil.drawImage((float) logoX, (float) logoY, (float) logoWidth, (float) logoHeight, logo, ColorUtil.applyAlpha(ColorUtil.ClientColors.LIGHT_GREYISH_BLUE.getColor(), opacity));
 
         float clampedProgress = Math.min(1.0F, progress * 1.02F);
         float progressBarOffset = 80;

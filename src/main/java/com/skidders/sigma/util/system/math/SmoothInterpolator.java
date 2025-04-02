@@ -1,6 +1,4 @@
-package com.skidders.sigma.util.system;
-
-import com.skidders.sigma.util.system.math.Vector2d;
+package com.skidders.sigma.util.system.math;
 
 import java.util.ArrayList;
 import java.util.List;
