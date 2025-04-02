@@ -66,8 +66,6 @@ public class CompositeImageData implements LoadableImageData, ILogger {
                 picked = source;
                 break;
             } catch (Exception e) {
-                logger.warn("{} failed to read the data", source.getClass(), e);
-                exception.addException(e);
             }
         }
 

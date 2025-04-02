@@ -29,6 +29,8 @@
  */
 package org.newdawn.slick.opengl;
 
+import lombok.Getter;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +46,7 @@ import java.util.zip.Inflater;
  * @author Matthias Mann
  */
 @SuppressWarnings("unused")
+@Getter
 public class PNGDecoder {
     public static Format ALPHA = new Format(1, true);
     public static Format LUMINANCE = new Format(1, false);
@@ -53,22 +56,14 @@ public class PNGDecoder {
     public static Format BGRA = new Format(4, true);
     public static Format ABGR = new Format(4, true);
 
+    @Getter
     public static class Format {
-
         final int numComponents;
         final boolean hasAlpha;
 
         private Format(int numComponents, boolean hasAlpha) {
             this.numComponents = numComponents;
             this.hasAlpha = hasAlpha;
-        }
-
-        public int getNumComponents() {
-            return numComponents;
-        }
-
-        public boolean isHasAlpha() {
-            return hasAlpha;
         }
     }
 
@@ -134,14 +129,6 @@ public class PNGDecoder {
                 this.closeChunk();
             }
         }
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
     }
 
     public boolean hasAlpha() {
