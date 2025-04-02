@@ -47,7 +47,7 @@ public abstract class GameRendererMixin implements IAccessor {
     @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.GETFIELD, ordinal = 0))
     public void onRender(float tickDelta, long startTime, boolean tick, CallbackInfo callbackInfo) {
         RenderSystem.pushMatrix();
-        if (!SigmaReborn.INSTANCE.MODE.equals(SigmaReborn.Mode.NOADDONS)) {
+        if (!SigmaReborn.MODE.equals(SigmaReborn.Mode.NOADDONS)) {
             double scaleFactor = this.client.getWindow().getScaleFactor() / (double) ((float) Math.pow(this.client.getWindow().getScaleFactor(), 2.0));
             GL11.glScaled(scaleFactor, scaleFactor, 1.0);
             GL11.glScaled(SigmaReborn.INSTANCE.screenHandler.resizingScaleFactor, SigmaReborn.INSTANCE.screenHandler.resizingScaleFactor, 1.0);
@@ -65,7 +65,7 @@ public abstract class GameRendererMixin implements IAccessor {
                     var3 = client.getWindow().getWidth() / 2 - var5 / 2;
                 }
 
-                if (!SigmaReborn.INSTANCE.MODE.equals(SigmaReborn.Mode.JELLO)) {
+                if (!SigmaReborn.MODE.equals(SigmaReborn.Mode.JELLO)) {
                     float var7 = 0.5F + 0.0f * 0.5F;
                     GL11.glAlphaFunc(516, 0.1F);
                     RenderUtil.drawRoundedRect2(4.0F, 2.0F, 106.0F, 28.0F, ColorUtil.applyAlpha(ColorUtil.ClientColors.DEEP_TEAL.getColor(), 0.6F * var7));
@@ -87,7 +87,6 @@ public abstract class GameRendererMixin implements IAccessor {
 
                     RenderSystem.disableBlend();
                 }
-
                 new FastRender2DEvent(tickDelta, startTime, tick).post();
             }
 
