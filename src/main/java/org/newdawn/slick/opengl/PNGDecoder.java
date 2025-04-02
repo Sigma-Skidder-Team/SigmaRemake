@@ -29,8 +29,6 @@
  */
 package org.newdawn.slick.opengl;
 
-import lombok.Getter;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,12 +39,11 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * A PNGDecoder. The org.newdawn.slick.slick PNG decoder is based on this class :)
+ * A PNGDecoder. The slick PNG decoder is based on this class :)
  *
  * @author Matthias Mann
  */
 @SuppressWarnings("unused")
-@Getter
 public class PNGDecoder {
     public static Format ALPHA = new Format(1, true);
     public static Format LUMINANCE = new Format(1, false);
@@ -56,14 +53,22 @@ public class PNGDecoder {
     public static Format BGRA = new Format(4, true);
     public static Format ABGR = new Format(4, true);
 
-    @Getter
     public static class Format {
+
         final int numComponents;
         final boolean hasAlpha;
 
         private Format(int numComponents, boolean hasAlpha) {
             this.numComponents = numComponents;
             this.hasAlpha = hasAlpha;
+        }
+
+        public int getNumComponents() {
+            return numComponents;
+        }
+
+        public boolean isHasAlpha() {
+            return hasAlpha;
         }
     }
 
@@ -98,39 +103,45 @@ public class PNGDecoder {
     private byte[] paletteA;
     private byte[] transPixel;
 
-    public PNGDecoder(InputStream input) throws IOException {
-        this.input = input;
+    public PNGDecoder(InputStream var1) throws IOException {
+        this.input = var1;
         this.crc = new CRC32();
         this.buffer = new byte[4096];
-
-        readFully(buffer, 0, SIGNATURE.length);
-        if (!checkSignature(buffer)) {
+        this.readFully(this.buffer, 0, SIGNATURE.length);
+        if (!checkSignature(this.buffer)) {
             throw new IOException("Not a valid PNG file");
-        }
+        } else {
+            this.openChunk(1229472850);
+            this.readIHDR();
+            this.closeChunk();
 
-        openChunk(IHDR);
-        readIHDR();
-        closeChunk();
+            while (true) {
+                this.openChunk();
+                switch (this.chunkType) {
+                    case 1229209940:
+                        if (this.colorType == 3 && this.palette == null) {
+                            throw new IOException("Missing PLTE chunk");
+                        }
 
-        searchIDAT:
-        for (; ; ) {
-            openChunk();
-            switch (chunkType) {
-                case IDAT:
-                    break searchIDAT;
-                case PLTE:
-                    readPLTE();
-                    break;
-                case tRNS:
-                    readtRNS();
-                    break;
+                        return;
+                    case 1347179589:
+                        this.readPLTE();
+                        break;
+                    case 1951551059:
+                        this.readtRNS();
+                }
+
+                this.closeChunk();
             }
-            closeChunk();
         }
+    }
 
-        if (colorType == COLOR_INDEXED && palette == null) {
-            throw new IOException("Missing PLTE chunk");
-        }
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     public boolean hasAlpha() {
@@ -152,38 +163,36 @@ public class PNGDecoder {
      * @throws UnsupportedOperationException if this PNG file can't be decoded
      */
     public Format decideTextureFormat(Format fmt) {
-        return switch (colorType) {
-            case COLOR_TRUECOLOR -> {
+        switch (colorType) {
+            case COLOR_TRUECOLOR:
                 if ((fmt == ABGR) || (fmt == RGBA) || (fmt == BGRA) || (fmt == RGB)) {
-                    yield fmt;
+                    return fmt;
                 }
 
-                yield RGB;
-            }
-            case COLOR_TRUEALPHA -> {
+                return RGB;
+            case COLOR_TRUEALPHA:
                 if ((fmt == ABGR) || (fmt == RGBA) || (fmt == BGRA) || (fmt == RGB)) {
-                    yield fmt;
+                    return fmt;
                 }
 
-                yield RGBA;
-            }
-            case COLOR_GREYSCALE -> {
+                return RGBA;
+            case COLOR_GREYSCALE:
                 if ((fmt == LUMINANCE) || (fmt == ALPHA)) {
-                    yield fmt;
+                    return fmt;
                 }
 
-                yield LUMINANCE;
-            }
-            case COLOR_GREYALPHA -> LUMINANCE_ALPHA;
-            case COLOR_INDEXED -> {
+                return LUMINANCE;
+            case COLOR_GREYALPHA:
+                return LUMINANCE_ALPHA;
+            case COLOR_INDEXED:
                 if ((fmt == ABGR) || (fmt == RGBA) || (fmt == BGRA)) {
-                    yield fmt;
+                    return fmt;
                 }
 
-                yield RGBA;
-            }
-            default -> throw new UnsupportedOperationException("Not yet implemented");
-        };
+                return RGBA;
+            default:
+                throw new UnsupportedOperationException("Not yet implemented");
+        }
     }
 
     public void decode(ByteBuffer buffer, int stride, Format fmt) throws IOException {
@@ -362,7 +371,7 @@ public class PNGDecoder {
 
     private void copyRGBAtoBGRA(ByteBuffer buffer, byte[] curLine) {
         for (int i = 1, n = curLine.length; i < n; i += 4) {
-            buffer.put(curLine[i + 2]).put(curLine[i + 1]).put(curLine[i]).put(curLine[i + 3]);
+            buffer.put(curLine[i + 2]).put(curLine[i + 1]).put(curLine[i + 0]).put(curLine[i + 3]);
         }
     }
 
@@ -376,7 +385,7 @@ public class PNGDecoder {
         if (paletteA != null) {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = paletteA[idx];
@@ -385,7 +394,7 @@ public class PNGDecoder {
         } else {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = (byte) 0xFF;
@@ -398,7 +407,7 @@ public class PNGDecoder {
         if (paletteA != null) {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = paletteA[idx];
@@ -407,7 +416,7 @@ public class PNGDecoder {
         } else {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = (byte) 0xFF;
@@ -420,7 +429,7 @@ public class PNGDecoder {
         if (paletteA != null) {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = paletteA[idx];
@@ -429,7 +438,7 @@ public class PNGDecoder {
         } else {
             for (int i = 1, n = curLine.length; i < n; i += 1) {
                 int idx = curLine[i] & 255;
-                byte r = palette[idx * 3];
+                byte r = palette[idx * 3 + 0];
                 byte g = palette[idx * 3 + 1];
                 byte b = palette[idx * 3 + 2];
                 byte a = (byte) 0xFF;
@@ -441,10 +450,12 @@ public class PNGDecoder {
     private void expand4(byte[] src, byte[] dst) {
         for (int i = 1, n = dst.length; i < n; i += 2) {
             int val = src[1 + (i >> 1)] & 255;
-            if (n - i == 1) {
-                dst[i] = (byte) (val >> 4);
+            switch (n - i) {
+                default:
+                    dst[i + 1] = (byte) (val & 15);
+                case 1:
+                    dst[i] = (byte) (val >> 4);
             }
-            dst[i + 1] = (byte) (val & 15);
         }
     }
 
@@ -452,14 +463,14 @@ public class PNGDecoder {
         for (int i = 1, n = dst.length; i < n; i += 4) {
             int val = src[1 + (i >> 2)] & 255;
             switch (n - i) {
+                default:
+                    dst[i + 3] = (byte) ((val) & 3);
                 case 3:
                     dst[i + 2] = (byte) ((val >> 2) & 3);
                 case 2:
                     dst[i + 1] = (byte) ((val >> 4) & 3);
                 case 1:
                     dst[i] = (byte) ((val >> 6));
-                default:
-                    dst[i + 3] = (byte) ((val) & 3);
             }
         }
     }
@@ -468,6 +479,8 @@ public class PNGDecoder {
         for (int i = 1, n = dst.length; i < n; i += 8) {
             int val = src[1 + (i >> 3)] & 255;
             switch (n - i) {
+                default:
+                    dst[i + 7] = (byte) ((val) & 1);
                 case 7:
                     dst[i + 6] = (byte) ((val >> 1) & 1);
                 case 6:
@@ -482,8 +495,6 @@ public class PNGDecoder {
                     dst[i + 1] = (byte) ((val >> 6) & 1);
                 case 1:
                     dst[i] = (byte) ((val >> 7));
-                default:
-                    dst[i + 7] = (byte) ((val) & 1);
             }
         }
     }
@@ -502,10 +513,10 @@ public class PNGDecoder {
                 unfilterAverage(curLine, prevLine);
                 break;
             case 4:
-                unfilterPath(curLine, prevLine);
+                unfilterPaeth(curLine, prevLine);
                 break;
             default:
-                throw new IOException("invalid filter type in scanline: " + curLine[0]);
+                throw new IOException("invalide filter type in scanline: " + curLine[0]);
         }
     }
 
@@ -535,7 +546,7 @@ public class PNGDecoder {
         }
     }
 
-    private void unfilterPath(byte[] curLine, byte[] prevLine) {
+    private void unfilterPaeth(byte[] curLine, byte[] prevLine) {
         final int bpp = this.bytesPerPixel;
 
         int i;
@@ -562,61 +573,67 @@ public class PNGDecoder {
     }
 
     private void readIHDR() throws IOException {
-        checkChunkLength(13);
-        readChunk(buffer, 0, 13);
-        width = readInt(buffer, 0);
-        height = readInt(buffer, 4);
-        bitdepth = buffer[8] & 255;
-        colorType = buffer[9] & 255;
+        this.checkChunkLength(13);
+        this.readChunk(this.buffer, 0, 13);
+        this.width = this.readInt(this.buffer, 0);
+        this.height = this.readInt(this.buffer, 4);
+        this.bitdepth = this.buffer[8] & 255;
+        this.colorType = this.buffer[9] & 255;
+        label59:
+        switch (this.colorType) {
+            case 0:
+                if (this.bitdepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitdepth);
+                }
 
-        switch (colorType) {
-            case COLOR_GREYSCALE:
-                if (bitdepth != 8) {
-                    throw new IOException("Unsupported bit depth: " + bitdepth);
-                }
-                bytesPerPixel = 1;
+                this.bytesPerPixel = 1;
                 break;
-            case COLOR_GREYALPHA:
-                if (bitdepth != 8) {
-                    throw new IOException("Unsupported bit depth: " + bitdepth);
-                }
-                bytesPerPixel = 2;
-                break;
-            case COLOR_TRUECOLOR:
-                if (bitdepth != 8) {
-                    throw new IOException("Unsupported bit depth: " + bitdepth);
-                }
-                bytesPerPixel = 3;
-                break;
-            case COLOR_TRUEALPHA:
-                if (bitdepth != 8) {
-                    throw new IOException("Unsupported bit depth: " + bitdepth);
-                }
-                bytesPerPixel = 4;
-                break;
-            case COLOR_INDEXED:
-                switch (bitdepth) {
-                    case 8:
-                    case 4:
-                    case 2:
-                    case 1:
-                        bytesPerPixel = 1;
-                        break;
-                    default:
-                        throw new IOException("Unsupported bit depth: " + bitdepth);
-                }
-                break;
+            case 1:
+            case 5:
             default:
-                throw new IOException("unsupported color format: " + colorType);
+                throw new IOException("unsupported color format: " + this.colorType);
+            case 2:
+                if (this.bitdepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitdepth);
+                }
+
+                this.bytesPerPixel = 3;
+                break;
+            case 3:
+                switch (this.bitdepth) {
+                    case 1:
+                    case 2:
+                    case 4:
+                    case 8:
+                        this.bytesPerPixel = 1;
+                        break label59;
+                    case 3:
+                    case 5:
+                    case 6:
+                    case 7:
+                    default:
+                        throw new IOException("Unsupported bit depth: " + this.bitdepth);
+                }
+            case 4:
+                if (this.bitdepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitdepth);
+                }
+
+                this.bytesPerPixel = 2;
+                break;
+            case 6:
+                if (this.bitdepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitdepth);
+                }
+
+                this.bytesPerPixel = 4;
         }
 
-        if (buffer[10] != 0) {
+        if (this.buffer[10] != 0) {
             throw new IOException("unsupported compression method");
-        }
-        if (buffer[11] != 0) {
+        } else if (this.buffer[11] != 0) {
             throw new IOException("unsupported filtering method");
-        }
-        if (buffer[12] != 0) {
+        } else if (this.buffer[12] != 0) {
             throw new IOException("unsupported interlace method");
         }
     }
@@ -732,7 +749,7 @@ public class PNGDecoder {
                 }
             } while (length > 0);
         } catch (DataFormatException ex) {
-            throw new IOException("inflate error", ex);
+            throw (IOException) (new IOException("inflate error").initCause(ex));
         }
     }
 
@@ -758,6 +775,9 @@ public class PNGDecoder {
     private void skip(long amount) throws IOException {
         while (amount > 0) {
             long skipped = input.skip(amount);
+            if (skipped < 0) {
+                throw new EOFException();
+            }
             amount -= skipped;
         }
     }
