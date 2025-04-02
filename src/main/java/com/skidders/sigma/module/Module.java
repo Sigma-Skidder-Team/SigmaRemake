@@ -3,18 +3,22 @@ package com.skidders.sigma.module;
 import com.skidders.sigma.module.settings.Setting;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
 import com.skidders.sigma.util.client.interfaces.ISubscriber;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class Module implements IMinecraft, ISubscriber {
 
-    public final String name,desc;
-    public final Category category;
-    public boolean enabled;
-    public int key;
+    private final String name, desc;
+    private final Category category;
+    private boolean enabled;
+    private int key;
 
     public Module(String name, String desc, Category category, int key) {
         this(name, desc, category);
@@ -23,6 +27,7 @@ public class Module implements IMinecraft, ISubscriber {
 
     public void onEnable() {}
     public void onDisable() {}
+    public void onInit() {}
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
