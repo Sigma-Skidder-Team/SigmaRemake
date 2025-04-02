@@ -9,9 +9,12 @@ import com.skidders.sigma.screen.guis.SwitchGUI;
 import com.skidders.sigma.util.client.events.Listen;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
 import com.skidders.sigma.util.system.StringUtil;
+import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 public class ScreenHandler extends Handler<Screen> implements IMinecraft {
 
@@ -19,6 +22,9 @@ public class ScreenHandler extends Handler<Screen> implements IMinecraft {
     public int framerateLimit = 60;
     public int clickGuiBind = 344;
     public String clickGuiBindName;
+
+    public DebugHud debugHud;
+    public List<String> rightText;
 
     public boolean guiBlur = true, gpuAccelerated = true;
 
@@ -41,14 +47,13 @@ public class ScreenHandler extends Handler<Screen> implements IMinecraft {
         if (event.action == GLFW.GLFW_RELEASE && event.key == clickGuiBind) {
             //mc.openScreen(clickGUI);
             clickGuiBindName = StringUtil.convertKeyToName(clickGuiBind);
-
         }
     }
 
     @Listen
     private void onRun(RunEvent event) {
         if (SigmaReborn.MODE.equals(SigmaReborn.Mode.NONE) && mc.currentScreen instanceof TitleScreen) {
-            mc.openScreen(getByClass(SwitchGUI.class));
+            //mc.openScreen(getByClass(SwitchGUI.class));
         }
     }
 
