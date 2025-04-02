@@ -65,7 +65,7 @@ public class CompositeImageData implements LoadableImageData, ILogger {
                 buffer = source.loadImage(in, flipped, forceAlpha, transparent);
                 picked = source;
                 break;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
