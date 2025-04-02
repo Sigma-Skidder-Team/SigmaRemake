@@ -12,7 +12,6 @@ public class SigmaReborn implements ModInitializer, ISubscriber {
 	public static final String MOD_ID = "sigma-reborn";
 	public static final Mode MODE = Mode.NONE;
 
-
 	//making everything final for performance $$
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	public static final SigmaReborn INSTANCE = new SigmaReborn();

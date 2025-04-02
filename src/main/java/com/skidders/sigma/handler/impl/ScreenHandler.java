@@ -53,7 +53,7 @@ public class ScreenHandler extends Handler<Screen> implements IMinecraft {
     @Listen
     private void onRun(RunEvent event) {
         if (SigmaReborn.MODE.equals(SigmaReborn.Mode.NONE) && mc.currentScreen instanceof TitleScreen) {
-            //mc.openScreen(getByClass(SwitchGUI.class));
+            mc.openScreen(getByClass(SwitchGUI.class));
         }
     }
 
