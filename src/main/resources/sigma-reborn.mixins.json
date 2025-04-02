@@ -9,6 +9,7 @@
     "defaultRequire": 1
   },
   "client": [
+    "DebugHudMixin",
     "GameMenuScreenMixin",
     "GameRendererMixin",
     "InGameHudMixin",

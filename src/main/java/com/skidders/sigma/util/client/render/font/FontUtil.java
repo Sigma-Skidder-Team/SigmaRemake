@@ -13,6 +13,14 @@ import java.io.InputStream;
 
 public class FontUtil {
 
+    public static void drawString(TrueTypeFont font, String text, float x, float y, int color) {
+        drawString(font, x, y, text, color, FontSizeAdjust.field14488, FontSizeAdjust.field14489, false);
+    }
+
+    public static void drawString(TrueTypeFont font, String text, float x, float y, java.awt.Color color) {
+        drawString(font, x, y, text, color.getRGB(), FontSizeAdjust.field14488, FontSizeAdjust.field14489, false);
+    }
+
     public static void drawString(TrueTypeFont font, float x, float y, String text, int color) {
         drawString(font, x, y, text, color, FontSizeAdjust.field14488, FontSizeAdjust.field14489, false);
     }

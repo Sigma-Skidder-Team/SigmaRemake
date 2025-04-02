@@ -14,4 +14,6 @@ public interface ITextures {
     Texture switch_youtubeLogo = Loader.loadTexture("media/youtube.png");
     Texture switch_redditLogo = Loader.loadTexture("media/reddit.png");
     Texture switch_discordLogo = Loader.loadTexture("media/youtube.png");
+
+    Texture shadow = Loader.loadTexture("clickgui/shadow.png");
 }
