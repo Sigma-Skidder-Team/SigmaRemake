@@ -5,6 +5,7 @@ import com.skidders.sigma.event.impl.KeyPressEvent;
 import com.skidders.sigma.event.impl.RunEvent;
 import com.skidders.sigma.event.impl.WindowSizeChangeEvent;
 import com.skidders.sigma.handler.Handler;
+import com.skidders.sigma.screen.guis.JelloGUI;
 import com.skidders.sigma.screen.guis.SwitchGUI;
 import com.skidders.sigma.util.client.events.Listen;
 import com.skidders.sigma.util.client.interfaces.IMinecraft;
@@ -52,8 +53,11 @@ public class ScreenHandler extends Handler<Screen> implements IMinecraft {
 
     @Listen
     private void onRun(RunEvent event) {
-        if (SigmaReborn.MODE.equals(SigmaReborn.Mode.NONE) && mc.currentScreen instanceof TitleScreen) {
-            mc.openScreen(getByClass(SwitchGUI.class));
+        if (mc.currentScreen instanceof TitleScreen) {
+            switch (SigmaReborn.MODE) {
+                case NONE -> mc.openScreen(getByClass(SwitchGUI.class));
+                case JELLO -> mc.openScreen(new JelloGUI());
+            }
         }
     }
 
