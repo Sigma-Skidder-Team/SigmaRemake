@@ -24,9 +24,10 @@ bin/
 .classpath
 .project
 
-# macos
-
+# os watermarkings
 *.DS_Store
+desktop.ini
+Thumbs.db
 
 # fabric
 
