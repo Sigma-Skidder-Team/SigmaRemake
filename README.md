@@ -1,4 +1,10 @@
-# Sigma Client Recreation for Fabric 1.16.4
+# sigma-remake (no-kotlin)
 
-## Some code is taken from other projects, like
--  https://github.com/joshmarcus/slick2d
+A recreation of the Minecraft Sigma client originally made on top of MCP now on Fabric completely reworked from scratch.
+
+## Credits
+- [Slick2D](https://slick.ninjacave.com/)
+
+## Contributing
+
+Pull requests and issues welcome. If you have suggestions for something, open an issue or PR.
