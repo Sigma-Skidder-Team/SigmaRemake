@@ -2,10 +2,9 @@ package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.impl.MainMenuScreen;
+import io.github.sst.remake.gui.screen.MainMenuScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

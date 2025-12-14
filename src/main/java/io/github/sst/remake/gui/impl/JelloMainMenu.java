@@ -7,6 +7,7 @@ import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.Text;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.element.impl.jello.MainMenuButton;
+import io.github.sst.remake.gui.screen.MainMenuScreen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

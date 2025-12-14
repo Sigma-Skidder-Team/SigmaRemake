@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.gui.element.impl.jello.Change;
-import io.github.sst.remake.gui.impl.ChangelogScreen;
+import io.github.sst.remake.gui.screen.ChangelogScreen;
 import net.minecraft.util.Util;
 
 public class Class576 implements Runnable {

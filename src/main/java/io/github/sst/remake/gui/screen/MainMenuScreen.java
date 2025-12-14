@@ -1,9 +1,10 @@
-package io.github.sst.remake.gui.impl;
+package io.github.sst.remake.gui.screen;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.FloatingBubble;
+import io.github.sst.remake.gui.impl.JelloMainMenu;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontSize;
@@ -231,7 +232,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
 
             if (foregroundOpacity > 0.0F && !Client.INSTANCE.loaded) {
-                //LoadingScreen.xd(backgroundOpacity, 1.0F);
+                LoadingScreen.renderFadeOut(backgroundOpacity, 1.0F);
                 Client.INSTANCE.loaded = true;
             }
 

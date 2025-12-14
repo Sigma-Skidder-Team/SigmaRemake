@@ -23,6 +23,10 @@ public class ScissorUtils {
         startScissor(screen.getXA(), screen.getYA(), screen.getWidthA() + screen.getXA(), screen.getHeightA() + screen.getYA(), true);
     }
 
+    public static void startScissor(float x, float y, float width, float height) {
+        startScissor((int) x, (int) y, (int) width, (int) height, true);
+    }
+
     public static void startScissor(int x, int y, int width, int height, boolean scale) {
         if (!scale) {
             x = (int) ((float) x * getScaleFactor());

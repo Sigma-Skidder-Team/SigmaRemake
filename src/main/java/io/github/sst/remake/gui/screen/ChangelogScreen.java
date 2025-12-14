@@ -1,7 +1,6 @@
-package io.github.sst.remake.gui.impl;
+package io.github.sst.remake.gui.screen;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
