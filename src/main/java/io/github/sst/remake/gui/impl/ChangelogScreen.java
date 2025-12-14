@@ -14,7 +14,14 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
 import org.newdawn.slick.TrueTypeFont;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class ChangelogScreen extends CustomGuiScreen {
     public AnimationUtils animation = new AnimationUtils(380, 200, AnimationUtils.Direction.BACKWARDS);
@@ -83,17 +90,20 @@ public class ChangelogScreen extends CustomGuiScreen {
     }
 
     public JsonArray getChangelog() {
-        if (cachedChangelog != null) {
-            return cachedChangelog;
-        } else {
-            String jsonString = "{}";
+        if (cachedChangelog == null) {
             try {
-                cachedChangelog = JsonParser.parseString(jsonString).getAsJsonArray();
-            } catch (JsonParseException e) {
-                throw new RuntimeException("Invalid JSON format for changelog", e);
+                HttpEntity entity = HttpClients.createDefault().execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=1.0.0remake")).getEntity();
+                if (entity != null) {
+                    try (InputStream content = entity.getContent()) {
+                        return cachedChangelog = JsonParser.parseString(IOUtils.toString(content, StandardCharsets.UTF_8)).getAsJsonArray();
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get changelog", e);
             }
-            return cachedChangelog;
         }
+
+        return cachedChangelog;
     }
 
 }
