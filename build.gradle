@@ -14,6 +14,10 @@ repositories {
     maven { url "https://raw.githubusercontent.com/WonderlandCentral/wonderland-repository/main" }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/sigma-remake.accesswidener")
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
