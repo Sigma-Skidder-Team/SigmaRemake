@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "sigma-remake",
+  "version": "${version}",
+  "name": "Sigma Remake",
+  "description": "No idea what to put here",
+  "authors": [
+    "Drake"
+  ],
+  "icon": "assets/sigma-remake/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "io.github.sst.remake.SigmaRemake"
+    ]
+  },
+  "mixins": [
+    "sigma-remake.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.2",
+    "minecraft": "~1.16.5",
+    "java": ">=8",
+    "fabric": "*"
+  }
+}
