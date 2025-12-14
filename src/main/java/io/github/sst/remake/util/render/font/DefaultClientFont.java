@@ -16,10 +16,6 @@ public class DefaultClientFont extends TrueTypeFont implements IMinecraft {
         this.field31945 = var1;
     }
 
-    private int method23949(char var1) {
-        return client.textRenderer.getWidth(String.valueOf(var1)) * this.field31945;
-    }
-
     @Override
     public int getWidth(String var1) {
         return client.textRenderer.getWidth(var1) * this.field31945;
