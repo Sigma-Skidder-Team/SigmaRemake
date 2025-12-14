@@ -29,6 +29,7 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
     private final Button altManagerButton;
 
     private final Text copyright;
+    private final Text version;
 
     private final TextButton changelogButton;
     private final TextButton quitButton;
@@ -38,7 +39,10 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
         this.setListening(false);
         TrueTypeFont font = ResourceRegistry.JelloLightFont20;
         int var17 = 0;
+
         String prod = "© Sigma Prod";
+
+        String version = "Jello for Fabric " + Client.VERSION;
 
         this.addToList(
                 this.singleplayerButton = new MainMenuButton(
@@ -94,6 +98,9 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
 
         this.addToList(this.altManagerButton = new MainMenuButton(this, "Alt Manager", this.method13447(var17++), this.method13448(), 128, 128, Resources.altPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
         this.addToList(this.copyright = new Text(this, "Copyright", 10, this.getHeightA() - 31, font.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, font));
+        this.addToList(this.version = new Text(this, "Version", this.getWidthA() - font.getWidth(version) - 9, this.getHeightA() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, font));
+        this.copyright.shadow = true;
+        this.version.shadow = true;
         this.copyright.shadow = true;
         this.addToList(this.changelogButton = new TextButton(this, "changelog", 432, 24, 110, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)), "Changelog", ResourceRegistry.JelloLightFont20));
         this.addToList(this.quitButton = new TextButton(this, "quit", 30, 24, 50, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)), "Exit", ResourceRegistry.JelloLightFont20));
