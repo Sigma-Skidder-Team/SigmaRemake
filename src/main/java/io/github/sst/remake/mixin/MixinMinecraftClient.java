@@ -3,8 +3,10 @@ package io.github.sst.remake.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.RunLoopEvent;
+import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
 import net.minecraft.client.MinecraftClient;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MixinMinecraft {
+public class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerReloader(Lnet/minecraft/resource/ResourceReloader;)V", ordinal = 16))
     private void injectStart(CallbackInfo ci) {
@@ -43,6 +45,11 @@ public class MixinMinecraft {
     @Inject(method = "onResolutionChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;resize(Lnet/minecraft/client/MinecraftClient;II)V", shift = At.Shift.AFTER))
     private void injectResolutionChange(CallbackInfo ci) {
         new WindowResizeEvent().call();
+    }
+
+    @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
+    private void injectOpenScreen(CallbackInfo ci) {
+        new OpenScreenEvent().call();
     }
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))
