@@ -20,6 +20,8 @@ public class Client implements IMinecraft {
     public final ConfigManager configManager = new ConfigManager();
     public final RPCManager rpcManager = new RPCManager();
 
+    public boolean loaded = false;
+
     public void start() {
         LOGGER.info("Initializing...");
 
