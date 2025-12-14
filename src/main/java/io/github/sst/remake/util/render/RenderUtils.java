@@ -1,0 +1,343 @@
+package io.github.sst.remake.util.render;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.sst.remake.Client;
+import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.render.image.ResourceRegistry;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.Texture;
+
+import java.nio.FloatBuffer;
+
+public class RenderUtils {
+
+    private static float getScaleFactor() {
+        return Client.INSTANCE.screenManager.scaleFactor;
+    }
+
+    public static void drawRoundedRect(float x, float y, float sizedX, float sizedY, int color) {
+        if (x < sizedX) {
+            int var7 = (int) x;
+            x = sizedX;
+            sizedX = (float) var7;
+        }
+
+        if (y < sizedY) {
+            int var13 = (int) y;
+            y = sizedY;
+            sizedY = (float) var13;
+        }
+
+        float a = (float) (color >> 24 & 0xFF) / 255.0F;
+        float r = (float) (color >> 16 & 0xFF) / 255.0F;
+        float g = (float) (color >> 8 & 0xFF) / 255.0F;
+        float b = (float) (color & 0xFF) / 255.0F;
+        Tessellator tessel = Tessellator.getInstance();
+        BufferBuilder buffer = tessel.getBuffer();
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+        RenderSystem.color4f(r, g, b, a);
+        buffer.begin(7, VertexFormats.POSITION);
+        buffer.vertex(x, sizedY, 0.0).next();
+        buffer.vertex(sizedX, sizedY, 0.0).next();
+        buffer.vertex(sizedX, y, 0.0).next();
+        buffer.vertex(x, y, 0.0).next();
+        tessel.draw();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    public static void drawRoundedRect2(float x, float y, float width, float height, int color) {
+        drawRoundedRect(x, y, x + width, y + height, color);
+    }
+
+    public static void drawImage(float x, float y, float width, float height, Texture tex, float alphaValue) {
+        drawImage(x, y, width, height, tex, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaValue));
+    }
+
+    public static void drawImage(float x, float y, float width, float height, Texture texture) {
+        drawImage(x, y, width, height, texture, -1);
+    }
+
+    public static void drawImage(float x, float y, float width, float height, Texture texture, int color) {
+        drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), true);
+    }
+
+    public static void drawImage(float x, float y, float width, float height, Texture texture, int color, boolean linearFiltering) {
+        drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), linearFiltering);
+    }
+
+    public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH) {
+        drawImage(x, y, width, height, texture, color, tlX, tlY, siW, siH, true);
+    }
+
+
+    /**
+     * Draws a sub-image of a texture to the screen.
+     *
+     * @param x               The x-coordinate of the top-left corner of the image.
+     * @param y               The y-coordinate of the top-left corner of the image.
+     * @param width           The width of the image.
+     * @param height          The height of the image.
+     * @param texture         The texture to draw from.
+     * @param color           The color to draw the image in, represented as an integer.
+     * @param tlX             The x-coordinate of the top-left corner of the sub-image within the texture.
+     * @param tlY             The y-coordinate of the top-left corner of the sub-image within the texture.
+     * @param siW             The width of the sub-image.
+     * @param siH             The height of the sub-image.
+     * @param linearFiltering Whether to use linear filtering for the texture.
+     */
+    public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
+        if (texture != null) {
+            RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+            x = (float) Math.round(x);
+            width = (float) Math.round(width);
+            y = (float) Math.round(y);
+            height = (float) Math.round(height);
+            float a = (float) (color >> 24 & 0xFF) / 255.0F;
+            float r = (float) (color >> 16 & 0xFF) / 255.0F;
+            float g = (float) (color >> 8 & 0xFF) / 255.0F;
+            float b = (float) (color & 0xFF) / 255.0F;
+            RenderSystem.enableBlend();
+            RenderSystem.disableTexture();
+            RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+            RenderSystem.color4f(r, g, b, a);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            texture.bind();
+            float var17 = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
+            float var18 = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
+            float var19 = siW / (float) texture.getImageWidth() * var17;
+            float var20 = siH / (float) texture.getImageHeight() * var18;
+            float var21 = tlX / (float) texture.getImageWidth() * var17;
+            float var22 = tlY / (float) texture.getImageHeight() * var18;
+            if (!linearFiltering) {
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            } else {
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            }
+
+            GL11.glBegin(7);
+            GL11.glTexCoord2f(var21, var22);
+            GL11.glVertex2f(x, y);
+            GL11.glTexCoord2f(var21, var22 + var20);
+            GL11.glVertex2f(x, y + height);
+            GL11.glTexCoord2f(var21 + var19, var22 + var20);
+            GL11.glVertex2f(x + width, y + height);
+            GL11.glTexCoord2f(var21 + var19, var22);
+            GL11.glVertex2f(x + width, y);
+            GL11.glEnd();
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_BLEND);
+            RenderSystem.enableTexture();
+            RenderSystem.disableBlend();
+        }
+    }
+
+    public static void drawRoundedButton(float var0, float var1, float var2, float var3, float var4, int color) {
+        drawRoundedRect(var0, var1 + var4, var0 + var2, var1 + var3 - var4, color);
+        drawRoundedRect(var0 + var4, var1, var0 + var2 - var4, var1 + var3, color);
+        FloatBuffer var8 = BufferUtils.createFloatBuffer(16);
+        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, var8);
+        float var9 = 1.0F;
+        drawCircle(var0 + var4, var1 + var4, var4 * 2.0F * var9, color);
+        drawCircle(var0 - var4 + var2, var1 + var4, var4 * 2.0F * var9, color);
+        drawCircle(var0 + var4, var1 - var4 + var3, var4 * 2.0F * var9, color);
+        drawCircle(var0 - var4 + var2, var1 - var4 + var3, var4 * 2.0F * var9, color);
+    }
+
+    public static void drawCircle(float centerX, float centerY, float size, int color) {
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 0.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        float a = (float) (color >> 24 & 0xFF) / 255.0F;
+        float r = (float) (color >> 16 & 0xFF) / 255.0F;
+        float g = (float) (color >> 8 & 0xFF) / 255.0F;
+        float b = (float) (color & 0xFF) / 255.0F;
+        Tessellator var10 = Tessellator.getInstance();
+        BufferBuilder var11 = var10.getBuffer();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+        RenderSystem.color4f(r, g, b, a);
+        GL11.glEnable(GL11.GL_POINT_SMOOTH);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glPointSize(size * getScaleFactor());
+        GL11.glBegin(0);
+        GL11.glVertex2f(centerX, centerY);
+        GL11.glEnd();
+        GL11.glDisable(GL11.GL_POINT_SMOOTH);
+        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    public static void drawString(TrueTypeFont res, float var1, float var2, String string, int var4, FontSize var5, FontSize var6) {
+        drawString(res, var1, var2, string, var4, var5, var6, false);
+    }
+
+    public static void drawString(TrueTypeFont font, float x, float y, String text, int color) {
+        drawString(font, x, y, text, color, FontSize.field14488, FontSize.field14489, false);
+    }
+
+    public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontSize widthAdjust, FontSize heightAdjust, boolean var7) {
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        int adjustedWidth = 0;
+        int adjustedHeight = 0;
+
+        switch (widthAdjust) {
+            case NEGATE_AND_DIVIDE_BY_2:
+                adjustedWidth = -font.getWidth(text) / 2;
+                break;
+
+            case WIDTH_NEGATE:
+                adjustedWidth = -font.getWidth(text);
+                break;
+
+            default:
+                // keep existing adjustedWidth
+                break;
+        }
+
+        switch (heightAdjust) {
+            case NEGATE_AND_DIVIDE_BY_2:
+                adjustedHeight = -font.getHeight(text) / 2;
+                break;
+
+            case HEIGHT_NEGATE:
+                adjustedHeight = -font.getHeight(text);
+                break;
+
+            default:
+                // keep existing adjustedHeight
+                break;
+        }
+
+        float var12 = (float) (color >> 24 & 0xFF) / 255.0F;
+        float var13 = (float) (color >> 16 & 0xFF) / 255.0F;
+        float var14 = (float) (color >> 8 & 0xFF) / 255.0F;
+        float var15 = (float) (color & 0xFF) / 255.0F;
+        GL11.glPushMatrix();
+        boolean var16 = false;
+        if ((double) getScaleFactor() == 2.0) {
+            if (font == ResourceRegistry.JelloLightFont20) {
+                font = ResourceRegistry.JelloLightFont40;
+            } else if (font == ResourceRegistry.JelloLightFont25) {
+                font = ResourceRegistry.JelloLightFont50;
+            } else if (font == ResourceRegistry.JelloLightFont12) {
+                font = ResourceRegistry.JelloLightFont24;
+            } else if (font == ResourceRegistry.JelloLightFont14) {
+                font = ResourceRegistry.JelloLightFont28;
+            } else if (font == ResourceRegistry.JelloLightFont18) {
+                font = ResourceRegistry.JelloLightFont36;
+            } else if (font == ResourceRegistry.RegularFont20) {
+                font = ResourceRegistry.RegularFont40;
+            } else if (font == ResourceRegistry.JelloMediumFont20) {
+                font = ResourceRegistry.JelloMediumFont40;
+            } else if (font == ResourceRegistry.JelloMediumFont25) {
+                font = ResourceRegistry.JelloMediumFont50;
+            } else {
+                var16 = true;
+            }
+
+            if (!var16) {
+                GL11.glTranslatef(x, y, 0.0F);
+                GL11.glScalef(1.0F / getScaleFactor(), 1.0F / getScaleFactor(), 1.0F / getScaleFactor());
+                GL11.glTranslatef(-x, -y, 0.0F);
+                adjustedWidth = (int) ((float) adjustedWidth * getScaleFactor());
+                adjustedHeight = (int) ((float) adjustedHeight * getScaleFactor());
+            }
+        }
+
+        RenderSystem.enableBlend();
+        GL11.glBlendFunc(770, 771);
+
+        if (var7) {
+            font.drawString((float) Math.round(x + (float) adjustedWidth), (float) (Math.round(y + (float) adjustedHeight) + 2), text, new Color(0.0F, 0.0F, 0.0F, 0.35F));
+        }
+
+        if (text != null) {
+            font.drawString((float) Math.round(x + (float) adjustedWidth), (float) Math.round(y + (float) adjustedHeight), text, new Color(var13, var14, var15, var12));
+        }
+
+        RenderSystem.disableBlend();
+        GL11.glPopMatrix();
+    }
+
+    public static void drawFilledArc(float var0, float var1, float var2, int var3) {
+        drawFilledArc(var0, var1, 0.0F, 360.0F, var2 - 1.0F, var3);
+    }
+
+    public static void drawFilledArc(float var0, float var1, float var2, float var3, float var4, int var5) {
+        drawFilledArc(var0, var1, var2, var3, var4, var4, var5);
+    }
+
+    /**
+     * Draws a filled arc with the specified center, radii, start and end angles, and color.
+     *
+     * @param x          The x-coordinate of the center of the arc.
+     * @param y          The y-coordinate of the center of the arc.
+     * @param startAngle The start angle of the arc in degrees.
+     * @param endAngle   The end angle of the arc in degrees.
+     * @param hRadius    The horizontal radius of the arc.
+     * @param vRadius    The vertical radius of the arc.
+     * @param color      The color of the arc in ARGB format.
+     */
+    public static void drawFilledArc(float x, float y, float startAngle, float endAngle, float hRadius, float vRadius, int color) {
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        float var9 = 0.0F;
+        if (startAngle > endAngle) {
+            var9 = endAngle;
+            endAngle = startAngle;
+            startAngle = var9;
+        }
+
+        float var10 = (float) (color >> 24 & 0xFF) / 255.0F;
+        float var11 = (float) (color >> 16 & 0xFF) / 255.0F;
+        float var12 = (float) (color >> 8 & 0xFF) / 255.0F;
+        float var13 = (float) (color & 0xFF) / 255.0F;
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+        RenderSystem.color4f(var11, var12, var13, var10);
+        if (var10 > 0.5F) {
+            GL11.glEnable(2848);
+            GL11.glLineWidth(2.0F);
+            GL11.glBegin(3);
+
+            for (float var16 = endAngle; var16 >= startAngle; var16 -= 4.0F) {
+                float var17 = (float) Math.cos((double) var16 * Math.PI / 180.0) * hRadius * 1.001F;
+                float var18 = (float) Math.sin((double) var16 * Math.PI / 180.0) * vRadius * 1.001F;
+                GL11.glVertex2f(x + var17, y + var18);
+            }
+
+            GL11.glEnd();
+            GL11.glDisable(2848);
+        }
+
+        GL11.glBegin(6);
+
+        for (float var20 = endAngle; var20 >= startAngle; var20 -= 4.0F) {
+            float var21 = (float) Math.cos((double) var20 * Math.PI / 180.0) * hRadius;
+            float var22 = (float) Math.sin((double) var20 * Math.PI / 180.0) * vRadius;
+            GL11.glVertex2f(x + var21, y + var22);
+        }
+
+        GL11.glEnd();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+}
