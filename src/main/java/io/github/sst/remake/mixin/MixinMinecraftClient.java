@@ -5,17 +5,32 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
+import io.github.sst.remake.gui.screen.LoadingScreen;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Overlay;
+import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.util.Unit;
+import net.minecraft.util.Util;
 import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 @Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
+public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerReloader(Lnet/minecraft/resource/ResourceReloader;)V", ordinal = 16))
     private void injectStart(CallbackInfo ci) {
@@ -24,6 +39,25 @@ public class MixinMinecraftClient {
 
     @Shadow
     private volatile boolean running;
+
+    @Shadow
+    @Final
+    private ReloadableResourceManager resourceManager;
+
+    @Shadow
+    @Final
+    private static CompletableFuture<Unit> COMPLETED_UNIT_FUTURE;
+
+    @Shadow
+    @Final
+    private ResourcePackManager resourcePackManager;
+
+    @Shadow
+    @Final
+    public WorldRenderer worldRenderer;
+
+    @Shadow
+    protected abstract void handleResourceReloadException(Throwable exception);
 
     @Inject(method = "scheduleStop", at = @At("HEAD"))
     private void injectShutdown(CallbackInfo ci) {
@@ -50,6 +84,20 @@ public class MixinMinecraftClient {
     @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
     private void injectOpenScreen(CallbackInfo ci) {
         new OpenScreenEvent().call();
+    }
+
+    @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))
+    private void redirectOverlay(MinecraftClient instance, Overlay value) {
+        if (value instanceof SplashScreen) {
+            SplashScreen splash = (SplashScreen) value;
+            value = new LoadingScreen(
+                    splash.reload,
+                    splash.exceptionHandler,
+                    splash.reloading
+            );
+        }
+
+        instance.overlay = value;
     }
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))
