@@ -53,6 +53,10 @@ public class HUDManager extends Manager implements IMinecraft {
             new RenderClient2DEvent().call();
         }
 
+        if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
+            Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
+        }
+
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
         RenderSystem.enableAlphaTest();

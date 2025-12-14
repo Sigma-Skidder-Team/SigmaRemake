@@ -175,7 +175,7 @@ public class BufferedImageUtil {
         }
     }
 
-    private static Kernel createGaussianKernel(float radius) {
+    public static Kernel createGaussianKernel(float radius) {
         int kernelRadius = (int) Math.ceil(radius);
         int kernelSize = kernelRadius * 2 + 1;
 
@@ -211,14 +211,15 @@ public class BufferedImageUtil {
         return new Kernel(kernelSize, 1, kernelData);
     }
 
-    private static BufferedImage applyEdgeWrap(BufferedImage inputImage) {
+    public static BufferedImage applyEdgeWrap(BufferedImage inputImage) {
         int width = inputImage.getWidth();
         int height = inputImage.getHeight();
         BufferedImage wrappedImage = new BufferedImage(width, height, inputImage.getType());
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                wrappedImage.setRGB(height - 1 - y, width - 1 - x, inputImage.getRGB(x, y));
+                // Flip both axes (180° rotation)
+                wrappedImage.setRGB(width - 1 - x, height - 1 - y, inputImage.getRGB(x, y));
             }
         }
 
