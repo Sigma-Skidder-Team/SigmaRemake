@@ -67,8 +67,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             "And I'm sorry, so sorry. But, I have to say goodbye."
     };
 
-    public static String currentTitle;
-    public static String currentMessage;
+    public static String currentTitle = goodbyeTitles[new Random().nextInt(goodbyeTitles.length)];
+    public static String currentMessage = goodbyeMessages[new Random().nextInt(goodbyeMessages.length)];
     public static float field20982;
 
     public MainMenuScreen() {
