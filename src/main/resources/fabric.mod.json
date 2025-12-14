@@ -1,19 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "sigma-remake",
+  "id": "sigma",
   "version": "${version}",
   "name": "Sigma Remake",
   "description": "No idea what to put here",
   "authors": [
     "Drake"
   ],
-  "icon": "assets/sigma-remake/icon.png",
+  "icon": "assets/sigma/icon.png",
   "environment": "client",
-  "entrypoints": {
-    "main": [
-      "io.github.sst.remake.SigmaRemake"
-    ]
-  },
   "mixins": [
     "sigma-remake.mixins.json"
   ],
