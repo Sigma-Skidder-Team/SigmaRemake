@@ -12,6 +12,8 @@
   },
   "client": [
     "MixinClientBrandRetriever",
-    "MixinMinecraft"
+    "MixinGameRenderer",
+    "MixinMinecraft",
+    "MixinWindow"
   ]
 }
