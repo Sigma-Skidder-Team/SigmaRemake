@@ -13,13 +13,10 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.Texture;
-import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Locale.Category;
 import java.util.Random;
 
 public class MainMenuScreen extends Screen implements IMinecraft {
@@ -28,7 +25,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
     private int field20967 = 0;
     private boolean field20968 = true;
     public JelloMainMenu mainMenuScreen;
-    //public ChangelogScreen changelogScreen;
+    public ChangelogScreen changelogScreen;
     public AnimationUtils field20972 = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
     public AnimationUtils animation = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
     private final AnimationUtils field20974 = new AnimationUtils(325, 325);
@@ -73,7 +70,6 @@ public class MainMenuScreen extends Screen implements IMinecraft {
     public static String currentTitle;
     public static String currentMessage;
     public static float field20982;
-    //public Alert alert;
 
     public MainMenuScreen() {
         super("Main Screen");
@@ -98,14 +94,14 @@ public class MainMenuScreen extends Screen implements IMinecraft {
         }
 
         this.addToList(this.mainMenuScreen = new JelloMainMenu(this, "main", 0, 0, this.widthA, this.heightA));
-        //this.addToList(this.changelogScreen = new ChangelogScreen(this, "changelog", 0, 0, this.widthA, this.heightA));
-        //this.changelogScreen.setHovered(false);
-        //this.changelogScreen.method13294(true);
+        this.addToList(this.changelogScreen = new ChangelogScreen(this, "changelog", 0, 0, this.widthA, this.heightA));
+        this.changelogScreen.setHovered(false);
+        this.changelogScreen.method13294(true);
     }
 
     public void goOut() {
         this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        //this.changelogScreen.setHovered(false);
+        this.changelogScreen.setHovered(false);
     }
 
     public void method13341() {
@@ -115,7 +111,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
     public void animateIn() {
         this.field20972.changeDirection(AnimationUtils.Direction.FORWARDS);
-        //this.changelogScreen.setHovered(true);
+        this.changelogScreen.setHovered(true);
     }
 
     @Override
@@ -221,13 +217,13 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             for (CustomGuiScreen object : this.getChildren()) {
                 if (object.isSelfVisible()) {
                     GL11.glPushMatrix();
-                    //if (object instanceof ChangelogScreen) {
-                    //    if (transitionProgress > 0.0F) {
-                    //        object.draw(partialTicks);
-                    //    }
-                    //} else {
+                    if (object instanceof ChangelogScreen) {
+                        if (transitionProgress > 0.0F) {
+                            object.draw(partialTicks);
+                        }
+                    } else {
                         object.draw(partialTicks * (1.0F - transitionProgress));
-                    //}
+                    }
 
                     GL11.glPopMatrix();
                 }
@@ -280,17 +276,5 @@ public class MainMenuScreen extends Screen implements IMinecraft {
         if (keyCode == 256) { //escape key
             this.goOut();
         }
-    }
-
-    static {
-        Locale locale = Locale.getDefault(Category.DISPLAY);
-        if (locale == Locale.FRANCE || locale == Locale.FRENCH) {
-            goodbyeMessages = ArrayUtils.addAll(
-                    goodbyeMessages,
-                    "Mon salut jamais dans la fuite, avant d'm'éteindre, faut m'débrancher", "Prêt à partir pour mon honneur");
-        }
-
-        currentTitle = goodbyeTitles[new Random().nextInt(goodbyeTitles.length)];
-        currentMessage = goodbyeMessages[new Random().nextInt(goodbyeMessages.length)];
     }
 }

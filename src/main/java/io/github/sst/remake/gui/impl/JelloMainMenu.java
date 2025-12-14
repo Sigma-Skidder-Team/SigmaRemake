@@ -15,7 +15,9 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
+import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
 
@@ -100,16 +102,15 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
             new Thread(() -> {
                 try {
                     Thread.sleep(2000L);
-                    MinecraftClient.getInstance().stop();
+                    MinecraftClient.getInstance().scheduleStop();
                 } catch (InterruptedException e) {
-                    MinecraftClient.getInstance().stop();
+                    MinecraftClient.getInstance().scheduleStop();
                 }
             }).start();
         });
-        //this.changelogButton.onClick((var1x, var2x) -> ((MainMenuScreen) this.getParent()).animateIn());
-        //this.switchButton.onClick((var1x, var2x) -> this.displayScreen(new SwitchScreen()));
-        //this.singleplayerButton.onClick((var1x, var2x) -> this.displayGUI(new WorldSelectionScreen(Minecraft.getInstance().currentScreen)));
-        //this.multiplayerButton.onClick((var1x, var2x) -> this.displayGUI(new JelloPortalScreen(Minecraft.getInstance().currentScreen)));
+        this.changelogButton.onClick((var1x, var2x) -> ((MainMenuScreen) this.getParent()).animateIn());
+        this.singleplayerButton.onClick((var1x, var2x) -> this.displayGUI(new SelectWorldScreen(client.currentScreen)));
+        this.multiplayerButton.onClick((var1x, var2x) -> this.displayGUI(new MultiplayerScreen(client.currentScreen)));
         this.optionsButton.onClick((var1x, var2x) -> this.displayGUI(new OptionsScreen(client.currentScreen, client.options)));
         //this.altManagerButton.onClick((var1x, var2x) -> this.displayScreen(new AltManagerScreen()));
         this.realmsButton.onClick((var1x, var2x) -> this.method13443());
