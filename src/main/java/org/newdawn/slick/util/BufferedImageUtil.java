@@ -214,12 +214,11 @@ public class BufferedImageUtil {
     public static BufferedImage applyEdgeWrap(BufferedImage inputImage) {
         int width = inputImage.getWidth();
         int height = inputImage.getHeight();
-        BufferedImage wrappedImage = new BufferedImage(width, height, inputImage.getType());
+        BufferedImage wrappedImage = new BufferedImage(height, width, inputImage.getType());
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                // Flip both axes (180° rotation)
-                wrappedImage.setRGB(width - 1 - x, height - 1 - y, inputImage.getRGB(x, y));
+                wrappedImage.setRGB(height - 1 - y, width - 1 - x, inputImage.getRGB(x, y));
             }
         }
 
