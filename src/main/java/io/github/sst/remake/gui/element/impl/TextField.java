@@ -4,7 +4,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -23,9 +23,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT;
 
 public class TextField extends AnimatedIconPanel implements IMinecraft {
     public static final ColorHelper field20741 = new ColorHelper(
-            -892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontSize.field14488, FontSize.NEGATE_AND_DIVIDE_BY_2
+            -892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER
     );
-    public static final ColorHelper field20742 = new ColorHelper(-1, -1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontSize.field14488, FontSize.NEGATE_AND_DIVIDE_BY_2);
+    public static final ColorHelper field20742 = new ColorHelper(-1, -1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
     private String placeholder = "";
     private float field20744;
     private final float field20745 = 2.0F;
@@ -377,16 +377,16 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
                 (float) (this.yA + this.heightA / 2 + this.font.getHeight(var6) / 2),
                 ColorHelper.applyAlpha(-5516546, partialTicks)
         );
-        FontSize var12 = this.textColor.method19411();
-        FontSize var13 = this.textColor.method19413();
+        FontAlignment widthAlignment = this.textColor.getWidthAlignment();
+        FontAlignment heightAlignment = this.textColor.getHeightAlignment();
         RenderUtils.drawString(
                 this.font,
                 (float) var7 + this.field20746,
                 (float) (this.yA + this.heightA / 2),
                 var6.length() == 0 && (!this.focused || var6.length() <= 0) ? this.placeholder : var6,
                 ColorHelper.applyAlpha(this.textColor.getTextColor(), (this.field20744 / 2.0F + 0.4F) * partialTicks * (this.focused && var6.length() > 0 ? 1.0F : 0.5F)),
-                var12,
-                var13
+                widthAlignment,
+                heightAlignment
         );
         ScissorUtils.restoreScissor();
         if (this.roundedThingy) {

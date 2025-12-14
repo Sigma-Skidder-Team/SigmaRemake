@@ -1,6 +1,6 @@
 package io.github.sst.remake.util.math.color;
 
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 
 /**
  * A utility class for managing colors, likely used for UI rendering.
@@ -27,14 +27,9 @@ public class ColorHelper {
      * The color used for text rendering in conjunction with this ColorHelper.
      */
     public int textColor;
-    /**
-     * An associated Class2218 instance, purpose unclear without further context.
-     */
-    public FontSize field27966;
-    /**
-     * Another associated Class2218 instance, purpose unclear without further context.
-     */
-    public FontSize field27967;
+
+    public FontAlignment widthAlignment;
+    public FontAlignment heightAlignment;
 
     /**
      * Constructs a ColorHelper with the given color and a darker shade of it.
@@ -70,7 +65,6 @@ public class ColorHelper {
 
     /**
      * Constructs a ColorHelper with primary, secondary, tertiary, and text colors.
-     * The Class2218 instances are set to default values ({@link FontSize#NEGATE_AND_DIVIDE_BY_2}).
      *
      * @param primary   The primary color.
      * @param secondary The secondary color.
@@ -78,26 +72,26 @@ public class ColorHelper {
      * @param text      The text color.
      */
     public ColorHelper(int primary, int secondary, int tertiary, int text) {
-        this(primary, secondary, tertiary, text, FontSize.NEGATE_AND_DIVIDE_BY_2, FontSize.NEGATE_AND_DIVIDE_BY_2);
+        this(primary, secondary, tertiary, text, FontAlignment.CENTER, FontAlignment.CENTER);
     }
 
     /**
-     * Constructs a ColorHelper with all color components and Class2218 instances specified.
+     * Constructs a ColorHelper with all color components and alignments specified.
      *
-     * @param primary   The primary color.
-     * @param secondary The secondary color.
-     * @param tertiary  The tertiary color.
-     * @param text      The text color.
-     * @param var5      The first Class2218 instance.
-     * @param var6      The second Class2218 instance.
+     * @param primary         The primary color.
+     * @param secondary       The secondary color.
+     * @param tertiary        The tertiary color.
+     * @param text            The text color.
+     * @param widthAlignment  The width FontAlignment instance.
+     * @param heightAlignment The height FontAlignment instance.
      */
-    public ColorHelper(int primary, int secondary, int tertiary, int text, FontSize var5, FontSize var6) {
+    public ColorHelper(int primary, int secondary, int tertiary, int text, FontAlignment widthAlignment, FontAlignment heightAlignment) {
         this.primaryColor = primary;
         this.secondaryColor = secondary;
         this.tertiaryColor = tertiary;
         this.textColor = text;
-        this.field27966 = var5;
-        this.field27967 = var6;
+        this.widthAlignment = widthAlignment;
+        this.heightAlignment = heightAlignment;
     }
 
     /**
@@ -106,7 +100,7 @@ public class ColorHelper {
      * @param var1 The ColorHelper instance to copy.
      */
     public ColorHelper(ColorHelper var1) {
-        this(var1.primaryColor, var1.secondaryColor, var1.tertiaryColor, var1.textColor, var1.field27966, var1.field27967);
+        this(var1.primaryColor, var1.secondaryColor, var1.tertiaryColor, var1.textColor, var1.widthAlignment, var1.heightAlignment);
     }
 
     /**
@@ -189,43 +183,23 @@ public class ColorHelper {
         return this;
     }
 
-    /**
-     * Gets the first Class2218 instance.
-     *
-     * @return The first Class2218 instance.
-     */
-    public FontSize method19411() {
-        return this.field27966;
+    public FontAlignment getWidthAlignment() {
+        return this.widthAlignment;
     }
 
-    /**
-     * Sets the first Class2218 instance.
-     *
-     * @param var1 The new Class2218 instance.
-     * @return This ColorHelper instance for chaining.
-     */
-    public ColorHelper method19412(FontSize var1) {
-        this.field27966 = var1;
+    public ColorHelper setWidthAlignment(FontAlignment widthAlignment) {
+        this.widthAlignment = widthAlignment;
         return this;
     }
 
-    /**
-     * Gets the second Class2218 instance.
-     *
-     * @return The second Class2218 instance.
-     */
-    public FontSize method19413() {
-        return this.field27967;
+
+    public FontAlignment getHeightAlignment() {
+        return this.heightAlignment;
     }
 
-    /**
-     * Sets the second Class2218 instance.
-     *
-     * @param var1 The new Class2218 instance.
-     * @return This ColorHelper instance for chaining.
-     */
-    public ColorHelper method19414(FontSize var1) {
-        this.field27967 = var1;
+
+    public ColorHelper setHeightAlignment(FontAlignment heightAlignment) {
+        this.heightAlignment = heightAlignment;
         return this;
     }
 
@@ -237,7 +211,7 @@ public class ColorHelper {
     @SuppressWarnings("all")
     @Override
     public ColorHelper clone() {
-        return new ColorHelper(this.primaryColor, this.secondaryColor, this.tertiaryColor, this.textColor, this.field27966, this.field27967);
+        return new ColorHelper(this.primaryColor, this.secondaryColor, this.tertiaryColor, this.textColor, this.widthAlignment, this.heightAlignment);
     }
 
     /**

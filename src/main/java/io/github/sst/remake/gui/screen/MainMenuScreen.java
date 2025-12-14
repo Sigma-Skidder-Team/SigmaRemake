@@ -7,7 +7,7 @@ import io.github.sst.remake.gui.element.impl.FloatingBubble;
 import io.github.sst.remake.gui.impl.JelloMainMenu;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.AnimationUtils;
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -255,8 +255,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                         (float) (this.heightA / 2 - 30),
                         currentTitle,
                         ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent()),
-                        FontSize.NEGATE_AND_DIVIDE_BY_2,
-                        FontSize.NEGATE_AND_DIVIDE_BY_2
+                        FontAlignment.CENTER,
+                        FontAlignment.CENTER
                 );
                 RenderUtils.drawString(
                         ResourceRegistry.JelloLightFont18,
@@ -264,8 +264,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                         (float) (this.heightA / 2 + 30),
                         "\"" + currentMessage + "\"",
                         ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent() * 0.5F),
-                        FontSize.NEGATE_AND_DIVIDE_BY_2,
-                        FontSize.NEGATE_AND_DIVIDE_BY_2
+                        FontAlignment.CENTER,
+                        FontAlignment.CENTER
                 );
             }
         }

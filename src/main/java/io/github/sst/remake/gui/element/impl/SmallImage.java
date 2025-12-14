@@ -65,8 +65,8 @@ public class SmallImage extends Button {
                     (float) (this.getYA() + this.getHeightA() / 2),
                     this.getText(),
                     ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
-                    this.textColor.method19411(),
-                    this.textColor.method19413()
+                    this.textColor.getWidthAlignment(),
+                    this.textColor.getHeightAlignment()
             );
         }
 

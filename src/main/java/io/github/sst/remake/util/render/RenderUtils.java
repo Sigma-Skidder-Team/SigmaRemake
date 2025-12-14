@@ -3,7 +3,7 @@ package io.github.sst.remake.util.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
@@ -203,45 +203,43 @@ public class RenderUtils {
         RenderSystem.disableBlend();
     }
 
-    public static void drawString(TrueTypeFont res, float var1, float var2, String string, int var4, FontSize var5, FontSize var6) {
-        drawString(res, var1, var2, string, var4, var5, var6, false);
+    public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontAlignment widthAlignment, FontAlignment heightAlignment) {
+        drawString(font, x, y, text, color, widthAlignment, heightAlignment, false);
     }
 
     public static void drawString(TrueTypeFont font, float x, float y, String text, int color) {
-        drawString(font, x, y, text, color, FontSize.field14488, FontSize.field14489, false);
+        drawString(font, x, y, text, color, FontAlignment.LEFT, FontAlignment.TOP, false);
     }
 
-    public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontSize widthAdjust, FontSize heightAdjust, boolean var7) {
+    public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontAlignment widthAlignment, FontAlignment heightAlignment, boolean shadow) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
         int adjustedWidth = 0;
         int adjustedHeight = 0;
 
-        switch (widthAdjust) {
-            case NEGATE_AND_DIVIDE_BY_2:
+        switch (widthAlignment) {
+            case CENTER:
                 adjustedWidth = -font.getWidth(text) / 2;
                 break;
 
-            case WIDTH_NEGATE:
+            case RIGHT:
                 adjustedWidth = -font.getWidth(text);
                 break;
 
             default:
-                // keep existing adjustedWidth
                 break;
         }
 
-        switch (heightAdjust) {
-            case NEGATE_AND_DIVIDE_BY_2:
+        switch (heightAlignment) {
+            case CENTER:
                 adjustedHeight = -font.getHeight(text) / 2;
                 break;
 
-            case HEIGHT_NEGATE:
+            case BOTTOM:
                 adjustedHeight = -font.getHeight(text);
                 break;
 
             default:
-                // keep existing adjustedHeight
                 break;
         }
 
@@ -284,7 +282,7 @@ public class RenderUtils {
         RenderSystem.enableBlend();
         GL11.glBlendFunc(770, 771);
 
-        if (var7) {
+        if (shadow) {
             font.drawString((float) Math.round(x + (float) adjustedWidth), (float) (Math.round(y + (float) adjustedHeight) + 2), text, new Color(0.0F, 0.0F, 0.0F, 0.35F));
         }
 

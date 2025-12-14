@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -16,8 +16,8 @@ public class Text extends AnimatedIconPanel {
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
-            FontSize.field14488,
-            FontSize.NEGATE_AND_DIVIDE_BY_2
+            FontAlignment.LEFT,
+            FontAlignment.CENTER
     );
     public boolean shadow = false;
 

@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.AnimationUtils;
-import io.github.sst.remake.util.render.font.FontSize;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.newdawn.slick.TrueTypeFont;
@@ -29,15 +29,15 @@ public class TextButton extends Element {
             int var4 = this.textColor.getPrimaryColor();
             int var5 = this.getXA()
                     + (
-                    this.textColor.method19411() != FontSize.NEGATE_AND_DIVIDE_BY_2
+                    this.textColor.getWidthAlignment() != FontAlignment.CENTER
                             ? 0
-                            : (this.textColor.method19411() != FontSize.WIDTH_NEGATE ? this.getWidthA() / 2 : this.getWidthA())
+                            : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidthA() / 2 : this.getWidthA())
             );
             int var6 = this.getYA()
                     + (
-                    this.textColor.method19413() != FontSize.NEGATE_AND_DIVIDE_BY_2
+                    this.textColor.getHeightAlignment() != FontAlignment.CENTER
                             ? 0
-                            : (this.textColor.method19413() != FontSize.HEIGHT_NEGATE ? this.getHeightA() / 2 : this.getHeightA())
+                            : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeightA() / 2 : this.getHeightA())
             );
             int var7 = this.getFont().getWidth(this.getText());
             float var8 = 18;
@@ -48,8 +48,8 @@ public class TextButton extends Element {
                     (float) var6,
                     this.getText(),
                     ColorHelper.applyAlpha(var4, partialTicks * ColorHelper.getAlpha(var4)),
-                    this.textColor.method19411(),
-                    this.textColor.method19413()
+                    this.textColor.getWidthAlignment(),
+                    this.textColor.getHeightAlignment()
             );
             RenderUtils.drawRoundedRect(
                     (float) var5 - (float) (var7 / 2) * var9,
