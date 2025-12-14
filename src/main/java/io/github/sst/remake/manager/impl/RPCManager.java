@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.initalizer;
+package io.github.sst.remake.manager.impl;
 
 import dev.firstdark.rpc.DiscordRpc;
 import dev.firstdark.rpc.enums.ErrorCode;
@@ -7,25 +7,24 @@ import dev.firstdark.rpc.handlers.RPCEventHandler;
 import dev.firstdark.rpc.models.DiscordRichPresence;
 import dev.firstdark.rpc.models.User;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.manager.Manager;
 
 import static io.github.sst.remake.Client.LOGGER;
 
-public class RPCInitalizer {
+public class RPCManager extends Manager {
 
-    public static final String ID = "693493612754763907";
+    // Constants
+    private static final long TIMESTAMP = System.currentTimeMillis() / 1000L;
+    private static final String STATE = "Playing Minecraft";
+    private static final String DETAILS = "Jello for Sigma";
+    private static final String LARGE_IMAGE_KEY = "jello";
+    private static final String LARGE_IMAGE_DETAILS = "Sigma Remake " + Client.VERSION;
 
-    public static final String STATE = "Playing Minecraft";
-    public static final String DETAILS = "Jello for Sigma";
+    private DiscordRpc rpc;
 
-    public static final String LARGE_IMAGE_KEY = "jello";
-    public static final String LARGE_IMAGE_DETAILS = "Sigma Remake " + Client.VERSION;
-
-    public static final long TIMESTAMP = System.currentTimeMillis() / 1000L;
-
-    private static DiscordRpc rpc;
-
-    public static void init() {
-        rpc = new DiscordRpc();
+    @Override
+    public void init() {
+        this.rpc = new DiscordRpc();
 
         RPCEventHandler handler = new RPCEventHandler() {
             @Override
@@ -52,16 +51,16 @@ public class RPCInitalizer {
         };
 
         try {
-            rpc.init(ID, handler, false);
+            rpc.init("693493612754763907", handler, false);
         } catch (UnsupportedOsType e) {
             LOGGER.error("Discord RPC failed to initialize", e);
         }
     }
 
-    public static void shutdown() {
-        if (rpc != null) {
-            rpc.shutdown();
-            rpc = null;
+    public void shutdown() {
+        if (this.rpc != null) {
+            this.rpc.shutdown();
+            this.rpc = null;
         }
     }
 
