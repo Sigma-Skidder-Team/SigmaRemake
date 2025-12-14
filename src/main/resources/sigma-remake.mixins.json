@@ -15,6 +15,7 @@
     "MixinGameRenderer",
     "MixinKeyboard",
     "MixinMinecraftClient",
+    "MixinMouse",
     "MixinWindow"
   ]
 }

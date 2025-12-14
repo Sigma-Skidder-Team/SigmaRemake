@@ -6,5 +6,5 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class KeyEvent extends Cancellable {
     public final long window;
-    public final int key, scancode, i, modifiers;
+    public final int key, scancode, action, modifiers;
 }

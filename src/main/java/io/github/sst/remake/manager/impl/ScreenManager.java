@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.RunLoopEvent;
-import io.github.sst.remake.event.impl.window.WindowResizeEvent;
+import io.github.sst.remake.event.impl.window.*;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
@@ -101,6 +101,48 @@ public class ScreenManager extends Manager implements IMinecraft {
                     client.getWindow().getFramebufferWidth() / client.getWindow().getWidth(),
                     client.getWindow().getFramebufferHeight() / client.getWindow().getHeight()
             );
+        }
+    }
+
+    @Subscribe
+    public void onKey(KeyEvent event) {
+        if (currentScreen != null) {
+            if (event.action == 1 || event.action == 2) {
+                this.keysPressed.add(event.key);
+            } else if (event.action == 0) {
+                this.modifiersPressed.add(event.key);
+            }
+            event.cancel();
+        }
+    }
+
+    @Subscribe
+    public void onChar(CharEvent event) {
+        if (currentScreen != null) {
+            this.charsTyped.add(event.codepoint);
+            event.cancel();
+        }
+    }
+
+    @Subscribe
+    public void onMouse(MouseButtonEvent event) {
+        if (currentScreen != null) {
+            if (event.action != 1) {
+                if (event.action == 0) {
+                    this.mouseButtonsReleased.add(event.button);
+                }
+            } else {
+                this.mouseButtonsPressed.add(event.button);
+            }
+            event.cancel();
+        }
+    }
+
+    @Subscribe
+    public void onScroll(MouseScrollEvent event) {
+        if (currentScreen != null) {
+            this.mouseScroll += event.vertical;
+            event.cancel();
         }
     }
 
