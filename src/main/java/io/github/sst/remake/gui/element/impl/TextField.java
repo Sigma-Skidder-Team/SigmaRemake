@@ -102,8 +102,8 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
     }
 
     @Override
-    public boolean onClick(int mouseX, int mouseY, int mouseButton) {
-        if (!super.onClick(mouseX, mouseY, mouseButton)) {
+    public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
+        if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
             String var6 = this.text;
             if (this.censorText) {
                 var6 = this.text.replaceAll(".", this.censorChar);
@@ -130,8 +130,8 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
     }
 
     @Override
-    public void onClick2(int mouseX, int mouseY, int mouseButton) {
-        super.onClick2(mouseX, mouseY, mouseButton);
+    public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
+        super.onMouseRelease(mouseX, mouseY, mouseButton);
         this.field20752 = false;
     }
 

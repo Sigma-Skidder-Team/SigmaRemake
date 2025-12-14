@@ -51,7 +51,7 @@ public class VerticalScrollBarButton extends AnimatedIconPanel {
             float var14 = (float) (this.parent.getHeightA() - this.getHeightA());
             float var15 = var14 * var13 + 0.5F;
             this.setYA((int) var15);
-        } else if (this.method13216()) {
+        } else if (this.isDragging()) {
             float var12 = (float) this.getYA() / (float) this.parent.getHeightA();
             this.field20781.offset = (int) (var12 * (float) this.field20780.getButton().getHeightA());
             if (this.field20781.offset >= 0) {

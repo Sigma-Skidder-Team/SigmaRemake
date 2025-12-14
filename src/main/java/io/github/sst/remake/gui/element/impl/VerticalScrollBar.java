@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
-import io.github.sst.remake.gui.interfaces.Class4293;
+import io.github.sst.remake.gui.interfaces.IOffsetProvider;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -12,7 +12,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class VerticalScrollBar extends AnimatedIconPanel implements Class4293 {
+public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvider {
     public int offset;
     public float field20794;
     public boolean field20795;
@@ -61,7 +61,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements Class4293 {
                 this.field20796.getHeightA() >= this.getHeightA()
                         ? -1.0F
                         : (
-                        !this.method13298() && !this.field20796.method13216() && (!this.field20797.isEnabled() || this.field20797.getElapsedTime() >= 500L)
+                        !this.method13298() && !this.field20796.isDragging() && (!this.field20797.isEnabled() || this.field20797.getElapsedTime() >= 500L)
                                 ? -0.05F
                                 : 0.05F
                 )
@@ -93,8 +93,8 @@ public class VerticalScrollBar extends AnimatedIconPanel implements Class4293 {
     }
 
     @Override
-    public boolean onClick(int mouseX, int mouseY, int mouseButton) {
-        if (!super.onClick(mouseX, mouseY, mouseButton)) {
+    public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
+        if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
             this.field20908 = this.method13228(mouseX, mouseY, false);
             if (this.method13298()) {
                 int var6 = mouseY - this.method13272();
@@ -126,8 +126,12 @@ public class VerticalScrollBar extends AnimatedIconPanel implements Class4293 {
     }
 
     @Override
-    public int method13162() {
+    public int getOffset() {
         return this.offset;
     }
 
+    @Override
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 }

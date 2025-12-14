@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.element.impl.TextField;
-import io.github.sst.remake.gui.interfaces.Class7261;
+import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
 import io.github.sst.remake.gui.interfaces.IGuiEventListener;
 import io.github.sst.remake.gui.interfaces.IWidthSetter;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
@@ -278,7 +278,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     @Override
-    public boolean onClick(int mouseX, int mouseY, int mouseButton) {
+    public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         boolean var6 = false;
 
         for (int var7 = this.children.size() - 1; var7 >= 0; var7--) {
@@ -296,7 +296,7 @@ public class CustomGuiScreen implements IGuiEventListener {
                     }
                 }
             } else {
-                var8.onClick(mouseX, mouseY, mouseButton);
+                var8.onMouseDown(mouseX, mouseY, mouseButton);
                 var6 = !var9;
             }
         }
@@ -312,25 +312,25 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     @Override
-    public void onClick2(int mouseX, int mouseY, int mouseButton) {
+    public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         this.field20908 = this.method13114(mouseX, mouseY);
 
         for (CustomGuiScreen var7 : this.children) {
             if (var7.isHovered() && var7.isSelfVisible()) {
-                var7.onClick2(mouseX, mouseY, mouseButton);
+                var7.onMouseRelease(mouseX, mouseY, mouseButton);
             }
         }
 
         this.onMouseButtonUsed(mouseButton);
         if (this.method13212() && this.method13298()) {
-            this.onClick3(mouseX, mouseY, mouseButton);
+            this.onMouseClick(mouseX, mouseY, mouseButton);
         }
 
         this.field20909 = false;
     }
 
     @Override
-    public void onClick3(int mouseX, int mouseY, int mouseButton) {
+    public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
         this.onClick(mouseButton);
     }
 
@@ -590,8 +590,8 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public void method13246(Class7261 var1) {
-        var1.method22796(this);
+    public void accept(ICustomGuiScreenVisitor visitor) {
+        visitor.visit(this);
     }
 
     public final CustomGuiScreen method13247(Class7914 var1) {

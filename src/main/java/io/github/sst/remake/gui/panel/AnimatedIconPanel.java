@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.panel;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.gui.interfaces.Class6751;
+import io.github.sst.remake.gui.interfaces.IDragListener;
 import io.github.sst.remake.gui.interfaces.INestedGuiEventHandler;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -26,7 +26,7 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     public final TimerUtils timerUtils = new TimerUtils();
     public int field20888 = 300;
     public int field20889 = 2;
-    private final List<Class6751> field20890 = new ArrayList<Class6751>();
+    private final List<IDragListener> dragListeners = new ArrayList<IDragListener>();
 
     public AnimatedIconPanel(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, boolean var7) {
         super(screen, iconName, x, y, width, height);
@@ -50,13 +50,13 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
 
     @Override
     public boolean method13212() {
-        return this.field20909 && !this.method13216();
+        return this.field20909 && !this.isDragging();
     }
 
     @Override
     public void updatePanelDimensions(int newHeight, int newWidth) {
         super.updatePanelDimensions(newHeight, newWidth);
-        if (this.method13214()) {
+        if (this.isDraggable()) {
             if (!this.field20909 && !this.field20877) {
                 this.sizeWidthThingy = this.getWidthA() / 2;
                 this.sizeHeightThingy = this.getHeightA() / 2;
@@ -67,9 +67,9 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     }
 
     @Override
-    public boolean onClick(int mouseX, int mouseY, int mouseButton) {
-        if (!super.onClick(mouseX, mouseY, mouseButton)) {
-            if (this.method13214()) {
+    public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
+        if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
+            if (this.isDraggable()) {
                 this.timerUtils.start();
                 this.mouseX = mouseX;
                 this.mouseY = mouseY;
@@ -84,29 +84,29 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     }
 
     @Override
-    public void onClick2(int mouseX, int mouseY, int mouseButton) {
-        super.onClick2(mouseX, mouseY, mouseButton);
-        if (this.method13214()) {
+    public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
+        super.onMouseRelease(mouseX, mouseY, mouseButton);
+        if (this.isDraggable()) {
             this.timerUtils.stop();
             this.timerUtils.reset();
         }
 
-        this.method13217(false);
+        this.setDragging(false);
     }
 
     @Override
     public void handleMovementAndCheckBoundaries(int newHeight, int newWidth) {
         boolean var5 = this.field20877;
-        if (!this.method13216() && this.method13214()) {
+        if (!this.isDragging() && this.isDraggable()) {
             boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
             boolean var7 = this.field20885
                     && this.field20909
                     && (Math.abs(this.mouseX - newHeight) > this.field20889 || Math.abs(this.mouseY - newWidth) > this.field20889);
             boolean var8 = this.field20886 && this.field20909;
             if (var6 || var7 || var8) {
-                this.method13217(true);
+                this.setDragging(true);
             }
-        } else if (this.method13216()) {
+        } else if (this.isDragging()) {
             this.setXA(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.method13271()));
             this.setYA(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.method13272()));
             if (this.field20882) {
@@ -146,44 +146,44 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
             }
         }
 
-        if (this.method13216() && !var5) {
+        if (this.isDragging() && !var5) {
             this.timerUtils.stop();
             this.timerUtils.reset();
         }
     }
 
     @Override
-    public boolean method13214() {
+    public boolean isDraggable() {
         return this.field20876;
     }
 
     @Override
-    public void method13215(boolean var1) {
+    public void setDraggable(boolean var1) {
         this.field20876 = var1;
     }
 
     @Override
-    public boolean method13216() {
+    public boolean isDragging() {
         return this.field20877;
     }
 
     @Override
-    public void method13217(boolean var1) {
+    public void setDragging(boolean var1) {
         this.field20877 = var1;
         if (var1) {
-            this.method13215(true);
-            this.method13219();
+            this.setDraggable(true);
+            this.notifyDragListeners();
         }
     }
 
-    public AnimatedIconPanel method13218(Class6751 var1) {
-        this.field20890.add(var1);
+    public AnimatedIconPanel addDragListener(IDragListener listener) {
+        this.dragListeners.add(listener);
         return this;
     }
 
-    public void method13219() {
-        for (Class6751 var4 : this.field20890) {
-            var4.method20580(this);
+    public void notifyDragListeners() {
+        for (IDragListener listener : this.dragListeners) {
+            listener.onDragStart(this);
         }
     }
 }

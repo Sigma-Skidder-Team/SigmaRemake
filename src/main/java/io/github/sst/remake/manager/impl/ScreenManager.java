@@ -51,11 +51,11 @@ public class ScreenManager extends Manager implements IMinecraft {
 
             if (client.overlay == null) {
                 for (int mouseButton : this.mouseButtonsPressed) {
-                    this.currentScreen.onClick(this.mousePositions[0], this.mousePositions[1], mouseButton);
+                    this.currentScreen.onMouseDown(this.mousePositions[0], this.mousePositions[1], mouseButton);
                 }
 
                 for (int mouseButton : this.mouseButtonsReleased) {
-                    this.currentScreen.onClick2(this.mousePositions[0], this.mousePositions[1], mouseButton);
+                    this.currentScreen.onMouseRelease(this.mousePositions[0], this.mousePositions[1], mouseButton);
                 }
             }
 

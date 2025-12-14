@@ -20,18 +20,32 @@ public interface IGuiEventListener {
     void keyPressed(int keyCode);
 
     /**
-     * Called when a mouse button is clicked.
+     * Called when a mouse button is pressed down.
      *
      * @param mouseX      The x-coordinate of the mouse click.
      * @param mouseY      The y-coordinate of the mouse click.
      * @param mouseButton The button of the mouse that was clicked.
      * @return True if the event was handled, false otherwise.
      */
-    boolean onClick(int mouseX, int mouseY, int mouseButton);
+    boolean onMouseDown(int mouseX, int mouseY, int mouseButton);
 
-    void onClick2(int mouseX, int mouseY, int mouseButton);
+    /**
+     * Called when a mouse button is released.
+     *
+     * @param mouseX      The x-coordinate of the mouse click.
+     * @param mouseY      The y-coordinate of the mouse click.
+     * @param mouseButton The button of the mouse that was clicked.
+     */
+    void onMouseRelease(int mouseX, int mouseY, int mouseButton);
 
-    void onClick3(int mouseX, int mouseY, int mouseButton);
+    /**
+     * Called when a mouse click action is performed.
+     *
+     * @param mouseX      The x-coordinate of the mouse click.
+     * @param mouseY      The y-coordinate of the mouse click.
+     * @param mouseButton The button of the mouse that was clicked.
+     */
+    void onMouseClick(int mouseX, int mouseY, int mouseButton);
 
     /**
      * Called when the mouse wheel is used.

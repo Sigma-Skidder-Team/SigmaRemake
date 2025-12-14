@@ -3,11 +3,11 @@ package io.github.sst.remake.gui.interfaces;
 public interface INestedGuiEventHandler {
     void handleMovementAndCheckBoundaries(int var1, int var2);
 
-    boolean method13214();
+    boolean isDraggable();
 
-    void method13215(boolean var1);
+    void setDraggable(boolean var1);
 
-    boolean method13216();
+    boolean isDragging();
 
-    void method13217(boolean var1);
+    void setDragging(boolean var1);
 }

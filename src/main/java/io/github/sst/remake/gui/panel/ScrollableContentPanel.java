@@ -45,12 +45,12 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
         this.scrollBar.setReAddChildren(true);
     }
 
-    public void method13512(int var1) {
-        this.scrollBar.offset = var1;
+    public void setScrollOffset(int var1) {
+        this.scrollBar.setOffset(var1);
     }
 
-    public int method13513() {
-        return this.scrollBar != null ? this.scrollBar.offset : 0;
+    public int getScrollOffset() {
+        return this.scrollBar != null ? this.scrollBar.getOffset() : 0;
     }
 
     public void method13514(boolean var1) {
@@ -61,7 +61,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
     public void updatePanelDimensions(int newHeight, int newWidth) {
         if (!this.field21203 || this.isSelfVisible()) {
             super.updatePanelDimensions(newHeight, newWidth);
-            this.buttonList.setYA(-1 * this.scrollBar.method13162());
+            this.buttonList.setYA(-1 * this.scrollBar.getOffset());
 
             for (CustomGuiScreen var6 : this.getButton().getChildren()) {
                 for (IWidthSetter var8 : var6.method13260()) {
