@@ -1,6 +1,7 @@
 package io.github.sst.remake.manager.impl;
 
 import io.github.sst.remake.Client;
+import io.github.sst.remake.bus.Priority;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.render.Render2DEvent;
 import io.github.sst.remake.manager.Manager;
@@ -20,7 +21,7 @@ public class TextureManager extends Manager {
         textures.add(texture);
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.HIGH)
     public void onRender(Render2DEvent event) {
         if (!textures.isEmpty()) {
             try {
