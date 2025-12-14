@@ -16,7 +16,7 @@ public class RPCManager extends Manager {
     // Constants
     private static final long TIMESTAMP = System.currentTimeMillis() / 1000L;
     private static final String STATE = "Playing Minecraft";
-    private static final String DETAILS = "Jello for Sigma";
+    private static final String DETAILS = "Jello for Fabric";
     private static final String LARGE_IMAGE_KEY = "jello";
     private static final String LARGE_IMAGE_DETAILS = "Sigma Remake " + Client.VERSION;
 
