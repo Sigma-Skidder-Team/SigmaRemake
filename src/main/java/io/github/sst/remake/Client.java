@@ -1,10 +1,8 @@
 package io.github.sst.remake;
 
 import io.github.sst.remake.bus.EventBus;
-import io.github.sst.remake.manager.impl.ConfigManager;
-import io.github.sst.remake.manager.impl.ScreenManager;
+import io.github.sst.remake.manager.impl.*;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.manager.impl.RPCManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +15,8 @@ public class Client implements IMinecraft {
 
     // Managers
     public final ScreenManager screenManager = new ScreenManager();
+    public final TextureManager textureManager = new TextureManager();
+    public final HUDManager hudManager = new HUDManager();
     public final ConfigManager configManager = new ConfigManager();
     public final RPCManager rpcManager = new RPCManager();
 
@@ -25,7 +25,9 @@ public class Client implements IMinecraft {
 
         rpcManager.init();
         configManager.init();
+        textureManager.init();
         screenManager.init();
+        hudManager.init();
 
         LOGGER.info("Initialized.");
     }
@@ -36,6 +38,8 @@ public class Client implements IMinecraft {
         rpcManager.shutdown();
         configManager.shutdown();
         screenManager.shutdown();
+        hudManager.shutdown();
+        textureManager.shutdown();
 
         LOGGER.info("Done.");
     }

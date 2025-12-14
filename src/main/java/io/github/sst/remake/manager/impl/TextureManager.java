@@ -1,0 +1,38 @@
+package io.github.sst.remake.manager.impl;
+
+import io.github.sst.remake.Client;
+import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.event.impl.render.Render2DEvent;
+import io.github.sst.remake.manager.Manager;
+import lombok.Getter;
+import org.newdawn.slick.opengl.Texture;
+
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+
+public class TextureManager extends Manager {
+
+    @Getter
+    private final List<Texture> textures = new ArrayList<>();
+
+    public void add(Texture texture) {
+        textures.add(texture);
+    }
+
+    @Subscribe
+    public void onRender(Render2DEvent event) {
+        if (!textures.isEmpty()) {
+            try {
+                for (Texture texture : textures) {
+                    texture.release();
+                }
+
+                textures.clear();
+            } catch (ConcurrentModificationException exception) {
+                Client.LOGGER.warn("Failed to clear texture cache", exception);
+            }
+        }
+    }
+
+}
