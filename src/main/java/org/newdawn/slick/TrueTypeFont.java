@@ -281,6 +281,10 @@ public class TrueTypeFont implements Font {
      * @return The width of the characters
      */
     public int getWidth(String whatchars) {
+        if (whatchars == null) {
+            return 0;
+        }
+
         int totalwidth = 0;
         IntObject intObject;
         char currentChar;
