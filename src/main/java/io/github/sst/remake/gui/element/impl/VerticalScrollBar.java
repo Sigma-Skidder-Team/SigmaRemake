@@ -2,6 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.element.impl.scroll.VerticalScrollBarButton;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.gui.interfaces.IOffsetProvider;

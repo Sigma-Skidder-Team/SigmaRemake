@@ -576,20 +576,6 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this != other) {
-            if (!(other instanceof CustomGuiScreen)) {
-                return false;
-            } else {
-                CustomGuiScreen to = (CustomGuiScreen) other;
-                return this.name.equals(to.name) && (this.getParent() == null || this.getParent().equals(to.getParent()));
-            }
-        } else {
-            return true;
-        }
-    }
-
     public void accept(ICustomGuiScreenVisitor visitor) {
         visitor.visit(this);
     }

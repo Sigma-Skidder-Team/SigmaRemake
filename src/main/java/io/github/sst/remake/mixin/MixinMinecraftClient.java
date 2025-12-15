@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
-import io.github.sst.remake.gui.screen.LoadingScreen;
+import io.github.sst.remake.gui.impl.JelloLoad;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.SplashScreen;
@@ -60,7 +60,7 @@ public abstract class MixinMinecraftClient {
     private void redirectOverlay(MinecraftClient instance, Overlay value) {
         if (value instanceof SplashScreen) {
             SplashScreen splash = (SplashScreen) value;
-            value = new LoadingScreen(
+            value = new JelloLoad(
                     splash.reload,
                     splash.exceptionHandler,
                     splash.reloading
