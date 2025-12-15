@@ -8,7 +8,6 @@ import io.github.sst.remake.event.impl.RunLoopEvent;
 import io.github.sst.remake.event.impl.client.InitPauseMenuWidgetsEvent;
 import io.github.sst.remake.event.impl.window.*;
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.impl.JelloOptions;
 import io.github.sst.remake.gui.screen.OptionsScreen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
@@ -20,6 +19,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ScreenManager extends Manager implements IMinecraft {
     public int[] mousePositions = new int[2];
     public float scaleFactor = 1.0F;
@@ -90,7 +90,7 @@ public class ScreenManager extends Manager implements IMinecraft {
     @Subscribe
     public void onResize(WindowResizeEvent event) {
         if (this.currentScreen != null) {
-            this.saveConfig();
+            modifyConfig(true);
 
             try {
                 this.currentScreen = this.currentScreen.getClass().newInstance();
@@ -98,7 +98,7 @@ public class ScreenManager extends Manager implements IMinecraft {
                 Client.LOGGER.warn(exc);
             }
 
-            this.loadUIConfig();
+            modifyConfig(false);
         }
 
         if (client.getWindow().getWidth() != 0 && client.getWindow().getHeight() != 0) {
@@ -163,62 +163,28 @@ public class ScreenManager extends Manager implements IMinecraft {
                 event.screen.height - 45,
                 204, 20,
                 Text.of("Jello for Fabric Options"),
-                b ->
-                {
-                    client.openScreen(new OptionsScreen());
-                }
+                ignored -> client.openScreen(new OptionsScreen())
         ));
     }
 
     public void handle(Screen screen) {
         if (this.currentScreen != null) {
-            this.saveConfig();
+            modifyConfig(true);
         }
 
         this.currentScreen = screen;
-        this.loadUIConfig();
+        modifyConfig(false);
 
         if (this.currentScreen != null) {
             this.currentScreen.updatePanelDimensions(this.mousePositions[0], this.mousePositions[1]);
         }
     }
 
-    public void saveConfig() {
-        JsonObject uiConfig = Client.INSTANCE.configManager.config;
-
-        if (this.currentScreen != null) {
-            JsonObject json = this.currentScreen.toConfigWithExtra(new JsonObject());
-            if (json.size() != 0) {
-                uiConfig.add(this.currentScreen.getName(), json);
-            }
-        }
-
-        uiConfig.addProperty("guiBlur", true);
-        uiConfig.addProperty("hqIngameBlur", true);
-        uiConfig.addProperty("hidpicocoa", true);
-    }
-
-    public void loadUIConfig() {
-        JsonObject uiConfig = Client.INSTANCE.configManager.config;
-
-        if (this.currentScreen != null) {
-            JsonObject json = null;
-
-            try {
-                json = Client.INSTANCE.configManager.config.getAsJsonObject(this.currentScreen.getName());
-            } catch (Exception e) {
-                json = new JsonObject();
-            } finally {
-                this.currentScreen.loadConfig(json);
-            }
-        }
-
-        if (uiConfig.has("guiBlur")) {
-            Client.INSTANCE.configManager.guiBlur = uiConfig.get("guiBlur").getAsBoolean();
-        }
-
-        if (uiConfig.has("hqIngameBlur")) {
-            Client.INSTANCE.configManager.hqBlur = uiConfig.get("hqIngameBlur").getAsBoolean();
+    private void modifyConfig(boolean save) {
+        if (save) {
+            Client.INSTANCE.configManager.saveConfig();
+        } else {
+            Client.INSTANCE.configManager.loadUIConfig();
         }
     }
 }
