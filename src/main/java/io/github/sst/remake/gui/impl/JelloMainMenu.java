@@ -29,9 +29,6 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
     private final Button optionsButton;
     private final Button altManagerButton;
 
-    private final Text copyright;
-    private final Text version;
-
     private final TextButton changelogButton;
     private final TextButton quitButton;
 
@@ -98,13 +95,13 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
         );
 
         this.addToList(this.altManagerButton = new MainMenuButton(this, "Alt Manager", this.method13447(var17++), this.method13448(), 128, 128, Resources.altPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
-        this.addToList(this.copyright = new Text(this, "Copyright", 10, this.getHeight() - 31, font.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, font));
-        this.addToList(this.version = new Text(this, "Version", this.getWidth() - font.getWidth(version) - 9, this.getHeight() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, font));
-        this.copyright.shadow = true;
-        this.version.shadow = true;
-        this.copyright.shadow = true;
+
+        this.addToList(new Text(this, "Copyright", 10, this.getHeight() - 31, font.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, font, true));
+        this.addToList(new Text(this, "Version", this.getWidth() - font.getWidth(version) - 9, this.getHeight() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, font, true));
+
         this.addToList(this.changelogButton = new TextButton(this, "changelog", 432, 24, 110, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)), "Changelog", ResourceRegistry.JelloLightFont20));
         this.addToList(this.quitButton = new TextButton(this, "quit", 30, 24, 50, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)), "Exit", ResourceRegistry.JelloLightFont20));
+
         this.quitButton.onClick((var1x, var2x) -> {
             ((MainMenuScreen) this.getParent()).method13341();
             new Thread(() -> {
@@ -116,6 +113,7 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
                 }
             }).start();
         });
+
         this.changelogButton.onClick((var1x, var2x) -> ((MainMenuScreen) this.getParent()).animateIn());
         this.singleplayerButton.onClick((var1x, var2x) -> this.displayGUI(new SelectWorldScreen(client.currentScreen)));
         this.multiplayerButton.onClick((var1x, var2x) -> this.displayGUI(new MultiplayerScreen(client.currentScreen)));
@@ -152,10 +150,8 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        int var5 = 30;
-        int var6 = 90;
-        this.changelogButton.setX(var6 + 0);
-        this.quitButton.setX(var5 + 0);
+        this.changelogButton.setX(90);
+        this.quitButton.setX(30);
         super.updatePanelDimensions(mouseX, mouseY);
     }
 

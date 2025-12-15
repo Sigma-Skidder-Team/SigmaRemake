@@ -29,6 +29,11 @@ public class Text extends AnimatedIconPanel {
         super(screen, id, var3, var4, var5, var6, colorHelper, var8, font, false);
     }
 
+    public Text(CustomGuiScreen screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean shadow) {
+        super(screen, id, var3, var4, var5, var6, colorHelper, var8, font, false);
+        this.shadow = shadow;
+    }
+
     @Override
     public void draw(float partialTicks) {
         if (this.shadow) {
