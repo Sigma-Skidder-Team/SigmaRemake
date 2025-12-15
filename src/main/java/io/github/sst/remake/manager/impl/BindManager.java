@@ -14,6 +14,8 @@ import io.github.sst.remake.util.client.ScreenUtils;
 import io.github.sst.remake.util.client.bind.Bind;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.BaseText;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.lang.reflect.InvocationTargetException;
@@ -99,8 +101,8 @@ public class BindManager extends Manager implements IMinecraft {
                         case SCREEN:
                             try {
                                 Screen sigmaScreen = bind.getScreenTarget()
-                                        .getDeclaredConstructor(Text.class)
-                                        .newInstance(Text.of((ScreenUtils.screenToScreenName.get(bind.getScreenTarget()))));
+                                        .getDeclaredConstructor(BaseText.class)
+                                        .newInstance(new LiteralText((ScreenUtils.screenToScreenName.get(bind.getScreenTarget()))));
                                 if (ScreenUtils.hasReplacement(sigmaScreen)) {
                                     client.openScreen(sigmaScreen);
                                 }
