@@ -21,7 +21,7 @@ public class OptionsScreen extends GameMenuScreen {
         ));
         super.init();
 
-        this.buttons.removeIf(widget -> widget.y == this.height / 4 + 72 + -16);
+        this.buttons.removeIf(widget -> widget.y == this.height / 4 + 72 - 16);
     }
 
     @Override
