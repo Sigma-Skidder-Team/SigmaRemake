@@ -12,6 +12,8 @@ import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
+import lombok.Getter;
+import lombok.Setter;
 import org.newdawn.slick.TrueTypeFont;
 import com.mojang.blaze3d.platform.GlStateManager;
 import org.lwjgl.opengl.GL11;
@@ -20,43 +22,56 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+@Setter
+@Getter
 public class CustomGuiScreen implements IGuiEventListener {
-    private final List<CustomGuiScreen> children = new ArrayList<>();
     private final List<IWidthSetter> field20894 = new ArrayList<>();
     private final List<CustomGuiScreen> field20916 = new ArrayList<>();
     private final List<CustomGuiScreen> field20918 = new ArrayList<>();
     private final List<Class7914> field20920 = new ArrayList<>();
+
     private final List<MouseListener> mouseButtonListeners = new ArrayList<>();
-    private final List<IRunnable> runnables = new ArrayList<>();
     private final List<KeyPressedListener> keyPressedListeners = new ArrayList<>();
     private final List<CharTypedListener> charTypedListeners = new ArrayList<>();
+
+    private final ArrayList<Runnable> runOnDimensionUpdate = new ArrayList<>();
+    private final List<CustomGuiScreen> children = new ArrayList<>();
+    private final List<IRunnable> runnables = new ArrayList<>();
+
+    public float field20899 = 1.0F;
+    public float field20900 = 1.0F;
+
+    public int field20901 = 0;
+    public int field20902 = 0;
+
+    public boolean field20907;
+    public boolean field20908;
+    public boolean field20909;
+
+    private CustomGuiScreen field20919;
+    private boolean field20917;
+
     public String name;
-    public CustomGuiScreen parent;
     public int xA;
     public int yA;
     public int widthA;
     public int heightA;
-    public float field20899 = 1.0F;
-    public float field20900 = 1.0F;
-    public int field20901 = 0;
-    public int field20902 = 0;
-    public boolean visible;
-    public boolean hovered;
-    public boolean focused;
-    public boolean reAddChildren;
-    public boolean field20907;
-    public boolean field20908;
-    public boolean field20909;
-    public boolean listening;
-    public boolean saveSize;
     public String text;
     public TrueTypeFont font;
     public ColorHelper textColor;
-    private final ArrayList<Runnable> runOnDimensionUpdate = new ArrayList<>();
-    private boolean field20917;
-    private CustomGuiScreen field20919;
-    private int heightO;
-    private int widthO;
+    public CustomGuiScreen parent;
+
+    private int mouseX;
+    private int mouseY;
+
+    public boolean visible;
+    public boolean hovered;
+    public boolean focused;
+
+    public boolean listening;
+    public boolean saveSize;
+
+    public boolean reAddChildren;
 
     public CustomGuiScreen(CustomGuiScreen parent, String name) {
         this(parent, name, 0, 0, 0, 0);
@@ -74,19 +89,6 @@ public class CustomGuiScreen implements IGuiEventListener {
         this(parent, name, xA, yA, widthA, heightA, textColor, text, ResourceRegistry.JelloLightFont25);
     }
 
-    /**
-     * Constructs a new CustomGuiScreen with specified parameters.
-     *
-     * @param parent    The parent CustomGuiScreen object.
-     * @param name      The name of this CustomGuiScreen.
-     * @param xA        The x-coordinate of the top-left corner.
-     * @param yA        The y-coordinate of the top-left corner.
-     * @param widthA    The width of the screen.
-     * @param heightA   The height of the screen.
-     * @param textColor The color of the text.
-     * @param text      The initial typed text (can be null).
-     * @param font      The TrueTypeFont to be used for rendering text.
-     */
     public CustomGuiScreen(CustomGuiScreen parent, String name, int xA, int yA, int widthA, int heightA, ColorHelper textColor, String text, TrueTypeFont font) {
         this.name = name;
         this.parent = parent;
@@ -104,7 +106,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     private void method13220() {
-        for (CustomGuiScreen screen : new ArrayList<CustomGuiScreen>(this.children)) {
+        for (CustomGuiScreen screen : new ArrayList<>(this.children)) {
             if (screen.shouldReAddChildren()) {
                 this.children.remove(screen);
                 this.children.add(screen);
@@ -117,20 +119,20 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public CustomGuiScreen method13221(String var1) {
-        for (CustomGuiScreen var5 : this.children) {
-            if (var5.getName().equals(var1)) {
-                return var5;
+    public CustomGuiScreen getChildByName(String childName) {
+        for (CustomGuiScreen child : this.children) {
+            if (child.getName().equals(childName)) {
+                return child;
             }
         }
 
         return null;
     }
 
-    public void runThisOnDimensionUpdate(Runnable that) {
+    public void addRunnable(Runnable runnable) {
         synchronized (this) {
-            if (that != null) {
-                this.runOnDimensionUpdate.add(that);
+            if (runnable != null) {
+                this.runOnDimensionUpdate.add(runnable);
             }
         }
     }
@@ -167,10 +169,10 @@ public class CustomGuiScreen implements IGuiEventListener {
         this.method13220();
     }
 
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        this.widthO = newWidth;
-        this.heightO = newHeight;
-        this.field20908 = this.isVisible() && this.method13229(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        this.mouseY = mouseY;
+        this.mouseX = mouseX;
+        this.field20908 = this.isVisible() && this.method13229(mouseX, mouseY);
 
         try {
             for (Runnable runnable : this.runOnDimensionUpdate) {
@@ -179,7 +181,7 @@ public class CustomGuiScreen implements IGuiEventListener {
                 }
             }
         } catch (ConcurrentModificationException e) {
-            Client.LOGGER.info("kys concurrent modification exception go away");
+            Client.LOGGER.info("Failed to run dimension update runnables", e);
         }
 
         this.runOnDimensionUpdate.clear();
@@ -187,10 +189,10 @@ public class CustomGuiScreen implements IGuiEventListener {
 
         try {
             for (CustomGuiScreen iconPanel : this.children) {
-                iconPanel.updatePanelDimensions(newHeight, newWidth);
+                iconPanel.updatePanelDimensions(mouseX, mouseY);
             }
         } catch (ConcurrentModificationException e) {
-            e.printStackTrace();
+            Client.LOGGER.warn("Failed to update panel dimensions", e);
         }
 
         this.field20909 = this.field20909 & this.field20908;
@@ -281,8 +283,8 @@ public class CustomGuiScreen implements IGuiEventListener {
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         boolean var6 = false;
 
-        for (int var7 = this.children.size() - 1; var7 >= 0; var7--) {
-            CustomGuiScreen var8 = this.children.get(var7);
+        for (int i = this.children.size() - 1; i >= 0; i--) {
+            CustomGuiScreen var8 = this.children.get(i);
             boolean var9 = var8.getParent() != null
                     && var8.getParent() instanceof ScrollableContentPanel
                     && var8.getParent().method13114(mouseX, mouseY)
@@ -291,8 +293,8 @@ public class CustomGuiScreen implements IGuiEventListener {
             if (var6 || !var8.isHovered() || !var8.isSelfVisible() || !var8.method13114(mouseX, mouseY) && !var9) {
                 var8.setFocused(false);
                 if (var8 != null) {
-                    for (CustomGuiScreen var12 : var8.getChildren()) {
-                        var12.setFocused(false);
+                    for (CustomGuiScreen child : var8.getChildren()) {
+                        child.setFocused(false);
                     }
                 }
             } else {
@@ -315,9 +317,9 @@ public class CustomGuiScreen implements IGuiEventListener {
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         this.field20908 = this.method13114(mouseX, mouseY);
 
-        for (CustomGuiScreen var7 : this.children) {
-            if (var7.isHovered() && var7.isSelfVisible()) {
-                var7.onMouseRelease(mouseX, mouseY, mouseButton);
+        for (CustomGuiScreen child : this.children) {
+            if (child.isHovered() && child.isSelfVisible()) {
+                child.onMouseRelease(mouseX, mouseY, mouseButton);
             }
         }
 
@@ -336,25 +338,25 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     @Override
     public void onScroll(float scroll) {
-        for (CustomGuiScreen var5 : this.children) {
-            if (var5.isHovered() && var5.isSelfVisible()) {
-                var5.onScroll(scroll);
+        for (CustomGuiScreen child : this.children) {
+            if (child.isHovered() && child.isSelfVisible()) {
+                child.onScroll(scroll);
             }
         }
     }
 
-    public boolean method13114(int var1, int var2) {
-        var1 -= this.method13271();
-        var2 -= this.method13272();
-        return var1 >= 0 && var1 <= this.widthA && var2 >= 0 && var2 <= this.heightA;
+    public boolean method13114(int mouseX, int mouseY) {
+        mouseX -= this.method13271();
+        mouseY -= this.method13272();
+        return mouseX >= 0 && mouseX <= this.widthA && mouseY >= 0 && mouseY <= this.heightA;
     }
 
-    public boolean method13228(int var1, int var2, boolean var3) {
-        boolean var6 = this.method13114(var1, var2);
+    public boolean method13228(int mouseX, int mouseY, boolean var3) {
+        boolean var6 = this.method13114(mouseX, mouseY);
         if (var6 && this.parent != null) {
             if (var3) {
                 for (CustomGuiScreen var8 : this.getChildren()) {
-                    if (var8.isSelfVisible() && var8.method13114(var1, var2)) {
+                    if (var8.isSelfVisible() && var8.method13114(mouseX, mouseY)) {
                         return false;
                     }
                 }
@@ -365,7 +367,7 @@ public class CustomGuiScreen implements IGuiEventListener {
             for (CustomGuiScreen var12 = this.getParent(); var12 != null; var12 = var12.getParent()) {
                 for (int var9 = var12.findChild(var11) + 1; var9 < var12.getChildren().size(); var9++) {
                     CustomGuiScreen var10 = var12.getChildren().get(var9);
-                    if (var10 != var11 && var10.isSelfVisible() && var10.method13114(var1, var2)) {
+                    if (var10 != var11 && var10.isSelfVisible() && var10.method13114(mouseX, mouseY)) {
                         return false;
                     }
                 }
@@ -377,8 +379,8 @@ public class CustomGuiScreen implements IGuiEventListener {
         return var6;
     }
 
-    public boolean method13229(int var1, int var2) {
-        return this.method13228(var1, var2, true);
+    public boolean method13229(int mouseX, int mouseY) {
+        return this.method13228(mouseX, mouseY, true);
     }
 
     public void addToList(CustomGuiScreen var1) {
@@ -438,7 +440,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
             try {
                 this.children.add(var1);
-            } catch (ConcurrentModificationException var6) {
+            } catch (ConcurrentModificationException ignored) {
             }
         }
     }
@@ -478,10 +480,6 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     public int findChild(CustomGuiScreen child) {
         return this.children.indexOf(child);
-    }
-
-    public List<CustomGuiScreen> getChildren() {
-        return this.children;
     }
 
     public void method13242() {
@@ -525,7 +523,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         for (CustomGuiScreen child : this.children) {
             if (child.isListening()) {
                 JsonObject var7 = child.toConfigWithExtra(new JsonObject());
-                if (var7.size() > 0) {
+                if (!var7.isEmpty()) {
                     children.add(var7);
                 }
             }
@@ -549,12 +547,14 @@ public class CustomGuiScreen implements IGuiEventListener {
                 List<CustomGuiScreen> childrenArray = new ArrayList<>(this.children);
 
                 for (int i = 0; i < children.size(); i++) {
-                    JsonObject childJson = null;
+                    JsonObject childJson;
+
                     try {
                         childJson = children.get(i).getAsJsonObject();
                     } catch (JsonParseException e) {
                         throw new RuntimeException(e);
                     }
+
                     String id = GsonUtils.getStringOrDefault(childJson, "id", null);
                     int index = GsonUtils.getIntOrDefault(childJson, "index", -1);
 
@@ -643,56 +643,12 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public CustomGuiScreen getParent() {
-        return this.parent;
-    }
-
-    public void setParent(CustomGuiScreen var1) {
-        this.parent = var1;
-    }
-
     public List<IWidthSetter> method13260() {
         return this.field20894;
     }
 
     public void setSize(IWidthSetter var1) {
         this.field20894.add(var1);
-    }
-
-    public int getXA() {
-        return this.xA;
-    }
-
-    public void setXA(int var1) {
-        this.xA = var1;
-    }
-
-    public int getYA() {
-        return this.yA;
-    }
-
-    public void setYA(int var1) {
-        this.yA = var1;
-    }
-
-    public int getWidthA() {
-        return this.widthA;
-    }
-
-    public void setWidthA(int var1) {
-        this.widthA = var1;
-    }
-
-    public int getHeightA() {
-        return this.heightA;
-    }
-
-    public void setHeightA(int var1) {
-        this.heightA = var1;
     }
 
     public int method13271() {
@@ -773,32 +729,12 @@ public class CustomGuiScreen implements IGuiEventListener {
         return this.reAddChildren;
     }
 
-    public void setReAddChildren(boolean reAddChildren) {
-        this.reAddChildren = reAddChildren;
-    }
-
     public boolean method13293() {
         return this.field20907;
     }
 
     public void method13294(boolean var1) {
         this.field20907 = var1;
-    }
-
-    public boolean isHovered() {
-        return this.hovered;
-    }
-
-    public void setHovered(boolean hovered) {
-        this.hovered = hovered;
-    }
-
-    public boolean isFocused() {
-        return this.focused;
-    }
-
-    public void setFocused(boolean focused) {
-        this.focused = focused;
     }
 
     public boolean method13298() {
@@ -809,48 +745,8 @@ public class CustomGuiScreen implements IGuiEventListener {
         return this.field20909;
     }
 
-    public boolean isListening() {
-        return this.listening;
-    }
-
-    public void setListening(boolean listening) {
-        this.listening = listening;
-    }
-
     public boolean shouldSaveSize() {
         return this.saveSize;
-    }
-
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public TrueTypeFont getFont() {
-        return this.font;
-    }
-
-    public void setFont(TrueTypeFont font) {
-        this.font = font;
-    }
-
-    public ColorHelper getTextColor() {
-        return this.textColor;
-    }
-
-    public void setTextColor(ColorHelper textColor) {
-        this.textColor = textColor;
-    }
-
-    public int getHeightO() {
-        return this.heightO;
-    }
-
-    public int getWidthO() {
-        return this.widthO;
     }
 
     public interface IRunnable {

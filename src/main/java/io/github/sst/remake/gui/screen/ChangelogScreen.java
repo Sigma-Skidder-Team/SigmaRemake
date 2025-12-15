@@ -38,13 +38,13 @@ public class ChangelogScreen extends CustomGuiScreen {
 
     public void method13490(JsonArray var1) {
         if (var1 != null) {
-            this.getParent().runThisOnDimensionUpdate(new Class576(this, var1));
+            this.getParent().addRunnable(new Class576(this, var1));
         }
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         if (this.scrollPanel != null) {
             if (this.isHovered() && this.isSelfVisible()) {
                 for (CustomGuiScreen var9 : this.scrollPanel.getButton().getChildren()) {

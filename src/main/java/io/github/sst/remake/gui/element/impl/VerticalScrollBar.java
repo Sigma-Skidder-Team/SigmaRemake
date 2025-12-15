@@ -33,7 +33,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public void onScroll(float scroll) {
         super.onScroll(scroll);
-        if (this.parent != null && this.parent.method13228(this.getHeightO(), this.getWidthO(), false) || ((ScrollableContentPanel) this.parent).field21208) {
+        if (this.parent != null && this.parent.method13228(this.getMouseX(), this.getMouseY(), false) || ((ScrollableContentPanel) this.parent).field21208) {
             float var4 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeightA();
             float var5 = (float) this.getParent().getHeightA();
             if (var4 == 0.0F) {
@@ -53,9 +53,9 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
-        this.field20908 = this.method13228(newHeight, newWidth, false);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
+        this.field20908 = this.method13228(mouseX, mouseY, false);
         this.field20794 = this.field20794
                 + (
                 this.field20796.getHeightA() >= this.getHeightA()

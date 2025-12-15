@@ -29,8 +29,8 @@ public class Button extends Element {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         this.field20584 = this.field20584 + (!this.method13298() ? -0.1F : 0.1F);
         this.field20584 = Math.min(Math.max(0.0F, this.field20584), 1.0F);
     }

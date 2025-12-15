@@ -116,12 +116,12 @@ public class MainMenuScreen extends Screen implements IMinecraft {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
+    public void updatePanelDimensions(int mouseX, int mouseY) {
         for (CustomGuiScreen var6 : this.bubbles) {
-            var6.updatePanelDimensions(newHeight, newWidth);
+            var6.updatePanelDimensions(mouseX, mouseY);
         }
 
-        super.updatePanelDimensions(newHeight, newWidth);
+        super.updatePanelDimensions(mouseX, mouseY);
     }
 
     @Override
@@ -137,8 +137,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
         long elapsedTime = System.nanoTime() - currentTime;
         field20982 = Math.min(10.0F, Math.max(0.0F, (float) elapsedTime / 1.810361E7F / 2.0F));
         currentTime = System.nanoTime();
-        int offsetY = -this.getHeightO();
-        float offsetX = (float) this.getWidthO() / (float) this.getWidthA() * -114.0F;
+        int offsetY = -this.getMouseX();
+        float offsetX = (float) this.getMouseY() / (float) this.getWidthA() * -114.0F;
         if (this.field20968) {
             this.field20966 = (int) offsetX;
             this.field20967 = offsetY;

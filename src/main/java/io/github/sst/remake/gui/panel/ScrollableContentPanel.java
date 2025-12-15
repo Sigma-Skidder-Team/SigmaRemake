@@ -58,9 +58,9 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
+    public void updatePanelDimensions(int mouseX, int mouseY) {
         if (!this.field21203 || this.isSelfVisible()) {
-            super.updatePanelDimensions(newHeight, newWidth);
+            super.updatePanelDimensions(mouseX, mouseY);
             this.buttonList.setYA(-1 * this.scrollBar.getOffset());
 
             for (CustomGuiScreen var6 : this.getButton().getChildren()) {

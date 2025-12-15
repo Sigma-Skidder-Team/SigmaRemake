@@ -20,8 +20,8 @@ public class VerticalScrollBarButton extends AnimatedIconPanel {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         float var5 = (float) this.field20780.getButton().getHeightA();
         float var6 = (float) this.parent.getParent().getHeightA();
         float var7 = (float) this.parent.getHeightA();

@@ -54,15 +54,15 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
             if (!this.field20909 && !this.field20877) {
                 this.sizeWidthThingy = this.getWidthA() / 2;
                 this.sizeHeightThingy = this.getHeightA() / 2;
             }
 
-            this.handleMovementAndCheckBoundaries(newHeight, newWidth);
+            this.handleMovementAndCheckBoundaries(mouseX, mouseY);
         }
     }
 

@@ -34,8 +34,8 @@ public class MainMenuButton extends SmallImage {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         this.field20577 = this.method13298();
         if (!this.field20577) {
             if (this.method13029()) {

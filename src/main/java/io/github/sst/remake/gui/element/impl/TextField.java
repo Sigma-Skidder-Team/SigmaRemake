@@ -71,8 +71,8 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         String text = this.text;
         if (this.censorText) {
             text = this.text.replaceAll(".", this.censorChar);
@@ -81,7 +81,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         this.field20744 = this.field20744 + ((!this.focused ? 0.0F : 1.0F) - this.field20744) / 2.0F;
         if (this.focused) {
             if (this.field20752) {
-                this.maxLen = StringUtils.getStringLen(text, this.font, (float) this.method13271(), newHeight, this.field20746);
+                this.maxLen = StringUtils.getStringLen(text, this.font, (float) this.method13271(), mouseX, this.field20746);
             }
         } else {
             this.maxLen = 0;

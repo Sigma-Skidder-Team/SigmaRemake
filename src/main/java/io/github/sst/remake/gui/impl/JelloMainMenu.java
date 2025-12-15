@@ -151,12 +151,12 @@ public class JelloMainMenu extends CustomGuiScreen implements IMinecraft {
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
+    public void updatePanelDimensions(int mouseX, int mouseY) {
         int var5 = 30;
         int var6 = 90;
         this.changelogButton.setXA(var6 + 0);
         this.quitButton.setXA(var5 + 0);
-        super.updatePanelDimensions(newHeight, newWidth);
+        super.updatePanelDimensions(mouseX, mouseY);
     }
 
     public void playClickSound() {
