@@ -8,6 +8,7 @@ import io.github.sst.remake.gui.impl.JelloMenu;
 import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.gui.screen.OptionsScreen;
 import io.github.sst.remake.util.IMinecraft;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +32,8 @@ public class ScreenUtils implements IMinecraft {
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
         if (screen == null) {
+            return null;
+        } else if (isValid(screen)) {
             return null;
         } else if (!replacementScreens.containsKey(screen.getClass())) {
             return null;
@@ -70,6 +73,16 @@ public class ScreenUtils implements IMinecraft {
 
     public static boolean hasReplacement(net.minecraft.client.gui.screen.Screen screen) {
         return replacementScreens.containsKey(screen.getClass());
+    }
+
+    public static boolean isValid(net.minecraft.client.gui.screen.Screen screen) {
+        if (screen instanceof GameMenuScreen && !(screen instanceof OptionsScreen)) {
+            client.currentScreen = null;
+            client.openScreen(new OptionsScreen());
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

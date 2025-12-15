@@ -5,15 +5,11 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.RunLoopEvent;
-import io.github.sst.remake.event.impl.client.InitPauseMenuWidgetsEvent;
 import io.github.sst.remake.event.impl.window.*;
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.screen.OptionsScreen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ScreenUtils;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -154,17 +150,6 @@ public class ScreenManager extends Manager implements IMinecraft {
     @Subscribe
     public void onOpenScreen(OpenScreenEvent event) {
         handle(ScreenUtils.mcToSigma(client.currentScreen));
-    }
-
-    @Subscribe
-    public void onInitPauseMenu(InitPauseMenuWidgetsEvent event) {
-        event.screen.addButton(new ButtonWidget(
-                event.screen.width / 2 - 102,
-                event.screen.height - 45,
-                204, 20,
-                Text.of("Jello for Fabric Options"),
-                ignored -> client.openScreen(new OptionsScreen())
-        ));
     }
 
     public void handle(Screen screen) {

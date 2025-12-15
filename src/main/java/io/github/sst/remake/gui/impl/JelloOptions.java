@@ -13,7 +13,7 @@ import net.minecraft.client.MinecraftClient;
 public class JelloOptions extends Screen {
 
     private static final AnimationUtils anim = new AnimationUtils(300, 100);
-    private static net.minecraft.client.gui.screen.Screen field21115 = null;
+    private static net.minecraft.client.gui.screen.Screen mcScreen = null;
 
     public JelloOptions() {
         super("options");
@@ -30,8 +30,9 @@ public class JelloOptions extends Screen {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS && anim.calcPercent() == 0.0F && field21115 != null) {
-            MinecraftClient.getInstance().openScreen(field21115);
+        if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS && anim.calcPercent() == 0.0F && mcScreen != null) {
+            System.out.println(mcScreen);
+            MinecraftClient.getInstance().openScreen(mcScreen);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -54,8 +55,8 @@ public class JelloOptions extends Screen {
         super.draw(anim.calcPercent());
     }
 
-    public static void showGUI(net.minecraft.client.gui.screen.Screen var0) {
-        field21115 = var0;
+    public static void showGUI(net.minecraft.client.gui.screen.Screen mcScreen) {
+        JelloOptions.mcScreen = mcScreen;
         anim.changeDirection(AnimationUtils.Direction.BACKWARDS);
     }
 
