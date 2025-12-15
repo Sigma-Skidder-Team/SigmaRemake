@@ -39,7 +39,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
     }
 
     private void method13511() {
-        this.getChildren().add(this.buttonList = new CustomGuiScreen(this, "content", 0, 0, this.widthA, this.heightA));
+        this.getChildren().add(this.buttonList = new CustomGuiScreen(this, "content", 0, 0, this.width, this.height));
         this.buttonList.setSize(new ContentSize());
         this.getChildren().add(this.scrollBar = new VerticalScrollBar(this, 11));
         this.scrollBar.setReAddChildren(true);
@@ -61,7 +61,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (!this.field21203 || this.isSelfVisible()) {
             super.updatePanelDimensions(mouseX, mouseY);
-            this.buttonList.setYA(-1 * this.scrollBar.getOffset());
+            this.buttonList.setY(-1 * this.scrollBar.getOffset());
 
             for (CustomGuiScreen var6 : this.getButton().getChildren()) {
                 for (IWidthSetter var8 : var6.method13260()) {

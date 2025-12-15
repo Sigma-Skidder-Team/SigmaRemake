@@ -58,8 +58,8 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
             if (!this.field20909 && !this.field20877) {
-                this.sizeWidthThingy = this.getWidthA() / 2;
-                this.sizeHeightThingy = this.getHeightA() / 2;
+                this.sizeWidthThingy = this.getWidth() / 2;
+                this.sizeHeightThingy = this.getHeight() / 2;
             }
 
             this.handleMovementAndCheckBoundaries(mouseX, mouseY);
@@ -107,40 +107,40 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
                 this.setDragging(true);
             }
         } else if (this.isDragging()) {
-            this.setXA(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.method13271()));
-            this.setYA(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.method13272()));
+            this.setX(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.method13271()));
+            this.setY(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.method13272()));
             if (this.field20882) {
                 if (this.parent == null) {
-                    if (this.getXA() < 0) {
-                        this.setXA(0);
+                    if (this.getX() < 0) {
+                        this.setX(0);
                     }
 
-                    if (this.getXA() + this.getWidthA() > client.getWindow().getWidth()) {
-                        this.setXA(client.getWindow().getWidth() - this.getWidthA());
+                    if (this.getX() + this.getWidth() > client.getWindow().getWidth()) {
+                        this.setX(client.getWindow().getWidth() - this.getWidth());
                     }
 
-                    if (this.getYA() < 0) {
-                        this.setYA(0);
+                    if (this.getY() < 0) {
+                        this.setY(0);
                     }
 
-                    if (this.getYA() + this.getHeightA() > client.getWindow().getHeight()) {
-                        this.setYA(client.getWindow().getHeight() - this.getHeightA());
+                    if (this.getY() + this.getHeight() > client.getWindow().getHeight()) {
+                        this.setY(client.getWindow().getHeight() - this.getHeight());
                     }
                 } else {
-                    if (this.getXA() < 0) {
-                        this.setXA(0);
+                    if (this.getX() < 0) {
+                        this.setX(0);
                     }
 
-                    if (this.getXA() + this.getWidthA() > this.parent.getWidthA()) {
-                        this.setXA(this.parent.getWidthA() - this.getWidthA());
+                    if (this.getX() + this.getWidth() > this.parent.getWidth()) {
+                        this.setX(this.parent.getWidth() - this.getWidth());
                     }
 
-                    if (this.getYA() < 0) {
-                        this.setYA(0);
+                    if (this.getY() < 0) {
+                        this.setY(0);
                     }
 
-                    if (this.getYA() + this.getHeightA() > this.parent.getHeightA() && !this.field20883) {
-                        this.setYA(this.parent.getHeightA() - this.getHeightA());
+                    if (this.getY() + this.getHeight() > this.parent.getHeight() && !this.field20883) {
+                        this.setY(this.parent.getHeight() - this.getHeight());
                     }
                 }
             }

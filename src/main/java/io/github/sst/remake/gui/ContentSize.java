@@ -9,16 +9,16 @@ public class ContentSize implements IWidthSetter {
         int height = 0;
 
         for (CustomGuiScreen child : of.getChildren()) {
-            if (child.getXA() + child.getWidthA() > width) {
-                width = child.getXA() + child.getWidthA();
+            if (child.getX() + child.getWidth() > width) {
+                width = child.getX() + child.getWidth();
             }
 
-            if (child.getYA() + child.getHeightA() > height) {
-                height = child.getYA() + child.getHeightA();
+            if (child.getY() + child.getHeight() > height) {
+                height = child.getY() + child.getHeight();
             }
         }
 
-        of.setWidthA(width);
-        of.setHeightA(height);
+        of.setWidth(width);
+        of.setHeight(height);
     }
 }

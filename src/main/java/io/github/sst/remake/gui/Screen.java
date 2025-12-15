@@ -15,8 +15,8 @@ public abstract class Screen extends CustomGuiScreen implements IMinecraft {
     @Override
     public void loadConfig(JsonObject config) {
         super.loadConfig(config);
-        this.setWidthA(client.getWindow().getWidth());
-        this.setHeightA(client.getWindow().getHeight());
+        this.setWidth(client.getWindow().getWidth());
+        this.setHeight(client.getWindow().getHeight());
     }
 
     @Override

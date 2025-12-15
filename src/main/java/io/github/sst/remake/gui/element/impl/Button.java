@@ -44,29 +44,29 @@ public class Button extends Element {
         );
         if (this.field20586 <= 0) {
             RenderUtils.drawRoundedRect(
-                    (float) this.getXA(),
-                    (float) this.getYA(),
-                    (float) (this.getXA() + this.getWidthA()),
-                    (float) (this.getYA() + this.getHeightA()),
+                    (float) this.getX(),
+                    (float) this.getY(),
+                    (float) (this.getX() + this.getWidth()),
+                    (float) (this.getY() + this.getHeight()),
                     color
             );
         } else {
             RenderUtils.drawRoundedButton(
-                    (float) this.getXA(), (float) this.getYA(), (float) this.getWidthA(), (float) this.getHeightA(), (float) this.field20586, color
+                    (float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), (float) this.field20586, color
             );
         }
 
-        int var10 = this.getXA()
+        int var10 = this.getX()
                 + (
                 this.textColor.getWidthAlignment() != FontAlignment.CENTER
                         ? 0
-                        : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidthA() / 2 : this.getWidthA())
+                        : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidth() / 2 : this.getWidth())
         );
-        int var11 = this.getYA()
+        int var11 = this.getY()
                 + (
                 this.textColor.getHeightAlignment() != FontAlignment.CENTER
                         ? 0
-                        : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeightA() / 2 : this.getHeightA())
+                        : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeight() / 2 : this.getHeight())
         );
         if (this.getText() != null) {
             RenderUtils.drawString(

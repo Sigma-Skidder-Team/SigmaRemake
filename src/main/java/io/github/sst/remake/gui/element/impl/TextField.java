@@ -342,16 +342,16 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
             var6 = this.text.replaceAll(".", this.censorChar);
         }
 
-        ScissorUtils.startScissor(this.getXA(), this.getYA(), this.getXA() + this.widthA, this.getYA() + this.heightA, true);
-        int var7 = this.xA + 4;
-        int var8 = this.widthA - 4;
+        ScissorUtils.startScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, true);
+        int var7 = this.x + 4;
+        int var8 = this.width - 4;
         float var9 = (float) var7 + this.field20746 + (float) this.font.getWidth(var6.substring(0, this.maxLen));
         if (this.isFocused()) {
             RenderUtils.drawRoundedRect(
                     var9 + (float) (var6.isEmpty() ? 0 : -1),
-                    (float) (this.yA + this.heightA / 2 - this.font.getHeight(var6) / 2 + 2),
+                    (float) (this.y + this.height / 2 - this.font.getHeight(var6) / 2 + 2),
                     var9 + (float) (var6.isEmpty() ? 1 : 0),
-                    (float) (this.yA + this.heightA / 2 + this.font.getHeight(var6) / 2 - 1),
+                    (float) (this.y + this.height / 2 + this.font.getHeight(var6) / 2 - 1),
                     ColorHelper.applyAlpha(this.textColor.getTextColor(), !var5 ? 0.1F * partialTicks : 0.8F)
             );
             float var10 = (float) (var7 + this.font.getWidth(var6.substring(0, this.maxLen))) + this.field20747;
@@ -372,9 +372,9 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         float var11 = (float) var7 + this.field20746 + (float) this.font.getWidth(var6.substring(0, this.endSelect));
         RenderUtils.drawRoundedRect(
                 var14,
-                (float) (this.yA + this.heightA / 2 - this.font.getHeight(var6) / 2),
+                (float) (this.y + this.height / 2 - this.font.getHeight(var6) / 2),
                 var11,
-                (float) (this.yA + this.heightA / 2 + this.font.getHeight(var6) / 2),
+                (float) (this.y + this.height / 2 + this.font.getHeight(var6) / 2),
                 ColorHelper.applyAlpha(-5516546, partialTicks)
         );
         FontAlignment widthAlignment = this.textColor.getWidthAlignment();
@@ -382,7 +382,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         RenderUtils.drawString(
                 this.font,
                 (float) var7 + this.field20746,
-                (float) (this.yA + this.heightA / 2),
+                (float) (this.y + this.height / 2),
                 var6.length() == 0 && (!this.focused || var6.length() <= 0) ? this.placeholder : var6,
                 ColorHelper.applyAlpha(this.textColor.getTextColor(), (this.field20744 / 2.0F + 0.4F) * partialTicks * (this.focused && var6.length() > 0 ? 1.0F : 0.5F)),
                 widthAlignment,
@@ -391,10 +391,10 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         ScissorUtils.restoreScissor();
         if (this.roundedThingy) {
             RenderUtils.drawRoundedRect(
-                    (float) this.xA,
-                    (float) (this.yA + this.heightA - 2),
-                    (float) (this.xA + this.widthA),
-                    (float) (this.yA + this.heightA),
+                    (float) this.x,
+                    (float) (this.y + this.height - 2),
+                    (float) (this.x + this.width),
+                    (float) (this.y + this.height),
                     ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), (this.field20744 / 2.0F + 0.5F) * partialTicks)
             );
         }

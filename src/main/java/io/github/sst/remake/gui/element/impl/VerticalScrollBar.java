@@ -20,12 +20,12 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     public TimerUtils field20797 = new TimerUtils();
 
     public VerticalScrollBar(CustomGuiScreen var1, int var2) {
-        super(var1, "verticalScrollBar", var1.getWidthA() - var2 - 5, 5, var2, var1.getHeightA() - 10, false);
+        super(var1, "verticalScrollBar", var1.getWidth() - var2 - 5, 5, var2, var1.getHeight() - 10, false);
         this.setSize((var1x, var2x) -> {
-            var1x.setXA(var2x.getWidthA() - var2 - 5);
-            var1x.setYA(5);
-            var1x.setWidthA(var2);
-            var1x.setHeightA(var2x.getHeightA() - 10);
+            var1x.setX(var2x.getWidth() - var2 - 5);
+            var1x.setY(5);
+            var1x.setWidth(var2);
+            var1x.setHeight(var2x.getHeight() - 10);
         });
         this.addToList(this.field20796 = new VerticalScrollBarButton(this, this, var2));
     }
@@ -34,8 +34,8 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     public void onScroll(float scroll) {
         super.onScroll(scroll);
         if (this.parent != null && this.parent.method13228(this.getMouseX(), this.getMouseY(), false) || ((ScrollableContentPanel) this.parent).field21208) {
-            float var4 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeightA();
-            float var5 = (float) this.getParent().getHeightA();
+            float var4 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeight();
+            float var5 = (float) this.getParent().getHeight();
             if (var4 == 0.0F) {
                 return;
             }
@@ -58,7 +58,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
         this.field20908 = this.method13228(mouseX, mouseY, false);
         this.field20794 = this.field20794
                 + (
-                this.field20796.getHeightA() >= this.getHeightA()
+                this.field20796.getHeight() >= this.getHeight()
                         ? -1.0F
                         : (
                         !this.method13298() && !this.field20796.isDragging() && (!this.field20797.isEnabled() || this.field20797.getElapsedTime() >= 500L)
@@ -67,9 +67,9 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
                 )
         );
         this.field20794 = Math.min(Math.max(0.0F, this.field20794), 1.0F);
-        float var5 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeightA();
-        float var6 = (float) this.getParent().getHeightA();
-        float var7 = (float) this.getHeightA();
+        float var5 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeight();
+        float var6 = (float) this.getParent().getHeight();
+        float var7 = (float) this.getHeight();
         float var8 = var6 / var5;
         boolean var9 = var8 < 1.0F && var5 > 0.0F && this.field20794 >= 0.0F;
         this.setSelfVisible(var9);
@@ -81,12 +81,12 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
         partialTicks *= this.field20794;
         int var4 = 5;
         int var5 = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.2F * partialTicks);
-        int var6 = this.xA;
-        int var7 = this.widthA;
+        int var6 = this.x;
+        int var7 = this.width;
 
-        RenderUtils.drawImage((float) var6, (float) this.yA, (float) var7, 5.0F, Resources.verticalScrollBarTopPNG, 0.45F * partialTicks);
-        RenderUtils.drawImage((float) var6, (float) (this.yA + this.heightA - var4), (float) var7, 5.0F, Resources.verticalScrollBarBottomPNG, 0.45F * partialTicks);
-        RenderUtils.drawRoundedRect((float) var6, (float) (this.yA + var4), (float) (var6 + var7), (float) (this.yA + this.heightA - var4), var5);
+        RenderUtils.drawImage((float) var6, (float) this.y, (float) var7, 5.0F, Resources.verticalScrollBarTopPNG, 0.45F * partialTicks);
+        RenderUtils.drawImage((float) var6, (float) (this.y + this.height - var4), (float) var7, 5.0F, Resources.verticalScrollBarBottomPNG, 0.45F * partialTicks);
+        RenderUtils.drawRoundedRect((float) var6, (float) (this.y + var4), (float) (var6 + var7), (float) (this.y + this.height - var4), var5);
 
 
         super.draw(partialTicks);
@@ -98,12 +98,12 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
             this.field20908 = this.method13228(mouseX, mouseY, false);
             if (this.method13298()) {
                 int var6 = mouseY - this.method13272();
-                if (var6 <= this.field20796.getYA() + this.field20796.getHeightA()) {
-                    if (var6 < this.field20796.getYA()) {
-                        this.offset = this.offset - (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeightA() / 4.0F);
+                if (var6 <= this.field20796.getY() + this.field20796.getHeight()) {
+                    if (var6 < this.field20796.getY()) {
+                        this.offset = this.offset - (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeight() / 4.0F);
                     }
                 } else {
-                    this.offset = this.offset + (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeightA() / 4.0F);
+                    this.offset = this.offset + (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeight() / 4.0F);
                 }
             }
 

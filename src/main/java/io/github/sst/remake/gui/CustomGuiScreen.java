@@ -52,10 +52,10 @@ public class CustomGuiScreen implements IGuiEventListener {
     private boolean field20917;
 
     public String name;
-    public int xA;
-    public int yA;
-    public int widthA;
-    public int heightA;
+    public int x;
+    public int y;
+    public int width;
+    public int height;
     public String text;
     public TrueTypeFont font;
     public ColorHelper textColor;
@@ -77,25 +77,25 @@ public class CustomGuiScreen implements IGuiEventListener {
         this(parent, name, 0, 0, 0, 0);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int xA, int yA, int widthA, int heightA) {
-        this(parent, name, xA, yA, widthA, heightA, ColorHelper.field27961);
+    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+        this(parent, name, x, y, width, height, ColorHelper.field27961);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int xA, int yA, int widthA, int heightA, ColorHelper textColor) {
-        this(parent, name, xA, yA, widthA, heightA, textColor, null);
+    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor) {
+        this(parent, name, x, y, width, height, textColor, null);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int xA, int yA, int widthA, int heightA, ColorHelper textColor, String text) {
-        this(parent, name, xA, yA, widthA, heightA, textColor, text, ResourceRegistry.JelloLightFont25);
+    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text) {
+        this(parent, name, x, y, width, height, textColor, text, ResourceRegistry.JelloLightFont25);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int xA, int yA, int widthA, int heightA, ColorHelper textColor, String text, TrueTypeFont font) {
+    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text, TrueTypeFont font) {
         this.name = name;
         this.parent = parent;
-        this.xA = xA;
-        this.yA = yA;
-        this.widthA = widthA;
-        this.heightA = heightA;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
         this.text = text;
         this.textColor = textColor;
         this.font = font;
@@ -208,9 +208,9 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public void method13224() {
-        GL11.glTranslatef((float) (this.getXA() + this.getWidthA() / 2), (float) (this.getYA() + this.getHeightA() / 2), 0.0F);
+        GL11.glTranslatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
         GL11.glScalef(this.method13273(), this.method13275(), 0.0F);
-        GL11.glTranslatef((float) (-this.getXA() - this.getWidthA() / 2), (float) (-this.getYA() - this.getHeightA() / 2), 0.0F);
+        GL11.glTranslatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
     }
 
     public void method13225() {
@@ -224,7 +224,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public final void drawChildren(float partialTicks) {
         GlStateManager.enableAlphaTest();
         GL11.glAlphaFunc(519, 0.0F);
-        GL11.glTranslatef((float) this.getXA(), (float) this.getYA(), 0.0F);
+        GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
 
         for (CustomGuiScreen child : this.children) {
             if (child.isSelfVisible()) {
@@ -348,7 +348,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public boolean method13114(int mouseX, int mouseY) {
         mouseX -= this.method13271();
         mouseY -= this.method13272();
-        return mouseX >= 0 && mouseX <= this.widthA && mouseY >= 0 && mouseY <= this.heightA;
+        return mouseX >= 0 && mouseX <= this.width && mouseY >= 0 && mouseY <= this.height;
     }
 
     public boolean method13228(int mouseX, int mouseY, boolean var3) {
@@ -503,11 +503,11 @@ public class CustomGuiScreen implements IGuiEventListener {
     public JsonObject toConfigWithExtra(JsonObject config) {
         if (this.isListening()) {
             config.addProperty("id", this.getName());
-            config.addProperty("x", this.getXA());
-            config.addProperty("y", this.getYA());
+            config.addProperty("x", this.getX());
+            config.addProperty("y", this.getY());
             if (this.shouldSaveSize()) {
-                config.addProperty("width", this.getWidthA());
-                config.addProperty("height", this.getHeightA());
+                config.addProperty("width", this.getWidth());
+                config.addProperty("height", this.getHeight());
             }
 
             config.addProperty("index", this.parent == null ? 0 : this.parent.findChild(this));
@@ -535,11 +535,11 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     public void loadConfig(JsonObject config) {
         if (this.isListening()) {
-            this.xA = GsonUtils.getIntOrDefault(config, "x", this.xA);
-            this.yA = GsonUtils.getIntOrDefault(config, "y", this.yA);
+            this.x = GsonUtils.getIntOrDefault(config, "x", this.x);
+            this.y = GsonUtils.getIntOrDefault(config, "y", this.y);
             if (this.shouldSaveSize()) {
-                this.widthA = GsonUtils.getIntOrDefault(config, "width", this.widthA);
-                this.heightA = GsonUtils.getIntOrDefault(config, "height", this.heightA);
+                this.width = GsonUtils.getIntOrDefault(config, "width", this.width);
+                this.height = GsonUtils.getIntOrDefault(config, "height", this.height);
             }
 
             JsonArray children = GsonUtils.getJSONArrayOrNull(config, "children");
@@ -652,11 +652,11 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public int method13271() {
-        return this.parent == null ? this.xA : this.parent.method13271() + this.xA;
+        return this.parent == null ? this.x : this.parent.method13271() + this.x;
     }
 
     public int method13272() {
-        return this.parent == null ? this.yA : this.parent.method13272() + this.yA;
+        return this.parent == null ? this.y : this.parent.method13272() + this.y;
     }
 
     public float method13273() {

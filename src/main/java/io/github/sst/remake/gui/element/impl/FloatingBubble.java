@@ -30,25 +30,25 @@ public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (this.field20932 == -9999.0F || this.field20933 == -9999.0F) {
-            this.field20932 = (float) this.xA;
-            this.field20933 = (float) this.yA;
+            this.field20932 = (float) this.x;
+            this.field20933 = (float) this.y;
         }
 
         this.field20932 = this.field20932 + this.field20928 * MainMenuScreen.field20982;
         this.field20933 = this.field20933 + this.field20929 * MainMenuScreen.field20982;
-        this.xA = Math.round(this.field20932);
-        this.yA = Math.round(this.field20933);
-        if (!(this.field20932 + (float) this.widthA < 0.0F)) {
+        this.x = Math.round(this.field20932);
+        this.y = Math.round(this.field20933);
+        if (!(this.field20932 + (float) this.width < 0.0F)) {
             if (this.field20932 > (float) client.getWindow().getWidth()) {
-                this.field20932 = (float) (-this.widthA);
+                this.field20932 = (float) (-this.width);
             }
         } else {
             this.field20932 = (float) client.getWindow().getWidth();
         }
 
-        if (!(this.field20933 + (float) this.heightA < 0.0F)) {
+        if (!(this.field20933 + (float) this.height < 0.0F)) {
             if (this.field20933 > (float) client.getWindow().getHeight()) {
-                this.field20933 = (float) (-this.heightA);
+                this.field20933 = (float) (-this.height);
             }
         } else {
             this.field20933 = (float) client.getWindow().getHeight();
@@ -78,9 +78,9 @@ public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
     @Override
     public void draw(float partialTicks) {
         RenderUtils.drawFilledArc(
-                (float) this.xA,
-                (float) this.yA,
-                (float) this.getWidthA(),
+                (float) this.x,
+                (float) this.y,
+                (float) this.getWidth(),
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.07F + (!(this.field20934 > 0.0F) ? 0.0F : this.field20934 * 0.3F))
         );
         super.draw(partialTicks);
