@@ -9,14 +9,7 @@ import io.github.sst.remake.gui.screen.LoadingScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.SplashScreen;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.resource.ReloadableResourceManager;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.util.Unit;
-import net.minecraft.util.Util;
 import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,10 +17,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
@@ -39,25 +28,6 @@ public abstract class MixinMinecraftClient {
 
     @Shadow
     private volatile boolean running;
-
-    @Shadow
-    @Final
-    private ReloadableResourceManager resourceManager;
-
-    @Shadow
-    @Final
-    private static CompletableFuture<Unit> COMPLETED_UNIT_FUTURE;
-
-    @Shadow
-    @Final
-    private ResourcePackManager resourcePackManager;
-
-    @Shadow
-    @Final
-    public WorldRenderer worldRenderer;
-
-    @Shadow
-    protected abstract void handleResourceReloadException(Throwable exception);
 
     @Inject(method = "scheduleStop", at = @At("HEAD"))
     private void injectShutdown(CallbackInfo ci) {
