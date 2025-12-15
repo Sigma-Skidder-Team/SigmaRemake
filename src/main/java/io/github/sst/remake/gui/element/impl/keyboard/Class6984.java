@@ -34,8 +34,11 @@ public class Class6984 {
     }
 
     public int getBind() {
-        return this.module == null
-                ? BindUtils.SCREEN_BINDINGS.get(this.screen)
-                : this.module.keycode;
+        if (this.module == null) {
+            Integer bind = BindUtils.SCREEN_BINDINGS.get(this.screen);
+            return bind != null ? bind : 0;
+        } else {
+            return this.module.keycode;
+        }
     }
 }

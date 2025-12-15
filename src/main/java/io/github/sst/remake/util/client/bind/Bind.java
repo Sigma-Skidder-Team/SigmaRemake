@@ -7,20 +7,20 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.client.ScreenUtils;
 import net.minecraft.client.gui.screen.Screen;
 
-public class Bound {
+public class Bind {
     private int key = -1;
     private Object target;
 
-    public Bound(JsonObject json) {
+    public Bind(JsonObject json) {
         this.loadFromJSON(json);
     }
 
-    public Bound(int key, Module target) {
+    public Bind(int key, Module target) {
         this.key = key;
         this.target = target;
     }
 
-    public Bound(int key, Class<? extends Screen> target) {
+    public Bind(int key, Class<? extends Screen> target) {
         this.key = key;
         this.target = target;
     }
@@ -56,7 +56,7 @@ public class Bound {
 
     public JsonObject getKeybindData() {
         JsonObject obj = new JsonObject();
-        switch (this.getKeybindTypes()) {
+        switch (this.getType()) {
             case MODULE:
                 obj.addProperty("type", "mod");
                 obj.addProperty("target", ((Module) this.target).getName());
@@ -82,7 +82,7 @@ public class Bound {
         this.key = key;
     }
 
-    public KeybindTypes getKeybindTypes() {
+    public KeybindTypes getType() {
         return !(this.target instanceof Module) ? KeybindTypes.SCREEN : KeybindTypes.MODULE;
     }
 

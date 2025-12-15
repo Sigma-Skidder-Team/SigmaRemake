@@ -32,8 +32,6 @@ public class ScreenUtils implements IMinecraft {
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
         if (screen == null) {
             return null;
-        } else if (isValid(screen)) {
-            return null;
         } else if (!replacementScreens.containsKey(screen.getClass())) {
             return null;
         } else {
@@ -70,8 +68,8 @@ public class ScreenUtils implements IMinecraft {
         return "";
     }
 
-    private static boolean isValid(net.minecraft.client.gui.screen.Screen screen) {
-        return false;
+    public static boolean hasReplacement(net.minecraft.client.gui.screen.Screen screen) {
+        return replacementScreens.containsKey(screen.getClass());
     }
 
 }

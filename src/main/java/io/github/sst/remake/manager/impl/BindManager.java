@@ -1,0 +1,136 @@
+package io.github.sst.remake.manager.impl;
+
+import io.github.sst.remake.Client;
+import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.event.impl.input.KeyPressEvent;
+import io.github.sst.remake.event.impl.input.MouseHoverEvent;
+import io.github.sst.remake.event.impl.window.KeyEvent;
+import io.github.sst.remake.event.impl.window.MouseButtonEvent;
+import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.module.Module;
+import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.client.BindUtils;
+import io.github.sst.remake.util.client.ScreenUtils;
+import io.github.sst.remake.util.client.bind.Bind;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+
+public class BindManager extends Manager implements IMinecraft {
+
+    private final Map<Integer, List<Bind>> bindCache = new HashMap<>();
+
+    public List<Bind> getBindedObjects(int key) {
+        if (key == -1) {
+            return Collections.emptyList();
+        }
+
+        // Return cached result if present
+        return bindCache.computeIfAbsent(key, this::buildBindsForKey);
+    }
+
+    @Subscribe
+    public void onMouse(MouseButtonEvent event) {
+        int button = event.button;
+        int action = event.action;
+
+        if (client.currentScreen == null) {
+            if (action != 1 && action != 2) {
+                if (action == 0) {
+                    MouseHoverEvent mouseEvent = new MouseHoverEvent(button);
+                    mouseEvent.call();
+                    if (mouseEvent.cancelled) {
+                        event.cancel();
+                    }
+                }
+            } else {
+                if (button > 1) {
+                    press(button);
+                }
+
+                KeyPressEvent keyEvent = new KeyPressEvent(button, action == 2, null);
+                keyEvent.call();
+
+                if (keyEvent.cancelled) {
+                    event.cancel();
+                }
+            }
+        }
+    }
+
+    @Subscribe
+    public void onKey(KeyEvent event) {
+        int key = event.key;
+        int action = event.action;
+
+        if (client.currentScreen != null) {
+            if (client.currentScreen instanceof ChatScreen && key == 258) { //TAB KEY
+                KeyPressEvent keyPress = new KeyPressEvent(key, action == 2, null);
+                keyPress.call();
+
+                if (keyPress.cancelled) {
+                    event.cancel();
+                }
+            }
+        } else if (action == 1 || action == 2) {
+            KeyPressEvent keyPress = new KeyPressEvent(key, action == 2, null);
+            keyPress.call();
+
+            if (keyPress.cancelled) {
+                event.cancel();
+            }
+        } else if (action == 0) {
+            new MouseHoverEvent(event.key).call();
+        }
+    }
+
+    private void press(int key) {
+        if (key != -1) {
+            for (Bind bind : getBindedObjects(key)) {
+                if (bind != null && bind.hasTarget()) {
+                    switch (bind.getType()) {
+                        case MODULE:
+                            bind.getModuleTarget().toggle();
+                            break;
+
+                        case SCREEN:
+                            try {
+                                Screen sigmaScreen = bind.getScreenTarget()
+                                        .getDeclaredConstructor(Text.class)
+                                        .newInstance(Text.of((ScreenUtils.screenToScreenName.get(bind.getScreenTarget()))));
+                                if (ScreenUtils.hasReplacement(sigmaScreen)) {
+                                    client.openScreen(sigmaScreen);
+                                }
+                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+                                     NoSuchMethodException | SecurityException | InstantiationException e) {
+                                Client.LOGGER.warn("Failed to press", e);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    private List<Bind> buildBindsForKey(int key) {
+        List<Bind> binds = new ArrayList<>();
+
+        for (Module mod : Client.INSTANCE.moduleManager.modules) {
+            if (mod.getKeycode() == key) {
+                binds.add(new Bind(key, mod));
+            }
+        }
+
+        for (Map.Entry<Class<? extends Screen>, Integer> entry
+                : BindUtils.SCREEN_BINDINGS.entrySet()) {
+            if (entry.getValue() == key) {
+                binds.add(new Bind(key, entry.getKey()));
+            }
+        }
+
+        return binds;
+    }
+}
