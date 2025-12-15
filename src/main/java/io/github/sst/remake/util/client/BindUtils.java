@@ -1,6 +1,6 @@
-package io.github.sst.remake.util.java;
+package io.github.sst.remake.util.client;
 
-import io.github.sst.remake.util.java.bind.Keys;
+import io.github.sst.remake.util.client.bind.Keys;
 import net.minecraft.client.util.InputUtil;
 
 public class BindUtils {

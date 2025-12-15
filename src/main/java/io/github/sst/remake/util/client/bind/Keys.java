@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.java.bind;
+package io.github.sst.remake.util.client.bind;
 
 public enum Keys {
     GRAVE(0, 63, "`", 96, 1),

@@ -7,6 +7,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -81,6 +82,19 @@ public class RenderUtils {
         ScissorUtils.startScissor(x + width - size, y + height - size, x + width, y + height);
         drawCircle(x - size + width, y - size + height, size * 2.0F, color);
         ScissorUtils.restoreScissor();
+    }
+
+    public static void drawRoundedRect(float var0, float var1, float var2, float var3, float var4, float var5) {
+        GL11.glAlphaFunc(519, 0.0F);
+        int var8 = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5);
+        drawImage(var0 - var4, var1 - var4, var4, var4, Resources.shadowCorner1PNG, var8);
+        drawImage(var0 + var2, var1 - var4, var4, var4, Resources.shadowCorner2PNG, var8);
+        drawImage(var0 - var4, var1 + var3, var4, var4, Resources.shadowCorner3PNG, var8);
+        drawImage(var0 + var2, var1 + var3, var4, var4, Resources.shadowCorner4PNG, var8);
+        drawImage(var0 - var4, var1, var4, var3, Resources.shadowLeftPNG, var8, false);
+        drawImage(var0 + var2, var1, var4, var3, Resources.shadowRightPNG, var8, false);
+        drawImage(var0, var1 - var4, var2, var4, Resources.shadowTopPNG, var8, false);
+        drawImage(var0, var1 + var3, var2, var4, Resources.shadowBottomPNG, var8, false);
     }
 
     public static void drawImage(float x, float y, float width, float height, Texture tex, float alphaValue) {
@@ -393,6 +407,38 @@ public class RenderUtils {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
+    }
+
+    public static void method11429(float var0, float var1, float var2, float var3, int var4, int var5) {
+        drawRoundedRect(var0, var3 - (float) var4, var2 - (float) var4, var3, var5);
+        drawRoundedRect(var0, var1, var2 - (float) var4, var1 + (float) var4, var5);
+        drawRoundedRect(var0, var1 + (float) var4, var0 + (float) var4, var3 - (float) var4, var5);
+        drawRoundedRect(var2 - (float) var4, var1, var2, var3, var5);
+    }
+
+    public static void method11428(float var0, float var1, float var2, float var3, int var4) {
+        method11429(var0, var1, var2, var3, 1, var4);
+    }
+
+    public static void method11434(float var0, float var1, float var2, float var3, float var4, float var5, int var6) {
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        float var9 = (float) (var6 >> 24 & 0xFF) / 255.0F;
+        float var10 = (float) (var6 >> 16 & 0xFF) / 255.0F;
+        float var11 = (float) (var6 >> 8 & 0xFF) / 255.0F;
+        float var12 = (float) (var6 & 0xFF) / 255.0F;
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+        RenderSystem.color4f(var10, var11, var12, var9);
+        GL11.glBegin(6);
+        GL11.glVertex2f(var0, var1);
+        GL11.glVertex2f(var4, var5);
+        GL11.glVertex2f(var2, var3);
+        GL11.glVertex2f(var0, var1);
+        GL11.glEnd();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 
 }
