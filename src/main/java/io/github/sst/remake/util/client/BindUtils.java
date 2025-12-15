@@ -1,9 +1,15 @@
 package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.util.client.bind.Keys;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BindUtils {
+
+    public static final Map<Class<? extends Screen> , Integer> SCREEN_BINDINGS = new HashMap<>();
 
     public static String getKeyName(int keycode) {
         for (Keys key : Keys.values()) {

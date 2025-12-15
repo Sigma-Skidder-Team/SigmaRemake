@@ -17,13 +17,16 @@ import java.util.Map;
 public class ScreenUtils implements IMinecraft {
 
     public static final Map<Class<? extends net.minecraft.client.gui.screen.Screen>, Class<? extends Screen>> replacementScreens = new HashMap<>();
-    public static final Map<Class<? extends Screen>, String> screenToScreenName = new HashMap<>();
+    public static final Map<Class<? extends net.minecraft.client.gui.screen.Screen>, String> screenToScreenName = new HashMap<>();
 
     static {
         // Minecraft Screen -> Sigma Screen
         replacementScreens.put(TitleScreen.class, JelloMenu.class);
         replacementScreens.put(OptionsScreen.class, JelloOptions.class);
         replacementScreens.put(KeybindsScreen.class, JelloKeyboard.class);
+
+        // Minecraft Screen -> Screen Name
+        screenToScreenName.put(KeybindsScreen.class, "Jello Keyboard");
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
