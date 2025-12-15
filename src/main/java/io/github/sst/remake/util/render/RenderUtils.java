@@ -103,7 +103,6 @@ public class RenderUtils {
         drawImage(x, y, width, height, texture, color, tlX, tlY, siW, siH, true);
     }
 
-
     /**
      * Draws a sub-image of a texture to the screen.
      *
@@ -165,6 +164,14 @@ public class RenderUtils {
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
         }
+    }
+
+    public static void drawTexture(float x, float y, float width, float height, Texture texture, int color) {
+        if (texture == null) {
+            return;
+        }
+        drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), true);
+        drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), false);
     }
 
     public static void drawRoundedButton(float var0, float var1, float var2, float var3, float var4, int color) {
@@ -358,6 +365,34 @@ public class RenderUtils {
         GL11.glEnd();
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+    }
+
+    public static void method11431(int var0, int var1, int var2, int var3, int var4, int var5) {
+        float var8 = (float) (var4 >> 24 & 0xFF) / 255.0F;
+        float var9 = (float) (var4 >> 16 & 0xFF) / 255.0F;
+        float var10 = (float) (var4 >> 8 & 0xFF) / 255.0F;
+        float var11 = (float) (var4 & 0xFF) / 255.0F;
+        float var12 = (float) (var5 >> 24 & 0xFF) / 255.0F;
+        float var13 = (float) (var5 >> 16 & 0xFF) / 255.0F;
+        float var14 = (float) (var5 >> 8 & 0xFF) / 255.0F;
+        float var15 = (float) (var5 & 0xFF) / 255.0F;
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        Tessellator var16 = Tessellator.getInstance();
+        BufferBuilder var17 = var16.getBuffer();
+        var17.begin(7, VertexFormats.POSITION_COLOR);
+        var17.vertex(var2, var1, 0.0).color(var9, var10, var11, var8).next();
+        var17.vertex(var0, var1, 0.0).color(var9, var10, var11, var8).next();
+        var17.vertex(var0, var3, 0.0).color(var13, var14, var15, var12).next();
+        var17.vertex(var2, var3, 0.0).color(var13, var14, var15, var12).next();
+        var16.draw();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
 }

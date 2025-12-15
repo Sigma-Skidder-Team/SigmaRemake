@@ -14,6 +14,9 @@ public class ConfigManager extends Manager implements IMinecraft {
     public final File file = new File("sigma5");
     public JsonObject config;
 
+    public boolean guiBlur = false;
+    public boolean hqBlur = false;
+
     @Override
     public void init() {
         try {

@@ -2,7 +2,9 @@ package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.impl.JelloOptions;
 import io.github.sst.remake.gui.screen.MainMenuScreen;
+import io.github.sst.remake.gui.screen.OptionsScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.TitleScreen;
 
@@ -20,6 +22,7 @@ public class ScreenUtils implements IMinecraft {
 
     static {
         replacementScreens.put(TitleScreen.class, MainMenuScreen.class);
+        replacementScreens.put(OptionsScreen.class, JelloOptions.class);
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {

@@ -20,7 +20,7 @@ public class ScissorUtils {
     }
 
     public static void startScissor(CustomGuiScreen screen) {
-        startScissor(screen.getXA(), screen.getYA(), screen.getWidthA() + screen.getXA(), screen.getHeightA() + screen.getYA(), true);
+        startScissor(screen.getX(), screen.getY(), screen.getWidth() + screen.getX(), screen.getHeight() + screen.getY(), true);
     }
 
     public static void startScissor(float x, float y, float width, float height) {
