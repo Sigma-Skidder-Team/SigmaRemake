@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.math;
+package io.github.sst.remake.util.math.anim;
 
 import java.util.Date;
 

@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
-import io.github.sst.remake.util.math.AnimationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -27,17 +27,17 @@ public class TextButton extends Element {
     public void draw(float partialTicks) {
         if (this.getText() != null) {
             int var4 = this.textColor.getPrimaryColor();
-            int var5 = this.getXA()
+            int var5 = this.getX()
                     + (
                     this.textColor.getWidthAlignment() != FontAlignment.CENTER
                             ? 0
-                            : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidthA() / 2 : this.getWidthA())
+                            : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidth() / 2 : this.getWidth())
             );
-            int var6 = this.getYA()
+            int var6 = this.getY()
                     + (
                     this.textColor.getHeightAlignment() != FontAlignment.CENTER
                             ? 0
-                            : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeightA() / 2 : this.getHeightA())
+                            : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeight() / 2 : this.getHeight())
             );
             int var7 = this.getFont().getWidth(this.getText());
             float var8 = 18;

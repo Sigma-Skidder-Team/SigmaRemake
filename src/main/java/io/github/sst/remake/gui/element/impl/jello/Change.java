@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Text;
-import io.github.sst.remake.util.math.AnimationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
@@ -17,16 +17,16 @@ public class Change extends CustomGuiScreen {
 
     public Change(CustomGuiScreen var1, String var2, JsonObject var3) throws JsonParseException {
         super(var1, var2);
-        this.setWidthA(this.getParent().getWidthA());
-        int var6 = 0;
+        this.setWidth(this.getParent().getWidth());
+        int height = 0;
         if (var3.has("deprecated")) {
             GL11.glTexEnvi(8960, 8704, 260);
         }
 
         String var7 = var3.get("title").getAsString();
         JsonArray var8 = var3.getAsJsonArray("changes");
-        this.addToList(new Text(this, "title", 0, var6, 0, 0, ColorHelper.field27961, var7, ResourceRegistry.JelloMediumFont40));
-        var6 += 55;
+        this.addToList(new Text(this, "title", 0, height, 0, 0, ColorHelper.field27961, var7, ResourceRegistry.JelloMediumFont40));
+        height += 55;
 
         for (int var9 = 0; var9 < var8.size(); var9++) {
             String var10 = " - " + var8.get(var9).getAsString();
@@ -35,7 +35,7 @@ public class Change extends CustomGuiScreen {
                             this,
                             "change" + var9,
                             0,
-                            var6,
+                            height,
                             0,
                             0,
                             new ColorHelper(0, 0, 0, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)),
@@ -43,17 +43,17 @@ public class Change extends CustomGuiScreen {
                             ResourceRegistry.JelloLightFont20
                     )
             );
-            var6 += 22;
+            height += 22;
         }
 
-        var6 += 75;
-        this.setHeightA(var6);
+        height += 75;
+        this.setHeight(height);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = VecUtils.interpolate(this.animation2.calcPercent(), 0.17, 1.0, 0.51, 1.0);
-        this.drawBackground((int) ((1.0F - var4) * 100.0F));
+        float anim = VecUtils.interpolate(this.animation2.calcPercent(), 0.17, 1.0, 0.51, 1.0);
+        this.drawBackground((int) ((1.0F - anim) * 100.0F));
         this.method13225();
         partialTicks *= this.animation2.calcPercent();
         super.draw(partialTicks);

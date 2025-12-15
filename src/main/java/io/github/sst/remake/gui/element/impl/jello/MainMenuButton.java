@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.jello;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.SmallImage;
-import io.github.sst.remake.util.math.AnimationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.BufferUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -68,10 +68,10 @@ public class MainMenuButton extends SmallImage {
             var5 = this.method13031();
         }
 
-        int var6 = (int) ((double) this.getWidthA() * (1.0 + (double) var5 * 0.2));
-        int var7 = (int) ((double) this.getHeightA() * (1.0 + (double) var5 * 0.2));
-        int var8 = this.getXA() - (var6 - this.getWidthA()) / 2;
-        int var9 = (int) ((double) (this.getYA() - (var7 - this.getHeightA()) / 2) - (double) ((float) (this.getHeightA() / 2) * var5) * 0.2);
+        int var6 = (int) ((double) this.getWidth() * (1.0 + (double) var5 * 0.2));
+        int var7 = (int) ((double) this.getHeight() * (1.0 + (double) var5 * 0.2));
+        int var8 = this.getX() - (var6 - this.getWidth()) / 2;
+        int var9 = (int) ((double) (this.getY() - (var7 - this.getHeight()) / 2) - (double) ((float) (this.getHeight() / 2) * var5) * 0.2);
         float[] var10 = BufferUtils.calculateAspectRatioFit(this.getTexture().getWidth(), this.getTexture().getHeight(), (float) var6, (float) var7);
         float var11 = 85;
         RenderUtils.drawImage(
@@ -108,7 +108,7 @@ public class MainMenuButton extends SmallImage {
             GL11.glPushMatrix();
             String var14 = this.getText() != null ? this.getText() : this.name;
             GL11.glTranslatef(
-                    (float) (this.getXA() + this.getWidthA() / 2 - font.getWidth(var14) / 2), (float) (this.getYA() + this.getHeightA() - 40), 0.0F
+                    (float) (this.getX() + this.getWidth() / 2 - font.getWidth(var14) / 2), (float) (this.getY() + this.getHeight() - 40), 0.0F
             );
             GL11.glScalef(var13, var13, var13);
             GL11.glAlphaFunc(519, 0.0F);

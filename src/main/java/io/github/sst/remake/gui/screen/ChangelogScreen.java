@@ -4,10 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.impl.Class576;
+import io.github.sst.remake.gui.element.impl.ChangelogLoader;
 import io.github.sst.remake.gui.element.impl.jello.Change;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
-import io.github.sst.remake.util.math.AnimationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
@@ -38,7 +38,7 @@ public class ChangelogScreen extends CustomGuiScreen {
 
     public void method13490(JsonArray var1) {
         if (var1 != null) {
-            this.getParent().addRunnable(new Class576(this, var1));
+            this.getParent().addRunnable(new ChangelogLoader(this, var1));
         }
     }
 

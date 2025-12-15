@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.FloatingBubble;
 import io.github.sst.remake.gui.impl.JelloMainMenu;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.math.AnimationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -94,8 +94,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             this.bubbles.add(new FloatingBubble(this, Integer.toString(var5), var6, var7, var8, var9, var10));
         }
 
-        this.addToList(this.mainMenuScreen = new JelloMainMenu(this, "main", 0, 0, this.widthA, this.heightA));
-        this.addToList(this.changelogScreen = new ChangelogScreen(this, "changelog", 0, 0, this.widthA, this.heightA));
+        this.addToList(this.mainMenuScreen = new JelloMainMenu(this, "main", 0, 0, this.width, this.height));
+        this.addToList(this.changelogScreen = new ChangelogScreen(this, "changelog", 0, 0, this.width, this.height));
         this.changelogScreen.setHovered(false);
         this.changelogScreen.method13294(true);
     }
@@ -138,7 +138,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
         field20982 = Math.min(10.0F, Math.max(0.0F, (float) elapsedTime / 1.810361E7F / 2.0F));
         currentTime = System.nanoTime();
         int offsetY = -this.getMouseX();
-        float offsetX = (float) this.getMouseY() / (float) this.getWidthA() * -114.0F;
+        float offsetX = (float) this.getMouseY() / (float) this.getWidth() * -114.0F;
         if (this.field20968) {
             this.field20966 = (int) offsetX;
             this.field20967 = offsetY;
@@ -162,7 +162,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             float backgroundOpacity = 1.0F - this.field20974.calcPercent();
             float foregroundOpacity = 1.0F - this.field20975.calcPercent();
 
-            float screenScale = (float) this.getWidthA() / 1920.0F;
+            float screenScale = (float) this.getWidth() / 1920.0F;
             int backgroundWidth = (int) (600.0F * screenScale);
             int middleWidth = (int) (450.0F * screenScale);
             int foregroundWidth = 0;
@@ -170,15 +170,15 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             RenderUtils.drawImage(
                     (float) this.field20967 - (float) backgroundWidth * parallaxFactor,
                     (float) this.field20966,
-                    (float) (this.getWidthA() * 2 + backgroundWidth),
-                    (float) (this.getHeightA() + 114),
+                    (float) (this.getWidth() * 2 + backgroundWidth),
+                    (float) (this.getHeight() + 114),
                     Resources.backgroundPNG
             );
             RenderUtils.drawImage(
                     (float) this.field20967 - (float) middleWidth * parallaxFactor,
                     (float) this.field20966,
-                    (float) (this.getWidthA() * 2 + middleWidth),
-                    (float) (this.getHeightA() + 114),
+                    (float) (this.getWidth() * 2 + middleWidth),
+                    (float) (this.getHeight() + 114),
                     Resources.middlePNG
             );
 
@@ -191,16 +191,16 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             RenderUtils.drawImage(
                     (float) this.field20967 - (float) foregroundWidth * parallaxFactor,
                     (float) this.field20966,
-                    (float) (this.getWidthA() * 2 + foregroundWidth),
-                    (float) (this.getHeightA() + 114),
+                    (float) (this.getWidth() * 2 + foregroundWidth),
+                    (float) (this.getHeight() + 114),
                     Resources.foregroundPNG
             );
 
             RenderUtils.drawImage(
                     (float) this.field20967,
                     (float) (this.field20966 - 50),
-                    (float) (this.getWidthA() * 2),
-                    (float) (this.getHeightA() + 200),
+                    (float) (this.getWidth() * 2),
+                    (float) (this.getHeight() + 200),
                     background,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), transitionProgress),
                     false
@@ -209,8 +209,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             RenderUtils.drawRoundedRect2(
                     0.0F,
                     0.0F,
-                    (float) this.getWidthA(),
-                    (float) this.getHeightA(),
+                    (float) this.getWidth(),
+                    (float) this.getHeight(),
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), transitionProgress * 0.3F)
             );
 
@@ -251,8 +251,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             if (this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 RenderUtils.drawString(
                         ResourceRegistry.JelloMediumFont50,
-                        (float) (this.widthA / 2),
-                        (float) (this.heightA / 2 - 30),
+                        (float) (this.width / 2),
+                        (float) (this.height / 2 - 30),
                         currentTitle,
                         ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent()),
                         FontAlignment.CENTER,
@@ -260,8 +260,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                 );
                 RenderUtils.drawString(
                         ResourceRegistry.JelloLightFont18,
-                        (float) (this.widthA / 2),
-                        (float) (this.heightA / 2 + 30),
+                        (float) (this.width / 2),
+                        (float) (this.height / 2 + 30),
                         "\"" + currentMessage + "\"",
                         ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent() * 0.5F),
                         FontAlignment.CENTER,
