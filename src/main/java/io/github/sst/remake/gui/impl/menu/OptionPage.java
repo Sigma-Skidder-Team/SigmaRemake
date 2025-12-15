@@ -1,9 +1,11 @@
-package io.github.sst.remake.gui.element.impl.options;
+package io.github.sst.remake.gui.impl.menu;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.TextButton;
+import io.github.sst.remake.gui.impl.JelloOptions;
+import io.github.sst.remake.gui.screen.KeybindsScreen;
 import io.github.sst.remake.util.client.BindUtils;
 import io.github.sst.remake.util.client.bind.Keys;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -11,8 +13,8 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
 
-public class OptionGroup extends CustomGuiScreen {
-    public OptionGroup(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+public class OptionPage extends CustomGuiScreen {
+    public OptionPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
         ColorHelper var9 = ColorHelper.field27961.clone();
@@ -23,7 +25,7 @@ public class OptionGroup extends CustomGuiScreen {
         this.addToList(openGui = new TextButton(this, "openGui", var5 / 2, var6 - 80, 300, 38, var9, "Open Jello's Click GUI", ResourceRegistry.JelloLightFont24));
         TextButton credits;
         this.addToList(credits = new TextButton(this, "credits", var5 / 2 - 100, var6 - 280, 200, 38, var9, "Credits", ResourceRegistry.JelloLightFont18));
-        //openKeybinds.onClick((var0, var1x) -> JelloOptions.showGUI(new KeyboardHolder(new StringTextComponent("Keybind Manager"))));
+        openKeybinds.onClick((var0, var1x) -> JelloOptions.showGUI(new KeybindsScreen()));
         //openGui.onClick((var0, var1x) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
         //credits.onClick((var0, var1x) -> JelloOptions.showGUI(new CreditsHolder(new StringTextComponent("GuiCredits"))));
         Checkbox var13;

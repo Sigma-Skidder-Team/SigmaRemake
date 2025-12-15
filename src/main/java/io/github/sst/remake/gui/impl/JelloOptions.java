@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl;
 
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.element.impl.options.OptionGroup;
+import io.github.sst.remake.gui.impl.menu.OptionPage;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.EasingFunctions;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -22,7 +22,7 @@ public class JelloOptions extends Screen {
         int var3 = Math.max((int) ((float) this.height * 0.8F), 420);
         int var4 = (int) ((float) this.width * 0.8F);
         this.addToList(
-                new OptionGroup(
+                new OptionPage(
                         this, "centerBlock", this.getWidth() - var4, this.getHeight() - var3, var4 - (this.getWidth() - var4), var3 - (this.getHeight() - var3)
                 )
         );
