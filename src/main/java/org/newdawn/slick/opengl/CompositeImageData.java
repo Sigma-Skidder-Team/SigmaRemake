@@ -52,19 +52,18 @@ public class CompositeImageData implements LoadableImageData {
         CompositeIOException exception = new CompositeIOException();
         ByteBuffer buffer = null;
 
-        BufferedInputStream in = new BufferedInputStream(is, is.available());
-        in.mark(is.available());
+        BufferedInputStream in = new BufferedInputStream(is); // default buffer size
+        in.mark(8192); // mark with some reasonable limit
 
-        // cycle through our source until one of them works
         for (int i = 0; i < sources.size(); i++) {
             in.reset();
             try {
                 LoadableImageData data = (LoadableImageData) sources.get(i);
-
                 buffer = data.loadImage(in, flipped, forceAlpha, transparent);
                 picked = data;
                 break;
             } catch (Exception e) {
+                // You might want to log this for debugging
             }
         }
 
