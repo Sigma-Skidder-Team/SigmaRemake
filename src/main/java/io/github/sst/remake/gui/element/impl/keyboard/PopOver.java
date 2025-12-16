@@ -28,7 +28,7 @@ public class PopOver extends Element {
     private final List<Class6601> field21379 = new ArrayList<Class6601>();
 
     public PopOver(CustomGuiScreen var1, String var2, int var3, int var4, int var5, String var6) {
-        super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.field27961, var6, false);
+        super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.DEFAULT_COLOR, var6, false);
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
             this.y += 10;
         } else {
@@ -50,7 +50,7 @@ public class PopOver extends Element {
                         this.height - 70,
                         ResourceRegistry.JelloLightFont25.getWidth("Add"),
                         70,
-                        ColorHelper.field27961,
+                        ColorHelper.DEFAULT_COLOR,
                         "Add",
                         ResourceRegistry.JelloLightFont25
                 )

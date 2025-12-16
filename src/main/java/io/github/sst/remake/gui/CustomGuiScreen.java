@@ -78,7 +78,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
-        this(parent, name, x, y, width, height, ColorHelper.field27961);
+        this(parent, name, x, y, width, height, ColorHelper.DEFAULT_COLOR);
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor) {

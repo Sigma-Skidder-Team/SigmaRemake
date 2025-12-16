@@ -10,25 +10,25 @@ import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
 
 public class Checkbox extends Element {
-    public boolean field21369;
+    public boolean value;
     public AnimationUtils field21370 = new AnimationUtils(70, 90);
 
     public Checkbox(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
     }
 
-    public boolean method13703() {
-        return this.field21369;
+    public boolean getValue() {
+        return this.value;
     }
 
     public void method13704(boolean var1) {
         this.method13705(var1, true);
     }
 
-    public void method13705(boolean var1, boolean var2) {
-        if (var1 != this.method13703()) {
-            this.field21369 = var1;
-            this.field21370.changeDirection(!this.field21369 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+    public void method13705(boolean value, boolean var2) {
+        if (value != this.getValue()) {
+            this.value = value;
+            this.field21370.changeDirection(!this.value ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
             if (var2) {
                 this.callUIHandlers();
             }
@@ -74,6 +74,6 @@ public class Checkbox extends Element {
 
     @Override
     public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
-        this.method13705(!this.field21369, true);
+        this.method13705(!this.value, true);
     }
 }

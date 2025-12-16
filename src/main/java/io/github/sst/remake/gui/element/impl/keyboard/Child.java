@@ -16,7 +16,7 @@ public class Child extends Element {
     private boolean field20693 = false;
 
     public Child(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, String var7, int var8) {
-        super(var1, var2, var3, var4, var5, var6, ColorHelper.field27961, var7, false);
+        super(var1, var2, var3, var4, var5, var6, ColorHelper.DEFAULT_COLOR, var7, false);
         this.field20690 = var8;
         this.method13102();
     }
@@ -82,7 +82,7 @@ public class Child extends Element {
                     } else {
                         int var5 = this.x + 25;
                         int var6 = this.y + 25 + (int) (3.0F * this.field20691);
-                        RenderUtils.method11428(
+                        RenderUtils.drawRoundedRect3(
                                 (float) var5,
                                 (float) var6,
                                 (float) (var5 + 14),
@@ -96,14 +96,14 @@ public class Child extends Element {
                                 (float) (var6 + 7),
                                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
                         );
-                        RenderUtils.method11428(
+                        RenderUtils.drawRoundedRect3(
                                 (float) var5,
                                 (float) (var6 + 8),
                                 (float) (var5 + 14),
                                 (float) (var6 + 11),
                                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
                         );
-                        RenderUtils.method11428(
+                        RenderUtils.drawRoundedRect3(
                                 (float) var5,
                                 (float) (var6 + 12),
                                 (float) (var5 + 14),
@@ -121,7 +121,7 @@ public class Child extends Element {
             } else {
                 int var8 = this.x + 43;
                 int var11 = this.y + 33 + (int) (3.0F * this.field20691);
-                RenderUtils.method11434(
+                RenderUtils.drawTriangle(
                         (float) var8,
                         (float) var11,
                         (float) (var8 + 6),
@@ -141,7 +141,7 @@ public class Child extends Element {
         } else {
             int var9 = this.x + 50;
             int var12 = this.y + 33 + (int) (3.0F * this.field20691);
-            RenderUtils.method11434(
+            RenderUtils.drawTriangle(
                     (float) var9,
                     (float) var12,
                     (float) (var9 + 6),
