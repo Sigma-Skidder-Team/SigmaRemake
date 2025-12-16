@@ -12,7 +12,7 @@ import net.minecraft.client.MinecraftClient;
 
 public class JelloOptions extends Screen {
 
-    private static final AnimationUtils anim = new AnimationUtils(300, 100);
+    private static AnimationUtils anim;
     private static net.minecraft.client.gui.screen.Screen mcScreen = null;
 
     public JelloOptions() {
@@ -26,6 +26,7 @@ public class JelloOptions extends Screen {
                         this, "centerBlock", this.getWidth() - var4, this.getHeight() - var3, var4 - (this.getWidth() - var4), var3 - (this.getHeight() - var3)
                 )
         );
+        anim = new AnimationUtils(300, 100);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class JelloOptions extends Screen {
         super.draw(anim.calcPercent());
     }
 
-    public static void showGUI(net.minecraft.client.gui.screen.Screen mcScreen) {
-        JelloOptions.mcScreen = mcScreen;
+    public static void showGUI(net.minecraft.client.gui.screen.Screen screen) {
+        mcScreen = screen;
         anim.changeDirection(AnimationUtils.Direction.BACKWARDS);
     }
 

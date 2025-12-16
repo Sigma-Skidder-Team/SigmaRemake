@@ -1,6 +1,5 @@
 package io.github.sst.remake.manager.impl;
 
-import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
@@ -15,7 +14,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class ScreenManager extends Manager implements IMinecraft {
     public int[] mousePositions = new int[2];
     public float scaleFactor = 1.0F;
@@ -84,7 +82,7 @@ public class ScreenManager extends Manager implements IMinecraft {
     }
 
     @Subscribe
-    public void onResize(WindowResizeEvent event) {
+    public void onResize(WindowResizeEvent ignoredEvent) {
         if (this.currentScreen != null) {
             modifyConfig(true);
 
@@ -148,7 +146,7 @@ public class ScreenManager extends Manager implements IMinecraft {
     }
 
     @Subscribe
-    public void onOpenScreen(OpenScreenEvent event) {
+    public void onOpenScreen(OpenScreenEvent ignoredEvent) {
         handle(ScreenUtils.mcToSigma(client.currentScreen));
     }
 

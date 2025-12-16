@@ -101,4 +101,9 @@ public abstract class MixinMinecraftClient {
         return true;
     }
 
+    @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))
+    private int modifyFramerateLimit(int original) {
+        return (original == 60) ? 120 : original;
+    }
+
 }
