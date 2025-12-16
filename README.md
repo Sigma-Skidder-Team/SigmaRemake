@@ -4,8 +4,8 @@ Minecraft Sigma Client port for Fabric 1.16.4
 
 ## TODO List
 - [x] GUI System
+- [x] Module System
 - [ ] Config System
-- [ ] Module System
 - [ ] Music Player
 - [ ] Add all Jello GUIs
 - [ ] Fix animation bug
