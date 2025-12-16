@@ -16,3 +16,7 @@ accessible field net/minecraft/client/gl/ShaderEffect passes Ljava/util/List;
 accessible field net/minecraft/client/render/GameRenderer shader Lnet/minecraft/client/gl/ShaderEffect;
 accessible field net/minecraft/client/render/GameRenderer SHADERS_LOCATIONS [Lnet/minecraft/util/Identifier;
 accessible field net/minecraft/client/render/GameRenderer forcedShaderIndex I
+
+accessible field net/minecraft/client/network/AbstractClientPlayerEntity cachedScoreboardEntry Lnet/minecraft/client/network/PlayerListEntry;
+
+accessible field net/minecraft/world/dimension/DimensionType OVERWORLD Lnet/minecraft/world/dimension/DimensionType;

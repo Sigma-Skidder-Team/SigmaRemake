@@ -1,13 +1,23 @@
 package io.github.sst.remake.util.render.image;
 
+import io.github.sst.remake.Client;
+import io.github.sst.remake.util.math.color.ClientColors;
+import net.minecraft.client.MinecraftClient;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.util.BufferedImageUtil;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
+import java.nio.ByteBuffer;
 
 public class ImageUtils {
+
+    private static float getScaleFactor() {
+        return Client.INSTANCE.screenManager.scaleFactor;
+    }
 
     public static BufferedImage applyBlur(BufferedImage image, int blurRadius) {
         if (image == null) {
@@ -108,6 +118,100 @@ public class ImageUtils {
 
         return scaledImage;
     }
+
+    public static BufferedImage captureFramebufferRegion(
+            int x,
+            int y,
+            int width,
+            int height,
+            int downscaleFactor,
+            int blurRadius,
+            int paddingColor,
+            boolean blurAfterPadding
+    ) {
+        final int BYTES_PER_PIXEL = 4;
+
+        x = (int) (x * getScaleFactor());
+        y = (int) (y * getScaleFactor());
+        width = (int) (width * getScaleFactor());
+        height = (int) (height * getScaleFactor());
+        downscaleFactor = (int) (downscaleFactor * getScaleFactor());
+
+        y = MinecraftClient.getInstance().getWindow().getFramebufferHeight() - y - height;
+
+        if (downscaleFactor <= 0) {
+            downscaleFactor = 1;
+        }
+
+        ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(width * height * BYTES_PER_PIXEL);
+
+        GL11.glReadPixels(x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+
+        BufferedImage image = new BufferedImage(width / downscaleFactor, height / downscaleFactor, BufferedImage.TYPE_INT_ARGB);
+
+        for (int sx = downscaleFactor / 2; sx < width; sx += downscaleFactor) {
+            for (int sy = downscaleFactor / 2; sy < height; sy += downscaleFactor) {
+
+                int targetX = sx / downscaleFactor;
+                int targetY = sy / downscaleFactor;
+
+                if (targetX >= image.getWidth() || targetY >= image.getHeight()) {
+                    continue;
+                }
+
+                int bufferIndex = (sx + width * sy) * BYTES_PER_PIXEL;
+
+                int r = pixelBuffer.get(bufferIndex) & 0xFF;
+                int g = pixelBuffer.get(bufferIndex + 1) & 0xFF;
+                int b = pixelBuffer.get(bufferIndex + 2) & 0xFF;
+
+                // Flip Y for BufferedImage coordinate system
+                image.setRGB(
+                        targetX,
+                        image.getHeight() - targetY - 1,
+                        0xFF000000 | (r << 16) | (g << 8) | b
+                );
+            }
+        }
+
+        if (blurRadius <= 1) {
+            return image;
+        }
+
+        if (blurAfterPadding) {
+            return applyBlur(addPadding(image, blurRadius), blurRadius);
+        } else {
+            return applyBlur(expandCanvas(image, blurRadius, paddingColor), blurRadius);
+        }
+    }
+
+    public static BufferedImage expandCanvas(BufferedImage source, int padding, int fillColor) {
+        int newWidth  = source.getWidth()  + padding * 2;
+        int newHeight = source.getHeight() + padding * 2;
+
+        BufferedImage result = new BufferedImage(newWidth, newHeight, source.getType());
+
+        if (fillColor != ClientColors.DEEP_TEAL.getColor()) {
+            for (int x = 0; x < newWidth; x++) {
+                for (int y = 0; y < newHeight; y++) {
+                    result.setRGB(x, y, fillColor);
+                }
+            }
+        }
+
+        for (int x = 0; x < source.getWidth(); x++) {
+            for (int y = 0; y < source.getHeight(); y++) {
+                result.setRGB(
+                        padding + x,
+                        padding + y,
+                        source.getRGB(x, y)
+                );
+            }
+        }
+
+        return result;
+    }
+
 
     private static float clamp(float value) {
         return Math.max(0.0f, Math.min(1.0f, value));

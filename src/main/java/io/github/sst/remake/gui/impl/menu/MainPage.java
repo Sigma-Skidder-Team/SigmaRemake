@@ -8,6 +8,7 @@ import io.github.sst.remake.gui.element.impl.Text;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.element.impl.mainmenu.RoundButton;
 import io.github.sst.remake.gui.impl.JelloMenu;
+import io.github.sst.remake.gui.screen.AltManagerScreen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -118,7 +119,7 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
         this.singleplayerButton.onClick((var1x, var2x) -> this.displayGUI(new SelectWorldScreen(client.currentScreen)));
         this.multiplayerButton.onClick((var1x, var2x) -> this.displayGUI(new MultiplayerScreen(client.currentScreen)));
         this.optionsButton.onClick((var1x, var2x) -> this.displayGUI(new OptionsScreen(client.currentScreen, client.options)));
-        //this.altManagerButton.onClick((var1x, var2x) -> this.displayScreen(new AltManagerScreen()));
+        this.altManagerButton.onClick((var1x, var2x) -> this.displayScreen(new AltManagerScreen()));
         this.realmsButton.onClick((var1x, var2x) -> this.playClickSound());
     }
 

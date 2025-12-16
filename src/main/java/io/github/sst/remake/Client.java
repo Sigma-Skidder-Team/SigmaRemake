@@ -21,6 +21,7 @@ public class Client implements IMinecraft {
     public final RPCManager rpcManager = new RPCManager();
     public final ModuleManager moduleManager = new ModuleManager();
     public final BindManager bindManager = new BindManager();
+    public final AccountManager accountManager = new AccountManager();
 
     public boolean loaded = false;
 
@@ -34,6 +35,7 @@ public class Client implements IMinecraft {
         hudManager.init();
         bindManager.init();
         moduleManager.init();
+        accountManager.init();
 
         LOGGER.info("Initialized.");
     }
@@ -42,6 +44,7 @@ public class Client implements IMinecraft {
         LOGGER.info("Shutting down...");
 
         bindManager.shutdown();
+        accountManager.shutdown();
         rpcManager.shutdown();
         moduleManager.shutdown();
         configManager.shutdown();

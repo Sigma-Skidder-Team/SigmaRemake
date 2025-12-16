@@ -5,6 +5,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloOptions;
+import io.github.sst.remake.gui.screen.holder.CreditsHolder;
 import io.github.sst.remake.gui.screen.holder.KeybindsHolder;
 import io.github.sst.remake.util.client.BindUtils;
 import io.github.sst.remake.util.client.bind.Keys;
@@ -12,6 +13,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
+import net.minecraft.text.LiteralText;
 
 public class OptionPage extends CustomGuiScreen {
     public OptionPage(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
@@ -25,9 +27,9 @@ public class OptionPage extends CustomGuiScreen {
         this.addToList(openGui = new TextButton(this, "openGui", width / 2, height - 80, 300, 38, color, "Open Jello's Click GUI", ResourceRegistry.JelloLightFont24));
         TextButton credits;
         this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", ResourceRegistry.JelloLightFont18));
-        openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder()));
+        openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder(new LiteralText("Jello Keyboard"))));
         //openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
-        //credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new StringTextComponent("GuiCredits"))));
+        credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new LiteralText("Jello Credits"))));
         Checkbox blurCheckbox;
         this.addToList(blurCheckbox = new Checkbox(this, "guiBlurCheckBox", width / 2 - 70, height - 220, 25, 25));
         blurCheckbox.method13705(Client.INSTANCE.configManager.guiBlur, false);

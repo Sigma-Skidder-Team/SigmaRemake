@@ -1,6 +1,9 @@
 package io.github.sst.remake.util.java;
 
+import org.apache.commons.codec.binary.Base64;
 import org.newdawn.slick.TrueTypeFont;
+
+import java.nio.charset.StandardCharsets;
 
 public class StringUtils {
     public static boolean isPrintableCharacter(char character) {
@@ -59,5 +62,19 @@ public class StringUtils {
         }
 
         return len;
+    }
+
+    public static String encodeBase64(String s) {
+        byte[] bytes = Base64.encodeBase64(s.getBytes());
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static String decodeBase64(String s) {
+        byte[] bytes = Base64.decodeBase64(s.getBytes());
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static byte[] parseBase64Binary(String base64String) {
+        return Base64.decodeBase64(base64String);
     }
 }
