@@ -1,10 +1,10 @@
-package io.github.sst.remake.gui.screen;
+package io.github.sst.remake.gui.screen.holder;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
 
-public class KeybindsScreen extends Screen {
-    public KeybindsScreen() {
+public class KeybindsHolder extends Screen {
+    public KeybindsHolder() {
         super(new LiteralText("Jello Keyboard"));
     }
 

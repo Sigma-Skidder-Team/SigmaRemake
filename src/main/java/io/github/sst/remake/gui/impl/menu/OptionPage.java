@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloOptions;
-import io.github.sst.remake.gui.screen.KeybindsScreen;
+import io.github.sst.remake.gui.screen.holder.KeybindsHolder;
 import io.github.sst.remake.util.client.BindUtils;
 import io.github.sst.remake.util.client.bind.Keys;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -14,45 +14,48 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ResourceRegistry;
 
 public class OptionPage extends CustomGuiScreen {
-    public OptionPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6);
+    public OptionPage(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+        super(parent, name, x, y, width, height);
         this.setListening(false);
-        ColorHelper var9 = ColorHelper.field27961.clone();
-        var9.setPrimaryColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        ColorHelper color = ColorHelper.DEFAULT_COLOR.clone();
+        color.setPrimaryColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
         TextButton openKeybinds;
-        this.addToList(openKeybinds = new TextButton(this, "openKeybinds", var5 / 2 - 300, var6 - 80, 300, 38, var9, "Open Keybind Manager", ResourceRegistry.JelloLightFont24));
+        this.addToList(openKeybinds = new TextButton(this, "openKeybinds", width / 2 - 300, height - 80, 300, 38, color, "Open Keybind Manager", ResourceRegistry.JelloLightFont24));
         TextButton openGui;
-        this.addToList(openGui = new TextButton(this, "openGui", var5 / 2, var6 - 80, 300, 38, var9, "Open Jello's Click GUI", ResourceRegistry.JelloLightFont24));
+        this.addToList(openGui = new TextButton(this, "openGui", width / 2, height - 80, 300, 38, color, "Open Jello's Click GUI", ResourceRegistry.JelloLightFont24));
         TextButton credits;
-        this.addToList(credits = new TextButton(this, "credits", var5 / 2 - 100, var6 - 280, 200, 38, var9, "Credits", ResourceRegistry.JelloLightFont18));
-        openKeybinds.onClick((var0, var1x) -> JelloOptions.showGUI(new KeybindsScreen()));
-        //openGui.onClick((var0, var1x) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
-        //credits.onClick((var0, var1x) -> JelloOptions.showGUI(new CreditsHolder(new StringTextComponent("GuiCredits"))));
-        Checkbox var13;
-        this.addToList(var13 = new Checkbox(this, "guiBlurCheckBox", var5 / 2 - 70, var6 - 220, 25, 25));
-        var13.method13705(Client.INSTANCE.configManager.guiBlur, false);
-        var13.onPress(var1x -> Client.INSTANCE.configManager.guiBlur = var13.method13703());
-        Checkbox var14;
-        this.addToList(var14 = new Checkbox(this, "guiBlurIngameCheckBox", var5 / 2 + 130, var6 - 220, 25, 25));
-        var14.method13705(Client.INSTANCE.configManager.hqBlur, false);
-        var14.onPress(var1x -> Client.INSTANCE.configManager.hqBlur = var14.method13703());
+        this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", ResourceRegistry.JelloLightFont18));
+        openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder()));
+        //openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
+        //credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new StringTextComponent("GuiCredits"))));
+        Checkbox blurCheckbox;
+        this.addToList(blurCheckbox = new Checkbox(this, "guiBlurCheckBox", width / 2 - 70, height - 220, 25, 25));
+        blurCheckbox.method13705(Client.INSTANCE.configManager.guiBlur, false);
+        blurCheckbox.onPress(e -> Client.INSTANCE.configManager.guiBlur = blurCheckbox.getValue());
+        Checkbox ingameBlurCheckbox;
+        this.addToList(ingameBlurCheckbox = new Checkbox(this, "guiBlurIngameCheckBox", width / 2 + 130, height - 220, 25, 25));
+        ingameBlurCheckbox.method13705(Client.INSTANCE.configManager.hqBlur, false);
+        ingameBlurCheckbox.onPress(e -> Client.INSTANCE.configManager.hqBlur = ingameBlurCheckbox.getValue());
     }
 
     @Override
     public void draw(float partialTicks) {
-        this.drawTitle(this.x + (this.getWidth() - 202) / 2, this.y + 10, partialTicks);
+        float x = this.x + (this.getWidth() - 202) / 2f;
+        float y = this.y + 10;
+
+        RenderUtils.drawString(ResourceRegistry.JelloMediumFont40, x, y + 1, "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
+        RenderUtils.drawString(ResourceRegistry.JelloLightFont25, x + 95, y + 14, "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.86F * partialTicks));
 
         String versionInfo = "You're currently using Sigma " + Client.VERSION;
         RenderUtils.drawString(
                 ResourceRegistry.JelloLightFont20,
-                (float) (this.x + (this.getWidth() - ResourceRegistry.JelloLightFont20.getWidth(versionInfo)) / 2),
-                (float) (this.y + 70),
+                (float) (this.getX() + (this.getWidth() - ResourceRegistry.JelloLightFont20.getWidth(versionInfo)) / 2),
+                (float) (this.getY() + 70),
                 versionInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
         );
-        String clickGuiInfo = "Click GUI is currently bound to: "
-                + BindUtils.getKeyName(Keys.RIGHT_SHIFT.keycode)
-                + " Key";
+
+        String clickGuiInfo = "Click GUI is currently bound to: " + BindUtils.getKeyName(Keys.RIGHT_SHIFT.keycode) + " Key";
         RenderUtils.drawString(
                 ResourceRegistry.JelloLightFont20,
                 (float) (this.getX() + (this.getWidth() - ResourceRegistry.JelloLightFont20.getWidth(clickGuiInfo)) / 2),
@@ -60,6 +63,7 @@ public class OptionPage extends CustomGuiScreen {
                 clickGuiInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F * partialTicks)
         );
+
         String keybindInfo = "Configure all your keybinds in the keybind manager!";
         RenderUtils.drawString(
                 ResourceRegistry.JelloLightFont14,
@@ -68,6 +72,7 @@ public class OptionPage extends CustomGuiScreen {
                 keybindInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
         );
+
         String blurInfo = "GUI Blur: ";
         RenderUtils.drawString(
                 ResourceRegistry.JelloLightFont20,
@@ -76,6 +81,7 @@ public class OptionPage extends CustomGuiScreen {
                 blurInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)
         );
+
         String gpuInfo = "GPU Accelerated: ";
         RenderUtils.drawString(
                 ResourceRegistry.JelloLightFont20,
@@ -84,13 +90,7 @@ public class OptionPage extends CustomGuiScreen {
                 gpuInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)
         );
-        super.draw(partialTicks);
-    }
 
-    private void drawTitle(int var1, int var2, float var3) {
-        RenderUtils.drawString(ResourceRegistry.JelloMediumFont40, (float) var1, (float) (var2 + 1), "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var3));
-        RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont25, (float) (var1 + 95), (float) (var2 + 14), "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.86F * var3)
-        );
+        super.draw(partialTicks);
     }
 }

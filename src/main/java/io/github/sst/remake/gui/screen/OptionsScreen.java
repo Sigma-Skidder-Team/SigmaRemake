@@ -1,5 +1,6 @@
 package io.github.sst.remake.gui.screen;
 
+import io.github.sst.remake.gui.screen.holder.OptionsHolder;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,7 +18,7 @@ public class OptionsScreen extends GameMenuScreen {
                 height - 45,
                 204, 20,
                 new LiteralText("Jello for Fabric Options"),
-                w -> client.openScreen(new OptionsScreen())
+                w -> client.openScreen(new OptionsHolder())
         ));
         super.init();
 

@@ -31,7 +31,6 @@ public class JelloOptions extends Screen {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS && anim.calcPercent() == 0.0F && mcScreen != null) {
-            System.out.println(mcScreen);
             MinecraftClient.getInstance().openScreen(mcScreen);
         }
 
@@ -40,17 +39,17 @@ public class JelloOptions extends Screen {
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = 1.3F - EasingFunctions.easeOutBack(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
-        float var5 = 1.0F;
+        float maxValue = 1.3F - EasingFunctions.easeOutBack(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
+        float value = 1.0F;
         if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var4 = 0.7F + QuadraticEasing.easeOutQuad(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
-            var5 = anim.calcPercent();
+            maxValue = 0.7F + QuadraticEasing.easeOutQuad(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
+            value = anim.calcPercent();
         }
 
-        int var6 = ColorHelper.shiftTowardsOther(-1072689136, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), var5);
-        int var7 = ColorHelper.shiftTowardsOther(-804253680, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), var5);
-        RenderUtils.method11431(0, 0, this.getWidth(), this.getHeight(), var6, var7);
-        this.method13279(var4, var4);
+        int color1 = ColorHelper.shiftTowardsOther(-1072689136, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), value);
+        int color2 = ColorHelper.shiftTowardsOther(-804253680, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), value);
+        RenderUtils.drawGradient(0, 0, this.getWidth(), this.getHeight(), color1, color2);
+        this.method13279(maxValue, maxValue);
         this.method13224();
         super.draw(anim.calcPercent());
     }
