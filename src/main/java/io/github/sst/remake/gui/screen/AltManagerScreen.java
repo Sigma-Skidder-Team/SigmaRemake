@@ -12,8 +12,6 @@ import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
 import io.github.sst.remake.gui.element.impl.alts.AccountElement;
 import io.github.sst.remake.gui.element.impl.alts.AccountUI;
-import io.github.sst.remake.gui.element.impl.alts.EntityElement;
-import io.github.sst.remake.gui.element.impl.drop.Sub;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.io.audio.SoundUtils;
@@ -42,7 +40,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private final float field21014 = 0.65F;
     private final float field21015 = 1.0F - this.field21014;
     private final int titleOffset = 30;
-    private final EntityElement entityElement;
     private final AccountElement accountElement;
     private AccountCompareType accountSortType = AccountCompareType.ADDED;
     private String accountFilter = "";
@@ -97,23 +94,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.alts.setListening(false);
         this.altView.setListening(false);
         this.alts.method13515(false);
-        this.altView
-                .addToList(
-                        this.entityElement = new EntityElement(
-                                this.altView,
-                                "",
-                                (int) (
-                                        (float) client.getWindow().getWidth() * this.field21015
-                                                - (float) ((int) ((float) client.getWindow().getWidth() * this.field21015))
-                                )
-                                        / 2
-                                        - 10,
-                                client.getWindow().getHeight() / 12,
-                                (int) ((float) client.getWindow().getWidth() * this.field21015),
-                                350,
-                                "8667ba71-b85a-4004-af54-457a9734eed7"
-                        )
-                );
         this.altView
                 .addToList(
                         this.accountElement = new AccountElement(
@@ -214,19 +194,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 this.deleteAlert.onPress(element -> {
                     Client.INSTANCE.accountManager.remove(accountUI.selectedAccount);
                     this.accountElement.handleSelectedAccount(null);
-                    this.entityElement.handleSelectedAccount(null);
                     this.updateAccountList(false);
                 });
                 this.deleteAlert.setFocused(true);
                 this.deleteAlert.method13603(true);
             } else {
-                if (this.entityElement.account == accountUI.selectedAccount && accountUI.method13168()) {
-                    this.loginToAccount(accountUI);
-                } else {
-                    this.altView.setScrollOffset(0);
-                }
+                this.loginToAccount(accountUI);
 
-                this.entityElement.handleSelectedAccount(accountUI.selectedAccount);
                 this.accountElement.handleSelectedAccount(accountUI.selectedAccount);
 
                 for (CustomGuiScreen var7 : this.alts.getChildren()) {
@@ -242,14 +216,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         });
 
         if (Client.INSTANCE.accountManager.currentAccount == acc) {
-            this.entityElement.handleSelectedAccount(accountUI.selectedAccount);
             this.accountElement.handleSelectedAccount(accountUI.selectedAccount);
             accountUI.method13167(true, true);
         }
-    }
-
-    public static void login() {
-
     }
 
     public void loginToAccount(AccountUI account) {
@@ -272,11 +241,22 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         AlertComponent header = new AlertComponent(ComponentType.HEADER, "Add Alt", 50);
         AlertComponent firstline1 = new AlertComponent(ComponentType.FIRST_LINE, "Login with your minecraft", 15);
         AlertComponent firstline2 = new AlertComponent(ComponentType.FIRST_LINE, "account here!", 25);
+        AlertComponent usernameInput = new AlertComponent(ComponentType.SECOND_LINE, "Username", 50);
+        AlertComponent button = new AlertComponent(ComponentType.BUTTON, "Cracked login", 50);
         AlertComponent button2 = new AlertComponent(ComponentType.BUTTON, "Cookie login", 50);
         AlertComponent button3 = new AlertComponent(ComponentType.BUTTON, "Web login", 50);
-        this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", true, "Add Alt", header, firstline1, firstline2, button2, button3));
+        this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", true, "Add Alt", header, firstline1, firstline2, usernameInput, button, button2, button3));
 
-        this.loginDialog.onPress(element -> this.updateAccountList(false));
+        this.loginDialog.onPress(element -> {
+            String username = this.loginDialog.getInputMap().get("Username");
+            if (username != null && !username.isEmpty()) {
+                Account account = new Account(username, "0", Account.STEVE_UUID);
+                if (!Client.INSTANCE.accountManager.has(account)) {
+                    Client.INSTANCE.accountManager.add(account);
+                }
+            }
+            this.updateAccountList(false);
+        });
     }
 
     private void deleteAltAlert() {
@@ -442,13 +422,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             }
 
             this.showAlert(this.alts = new ScrollableContentPanel(
-                                    this,
-                                            "alts",
-                                            0,
-                                            114,
-                                            (int) ((float) client.getWindow().getWidth() * this.field21014) - 4,
-                                            client.getWindow().getHeight() - 119 - this.titleOffset
-                                    ));
+                    this,
+                    "alts",
+                    0,
+                    114,
+                    (int) ((float) client.getWindow().getWidth() * this.field21014) - 4,
+                    client.getWindow().getHeight() - 119 - this.titleOffset
+            ));
 
             for (Account var6 : accounts) {
                 this.method13360(var6, forceRefresh);

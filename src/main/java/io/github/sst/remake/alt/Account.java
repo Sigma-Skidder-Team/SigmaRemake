@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Account {
-    public static final String STEVE_UUID = "8667ba71-b85a-4004-af54-457a9734eed7";
+    public static final String STEVE_UUID = "c06f8906-4c8a-4911-9c29-ea1dbd1aab82";
     private static final Gson GSON = new GsonBuilder().create();
 
     public final String name;

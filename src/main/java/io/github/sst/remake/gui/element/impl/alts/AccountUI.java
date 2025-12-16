@@ -87,8 +87,6 @@ public class AccountUI extends AnimatedIconPanel {
                     ScissorUtils.restoreScissor();
                 }
             }
-        } else {
-            var9++;
         }
     }
 
@@ -117,14 +115,6 @@ public class AccountUI extends AnimatedIconPanel {
                 (float) (this.x + 110),
                 (float) (this.y + 50),
                 "Token: " + "asdddddddddddddddddddddddddddddddddddddddddddd".replaceAll(".", Character.toString('·')),
-                ClientColors.MID_GREY.getColor()
-        );
-
-        RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont14,
-                (float) (this.x + 110),
-                (float) (this.y + 65),
-                "UUID: " + this.selectedAccount.uuid,
                 ClientColors.MID_GREY.getColor()
         );
     }

@@ -59,6 +59,7 @@ public class AccountElement extends AnimatedIconPanel {
         this.method13225();
         this.field20815 = (float) ((double) this.field20815 + (this.isSelfVisible() ? 0.33 : -0.33));
         this.field20815 = Math.min(1.0F, Math.max(0.0F, this.field20815));
+
         if (this.currentAccount == null) {
             int var4 = this.width - 30;
             int var5 = this.x + 5;
@@ -69,17 +70,16 @@ public class AccountElement extends AnimatedIconPanel {
                     (float) (var4 * 342 / 460),
                     Resources.imgPNG
             );
+            return;
         }
 
-        if (this.currentAccount != null) {
-            RenderUtils.drawString(
-                    ResourceRegistry.JelloLightFont36,
-                    (float) (this.x + (this.width - ResourceRegistry.JelloLightFont36.getWidth(this.currentAccount.name)) / 2),
-                    (float) this.y,
-                    this.currentAccount.name,
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)
-            );
-            super.draw(partialTicks);
-        }
+        RenderUtils.drawString(
+                ResourceRegistry.JelloLightFont36,
+                (float) (this.x + (this.width - ResourceRegistry.JelloLightFont36.getWidth(this.currentAccount.name)) / 2),
+                (float) this.y - 20,
+                this.currentAccount.name,
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)
+        );
+        super.draw(partialTicks);
     }
 }

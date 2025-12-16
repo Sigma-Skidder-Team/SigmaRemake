@@ -6,6 +6,9 @@ import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.screen.AltManagerScreen;
+import io.github.sst.remake.util.http.MicrosoftUtils;
+import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -68,9 +71,7 @@ public class Alert extends Element {
                 if (component.componentType != ComponentType.SECOND_LINE) {
                     if (component.componentType != ComponentType.BUTTON) {
                         if (component.componentType == ComponentType.HEADER) {
-                            this.screen
-                                    .addToList(
-                                            new Text(
+                            this.screen.addToList(new Text(
                                                     this.screen,
                                                     "Item" + var17,
                                                     0,
@@ -93,13 +94,7 @@ public class Alert extends Element {
                         this.screen.addToList(button = new Button(this.screen, "Item" + var17, 0, var18, this.field21284, component.field44773, ColorHelper.DEFAULT_COLOR, component.text));
                         this.buttons.add(button);
                         button.field20586 = 4;
-                        button.onClick((var1x, var2x) -> {
-                            switch (button.text) {
-                                default:
-                                    this.onButtonClick();
-                                    break;
-                            }
-                        });
+                        button.onClick((var1x, var2x) -> this.onButtonClick());
                     }
                 } else {
                     TextField var22;
@@ -183,7 +178,7 @@ public class Alert extends Element {
             AnimatedIconPanel var6 = (AnimatedIconPanel) var5;
             if (var6 instanceof TextField) {
                 TextField var7 = (TextField) var6;
-				var3.put(var7.getPlaceholder(), var7.getText());
+                var3.put(var7.getPlaceholder(), var7.getText());
             }
         }
 

@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.util.http.MicrosoftUtils;
 import io.github.sst.remake.util.io.FileUtils;
 
 import java.io.File;
@@ -19,6 +20,10 @@ public class AccountManager extends Manager {
 
     public Account currentAccount;
 
+    public boolean has(Account account) {
+        return this.accounts.contains(account);
+    }
+
     public void add(Account account) {
         this.accounts.add(account);
     }
@@ -29,6 +34,7 @@ public class AccountManager extends Manager {
 
     public boolean login(Account account) {
         account.updateUsedCount();
+
         this.currentAccount = account;
         return true;
     }
