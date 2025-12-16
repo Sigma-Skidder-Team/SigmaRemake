@@ -14,6 +14,7 @@ import io.github.sst.remake.gui.element.impl.alts.AccountElement;
 import io.github.sst.remake.gui.element.impl.alts.AccountUI;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.http.MicrosoftUtils;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -26,8 +27,11 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 
+import io.github.sst.remake.gui.element.impl.Button;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AltManagerScreen extends Screen implements IMinecraft {
     private int field21005;
@@ -248,14 +252,50 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", true, "Add Alt", header, firstline1, firstline2, usernameInput, button, button2, button3));
 
         this.loginDialog.onPress(element -> {
-            String username = this.loginDialog.getInputMap().get("Username");
-            if (username != null && !username.isEmpty()) {
-                Account account = new Account(username, "0", Account.STEVE_UUID);
-                if (!Client.INSTANCE.accountManager.has(account)) {
-                    Client.INSTANCE.accountManager.add(account);
+            Button clickedButton = this.loginDialog.getClickedButton();
+            if (clickedButton != null) {
+                switch (clickedButton.getText()) {
+                    case "Cracked login": {
+                        String username = this.loginDialog.getInputMap().get("Username");
+                        if (username != null && !username.isEmpty()) {
+                            Account account = new Account(username, "0", Account.STEVE_UUID);
+                            if (!Client.INSTANCE.accountManager.has(account)) {
+                                Client.INSTANCE.accountManager.add(account);
+                            }
+                        }
+                        this.updateAccountList(false);
+                        break;
+                    }
+                    case "Cookie login": {
+                        System.out.println("Cookie login clicked");
+                        break;
+                    }
+                    case "Web login": {
+                        ExecutorService executor = Executors.newSingleThreadExecutor();
+                        MicrosoftUtils.acquireMSAuthCode(executor)
+                                .thenComposeAsync(msAuthCode -> MicrosoftUtils.acquireMSAccessToken(msAuthCode, executor), executor)
+                                .thenComposeAsync(msAccessToken -> MicrosoftUtils.acquireXboxAccessToken(msAccessToken, executor), executor)
+                                .thenComposeAsync(xboxAccessToken -> MicrosoftUtils.acquireXboxXstsToken(xboxAccessToken, executor), executor)
+                                .thenComposeAsync(xboxXstsData -> MicrosoftUtils.acquireMCAccessToken(xboxXstsData.get("Token"), xboxXstsData.get("uhs"), executor), executor)
+                                .thenComposeAsync(mcToken -> MicrosoftUtils.login(mcToken, executor), executor)
+                                .thenAccept(session -> {
+                                    Account account = new Account(session.getUsername(), session.getAccessToken(), session.getUuid());
+                                    if (!Client.INSTANCE.accountManager.has(account)) {
+                                        Client.INSTANCE.accountManager.add(account);
+                                    }
+
+                                    this.updateAccountList(false);
+                                })
+                                .exceptionally(error -> {
+                                    Client.LOGGER.error("Failed to login", error);
+                                    SoundUtils.play("error");
+                                    this.updateAccountList(false);
+                                    return null;
+                                });
+                        break;
+                    }
                 }
             }
-            this.updateAccountList(false);
         });
     }
 

@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import net.minecraft.client.util.Session;
+import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,47 +36,20 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class MicrosoftUtils {
-
-    public static void openWebLink(final URI url) {
-        try {
-            final Class<?> desktop = Class.forName("java.awt.Desktop");
-            final Object object = desktop.getMethod("getDesktop").invoke(null);
-
-            desktop.getMethod("browse", URI.class).invoke(object, url);
-        } catch (Throwable throwable) {
-            System.err.println(throwable.getCause().getMessage());
-        }
-    }
-
     public static final RequestConfig REQUEST_CONFIG = RequestConfig
             .custom()
             .setConnectionRequestTimeout(30_000)
             .setConnectTimeout(30_000)
             .setSocketTimeout(30_000)
             .build();
+
     public static final String CLIENT_ID = "42a60a84-599d-44b2-a7c6-b00cdef1d6a2";
     public static final int PORT = 25575;
-
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    public static CompletableFuture<Account> loginAndGetAccount() {
-        return MicrosoftUtils.acquireMSAuthCode(executor)
-                .thenComposeAsync(msAuthCode -> MicrosoftUtils.acquireMSAccessToken(msAuthCode, executor), executor)
-                .thenComposeAsync(msAccessToken -> MicrosoftUtils.acquireXboxAccessToken(msAccessToken, executor), executor)
-                .thenComposeAsync(xboxAccessToken -> MicrosoftUtils.acquireXboxXstsToken(xboxAccessToken, executor), executor)
-                .thenComposeAsync(xboxXstsData -> MicrosoftUtils.acquireMCAccessToken(xboxXstsData.get("Token"), xboxXstsData.get("uhs"), executor), executor)
-                .thenComposeAsync(mcToken -> MicrosoftUtils.login(mcToken, executor), executor)
-                .thenApply(session -> new Account(session.getUsername(), session.getAccessToken(), session.getUuid()))
-                .exceptionally(error -> {
-                    Client.LOGGER.error("Failed to login", error);
-                    return null;
-                });
-    }
 
     public static CompletableFuture<String> acquireMSAuthCode(
             final Executor executor
     ) {
-        return acquireMSAuthCode(MicrosoftUtils::openWebLink, executor);
+        return acquireMSAuthCode(Util.getOperatingSystem()::open, executor);
     }
 
     public static CompletableFuture<String> acquireMSAuthCode(

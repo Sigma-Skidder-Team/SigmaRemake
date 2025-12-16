@@ -38,6 +38,7 @@ public class Alert extends Element {
     public int field21284 = 240;
     public int field21285 = 0;
     private Map<String, String> inputMap;
+    private Button clickedButton;
     private final List<Class9448> field21287 = new ArrayList<>();
 
     public List<Button> buttons = new ArrayList<>();
@@ -94,7 +95,7 @@ public class Alert extends Element {
                         this.screen.addToList(button = new Button(this.screen, "Item" + var17, 0, var18, this.field21284, component.field44773, ColorHelper.DEFAULT_COLOR, component.text));
                         this.buttons.add(button);
                         button.field20586 = 4;
-                        button.onClick((var1x, var2x) -> this.onButtonClick());
+                        button.onClick((var1x, var2x) -> this.onButtonClick(button));
                     }
                 } else {
                     TextField var22;
@@ -189,7 +190,19 @@ public class Alert extends Element {
         return this.inputMap;
     }
 
+    public Button getClickedButton() {
+        return this.clickedButton;
+    }
+
+    public void onButtonClick(Button button) {
+        this.clickedButton = button;
+        this.inputMap = this.method13599();
+        this.method13603(false);
+        this.callUIHandlers();
+    }
+
     public void onButtonClick() {
+        this.clickedButton = null;
         this.inputMap = this.method13599();
         this.method13603(false);
         this.callUIHandlers();

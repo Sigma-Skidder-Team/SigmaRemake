@@ -6,8 +6,8 @@ import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
-import io.github.sst.remake.util.http.MicrosoftUtils;
 import io.github.sst.remake.util.io.FileUtils;
+import io.github.sst.remake.util.io.audio.SoundUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +26,7 @@ public class AccountManager extends Manager {
 
     public void add(Account account) {
         this.accounts.add(account);
+        SoundUtils.play("connect");
     }
 
     public void remove(Account account) {
