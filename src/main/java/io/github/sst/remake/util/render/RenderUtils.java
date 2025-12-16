@@ -11,13 +11,10 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
-
-import java.nio.FloatBuffer;
 
 public class RenderUtils {
 
@@ -25,35 +22,39 @@ public class RenderUtils {
         return Client.INSTANCE.screenManager.scaleFactor;
     }
 
-    public static void drawRoundedRect(float x, float y, float sizedX, float sizedY, int color) {
-        if (x < sizedX) {
-            int var7 = (int) x;
-            x = sizedX;
-            sizedX = (float) var7;
+    public static void drawRoundedRect(float x, float y, float width, float height, int color) {
+        if (x < width) {
+            int adjustedWidth = (int) x;
+            x = width;
+            width = (float) adjustedWidth;
         }
 
-        if (y < sizedY) {
-            int var13 = (int) y;
-            y = sizedY;
-            sizedY = (float) var13;
+        if (y < height) {
+            int adjustedHeight = (int) y;
+            y = height;
+            height = (float) adjustedHeight;
         }
 
-        float a = (float) (color >> 24 & 0xFF) / 255.0F;
-        float r = (float) (color >> 16 & 0xFF) / 255.0F;
-        float g = (float) (color >> 8 & 0xFF) / 255.0F;
-        float b = (float) (color & 0xFF) / 255.0F;
-        Tessellator tessel = Tessellator.getInstance();
-        BufferBuilder buffer = tessel.getBuffer();
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
+        Tessellator tesselator = Tessellator.getInstance();
+        BufferBuilder buffer = tesselator.getBuffer();
+
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        RenderSystem.color4f(r, g, b, a);
+        RenderSystem.color4f(red, green, blue, alpha);
+
         buffer.begin(7, VertexFormats.POSITION);
-        buffer.vertex(x, sizedY, 0.0).next();
-        buffer.vertex(sizedX, sizedY, 0.0).next();
-        buffer.vertex(sizedX, y, 0.0).next();
+        buffer.vertex(x, height, 0.0).next();
+        buffer.vertex(width, height, 0.0).next();
+        buffer.vertex(width, y, 0.0).next();
         buffer.vertex(x, y, 0.0).next();
-        tessel.draw();
+        tesselator.draw();
+
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
@@ -84,17 +85,18 @@ public class RenderUtils {
         ScissorUtils.restoreScissor();
     }
 
-    public static void drawRoundedRect(float var0, float var1, float var2, float var3, float var4, float var5) {
+    public static void drawRoundedRect(float x, float y, float width, float height, float radius, float alpha) {
         GL11.glAlphaFunc(519, 0.0F);
-        int var8 = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5);
-        drawImage(var0 - var4, var1 - var4, var4, var4, Resources.shadowCorner1PNG, var8);
-        drawImage(var0 + var2, var1 - var4, var4, var4, Resources.shadowCorner2PNG, var8);
-        drawImage(var0 - var4, var1 + var3, var4, var4, Resources.shadowCorner3PNG, var8);
-        drawImage(var0 + var2, var1 + var3, var4, var4, Resources.shadowCorner4PNG, var8);
-        drawImage(var0 - var4, var1, var4, var3, Resources.shadowLeftPNG, var8, false);
-        drawImage(var0 + var2, var1, var4, var3, Resources.shadowRightPNG, var8, false);
-        drawImage(var0, var1 - var4, var2, var4, Resources.shadowTopPNG, var8, false);
-        drawImage(var0, var1 + var3, var2, var4, Resources.shadowBottomPNG, var8, false);
+        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
+
+        drawImage(x - radius, y - radius, radius, radius, Resources.shadowCorner1PNG, color);
+        drawImage(x + width, y - radius, radius, radius, Resources.shadowCorner2PNG, color);
+        drawImage(x - radius, y + height, radius, radius, Resources.shadowCorner3PNG, color);
+        drawImage(x + width, y + height, radius, radius, Resources.shadowCorner4PNG, color);
+        drawImage(x - radius, y, radius, height, Resources.shadowLeftPNG, color, false);
+        drawImage(x + width, y, radius, height, Resources.shadowRightPNG, color, false);
+        drawImage(x, y - radius, width, radius, Resources.shadowTopPNG, color, false);
+        drawImage(x, y + height, width, radius, Resources.shadowBottomPNG, color, false);
     }
 
     public static void drawImage(float x, float y, float width, float height, Texture tex, float alphaValue) {
@@ -117,46 +119,38 @@ public class RenderUtils {
         drawImage(x, y, width, height, texture, color, tlX, tlY, siW, siH, true);
     }
 
-    /**
-     * Draws a sub-image of a texture to the screen.
-     *
-     * @param x               The x-coordinate of the top-left corner of the image.
-     * @param y               The y-coordinate of the top-left corner of the image.
-     * @param width           The width of the image.
-     * @param height          The height of the image.
-     * @param texture         The texture to draw from.
-     * @param color           The color to draw the image in, represented as an integer.
-     * @param tlX             The x-coordinate of the top-left corner of the sub-image within the texture.
-     * @param tlY             The y-coordinate of the top-left corner of the sub-image within the texture.
-     * @param siW             The width of the sub-image.
-     * @param siH             The height of the sub-image.
-     * @param linearFiltering Whether to use linear filtering for the texture.
-     */
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
             RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
             GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+
             x = (float) Math.round(x);
             width = (float) Math.round(width);
             y = (float) Math.round(y);
             height = (float) Math.round(height);
-            float a = (float) (color >> 24 & 0xFF) / 255.0F;
-            float r = (float) (color >> 16 & 0xFF) / 255.0F;
-            float g = (float) (color >> 8 & 0xFF) / 255.0F;
-            float b = (float) (color & 0xFF) / 255.0F;
+
+            float red = (float) (color >> 16 & 0xFF) / 255.0F;
+            float green = (float) (color >> 8 & 0xFF) / 255.0F;
+            float blue = (float) (color & 0xFF) / 255.0F;
+            float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();
             RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-            RenderSystem.color4f(r, g, b, a);
+            RenderSystem.color4f(red, green, blue, alpha);
+
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
+
             texture.bind();
+
             float var17 = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
             float var18 = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
             float var19 = siW / (float) texture.getImageWidth() * var17;
             float var20 = siH / (float) texture.getImageHeight() * var18;
             float var21 = tlX / (float) texture.getImageWidth() * var17;
             float var22 = tlY / (float) texture.getImageHeight() * var18;
+
             if (!linearFiltering) {
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             } else {
@@ -166,15 +160,20 @@ public class RenderUtils {
             GL11.glBegin(7);
             GL11.glTexCoord2f(var21, var22);
             GL11.glVertex2f(x, y);
+
             GL11.glTexCoord2f(var21, var22 + var20);
             GL11.glVertex2f(x, y + height);
+
             GL11.glTexCoord2f(var21 + var19, var22 + var20);
             GL11.glVertex2f(x + width, y + height);
+
             GL11.glTexCoord2f(var21 + var19, var22);
             GL11.glVertex2f(x + width, y);
             GL11.glEnd();
+
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_BLEND);
+
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
         }
@@ -184,42 +183,43 @@ public class RenderUtils {
         if (texture == null) {
             return;
         }
+
         drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), true);
         drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), false);
     }
 
-    public static void drawRoundedButton(float var0, float var1, float var2, float var3, float var4, int color) {
-        drawRoundedRect(var0, var1 + var4, var0 + var2, var1 + var3 - var4, color);
-        drawRoundedRect(var0 + var4, var1, var0 + var2 - var4, var1 + var3, color);
-        FloatBuffer var8 = BufferUtils.createFloatBuffer(16);
-        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, var8);
-        float var9 = 1.0F;
-        drawCircle(var0 + var4, var1 + var4, var4 * 2.0F * var9, color);
-        drawCircle(var0 - var4 + var2, var1 + var4, var4 * 2.0F * var9, color);
-        drawCircle(var0 + var4, var1 - var4 + var3, var4 * 2.0F * var9, color);
-        drawCircle(var0 - var4 + var2, var1 - var4 + var3, var4 * 2.0F * var9, color);
+    public static void drawRoundedButton(float x, float y, float width, float height, float radius, int color) {
+        drawRoundedRect(x, y + radius, x + width, y + height - radius, color);
+        drawRoundedRect(x + radius, y, x + width - radius, y + height, color);
+        drawCircle(x + radius, y + radius, radius * 2.0F, color);
+        drawCircle(x - radius + width, y + radius, radius * 2.0F, color);
+        drawCircle(x + radius, y - radius + height, radius * 2.0F, color);
+        drawCircle(x - radius + width, y - radius + height, radius * 2.0F, color);
     }
 
-    public static void drawCircle(float centerX, float centerY, float size, int color) {
+    public static void drawCircle(float x, float y, float size, int color) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 0.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-        float a = (float) (color >> 24 & 0xFF) / 255.0F;
-        float r = (float) (color >> 16 & 0xFF) / 255.0F;
-        float g = (float) (color >> 8 & 0xFF) / 255.0F;
-        float b = (float) (color & 0xFF) / 255.0F;
-        Tessellator var10 = Tessellator.getInstance();
-        BufferBuilder var11 = var10.getBuffer();
+
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-        RenderSystem.color4f(r, g, b, a);
+        RenderSystem.color4f(red, green, blue, alpha);
+
         GL11.glEnable(GL11.GL_POINT_SMOOTH);
         GL11.glEnable(GL11.GL_BLEND);
+
         GL11.glPointSize(size * getScaleFactor());
         GL11.glBegin(0);
-        GL11.glVertex2f(centerX, centerY);
+        GL11.glVertex2f(x, y);
         GL11.glEnd();
         GL11.glDisable(GL11.GL_POINT_SMOOTH);
         GL11.glDisable(GL11.GL_BLEND);
+
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
@@ -235,16 +235,17 @@ public class RenderUtils {
     public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontAlignment widthAlignment, FontAlignment heightAlignment, boolean shadow) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-        int adjustedWidth = 0;
-        int adjustedHeight = 0;
+
+        int adjustedX = 0;
+        int adjustedY = 0;
 
         switch (widthAlignment) {
             case CENTER:
-                adjustedWidth = -font.getWidth(text) / 2;
+                adjustedX = -font.getWidth(text) / 2;
                 break;
 
             case RIGHT:
-                adjustedWidth = -font.getWidth(text);
+                adjustedX = -font.getWidth(text);
                 break;
 
             default:
@@ -253,23 +254,20 @@ public class RenderUtils {
 
         switch (heightAlignment) {
             case CENTER:
-                adjustedHeight = -font.getHeight(text) / 2;
+                adjustedY = -font.getHeight(text) / 2;
                 break;
 
             case BOTTOM:
-                adjustedHeight = -font.getHeight(text);
+                adjustedY = -font.getHeight(text);
                 break;
 
             default:
                 break;
         }
 
-        float var12 = (float) (color >> 24 & 0xFF) / 255.0F;
-        float var13 = (float) (color >> 16 & 0xFF) / 255.0F;
-        float var14 = (float) (color >> 8 & 0xFF) / 255.0F;
-        float var15 = (float) (color & 0xFF) / 255.0F;
         GL11.glPushMatrix();
-        boolean var16 = false;
+
+        boolean noHiDpiFontAvailable = false;
         if ((double) getScaleFactor() == 2.0) {
             if (font == ResourceRegistry.JelloLightFont20) {
                 font = ResourceRegistry.JelloLightFont40;
@@ -288,15 +286,15 @@ public class RenderUtils {
             } else if (font == ResourceRegistry.JelloMediumFont25) {
                 font = ResourceRegistry.JelloMediumFont50;
             } else {
-                var16 = true;
+                noHiDpiFontAvailable = true;
             }
 
-            if (!var16) {
+            if (!noHiDpiFontAvailable) {
                 GL11.glTranslatef(x, y, 0.0F);
                 GL11.glScalef(1.0F / getScaleFactor(), 1.0F / getScaleFactor(), 1.0F / getScaleFactor());
                 GL11.glTranslatef(-x, -y, 0.0F);
-                adjustedWidth = (int) ((float) adjustedWidth * getScaleFactor());
-                adjustedHeight = (int) ((float) adjustedHeight * getScaleFactor());
+                adjustedX = (int) ((float) adjustedX * getScaleFactor());
+                adjustedY = (int) ((float) adjustedY * getScaleFactor());
             }
         }
 
@@ -304,23 +302,28 @@ public class RenderUtils {
         GL11.glBlendFunc(770, 771);
 
         if (shadow) {
-            font.drawString((float) Math.round(x + (float) adjustedWidth), (float) (Math.round(y + (float) adjustedHeight) + 2), text, new Color(0.0F, 0.0F, 0.0F, 0.35F));
+            font.drawString((float) Math.round(x + (float) adjustedX), (float) (Math.round(y + (float) adjustedY) + 2), text, new Color(0.0F, 0.0F, 0.0F, 0.35F));
         }
 
         if (text != null) {
-            font.drawString((float) Math.round(x + (float) adjustedWidth), (float) Math.round(y + (float) adjustedHeight), text, new Color(var13, var14, var15, var12));
+            float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+            float red = (float) (color >> 16 & 0xFF) / 255.0F;
+            float green = (float) (color >> 8 & 0xFF) / 255.0F;
+            float blue = (float) (color & 0xFF) / 255.0F;
+
+            font.drawString((float) Math.round(x + (float) adjustedX), (float) Math.round(y + (float) adjustedY), text, new Color(red, green, blue, alpha));
         }
 
         RenderSystem.disableBlend();
         GL11.glPopMatrix();
     }
 
-    public static void drawFilledArc(float var0, float var1, float var2, int var3) {
-        drawFilledArc(var0, var1, 0.0F, 360.0F, var2 - 1.0F, var3);
+    public static void drawFilledArc(float x, float y, float radius, int color) {
+        drawFilledArc(x, y, 0.0F, 360.0F, radius - 1.0F, color);
     }
 
-    public static void drawFilledArc(float var0, float var1, float var2, float var3, float var4, int var5) {
-        drawFilledArc(var0, var1, var2, var3, var4, var4, var5);
+    public static void drawFilledArc(float x, float y, float startAngle, float endAngle, float radius, int color) {
+        drawFilledArc(x, y, startAngle, endAngle, radius, radius, color);
     }
 
     /**
@@ -337,31 +340,32 @@ public class RenderUtils {
     public static void drawFilledArc(float x, float y, float startAngle, float endAngle, float hRadius, float vRadius, int color) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-        float var9 = 0.0F;
+
         if (startAngle > endAngle) {
-            var9 = endAngle;
+            float tempAngle = endAngle;
             endAngle = startAngle;
-            startAngle = var9;
+            startAngle = tempAngle;
         }
 
-        float var10 = (float) (color >> 24 & 0xFF) / 255.0F;
-        float var11 = (float) (color >> 16 & 0xFF) / 255.0F;
-        float var12 = (float) (color >> 8 & 0xFF) / 255.0F;
-        float var13 = (float) (color & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-        RenderSystem.color4f(var11, var12, var13, var10);
-        if (var10 > 0.5F) {
+        RenderSystem.color4f(red, green, blue, alpha);
+
+        if (alpha > 0.5F) {
             GL11.glEnable(2848);
             GL11.glLineWidth(2.0F);
             GL11.glBegin(3);
 
-            for (float var16 = endAngle; var16 >= startAngle; var16 -= 4.0F) {
-                float var17 = (float) Math.cos((double) var16 * Math.PI / 180.0) * hRadius * 1.001F;
-                float var18 = (float) Math.sin((double) var16 * Math.PI / 180.0) * vRadius * 1.001F;
-                GL11.glVertex2f(x + var17, y + var18);
+            for (float angle = endAngle; angle >= startAngle; angle -= 4.0F) {
+                float radiusX = (float) Math.cos((double) angle * Math.PI / 180.0) * hRadius * 1.001F;
+                float radiusY = (float) Math.sin((double) angle * Math.PI / 180.0) * vRadius * 1.001F;
+                GL11.glVertex2f(x + radiusX, y + radiusY);
             }
 
             GL11.glEnd();
@@ -370,10 +374,10 @@ public class RenderUtils {
 
         GL11.glBegin(6);
 
-        for (float var20 = endAngle; var20 >= startAngle; var20 -= 4.0F) {
-            float var21 = (float) Math.cos((double) var20 * Math.PI / 180.0) * hRadius;
-            float var22 = (float) Math.sin((double) var20 * Math.PI / 180.0) * vRadius;
-            GL11.glVertex2f(x + var21, y + var22);
+        for (float angle = endAngle; angle >= startAngle; angle -= 4.0F) {
+            float radiusX = (float) Math.cos((double) angle * Math.PI / 180.0) * hRadius;
+            float radiusY = (float) Math.sin((double) angle * Math.PI / 180.0) * vRadius;
+            GL11.glVertex2f(x + radiusX, y + radiusY);
         }
 
         GL11.glEnd();
@@ -381,61 +385,68 @@ public class RenderUtils {
         RenderSystem.disableBlend();
     }
 
-    public static void method11431(int var0, int var1, int var2, int var3, int var4, int var5) {
-        float var8 = (float) (var4 >> 24 & 0xFF) / 255.0F;
-        float var9 = (float) (var4 >> 16 & 0xFF) / 255.0F;
-        float var10 = (float) (var4 >> 8 & 0xFF) / 255.0F;
-        float var11 = (float) (var4 & 0xFF) / 255.0F;
-        float var12 = (float) (var5 >> 24 & 0xFF) / 255.0F;
-        float var13 = (float) (var5 >> 16 & 0xFF) / 255.0F;
-        float var14 = (float) (var5 >> 8 & 0xFF) / 255.0F;
-        float var15 = (float) (var5 & 0xFF) / 255.0F;
+    public static void drawGradient(int x, int y, int width, int height, int color1, int color2) {
+        float red1 = (float) (color1 >> 16 & 0xFF) / 255.0F;
+        float green1 = (float) (color1 >> 8 & 0xFF) / 255.0F;
+        float blue1 = (float) (color1 & 0xFF) / 255.0F;
+        float alpha1 = (float) (color1 >> 24 & 0xFF) / 255.0F;
+
+        float red2 = (float) (color2 >> 16 & 0xFF) / 255.0F;
+        float green2 = (float) (color2 >> 8 & 0xFF) / 255.0F;
+        float blue2 = (float) (color2 & 0xFF) / 255.0F;
+        float alpha2 = (float) (color2 >> 24 & 0xFF) / 255.0F;
+
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        Tessellator var16 = Tessellator.getInstance();
-        BufferBuilder var17 = var16.getBuffer();
-        var17.begin(7, VertexFormats.POSITION_COLOR);
-        var17.vertex(var2, var1, 0.0).color(var9, var10, var11, var8).next();
-        var17.vertex(var0, var1, 0.0).color(var9, var10, var11, var8).next();
-        var17.vertex(var0, var3, 0.0).color(var13, var14, var15, var12).next();
-        var17.vertex(var2, var3, 0.0).color(var13, var14, var15, var12).next();
-        var16.draw();
+
+        Tessellator tesselator = Tessellator.getInstance();
+        BufferBuilder buffer = tesselator.getBuffer();
+
+        buffer.begin(7, VertexFormats.POSITION_COLOR);
+        buffer.vertex(width, y, 0.0).color(red1, green1, blue1, alpha1).next();
+        buffer.vertex(x, y, 0.0).color(red1, green1, blue1, alpha1).next();
+        buffer.vertex(x, height, 0.0).color(red2, green2, blue2, alpha2).next();
+        buffer.vertex(width, height, 0.0).color(red2, green2, blue2, alpha2).next();
+        tesselator.draw();
+
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
-    public static void method11429(float var0, float var1, float var2, float var3, int var4, int var5) {
-        drawRoundedRect(var0, var3 - (float) var4, var2 - (float) var4, var3, var5);
-        drawRoundedRect(var0, var1, var2 - (float) var4, var1 + (float) var4, var5);
-        drawRoundedRect(var0, var1 + (float) var4, var0 + (float) var4, var3 - (float) var4, var5);
-        drawRoundedRect(var2 - (float) var4, var1, var2, var3, var5);
+    public static void drawRoundedRect2(float x, float y, float width, float height, int radius, int color) {
+        drawRoundedRect(x, height - (float) radius, width - (float) radius, height, color);
+        drawRoundedRect(x, y, width - (float) radius, y + (float) radius, color);
+        drawRoundedRect(x, y + (float) radius, x + (float) radius, height - (float) radius, color);
+        drawRoundedRect(width - (float) radius, y, width, height, color);
     }
 
-    public static void method11428(float var0, float var1, float var2, float var3, int var4) {
-        method11429(var0, var1, var2, var3, 1, var4);
+    public static void drawRoundedRect3(float x, float y, float width, float height, int color) {
+        drawRoundedRect2(x, y, width, height, 1, color);
     }
 
-    public static void method11434(float var0, float var1, float var2, float var3, float var4, float var5, int var6) {
+    public static void drawTriangle(float left, float top, float right, float bottom, float tipX, float tipY, int color) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-        float var9 = (float) (var6 >> 24 & 0xFF) / 255.0F;
-        float var10 = (float) (var6 >> 16 & 0xFF) / 255.0F;
-        float var11 = (float) (var6 >> 8 & 0xFF) / 255.0F;
-        float var12 = (float) (var6 & 0xFF) / 255.0F;
+
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-        RenderSystem.color4f(var10, var11, var12, var9);
+        RenderSystem.color4f(red, green, blue, alpha);
         GL11.glBegin(6);
-        GL11.glVertex2f(var0, var1);
-        GL11.glVertex2f(var4, var5);
-        GL11.glVertex2f(var2, var3);
-        GL11.glVertex2f(var0, var1);
+        GL11.glVertex2f(left, top);
+        GL11.glVertex2f(tipX, tipY);
+        GL11.glVertex2f(right, bottom);
+        GL11.glVertex2f(left, top);
         GL11.glEnd();
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();

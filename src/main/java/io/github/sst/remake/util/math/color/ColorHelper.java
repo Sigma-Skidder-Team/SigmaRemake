@@ -10,7 +10,7 @@ public class ColorHelper {
     /**
      * A default instance of ColorHelper with a specific color value.
      */
-    public static final ColorHelper field27961 = new ColorHelper(-12871171);
+    public static final ColorHelper DEFAULT_COLOR = new ColorHelper(-12871171);
     /**
      * The primary color component.
      */

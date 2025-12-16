@@ -3,10 +3,11 @@ package io.github.sst.remake.util.client;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.impl.JelloOptions;
-import io.github.sst.remake.gui.screen.KeybindsScreen;
+import io.github.sst.remake.gui.screen.holder.KeybindsHolder;
 import io.github.sst.remake.gui.impl.JelloMenu;
 import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.gui.screen.OptionsScreen;
+import io.github.sst.remake.gui.screen.holder.OptionsHolder;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -21,13 +22,13 @@ public class ScreenUtils implements IMinecraft {
     public static final Map<Class<? extends net.minecraft.client.gui.screen.Screen>, String> screenToScreenName = new HashMap<>();
 
     static {
-        // Minecraft Screen -> Sigma Screen
+        // Minecraft Screen (Holder) -> Sigma Screen
         replacementScreens.put(TitleScreen.class, JelloMenu.class);
-        replacementScreens.put(OptionsScreen.class, JelloOptions.class);
-        replacementScreens.put(KeybindsScreen.class, JelloKeyboard.class);
+        replacementScreens.put(KeybindsHolder.class, JelloKeyboard.class);
+        replacementScreens.put(OptionsHolder.class, JelloOptions.class);
 
-        // Minecraft Screen -> Screen Name
-        screenToScreenName.put(KeybindsScreen.class, "Jello Keyboard");
+        // Sigma Screen -> Screen Name
+        screenToScreenName.put(KeybindsHolder.class, "Jello Keyboard");
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
