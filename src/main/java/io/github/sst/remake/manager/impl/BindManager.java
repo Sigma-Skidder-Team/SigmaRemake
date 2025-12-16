@@ -78,6 +78,7 @@ public class BindManager extends Manager implements IMinecraft {
                 }
             }
         } else if (action == 1 || action == 2) {
+            press(key);
             KeyPressEvent keyPress = new KeyPressEvent(key, action == 2, null);
             keyPress.call();
 
@@ -101,7 +102,7 @@ public class BindManager extends Manager implements IMinecraft {
                         case SCREEN:
                             try {
                                 Screen sigmaScreen = bind.getScreenTarget()
-                                        .getDeclaredConstructor(BaseText.class)
+                                        .getDeclaredConstructor(Text.class)
                                         .newInstance(new LiteralText((ScreenUtils.screenToScreenName.get(bind.getScreenTarget()))));
                                 if (ScreenUtils.hasReplacement(sigmaScreen)) {
                                     client.openScreen(sigmaScreen);
