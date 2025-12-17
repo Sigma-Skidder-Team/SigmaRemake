@@ -27,7 +27,7 @@ public class OptionPage extends CustomGuiScreen {
         this.addToList(openGui = new TextButton(this, "openGui", width / 2, height - 80, 300, 38, color, "Open Jello's Click GUI", ResourceRegistry.JelloLightFont24));
         TextButton credits;
         this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", ResourceRegistry.JelloLightFont18));
-        openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder(new LiteralText("Jello Keyboard"))));
+        openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder(new LiteralText("Keybind Manager"))));
         //openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
         credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new LiteralText("Jello Credits"))));
         Checkbox blurCheckbox;
