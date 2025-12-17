@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.sst.remake.util.client.SkinUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import net.minecraft.client.util.Session;
 import org.newdawn.slick.opengl.Texture;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -82,5 +83,9 @@ public class Account {
         }
 
         return null;
+    }
+
+    public Session toSession() {
+        return new Session(this.name, this.uuid, this.token, Session.AccountType.LEGACY.name());
     }
 }

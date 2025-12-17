@@ -8,6 +8,7 @@ import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.io.FileUtils;
 import io.github.sst.remake.util.io.audio.SoundUtils;
+import net.minecraft.client.MinecraftClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +35,10 @@ public class AccountManager extends Manager {
     }
 
     public boolean login(Account account) {
-        account.updateUsedCount();
-
         this.currentAccount = account;
+        this.currentAccount.updateUsedCount();
+        MinecraftClient.getInstance().session = this.currentAccount.toSession();
+
         return true;
     }
 
