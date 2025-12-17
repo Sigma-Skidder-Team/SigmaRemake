@@ -28,6 +28,8 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 
 import io.github.sst.remake.gui.element.impl.Button;
+import net.minecraft.client.util.Session;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -227,16 +229,19 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
     public void loginToAccount(AccountUI account) {
         account.setLoadingIndicator(true);
+
         new Thread(() -> {
             if (!Client.INSTANCE.accountManager.login(account.selectedAccount)) {
                 account.setErrorState(114);
                 SoundUtils.play("error");
-            } else {
-                this.method13368();
-                account.setAccountListRefreshing(true);
-                SoundUtils.play("connect");
-                this.updateAccountList(false);
+                account.setLoadingIndicator(false);
+                return;
             }
+
+            this.method13368();
+            account.setAccountListRefreshing(true);
+            SoundUtils.play("connect");
+            this.updateAccountList(false);
             account.setLoadingIndicator(false);
         }).start();
     }
