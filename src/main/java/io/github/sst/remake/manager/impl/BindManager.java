@@ -14,7 +14,6 @@ import io.github.sst.remake.util.client.ScreenUtils;
 import io.github.sst.remake.util.client.bind.Bind;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -32,6 +31,11 @@ public class BindManager extends Manager implements IMinecraft {
 
         // Return cached result if present
         return bindCache.computeIfAbsent(key, this::buildBindsForKey);
+    }
+
+    public int getKeybindFor(Class<? extends Screen> screen) {
+        Integer key = BindUtils.SCREEN_BINDINGS.get(screen);
+        return key != null ? key : -1;
     }
 
     @Subscribe

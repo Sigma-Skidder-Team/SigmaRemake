@@ -18,6 +18,8 @@ public class ConfigManager extends Manager implements IMinecraft {
     public boolean guiBlur = false;
     public boolean hqBlur = false;
 
+    public String profile = "Default";
+
     @Override
     public void init() {
         try {

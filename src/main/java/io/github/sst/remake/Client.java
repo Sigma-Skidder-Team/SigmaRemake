@@ -22,6 +22,7 @@ public class Client implements IMinecraft {
     public final ModuleManager moduleManager = new ModuleManager();
     public final BindManager bindManager = new BindManager();
     public final AccountManager accountManager = new AccountManager();
+    public final NotificationManager notificationManager = new NotificationManager();
 
     public boolean loaded = false;
 
@@ -36,6 +37,7 @@ public class Client implements IMinecraft {
         bindManager.init();
         moduleManager.init();
         accountManager.init();
+        notificationManager.init();
 
         LOGGER.info("Initialized.");
     }
@@ -50,6 +52,7 @@ public class Client implements IMinecraft {
         configManager.shutdown();
         screenManager.shutdown();
         hudManager.shutdown();
+        notificationManager.shutdown();
         textureManager.shutdown();
 
         LOGGER.info("Done.");
