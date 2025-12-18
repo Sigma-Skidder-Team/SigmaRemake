@@ -59,7 +59,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
     }
 
     public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, String placeholder) {
-        super(var1, var2, var3, var4, var5, var6, var7, var8, FontUtils.JelloLightFont25, false);
+        super(var1, var2, var3, var4, var5, var6, var7, var8, FontUtils.HELVETICA_LIGHT_25, false);
         this.placeholder = placeholder;
         this.timer.start();
     }

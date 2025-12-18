@@ -86,7 +86,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text) {
-        this(parent, name, x, y, width, height, textColor, text, FontUtils.JelloLightFont25);
+        this(parent, name, x, y, width, height, textColor, text, FontUtils.HELVETICA_LIGHT_25);
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text, TrueTypeFont font) {

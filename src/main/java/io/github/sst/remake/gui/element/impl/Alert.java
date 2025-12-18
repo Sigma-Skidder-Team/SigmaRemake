@@ -80,7 +80,7 @@ public class Alert extends Element {
                                                             ClientColors.DEEP_TEAL.getColor()
                                                     ),
                                                     component.text,
-                                                    FontUtils.JelloLightFont36
+                                                    FontUtils.HELVETICA_LIGHT_36
                                             )
                                     );
                         }
@@ -122,7 +122,7 @@ public class Alert extends Element {
                                                 ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor()
                                         ),
                                         component.text,
-                                        FontUtils.JelloLightFont20
+                                        FontUtils.HELVETICA_LIGHT_20
                                 )
                         );
             }

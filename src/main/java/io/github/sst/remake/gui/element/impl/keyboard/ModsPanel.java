@@ -215,7 +215,7 @@ public class ModsPanel extends Element {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
         RenderUtils.drawString(
-                FontUtils.JelloLightFont36,
+                FontUtils.HELVETICA_LIGHT_36,
                 (float) (30 + this.field21304),
                 (float) (30 + this.field21303),
                 "Select mod to bind",

@@ -22,11 +22,11 @@ public class OptionPage extends CustomGuiScreen {
         ColorHelper color = ColorHelper.DEFAULT_COLOR.clone();
         color.setPrimaryColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
         TextButton openKeybinds;
-        this.addToList(openKeybinds = new TextButton(this, "openKeybinds", width / 2 - 300, height - 80, 300, 38, color, "Open Keybind Manager", FontUtils.JelloLightFont24));
+        this.addToList(openKeybinds = new TextButton(this, "openKeybinds", width / 2 - 300, height - 80, 300, 38, color, "Open Keybind Manager", FontUtils.HELVETICA_LIGHT_24));
         TextButton openGui;
-        this.addToList(openGui = new TextButton(this, "openGui", width / 2, height - 80, 300, 38, color, "Open Jello's Click GUI", FontUtils.JelloLightFont24));
+        this.addToList(openGui = new TextButton(this, "openGui", width / 2, height - 80, 300, 38, color, "Open Jello's Click GUI", FontUtils.HELVETICA_LIGHT_24));
         TextButton credits;
-        this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", FontUtils.JelloLightFont18));
+        this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", FontUtils.HELVETICA_LIGHT_18));
         openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder(new LiteralText("Keybind Manager"))));
         //openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
         credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new LiteralText("Jello Credits"))));
@@ -45,13 +45,13 @@ public class OptionPage extends CustomGuiScreen {
         float x = this.x + (this.getWidth() - 202) / 2f;
         float y = this.y + 10;
 
-        RenderUtils.drawString(FontUtils.JelloMediumFont40, x, y + 1, "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
-        RenderUtils.drawString(FontUtils.JelloLightFont25, x + 95, y + 14, "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.86F * partialTicks));
+        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, x, y + 1, "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, x + 95, y + 14, "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.86F * partialTicks));
 
         String versionInfo = "You're currently using Sigma " + Client.VERSION;
         RenderUtils.drawString(
-                FontUtils.JelloLightFont20,
-                (float) (this.getX() + (this.getWidth() - FontUtils.JelloLightFont20.getWidth(versionInfo)) / 2),
+                FontUtils.HELVETICA_LIGHT_20,
+                (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(versionInfo)) / 2),
                 (float) (this.getY() + 70),
                 versionInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
@@ -59,8 +59,8 @@ public class OptionPage extends CustomGuiScreen {
 
         String clickGuiInfo = "Click GUI is currently bound to: " + BindUtils.getKeyName(Keys.RIGHT_SHIFT.keycode) + " Key";
         RenderUtils.drawString(
-                FontUtils.JelloLightFont20,
-                (float) (this.getX() + (this.getWidth() - FontUtils.JelloLightFont20.getWidth(clickGuiInfo)) / 2),
+                FontUtils.HELVETICA_LIGHT_20,
+                (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(clickGuiInfo)) / 2),
                 (float) (this.getY() + this.getHeight() - 180),
                 clickGuiInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F * partialTicks)
@@ -68,8 +68,8 @@ public class OptionPage extends CustomGuiScreen {
 
         String keybindInfo = "Configure all your keybinds in the keybind manager!";
         RenderUtils.drawString(
-                FontUtils.JelloLightFont14,
-                (float) (this.getX() + (this.getWidth() - FontUtils.JelloLightFont14.getWidth(keybindInfo)) / 2),
+                FontUtils.HELVETICA_LIGHT_14,
+                (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_14.getWidth(keybindInfo)) / 2),
                 (float) (this.getY() + this.getHeight() - 150),
                 keybindInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
@@ -77,8 +77,8 @@ public class OptionPage extends CustomGuiScreen {
 
         String blurInfo = "GUI Blur: ";
         RenderUtils.drawString(
-                FontUtils.JelloLightFont20,
-                (float) (this.getX() + (this.getWidth() - FontUtils.JelloLightFont20.getWidth(blurInfo)) / 2 - 114),
+                FontUtils.HELVETICA_LIGHT_20,
+                (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(blurInfo)) / 2 - 114),
                 (float) (this.getY() + this.getHeight() - 221),
                 blurInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)
@@ -86,8 +86,8 @@ public class OptionPage extends CustomGuiScreen {
 
         String gpuInfo = "GPU Accelerated: ";
         RenderUtils.drawString(
-                FontUtils.JelloLightFont20,
-                (float) (this.getX() + (this.getWidth() - FontUtils.JelloLightFont20.getWidth(gpuInfo)) / 2 + 52),
+                FontUtils.HELVETICA_LIGHT_20,
+                (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(gpuInfo)) / 2 + 52),
                 (float) (this.getY() + this.getHeight() - 221),
                 gpuInfo,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)

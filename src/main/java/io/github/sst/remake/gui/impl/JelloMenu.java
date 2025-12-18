@@ -251,7 +251,7 @@ public class JelloMenu extends Screen implements IMinecraft {
 
             if (this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 RenderUtils.drawString(
-                        FontUtils.JelloMediumFont50,
+                        FontUtils.HELVETICA_MEDIUM_50,
                         (float) (this.width / 2),
                         (float) (this.height / 2 - 30),
                         currentTitle,
@@ -260,7 +260,7 @@ public class JelloMenu extends Screen implements IMinecraft {
                         FontAlignment.CENTER
                 );
                 RenderUtils.drawString(
-                        FontUtils.JelloLightFont18,
+                        FontUtils.HELVETICA_LIGHT_18,
                         (float) (this.width / 2),
                         (float) (this.height / 2 + 30),
                         "\"" + currentMessage + "\"",

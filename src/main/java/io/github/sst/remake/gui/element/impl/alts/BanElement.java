@@ -170,7 +170,7 @@ public class BanElement extends AnimatedIconPanel {
         GL11.glScaled(1.0 - 0.1 * (double) var11, 1.0 - 0.1 * (double) var11, 0.0);
         GL11.glTranslatef((float) (-this.getX() - 76), (float) (-this.getY() - 44), 0.0F);
         RenderUtils.drawString(
-                FontUtils.JelloMediumFont25,
+                FontUtils.HELVETICA_MEDIUM_25,
                 (float) (this.x + 94),
                 (float) (this.y + 16),
                 !this.info.name.equals("Minecraft Server")
@@ -183,7 +183,7 @@ public class BanElement extends AnimatedIconPanel {
         if (this.ban.date.getTime() != 9223372036854775806L) {
             if (var3 > 0L && this.ban.date.getTime() != Long.MAX_VALUE) {
                 RenderUtils.drawString(
-                        FontUtils.JelloLightFont18,
+                        FontUtils.HELVETICA_LIGHT_18,
                         (float) (this.x + var12),
                         (float) (this.y + var13),
                         "Unban: " + var8 + " days, " + var7 + "h " + var6 + "m " + var5 + "s",
@@ -191,7 +191,7 @@ public class BanElement extends AnimatedIconPanel {
                 );
             } else if (this.ban.date.getTime() != Long.MAX_VALUE) {
                 RenderUtils.drawString(
-                        FontUtils.JelloLightFont18,
+                        FontUtils.HELVETICA_LIGHT_18,
                         (float) (this.x + var12),
                         (float) (this.y + var13),
                         "Unbanned!",
@@ -199,7 +199,7 @@ public class BanElement extends AnimatedIconPanel {
                 );
             } else {
                 RenderUtils.drawString(
-                        FontUtils.JelloLightFont18,
+                        FontUtils.HELVETICA_LIGHT_18,
                         (float) (this.x + var12),
                         (float) (this.y + var13),
                         "Permanently banned!",
@@ -208,7 +208,7 @@ public class BanElement extends AnimatedIconPanel {
             }
         } else {
             RenderUtils.drawString(
-                    FontUtils.JelloLightFont18,
+                    FontUtils.HELVETICA_LIGHT_18,
                     (float) (this.x + var12),
                     (float) (this.y + var13),
                     "Compromised ban (unbannable)!",

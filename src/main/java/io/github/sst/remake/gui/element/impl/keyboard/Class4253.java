@@ -62,14 +62,14 @@ public class Class4253 extends Element {
 
         ScissorUtils.startScissor(this.x, this.y, this.x + this.width, this.y + this.height, true);
         RenderUtils.drawString(
-                FontUtils.RegularFont20,
+                FontUtils.REGULAR_20,
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F - 17.5F,
                 this.field20624.method21596(),
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F * partialTicks)
         );
         RenderUtils.drawString(
-                FontUtils.JelloLightFont12,
+                FontUtils.HELVETICA_LIGHT_12,
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F + 7.5F,
                 this.field20624.method21597(),

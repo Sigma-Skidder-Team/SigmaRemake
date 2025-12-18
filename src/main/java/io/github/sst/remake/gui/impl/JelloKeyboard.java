@@ -158,7 +158,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
         );
         super.method13224();
         RenderUtils.drawString(
-                FontUtils.JelloMediumFont40,
+                FontUtils.HELVETICA_MEDIUM_40,
                 (float) ((this.width - 1060) / 2),
                 (float) ((this.height - 357) / 2 - 90),
                 "Keybind Manager",

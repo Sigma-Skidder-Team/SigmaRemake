@@ -74,8 +74,8 @@ public class AccountElement extends AnimatedIconPanel {
         }
 
         RenderUtils.drawString(
-                FontUtils.JelloLightFont36,
-                (float) (this.x + (this.width - FontUtils.JelloLightFont36.getWidth(this.currentAccount.name)) / 2),
+                FontUtils.HELVETICA_LIGHT_36,
+                (float) (this.x + (this.width - FontUtils.HELVETICA_LIGHT_36.getWidth(this.currentAccount.name)) / 2),
                 (float) this.y - 20,
                 this.currentAccount.name,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)

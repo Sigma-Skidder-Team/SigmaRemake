@@ -7,27 +7,29 @@ import java.awt.*;
 import java.io.InputStream;
 
 public class FontUtils {
-    public static final TrueTypeFont JelloLightFont12 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 12.0F);
-    public static final TrueTypeFont JelloLightFont14 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 14.0F);
-    public static final TrueTypeFont JelloLightFont18 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 18.0F);
-    public static final TrueTypeFont JelloLightFont20 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 20.0F);
-    public static final TrueTypeFont JelloLightFont25 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 25.0F);
-    public static final TrueTypeFont JelloLightFont40 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 40.0F);
-    public static final TrueTypeFont JelloLightFont50 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 50.0F);
-    public static final TrueTypeFont JelloLightFont28 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 28.0F);
-    public static final TrueTypeFont JelloLightFont24 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 24.0F);
-    public static final TrueTypeFont JelloLightFont36 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 36.0F);
-    public static final TrueTypeFont JelloMediumFont20 = getAntiAliasedFont("font/helvetica-neue medium.ttf", 20.0F);
-    public static final TrueTypeFont JelloMediumFont25 = getAntiAliasedFont("font/helvetica-neue medium.ttf", 25.0F);
-    public static final TrueTypeFont JelloMediumFont40 = getAntiAliasedFont("font/helvetica-neue medium.ttf", 40.0F);
-    public static final TrueTypeFont JelloMediumFont50 = getAntiAliasedFont("font/helvetica-neue medium.ttf", 50.0F);
-    public static final TrueTypeFont RegularFont20 = getAntiAliasedFont("font/regular.ttf", 20.0F);
-    public static final TrueTypeFont RegularFont40 = getAntiAliasedFont("font/regular.ttf", 40.0F);
-    public static final TrueTypeFont JelloLightFont18_1 = getBasicFont("font/helvetica-neue-light.ttf", 18.0F);
-    public static final TrueTypeFont JelloMediumFont20_1 = getBasicFont("font/helvetica-neue medium.ttf", 20.0F);
-    public static final DefaultClientFont DefaultClientFont = new DefaultClientFont(2);
+    public static final TrueTypeFont REGULAR_20 = loadAntiAliasedFont("font/regular.ttf", 20.0F);
+    public static final TrueTypeFont REGULAR_40 = loadAntiAliasedFont("font/regular.ttf", 40.0F);
 
-    public static TrueTypeFont getBasicFont(String fontPath, float size) {
+    public static final TrueTypeFont HELVETICA_LIGHT_18_BASIC = loadBasicFont("font/helvetica-neue-light.ttf", 18.0F);
+    public static final TrueTypeFont HELVETICA_MEDIUM_20_BASIC = loadBasicFont("font/helvetica-neue medium.ttf", 20.0F);
+
+    public static final TrueTypeFont HELVETICA_LIGHT_12 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 12.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_14 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 14.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_18 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 18.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_20 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 20.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_24 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 24.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_25 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 25.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_28 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 28.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_36 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 36.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_40 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 40.0F);
+    public static final TrueTypeFont HELVETICA_LIGHT_50 = loadAntiAliasedFont("font/helvetica-neue-light.ttf", 50.0F);
+
+    public static final TrueTypeFont HELVETICA_MEDIUM_20 = loadAntiAliasedFont("font/helvetica-neue medium.ttf", 20.0F);
+    public static final TrueTypeFont HELVETICA_MEDIUM_25 = loadAntiAliasedFont("font/helvetica-neue medium.ttf", 25.0F);
+    public static final TrueTypeFont HELVETICA_MEDIUM_40 = loadAntiAliasedFont("font/helvetica-neue medium.ttf", 40.0F);
+    public static final TrueTypeFont HELVETICA_MEDIUM_50 = loadAntiAliasedFont("font/helvetica-neue medium.ttf", 50.0F);
+
+    public static TrueTypeFont loadBasicFont(String fontPath, float size) {
         try {
             InputStream fontFile = Resources.readInputStream(fontPath);
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
@@ -38,7 +40,7 @@ public class FontUtils {
         }
     }
 
-    public static TrueTypeFont getAntiAliasedFont(String fontPath, float size) {
+    public static TrueTypeFont loadAntiAliasedFont(String fontPath, float size) {
         try {
             InputStream fontFile = Resources.readInputStream(fontPath);
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);

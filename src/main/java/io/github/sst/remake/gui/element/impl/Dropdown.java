@@ -58,7 +58,7 @@ public class Dropdown extends Element {
 
     private void addButtons() {
         this.getChildren().clear();
-        this.font = FontUtils.JelloLightFont18;
+        this.font = FontUtils.HELVETICA_LIGHT_18;
         Button dropdownButton;
         this.addToList(dropdownButton = new Button(this, "dropdownButton", 0, 0, this.getHeight(), this.getHeight(), this.textColor));
         dropdownButton.setSize((var1, var2) -> {

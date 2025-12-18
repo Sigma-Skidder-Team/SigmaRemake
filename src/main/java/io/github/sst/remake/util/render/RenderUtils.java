@@ -269,22 +269,22 @@ public class RenderUtils {
 
         boolean noHiDpiFontAvailable = false;
         if ((double) getScaleFactor() == 2.0) {
-            if (font == FontUtils.JelloLightFont20) {
-                font = FontUtils.JelloLightFont40;
-            } else if (font == FontUtils.JelloLightFont25) {
-                font = FontUtils.JelloLightFont50;
-            } else if (font == FontUtils.JelloLightFont12) {
-                font = FontUtils.JelloLightFont24;
-            } else if (font == FontUtils.JelloLightFont14) {
-                font = FontUtils.JelloLightFont28;
-            } else if (font == FontUtils.JelloLightFont18) {
-                font = FontUtils.JelloLightFont36;
-            } else if (font == FontUtils.RegularFont20) {
-                font = FontUtils.RegularFont40;
-            } else if (font == FontUtils.JelloMediumFont20) {
-                font = FontUtils.JelloMediumFont40;
-            } else if (font == FontUtils.JelloMediumFont25) {
-                font = FontUtils.JelloMediumFont50;
+            if (font == FontUtils.HELVETICA_LIGHT_20) {
+                font = FontUtils.HELVETICA_LIGHT_40;
+            } else if (font == FontUtils.HELVETICA_LIGHT_25) {
+                font = FontUtils.HELVETICA_LIGHT_50;
+            } else if (font == FontUtils.HELVETICA_LIGHT_12) {
+                font = FontUtils.HELVETICA_LIGHT_24;
+            } else if (font == FontUtils.HELVETICA_LIGHT_14) {
+                font = FontUtils.HELVETICA_LIGHT_28;
+            } else if (font == FontUtils.HELVETICA_LIGHT_18) {
+                font = FontUtils.HELVETICA_LIGHT_36;
+            } else if (font == FontUtils.REGULAR_20) {
+                font = FontUtils.REGULAR_40;
+            } else if (font == FontUtils.HELVETICA_MEDIUM_20) {
+                font = FontUtils.HELVETICA_MEDIUM_40;
+            } else if (font == FontUtils.HELVETICA_MEDIUM_25) {
+                font = FontUtils.HELVETICA_MEDIUM_50;
             } else {
                 noHiDpiFontAvailable = true;
             }

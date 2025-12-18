@@ -48,11 +48,11 @@ public class PopOver extends Element {
                         "addButton",
                         this.width - 70,
                         this.height - 70,
-                        FontUtils.JelloLightFont25.getWidth("Add"),
+                        FontUtils.HELVETICA_LIGHT_25.getWidth("Add"),
                         70,
                         ColorHelper.DEFAULT_COLOR,
                         "Add",
-                        FontUtils.JelloLightFont25
+                        FontUtils.HELVETICA_LIGHT_25
                 )
         );
         var9.onClick((var1x, var2x) -> this.method13714());
@@ -146,7 +146,7 @@ public class PopOver extends Element {
         );
         GL11.glPopMatrix();
         RenderUtils.drawString(
-                FontUtils.JelloLightFont25,
+                FontUtils.HELVETICA_LIGHT_25,
                 (float) (this.x + 25),
                 (float) (this.y + 20),
                 this.text + " Key",

@@ -25,7 +25,7 @@ public class Change extends CustomGuiScreen {
 
         String var7 = var3.get("title").getAsString();
         JsonArray var8 = var3.getAsJsonArray("changes");
-        this.addToList(new Text(this, "title", 0, height, 0, 0, ColorHelper.DEFAULT_COLOR, var7, FontUtils.JelloMediumFont40));
+        this.addToList(new Text(this, "title", 0, height, 0, 0, ColorHelper.DEFAULT_COLOR, var7, FontUtils.HELVETICA_MEDIUM_40));
         height += 55;
 
         for (int var9 = 0; var9 < var8.size(); var9++) {
@@ -40,7 +40,7 @@ public class Change extends CustomGuiScreen {
                             0,
                             new ColorHelper(0, 0, 0, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)),
                             var10,
-                            FontUtils.JelloLightFont20
+                            FontUtils.HELVETICA_LIGHT_20
                     )
             );
             height += 22;

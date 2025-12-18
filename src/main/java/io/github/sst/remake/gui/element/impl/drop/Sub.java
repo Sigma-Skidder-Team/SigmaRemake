@@ -26,7 +26,7 @@ public class Sub extends Element {
 
     private void method13634() {
         this.getChildren().clear();
-        this.font = FontUtils.JelloLightFont18;
+        this.font = FontUtils.HELVETICA_LIGHT_18;
 
         for (String value : this.values) {
             Button button;

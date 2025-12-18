@@ -107,11 +107,11 @@ public class AccountUI extends AnimatedIconPanel {
 
     public void drawAccountUsername() {
         RenderUtils.drawString(
-                FontUtils.JelloLightFont25, (float) (this.x + 110), (float) (this.y + 18), this.selectedAccount.name, ClientColors.DEEP_TEAL.getColor()
+                FontUtils.HELVETICA_LIGHT_25, (float) (this.x + 110), (float) (this.y + 18), this.selectedAccount.name, ClientColors.DEEP_TEAL.getColor()
         );
 
         RenderUtils.drawString(
-                FontUtils.JelloLightFont14,
+                FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.x + 110),
                 (float) (this.y + 50),
                 "Token: " + "asdddddddddddddddddddddddddddddddddddddddddddd".replaceAll(".", Character.toString('·')),

@@ -38,7 +38,7 @@ public class JelloCredits extends Screen {
                             0,
                             ColorHelper.DEFAULT_COLOR,
                             creditLine,
-                            creditLine.startsWith("*") ? FontUtils.JelloMediumFont20 : FontUtils.JelloLightFont20
+                            creditLine.startsWith("*") ? FontUtils.HELVETICA_MEDIUM_20 : FontUtils.HELVETICA_LIGHT_20
                     )
             );
         }
@@ -53,7 +53,7 @@ public class JelloCredits extends Screen {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), this.animation.calcPercent() * 0.95F)
         );
-        RenderUtils.drawString(FontUtils.JelloMediumFont40, 40.0F, 40.0F, "Credits and third party licensing information", ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, 40.0F, 40.0F, "Credits and third party licensing information", ClientColors.LIGHT_GREYISH_BLUE.getColor());
         super.draw(this.animation.calcPercent());
     }
 

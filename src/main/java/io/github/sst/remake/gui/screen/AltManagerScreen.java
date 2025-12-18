@@ -158,13 +158,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                         TextField.field20741,
                         "",
                         "Search...",
-                        FontUtils.JelloLightFont18
+                        FontUtils.HELVETICA_LIGHT_18
                 )
         );
-        this.searchBox.setFont(FontUtils.JelloLightFont18);
+        this.searchBox.setFont(FontUtils.HELVETICA_LIGHT_18);
         this.searchBox.addChangeListener(var1 -> this.updateAccountList(false));
         TextButton addButton;
-        this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.JelloLightFont25));
+        this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.HELVETICA_LIGHT_25));
         this.alts.method13242();
         addButton.onClick((var1, var2) -> {
             if (this.method13369()) {
@@ -330,8 +330,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         int xPos = this.x + this.titleOffset;
         int yPos = this.y + this.titleOffset;
         int color = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F);
-        RenderUtils.drawString(FontUtils.JelloLightFont40, (float) xPos, (float) yPos, "Jello", color);
-        RenderUtils.drawString(FontUtils.JelloLightFont25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_40, (float) xPos, (float) yPos, "Jello", color);
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
     }
 
     private void method13367() {

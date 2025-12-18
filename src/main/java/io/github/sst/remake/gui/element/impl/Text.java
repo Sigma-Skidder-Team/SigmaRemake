@@ -39,7 +39,7 @@ public class Text extends AnimatedIconPanel {
         if (this.shadow) {
             GL11.glAlphaFunc(518, 0.01F);
             RenderUtils.drawString(
-                    FontUtils.JelloLightFont18_1,
+                    FontUtils.HELVETICA_LIGHT_18_BASIC,
                     (float) this.getX(),
                     (float) this.getY(),
                     this.getText(),
