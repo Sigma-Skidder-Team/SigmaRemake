@@ -169,7 +169,7 @@ public class ConfigManager extends Manager implements IMinecraft {
         JsonArray array = new JsonArray();
 
         for (Module module : Client.INSTANCE.moduleManager.modules) {
-            array.add(module.buildUpModuleData(new JsonObject()));
+            array.add(module.fromJson(new JsonObject()));
         }
 
         obj.add("mods", array);

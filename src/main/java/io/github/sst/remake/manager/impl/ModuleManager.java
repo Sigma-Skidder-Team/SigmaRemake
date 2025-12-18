@@ -11,6 +11,7 @@ import io.github.sst.remake.module.impl.BrainFreezeModule;
 import io.github.sst.remake.module.impl.TestModule;
 import io.github.sst.remake.setting.Setting;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public class ModuleManager extends Manager {
             for (Module module : this.modules) {
                 if (module.getName().equals(moduleName)) {
                     try {
-                        module.initialize(moduleObject);
+                        module.asJson(moduleObject);
                     } catch (JsonParseException e) {
                         Client.LOGGER.warn("Could not initialize mod {} from config", module.getName(), e);
                     }
@@ -114,5 +115,17 @@ public class ModuleManager extends Manager {
         }
 
         return json;
+    }
+
+    public void saveConfig(JsonObject json) {
+        json.addProperty("profile", Client.INSTANCE.configManager.profile.name);
+        Client.INSTANCE.configManager.profile.moduleConfig = load(new JsonObject());
+
+        try {
+            Client.INSTANCE.configManager.saveAndReplaceConfigs();
+            Client.INSTANCE.bindManager.getKeybindsJSONObject(json);
+        } catch (IOException e) {
+            Client.LOGGER.warn("Was unable to save mod profiles", e);
+        }
     }
 }

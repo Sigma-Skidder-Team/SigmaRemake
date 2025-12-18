@@ -56,7 +56,7 @@ public abstract class Module implements IMinecraft {
         }
     }
 
-    public JsonObject initialize(JsonObject config) throws JsonParseException {
+    public JsonObject asJson(JsonObject config) throws JsonParseException {
         JsonArray options = config.getAsJsonArray("options");
 
         this.enabled = config.get("enabled").getAsBoolean();
@@ -86,7 +86,7 @@ public abstract class Module implements IMinecraft {
         return config;
     }
 
-    public JsonObject buildUpModuleData(JsonObject obj) {
+    public JsonObject fromJson(JsonObject obj) {
         try {
             obj.addProperty("name", this.getName());
             obj.addProperty("enabled", this.enabled);

@@ -44,6 +44,11 @@ public class ConfigScreen extends Element {
 
     public void method13610() {
         Profile profile = Client.INSTANCE.configManager.profile;
+
+        if (profile == null) {
+            return;
+        }
+
         int var5 = 1;
 
         while (Client.INSTANCE.configManager.getByName(profile.name + " Copy " + var5)) {
