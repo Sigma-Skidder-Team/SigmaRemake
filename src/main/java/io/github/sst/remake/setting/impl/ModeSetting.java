@@ -17,7 +17,7 @@ public class ModeSetting extends Setting<String> {
     }
 
     public ModeSetting(String name, String description, int value, String... modes) {
-        this(name, description, modes[value]);
+        this(name, description, modes[value], modes);
     }
 
     public int getModeIndex() {
