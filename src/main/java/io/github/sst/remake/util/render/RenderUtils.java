@@ -8,13 +8,18 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureImpl;
 
 public class RenderUtils {
 
@@ -451,9 +456,9 @@ public class RenderUtils {
         height = (float) Math.round(height);
 
         float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
-        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
-        float blue  = (float) (color & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
@@ -830,6 +835,104 @@ public class RenderUtils {
         drawImage(x + width - shadowSize, y, shadowSize, height, Resources.shadowLeftPNG, shadowColor, false);
         drawImage(x, y, width, shadowSize, Resources.shadowBottomPNG, shadowColor, false);
         drawImage(x, y + height - shadowSize, width, shadowSize, Resources.shadowTopPNG, shadowColor, false);
+    }
+
+    public static void renderItemStack(ItemStack stack, int x, int y, int width, int height) {
+        if (stack != null) {
+            MinecraftClient.getInstance().getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
+
+            GL11.glPushMatrix();
+            GL11.glTranslatef((float) x, (float) y, 0.0F);
+            GL11.glScalef((float) width / 16.0F, (float) height / 16.0F, 0.0F);
+
+            ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+            if (stack.getCount() == 0) {
+                stack = new ItemStack(stack.getItem());
+            }
+
+            RenderHelper.setupGuiFlatDiffuseLighting();
+            GL11.glLightModelfv(2899, new float[]{0.4F, 0.4F, 0.4F, 1.0F});
+
+            RenderSystem.enableColorMaterial();
+            RenderSystem.disableLighting();
+            RenderSystem.enableBlend();
+
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glDepthFunc(519);
+
+            itemRenderer.renderInGui(stack, 0, 0);
+
+            GL11.glDepthFunc(515);
+            RenderSystem.popMatrix();
+
+            GL11.glAlphaFunc(519, 0.0F);
+            RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+            RenderSystem.disableDepthTest();
+            TextureImpl.unbind();
+
+            MinecraftClient.getInstance().getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
+            RenderHelper.setupGui3DDiffuseLighting();
+        }
+    }
+
+    public static void drawColoredQuad(int x1, int y1, int x2, int y2, int topLeftColor, int topRightColor, int bottomRightColor, int bottomLeftColor) {
+        float a1 = (float) (topLeftColor >> 24 & 0xFF) / 255.0F;
+        float r1 = (float) (topLeftColor >> 16 & 0xFF) / 255.0F;
+        float g1 = (float) (topLeftColor >> 8 & 0xFF) / 255.0F;
+        float b1 = (float) (topLeftColor & 0xFF) / 255.0F;
+
+        float a2 = (float) (topRightColor >> 24 & 0xFF) / 255.0F;
+        float r2 = (float) (topRightColor >> 16 & 0xFF) / 255.0F;
+        float g2 = (float) (topRightColor >> 8 & 0xFF) / 255.0F;
+        float b2 = (float) (topRightColor & 0xFF) / 255.0F;
+
+        float a3 = (float) (bottomRightColor >> 24 & 0xFF) / 255.0F;
+        float r3 = (float) (bottomRightColor >> 16 & 0xFF) / 255.0F;
+        float g3 = (float) (bottomRightColor >> 8 & 0xFF) / 255.0F;
+        float b3 = (float) (bottomRightColor & 0xFF) / 255.0F;
+
+        float a4 = (float) (bottomLeftColor >> 24 & 0xFF) / 255.0F;
+        float r4 = (float) (bottomLeftColor >> 16 & 0xFF) / 255.0F;
+        float g4 = (float) (bottomLeftColor >> 8 & 0xFF) / 255.0F;
+        float b4 = (float) (bottomLeftColor & 0xFF) / 255.0F;
+
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.SRC_ALPHA,
+                GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SrcFactor.ONE,
+                GlStateManager.DstFactor.ZERO
+        );
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, VertexFormats.POSITION_COLOR);
+
+        buffer.vertex(x2, y1, 0.0).color(r2, g2, b2, a2).next();
+        buffer.vertex(x1, y1, 0.0).color(r1, g1, b1, a1).next();
+        buffer.vertex(x1, y2, 0.0).color(r4, g4, b4, a4).next();
+        buffer.vertex(x2, y2, 0.0).color(r3, g3, b3, a3).next();
+
+        tessellator.draw();
+
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
+    }
+
+    public static void drawVerticalDivider(float x, float yStart, float xEnd, float yEnd, int color) {
+        drawVerticalDivider(x, yStart, xEnd, yEnd, 1, color);
+    }
+
+    public static void drawVerticalDivider(float x, float yStart, float xEnd, float yEnd, int thickness, int color) {
+        drawRoundedRect(x, yEnd - (float) thickness, xEnd - (float) thickness, yEnd, color);
+        drawRoundedRect(x, yStart, xEnd - (float) thickness, yStart + (float) thickness, color);
+        drawRoundedRect(x, yStart + (float) thickness, x + (float) thickness, yEnd - (float) thickness, color);
+        drawRoundedRect(xEnd - (float) thickness, yStart, xEnd, yEnd, color);
     }
 
 }

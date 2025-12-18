@@ -23,3 +23,5 @@ accessible field net/minecraft/world/dimension/DimensionType OVERWORLD Lnet/mine
 
 mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
 accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
+
+accessible field net/minecraft/client/MinecraftClient currentFps I

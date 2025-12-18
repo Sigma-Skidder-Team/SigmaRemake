@@ -266,6 +266,17 @@ public class ColorHelper {
         return (int) shiftedA << 24 | ((int) shiftedR & 0xFF) << 16 | ((int) shiftedG & 0xFF) << 8 | (int) shiftedB & 0xFF;
     }
 
+    public static int adjustColorTowardsWhite(int original, float shift) {
+        int a = original >> 24 & 0xFF;
+        int r = original >> 16 & 0xFF;
+        int g = original >> 8 & 0xFF;
+        int b = original & 0xFF;
+        int var8 = (int) ((float) r + (float) (255 - r) * shift);
+        int var9 = (int) ((float) g + (float) (255 - g) * shift);
+        int var10 = (int) ((float) b + (float) (255 - b) * shift);
+        return a << 24 | (var8 & 0xFF) << 16 | (var9 & 0xFF) << 8 | var10 & 0xFF;
+    }
+
     public static int applyAlpha(int color, float alpha) {
         return (int) (alpha * 255.0F) << 24 | color & 16777215;
     }
