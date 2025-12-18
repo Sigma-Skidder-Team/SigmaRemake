@@ -211,8 +211,7 @@ public class ImageUtils {
 
         return result;
     }
-
-
+    
     private static float clamp(float value) {
         return Math.max(0.0f, Math.min(1.0f, value));
     }

@@ -9,31 +9,31 @@ import org.newdawn.slick.Color;
 import org.lwjgl.opengl.GL11;
 
 public class DefaultClientFont extends TrueTypeFont implements IMinecraft {
-    public final int field31945;
+    public final int size;
 
-    public DefaultClientFont(int var1) {
-        super(new Font("Arial", Font.PLAIN, var1), false);
-        this.field31945 = var1;
+    public DefaultClientFont(int size) {
+        super(new Font("Arial", Font.PLAIN, size), false);
+        this.size = size;
     }
 
     @Override
-    public int getWidth(String var1) {
-        return client.textRenderer.getWidth(var1) * this.field31945;
+    public int getWidth(String input) {
+        return client.textRenderer.getWidth(input) * this.size;
     }
 
     @Override
     public int getHeight() {
-        return 9 * this.field31945;
+        return 9 * this.size;
     }
 
     @Override
-    public int getHeight(String var1) {
-        return 9 * this.field31945;
+    public int getHeight(String input) {
+        return 9 * this.size;
     }
 
     @Override
     public int getLineHeight() {
-        return 9 * this.field31945;
+        return 9 * this.size;
     }
 
     @Override
@@ -44,8 +44,8 @@ public class DefaultClientFont extends TrueTypeFont implements IMinecraft {
     @Override
     public void drawString(float x, float y, String string, Color color, int startIndex, int endIndex) {
         GL11.glPushMatrix();
-        GL11.glScalef((float) this.field31945, (float) this.field31945, 0.0F);
-        GL11.glTranslatef(-x / (float) this.field31945, -y / (float) this.field31945 + 1.0F, 0.0F);
+        GL11.glScalef((float) this.size, (float) this.size, 0.0F);
+        GL11.glTranslatef(-x / (float) this.size, -y / (float) this.size + 1.0F, 0.0F);
         client
                 .textRenderer
                 .draw(

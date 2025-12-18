@@ -84,17 +84,17 @@ public class Resources {
     public static Texture redditPNG = loadTexture("loading/reddit.png");
     public static Texture panoramaPNG = createBlurredDarkenedTexture("background/panorama5.png", 0.25F, 30);
 
-    public static TrueTypeFont regular28 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 28.0F);
-    public static TrueTypeFont regular25 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 25.0F);
-    public static TrueTypeFont regular20 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 20.0F);
-    public static TrueTypeFont regular17 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 17.0F);
-    public static TrueTypeFont regular15 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 15.0F);
-    public static TrueTypeFont regular12 = ResourceRegistry.getFont("font/SF-UI-Display-Regular.ttf", 0, 12.0F);
-    public static TrueTypeFont bold22 = ResourceRegistry.getFont("font/SF-UI-Display-Bold.ttf", 0, 22.0F);
-    public static TrueTypeFont bold18 = ResourceRegistry.getFont("font/SF-UI-Display-Bold.ttf", 0, 18.0F);
-    public static TrueTypeFont bold16 = ResourceRegistry.getFont("font/SF-UI-Display-Bold.ttf", 0, 16.0F);
-    public static TrueTypeFont bold14 = ResourceRegistry.getFont("font/SF-UI-Display-Bold.ttf", 0, 14.0F);
-    public static TrueTypeFont medium17 = ResourceRegistry.getFont("font/SF-UI-Display-Medium.ttf", 0, 17.0F);
+    public static TrueTypeFont regular28 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 28.0F);
+    public static TrueTypeFont regular25 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 25.0F);
+    public static TrueTypeFont regular20 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 20.0F);
+    public static TrueTypeFont regular17 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 17.0F);
+    public static TrueTypeFont regular15 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 15.0F);
+    public static TrueTypeFont regular12 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 12.0F);
+    public static TrueTypeFont bold22 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 22.0F);
+    public static TrueTypeFont bold18 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 18.0F);
+    public static TrueTypeFont bold16 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 16.0F);
+    public static TrueTypeFont bold14 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 14.0F);
+    public static TrueTypeFont medium17 = ResourceRegistry.getAntiAliasedFont("font/SF-UI-Display-Medium.ttf", 0, 17.0F);
 
     public static Texture loadTexture(String filePath) {
         try {
