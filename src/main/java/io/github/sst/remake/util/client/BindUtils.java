@@ -1,5 +1,6 @@
 package io.github.sst.remake.util.client;
 
+import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
 import io.github.sst.remake.gui.screen.holder.SpotlightHolder;
 import io.github.sst.remake.util.client.bind.Keys;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,6 +15,7 @@ public class BindUtils {
 
     static {
         SCREEN_BINDINGS.put(SpotlightHolder.class, Keys.RIGHT_CONTROL.keycode);
+        SCREEN_BINDINGS.put(ClickGuiHolder.class, Keys.RIGHT_SHIFT.keycode);
     }
 
     public static String getKeyName(int keycode) {
