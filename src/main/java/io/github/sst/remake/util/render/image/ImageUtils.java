@@ -19,6 +19,10 @@ public class ImageUtils {
         return Client.INSTANCE.screenManager.scaleFactor;
     }
 
+    private static float clamp(float value) {
+        return Math.max(0.0f, Math.min(1.0f, value));
+    }
+
     public static BufferedImage applyBlur(BufferedImage image, int blurRadius) {
         if (image == null) {
             return null;
@@ -210,10 +214,6 @@ public class ImageUtils {
         }
 
         return result;
-    }
-    
-    private static float clamp(float value) {
-        return Math.max(0.0f, Math.min(1.0f, value));
     }
 
 }

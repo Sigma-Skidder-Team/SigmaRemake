@@ -5,10 +5,15 @@ import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.client.ScreenUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.screen.Screen;
 
+@SuppressWarnings("unchecked")
 public class Bind {
+    @Setter
     private int key = -1;
+    @Getter
     private Object target;
 
     public Bind(JsonObject json) {
@@ -74,20 +79,8 @@ public class Bind {
         return this.target != null;
     }
 
-    public int getKeybind() {
-        return this.key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
-
     public KeybindTypes getType() {
         return !(this.target instanceof Module) ? KeybindTypes.SCREEN : KeybindTypes.MODULE;
-    }
-
-    public Object getTarget() {
-        return this.target;
     }
 
     public Class<? extends Screen> getScreenTarget() {
@@ -96,5 +89,10 @@ public class Bind {
 
     public Module getModuleTarget() {
         return (Module) this.target;
+    }
+
+    public enum KeybindTypes {
+       MODULE,
+       SCREEN
     }
 }

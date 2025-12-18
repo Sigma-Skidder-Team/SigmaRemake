@@ -1,7 +1,6 @@
-package io.github.sst.remake.util.client;
+package io.github.sst.remake.util.http;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.http.NetUtils;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 

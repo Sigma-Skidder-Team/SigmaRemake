@@ -1,7 +1,6 @@
 package io.github.sst.remake.setting;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.client.SettingChangeListener;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.function.BooleanSupplier;
 
 @Getter
 public class Setting<T> {
-    private final List<SettingChangeListener<T>> listeners = new ArrayList<>();
+    private final List<ChangeListener<T>> listeners = new ArrayList<>();
     private BooleanSupplier hidden = () -> false;
 
     public final String name, description;
@@ -28,7 +27,7 @@ public class Setting<T> {
         T oldValue = this.value;
         this.value = value;
 
-        for (SettingChangeListener<T> listener : listeners) {
+        for (ChangeListener<T> listener : listeners) {
             listener.onSettingChanged(this, oldValue, value);
         }
     }
@@ -43,11 +42,11 @@ public class Setting<T> {
         return hidden.getAsBoolean();
     }
 
-    public void addListener(SettingChangeListener<T> listener) {
+    public void addListener(ChangeListener<T> listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(SettingChangeListener<T> listener) {
+    public void removeListener(ChangeListener<T> listener) {
         listeners.remove(listener);
     }
 }

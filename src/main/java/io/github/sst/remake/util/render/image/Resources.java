@@ -1,8 +1,6 @@
 package io.github.sst.remake.util.render.image;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.render.font.FontUtils;
-import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.BufferedImageUtil;
@@ -14,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Resources {
-
+    //TODO: REMAP
     public static Texture multiplayerPNG = loadTexture("jello/icons/multiplayer.png");
     public static Texture optionsPNG = loadTexture("jello/icons/options.png");
     public static Texture singleplayerPNG = loadTexture("jello/icons/singleplayer.png");
@@ -91,7 +89,7 @@ public class Resources {
             return loadTexture(filePath, extension);
         } catch (Exception e) {
             Client.LOGGER.warn("Unable to load texture {}. Please make sure it is a valid path and has a valid extension.", filePath);
-            throw e;
+            throw new IllegalStateException("Texture failed to load: " + filePath, e);
         }
     }
 
