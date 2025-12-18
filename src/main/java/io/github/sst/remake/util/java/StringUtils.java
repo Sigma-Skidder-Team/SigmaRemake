@@ -12,11 +12,11 @@ public class StringUtils {
                 && character != '\u007F'; // DEL
     }
 
-    public static String cut(String var0, String content, int cutStart, int cutEnd) {
-        cutStart = Math.min(Math.max(0, cutStart), var0.length());
-        cutEnd = Math.min(Math.max(0, cutEnd), var0.length());
-        String start = var0.substring(0, Math.min(cutStart, cutEnd));
-        String end = var0.substring(Math.max(cutStart, cutEnd));
+    public static String cut(String input, String content, int cutStart, int cutEnd) {
+        cutStart = Math.min(Math.max(0, cutStart), input.length());
+        cutEnd = Math.min(Math.max(0, cutEnd), input.length());
+        String start = input.substring(0, Math.min(cutStart, cutEnd));
+        String end = input.substring(Math.max(cutStart, cutEnd));
         return start + content + end;
     }
 
@@ -30,48 +30,51 @@ public class StringUtils {
         }
     }
 
-    public static int getStringLen(String text, TrueTypeFont font, float var2, int height, float var4) {
-        int var7 = -1;
-        int width = -1;
+    public static int getFittingCharacterCount(String text, TrueTypeFont font, float leftPadding, int maxWidth, float rightPadding) {
+        int previousWidth = -1;
+        int currentWidth = -1;
 
-        for (int var9 = 0; var9 <= text.length(); var9++) {
-            int var10 = font.getWidth(text.substring(0, Math.max(var9 - 1, 0)));
-            int var11 = font.getWidth(text.substring(0, var9));
-            if ((float) var11 > (float) height - var2 - var4) {
-                var7 = var10;
-                width = var11;
+        for (int charIndex = 0; charIndex <= text.length(); charIndex++) {
+            int widthBefore = font.getWidth(text.substring(0, Math.max(charIndex - 1, 0)));
+            int widthNow = font.getWidth(text.substring(0, charIndex));
+
+            if ((float) widthNow > (float) maxWidth - leftPadding - rightPadding) {
+                previousWidth = widthBefore;
+                currentWidth = widthNow;
                 break;
             }
         }
 
-        if ((float) height - var2 - var4 >= (float) font.getWidth(text)) {
-            width = font.getWidth(text);
+        if ((float) maxWidth - leftPadding - rightPadding >= (float) font.getWidth(text)) {
+            currentWidth = font.getWidth(text);
         }
 
-        int len = !(Math.abs((float) height - var2 - var4 - (float) var7) < Math.abs((float) height - var2 - var4 - (float) width)) ? width : var7;
+        int closestWidth = Math.abs((float) maxWidth - leftPadding - rightPadding - (float) previousWidth)
+                < Math.abs((float) maxWidth - leftPadding - rightPadding - (float) currentWidth)
+                ? previousWidth
+                : currentWidth;
 
+        int fittingCharacters = text.length();
         for (int i = 0; i < text.length(); i++) {
-            if (font.getWidth(text.substring(0, i)) == len) {
-                len = i;
+            if (font.getWidth(text.substring(0, i)) == closestWidth) {
+                fittingCharacters = i;
                 break;
             }
         }
 
-        if (len > text.length()) {
-            len = text.length();
+        if (fittingCharacters > text.length()) {
+            fittingCharacters = text.length();
         }
 
-        return len;
+        return fittingCharacters;
     }
 
-    public static String encodeBase64(String s) {
-        byte[] bytes = Base64.encodeBase64(s.getBytes());
-        return new String(bytes, StandardCharsets.UTF_8);
+    public static String encodeBase64(String input) {
+        return new String(Base64.encodeBase64(input.getBytes()), StandardCharsets.UTF_8);
     }
 
-    public static String decodeBase64(String s) {
-        byte[] bytes = Base64.decodeBase64(s.getBytes());
-        return new String(bytes, StandardCharsets.UTF_8);
+    public static String decodeBase64(String input) {
+        return new String(Base64.decodeBase64(input.getBytes()), StandardCharsets.UTF_8);
     }
 
     public static byte[] parseBase64Binary(String base64String) {
