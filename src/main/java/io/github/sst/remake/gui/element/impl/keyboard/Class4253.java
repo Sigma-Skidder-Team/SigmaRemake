@@ -8,7 +8,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 
 import java.util.Date;
 
@@ -62,14 +62,14 @@ public class Class4253 extends Element {
 
         ScissorUtils.startScissor(this.x, this.y, this.x + this.width, this.y + this.height, true);
         RenderUtils.drawString(
-                ResourceRegistry.RegularFont20,
+                FontUtils.RegularFont20,
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F - 17.5F,
                 this.field20624.method21596(),
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F * partialTicks)
         );
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont12,
+                FontUtils.JelloLightFont12,
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F + 7.5F,
                 this.field20624.method21597(),

@@ -6,7 +6,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -269,22 +269,22 @@ public class RenderUtils {
 
         boolean noHiDpiFontAvailable = false;
         if ((double) getScaleFactor() == 2.0) {
-            if (font == ResourceRegistry.JelloLightFont20) {
-                font = ResourceRegistry.JelloLightFont40;
-            } else if (font == ResourceRegistry.JelloLightFont25) {
-                font = ResourceRegistry.JelloLightFont50;
-            } else if (font == ResourceRegistry.JelloLightFont12) {
-                font = ResourceRegistry.JelloLightFont24;
-            } else if (font == ResourceRegistry.JelloLightFont14) {
-                font = ResourceRegistry.JelloLightFont28;
-            } else if (font == ResourceRegistry.JelloLightFont18) {
-                font = ResourceRegistry.JelloLightFont36;
-            } else if (font == ResourceRegistry.RegularFont20) {
-                font = ResourceRegistry.RegularFont40;
-            } else if (font == ResourceRegistry.JelloMediumFont20) {
-                font = ResourceRegistry.JelloMediumFont40;
-            } else if (font == ResourceRegistry.JelloMediumFont25) {
-                font = ResourceRegistry.JelloMediumFont50;
+            if (font == FontUtils.JelloLightFont20) {
+                font = FontUtils.JelloLightFont40;
+            } else if (font == FontUtils.JelloLightFont25) {
+                font = FontUtils.JelloLightFont50;
+            } else if (font == FontUtils.JelloLightFont12) {
+                font = FontUtils.JelloLightFont24;
+            } else if (font == FontUtils.JelloLightFont14) {
+                font = FontUtils.JelloLightFont28;
+            } else if (font == FontUtils.JelloLightFont18) {
+                font = FontUtils.JelloLightFont36;
+            } else if (font == FontUtils.RegularFont20) {
+                font = FontUtils.RegularFont40;
+            } else if (font == FontUtils.JelloMediumFont20) {
+                font = FontUtils.JelloMediumFont40;
+            } else if (font == FontUtils.JelloMediumFont25) {
+                font = FontUtils.JelloMediumFont50;
             } else {
                 noHiDpiFontAvailable = true;
             }

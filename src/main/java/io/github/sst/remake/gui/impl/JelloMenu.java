@@ -12,7 +12,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.Texture;
 import org.lwjgl.opengl.GL11;
@@ -251,7 +251,7 @@ public class JelloMenu extends Screen implements IMinecraft {
 
             if (this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 RenderUtils.drawString(
-                        ResourceRegistry.JelloMediumFont50,
+                        FontUtils.JelloMediumFont50,
                         (float) (this.width / 2),
                         (float) (this.height / 2 - 30),
                         currentTitle,
@@ -260,7 +260,7 @@ public class JelloMenu extends Screen implements IMinecraft {
                         FontAlignment.CENTER
                 );
                 RenderUtils.drawString(
-                        ResourceRegistry.JelloLightFont18,
+                        FontUtils.JelloLightFont18,
                         (float) (this.width / 2),
                         (float) (this.height / 2 + 30),
                         "\"" + currentMessage + "\"",

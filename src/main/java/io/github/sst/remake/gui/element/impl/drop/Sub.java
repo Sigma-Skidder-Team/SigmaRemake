@@ -7,7 +7,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class Sub extends Element {
 
     private void method13634() {
         this.getChildren().clear();
-        this.font = ResourceRegistry.JelloLightFont18;
+        this.font = FontUtils.JelloLightFont18;
 
         for (String value : this.values) {
             Button button;

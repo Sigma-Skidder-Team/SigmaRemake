@@ -6,7 +6,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -39,7 +39,7 @@ public class Text extends AnimatedIconPanel {
         if (this.shadow) {
             GL11.glAlphaFunc(518, 0.01F);
             RenderUtils.drawString(
-                    ResourceRegistry.JelloLightFont18_1,
+                    FontUtils.JelloLightFont18_1,
                     (float) this.getX(),
                     (float) this.getY(),
                     this.getText(),

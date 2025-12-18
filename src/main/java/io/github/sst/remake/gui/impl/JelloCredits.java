@@ -8,7 +8,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.Base64;
@@ -38,7 +38,7 @@ public class JelloCredits extends Screen {
                             0,
                             ColorHelper.DEFAULT_COLOR,
                             creditLine,
-                            creditLine.startsWith("*") ? ResourceRegistry.JelloMediumFont20 : ResourceRegistry.JelloLightFont20
+                            creditLine.startsWith("*") ? FontUtils.JelloMediumFont20 : FontUtils.JelloLightFont20
                     )
             );
         }
@@ -53,7 +53,7 @@ public class JelloCredits extends Screen {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), this.animation.calcPercent() * 0.95F)
         );
-        RenderUtils.drawString(ResourceRegistry.JelloMediumFont40, 40.0F, 40.0F, "Credits and third party licensing information", ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(FontUtils.JelloMediumFont40, 40.0F, 40.0F, "Credits and third party licensing information", ClientColors.LIGHT_GREYISH_BLUE.getColor());
         super.draw(this.animation.calcPercent());
     }
 

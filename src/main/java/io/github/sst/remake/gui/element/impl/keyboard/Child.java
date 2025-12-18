@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.TrueTypeFont;
 
 public class Child extends Element {
@@ -52,7 +52,7 @@ public class Child extends Element {
         RenderUtils.drawRoundedButton(
                 (float) this.x, (float) this.y + 3.0F * this.field20691, (float) this.width, (float) this.height, 8.0F, -986896
         );
-        TrueTypeFont var4 = ResourceRegistry.JelloLightFont20;
+        TrueTypeFont var4 = FontUtils.JelloLightFont20;
         if (this.text.contains("Lock")) {
             RenderUtils.drawCircle(
                     (float) (this.x + 14),
@@ -68,7 +68,7 @@ public class Child extends Element {
                     if (!this.text.equals("Menu")) {
                         if (!this.text.equals("Space")) {
                             if (this.field20693) {
-                                var4 = ResourceRegistry.RegularFont20;
+                                var4 = FontUtils.RegularFont20;
                             }
 
                             RenderUtils.drawString(

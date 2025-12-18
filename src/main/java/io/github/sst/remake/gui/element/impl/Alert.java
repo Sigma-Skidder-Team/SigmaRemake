@@ -12,7 +12,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.client.MinecraftClient;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.util.BufferedImageUtil;
@@ -80,7 +80,7 @@ public class Alert extends Element {
                                                             ClientColors.DEEP_TEAL.getColor()
                                                     ),
                                                     component.text,
-                                                    ResourceRegistry.JelloLightFont36
+                                                    FontUtils.JelloLightFont36
                                             )
                                     );
                         }
@@ -122,7 +122,7 @@ public class Alert extends Element {
                                                 ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor()
                                         ),
                                         component.text,
-                                        ResourceRegistry.JelloLightFont20
+                                        FontUtils.JelloLightFont20
                                 )
                         );
             }

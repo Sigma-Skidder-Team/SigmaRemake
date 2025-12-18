@@ -21,7 +21,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.network.ServerInfo;
@@ -158,13 +158,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                         TextField.field20741,
                         "",
                         "Search...",
-                        ResourceRegistry.JelloLightFont18
+                        FontUtils.JelloLightFont18
                 )
         );
-        this.searchBox.setFont(ResourceRegistry.JelloLightFont18);
+        this.searchBox.setFont(FontUtils.JelloLightFont18);
         this.searchBox.addChangeListener(var1 -> this.updateAccountList(false));
         TextButton addButton;
-        this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", ResourceRegistry.JelloLightFont25));
+        this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.JelloLightFont25));
         this.alts.method13242();
         addButton.onClick((var1, var2) -> {
             if (this.method13369()) {
@@ -330,8 +330,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         int xPos = this.x + this.titleOffset;
         int yPos = this.y + this.titleOffset;
         int color = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F);
-        RenderUtils.drawString(ResourceRegistry.JelloLightFont40, (float) xPos, (float) yPos, "Jello", color);
-        RenderUtils.drawString(ResourceRegistry.JelloLightFont25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
+        RenderUtils.drawString(FontUtils.JelloLightFont40, (float) xPos, (float) yPos, "Jello", color);
+        RenderUtils.drawString(FontUtils.JelloLightFont25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
     }
 
     private void method13367() {

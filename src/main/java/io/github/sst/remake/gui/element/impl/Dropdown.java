@@ -11,7 +11,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class Dropdown extends Element {
 
     private void addButtons() {
         this.getChildren().clear();
-        this.font = ResourceRegistry.JelloLightFont18;
+        this.font = FontUtils.JelloLightFont18;
         Button dropdownButton;
         this.addToList(dropdownButton = new Button(this, "dropdownButton", 0, 0, this.getHeight(), this.getHeight(), this.textColor));
         dropdownButton.setSize((var1, var2) -> {

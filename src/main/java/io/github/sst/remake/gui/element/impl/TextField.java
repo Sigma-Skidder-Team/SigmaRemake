@@ -9,7 +9,7 @@ import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import net.minecraft.client.util.InputUtil;
 import org.newdawn.slick.TrueTypeFont;
@@ -59,7 +59,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
     }
 
     public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, String placeholder) {
-        super(var1, var2, var3, var4, var5, var6, var7, var8, ResourceRegistry.JelloLightFont25, false);
+        super(var1, var2, var3, var4, var5, var6, var7, var8, FontUtils.JelloLightFont25, false);
         this.placeholder = placeholder;
         this.timer.start();
     }

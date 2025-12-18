@@ -10,7 +10,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class AccountUI extends AnimatedIconPanel {
@@ -107,11 +107,11 @@ public class AccountUI extends AnimatedIconPanel {
 
     public void drawAccountUsername() {
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont25, (float) (this.x + 110), (float) (this.y + 18), this.selectedAccount.name, ClientColors.DEEP_TEAL.getColor()
+                FontUtils.JelloLightFont25, (float) (this.x + 110), (float) (this.y + 18), this.selectedAccount.name, ClientColors.DEEP_TEAL.getColor()
         );
 
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont14,
+                FontUtils.JelloLightFont14,
                 (float) (this.x + 110),
                 (float) (this.y + 50),
                 "Token: " + "asdddddddddddddddddddddddddddddddddddddddddddd".replaceAll(".", Character.toString('·')),

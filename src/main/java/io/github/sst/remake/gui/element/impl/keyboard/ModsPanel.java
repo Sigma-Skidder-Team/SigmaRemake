@@ -17,7 +17,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.ArrayList;
@@ -215,7 +215,7 @@ public class ModsPanel extends Element {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont36,
+                FontUtils.JelloLightFont36,
                 (float) (30 + this.field21304),
                 (float) (30 + this.field21303),
                 "Select mod to bind",

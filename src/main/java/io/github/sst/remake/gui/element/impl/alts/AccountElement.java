@@ -7,7 +7,7 @@ import io.github.sst.remake.gui.panel.AnimatedIconPanel;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 
@@ -74,8 +74,8 @@ public class AccountElement extends AnimatedIconPanel {
         }
 
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont36,
-                (float) (this.x + (this.width - ResourceRegistry.JelloLightFont36.getWidth(this.currentAccount.name)) / 2),
+                FontUtils.JelloLightFont36,
+                (float) (this.x + (this.width - FontUtils.JelloLightFont36.getWidth(this.currentAccount.name)) / 2),
                 (float) this.y - 20,
                 this.currentAccount.name,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)

@@ -11,7 +11,7 @@ import io.github.sst.remake.gui.interfaces.IWidthSetter;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.newdawn.slick.TrueTypeFont;
@@ -86,7 +86,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text) {
-        this(parent, name, x, y, width, height, textColor, text, ResourceRegistry.JelloLightFont25);
+        this(parent, name, x, y, width, height, textColor, text, FontUtils.JelloLightFont25);
     }
 
     public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text, TrueTypeFont font) {

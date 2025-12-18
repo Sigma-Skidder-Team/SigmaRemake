@@ -10,7 +10,7 @@ import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.opengl.GL11;
@@ -48,11 +48,11 @@ public class PopOver extends Element {
                         "addButton",
                         this.width - 70,
                         this.height - 70,
-                        ResourceRegistry.JelloLightFont25.getWidth("Add"),
+                        FontUtils.JelloLightFont25.getWidth("Add"),
                         70,
                         ColorHelper.DEFAULT_COLOR,
                         "Add",
-                        ResourceRegistry.JelloLightFont25
+                        FontUtils.JelloLightFont25
                 )
         );
         var9.onClick((var1x, var2x) -> this.method13714());
@@ -146,7 +146,7 @@ public class PopOver extends Element {
         );
         GL11.glPopMatrix();
         RenderUtils.drawString(
-                ResourceRegistry.JelloLightFont25,
+                FontUtils.JelloLightFont25,
                 (float) (this.x + 25),
                 (float) (this.y + 20),
                 this.text + " Key",

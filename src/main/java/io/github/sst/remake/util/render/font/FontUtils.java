@@ -1,12 +1,12 @@
-package io.github.sst.remake.util.render.image;
+package io.github.sst.remake.util.render.font;
 
-import io.github.sst.remake.util.render.font.DefaultClientFont;
+import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.TrueTypeFont;
 
 import java.awt.*;
 import java.io.InputStream;
 
-public class ResourceRegistry {
+public class FontUtils {
     public static final TrueTypeFont JelloLightFont12 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 12.0F);
     public static final TrueTypeFont JelloLightFont14 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 14.0F);
     public static final TrueTypeFont JelloLightFont18 = getAntiAliasedFont("font/helvetica-neue-light.ttf", 18.0F);

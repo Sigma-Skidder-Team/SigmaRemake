@@ -17,7 +17,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ShaderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.opengl.Texture;
 
 import java.util.ArrayList;
@@ -158,7 +158,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
         );
         super.method13224();
         RenderUtils.drawString(
-                ResourceRegistry.JelloMediumFont40,
+                FontUtils.JelloMediumFont40,
                 (float) ((this.width - 1060) / 2),
                 (float) ((this.height - 357) / 2 - 90),
                 "Keybind Manager",

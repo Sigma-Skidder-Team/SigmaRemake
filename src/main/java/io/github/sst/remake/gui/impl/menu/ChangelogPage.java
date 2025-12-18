@@ -12,7 +12,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -76,8 +76,8 @@ public class ChangelogPage extends CustomGuiScreen {
 
         this.drawBackground((int) (150.0f * (1.0f - fadeFactor)));
         this.method13225();
-        RenderUtils.drawString(ResourceRegistry.JelloLightFont36, 100.0F, 100.0F, "Changelog", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
-        TrueTypeFont jelloLightFont25 = ResourceRegistry.JelloLightFont25;
+        RenderUtils.drawString(FontUtils.JelloLightFont36, 100.0F, 100.0F, "Changelog", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
+        TrueTypeFont jelloLightFont25 = FontUtils.JelloLightFont25;
         String versionText = "You're currently using Sigma Remake " + Client.VERSION;
         RenderUtils.drawString(
                 jelloLightFont25,

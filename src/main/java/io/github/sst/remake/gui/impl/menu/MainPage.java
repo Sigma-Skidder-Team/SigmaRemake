@@ -14,7 +14,7 @@ import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ResourceRegistry;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -36,7 +36,7 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
     public MainPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
-        TrueTypeFont font = ResourceRegistry.JelloLightFont20;
+        TrueTypeFont font = FontUtils.JelloLightFont20;
         int var17 = 0;
 
         String prod = "© Sigma Prod";
@@ -100,8 +100,8 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
         this.addToList(new Text(this, "Copyright", 10, this.getHeight() - 31, font.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, font, true));
         this.addToList(new Text(this, "Version", this.getWidth() - font.getWidth(version) - 9, this.getHeight() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, font, true));
 
-        this.addToList(this.changelogButton = new TextButton(this, "changelog", 432, 24, 110, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)), "Changelog", ResourceRegistry.JelloLightFont20));
-        this.addToList(this.quitButton = new TextButton(this, "quit", 30, 24, 50, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)), "Exit", ResourceRegistry.JelloLightFont20));
+        this.addToList(this.changelogButton = new TextButton(this, "changelog", 432, 24, 110, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)), "Changelog", FontUtils.JelloLightFont20));
+        this.addToList(this.quitButton = new TextButton(this, "quit", 30, 24, 50, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)), "Exit", FontUtils.JelloLightFont20));
 
         this.quitButton.onClick((var1x, var2x) -> {
             ((JelloMenu) this.getParent()).method13341();
