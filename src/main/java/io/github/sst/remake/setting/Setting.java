@@ -7,29 +7,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-@Getter
 public class Setting<T> {
     private final List<ChangeListener<T>> listeners = new ArrayList<>();
     private BooleanSupplier hidden = () -> false;
 
     public final String name, description;
-    private T value;
+    public final SettingType settingType;
+    public final T defaultValue;
+    public T value;
 
-    public Setting(String name, String description, T value) {
+    public Setting(String name, String description, SettingType type, T value) {
         this.name = name;
         this.description = description;
+        this.settingType = type;
         this.value = value;
+        this.defaultValue = value;
 
         Client.INSTANCE.moduleManager.currentModule.settings.add(this);
     }
 
     public void setValue(T value) {
-        T oldValue = this.value;
+        setValue(value, true);
+    }
+
+    public void setValue(T value, boolean notify) {
         this.value = value;
 
-        for (ChangeListener<T> listener : listeners) {
-            listener.onSettingChanged(this, oldValue, value);
-        }
+        if (notify)
+            for (ChangeListener<T> listener : listeners) {
+                listener.onSettingChanged(this);
+            }
     }
 
     @SuppressWarnings("unchecked")
