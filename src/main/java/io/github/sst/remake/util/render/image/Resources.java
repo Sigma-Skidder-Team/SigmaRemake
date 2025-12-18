@@ -85,18 +85,6 @@ public class Resources {
     public static Texture redditPNG = loadTexture("loading/reddit.png");
     public static Texture panoramaPNG = createBlurredDarkenedTexture("background/panorama5.png", 0.25F, 30);
 
-    public static TrueTypeFont regular28 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 28.0F);
-    public static TrueTypeFont regular25 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 25.0F);
-    public static TrueTypeFont regular20 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 20.0F);
-    public static TrueTypeFont regular17 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 17.0F);
-    public static TrueTypeFont regular15 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 15.0F);
-    public static TrueTypeFont regular12 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Regular.ttf", 0, 12.0F);
-    public static TrueTypeFont bold22 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 22.0F);
-    public static TrueTypeFont bold18 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 18.0F);
-    public static TrueTypeFont bold16 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 16.0F);
-    public static TrueTypeFont bold14 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Bold.ttf", 0, 14.0F);
-    public static TrueTypeFont medium17 = FontUtils.getAntiAliasedFont("font/SF-UI-Display-Medium.ttf", 0, 17.0F);
-
     public static Texture loadTexture(String filePath) {
         try {
             String extension = filePath.substring(filePath.lastIndexOf(".") + 1).toUpperCase();
