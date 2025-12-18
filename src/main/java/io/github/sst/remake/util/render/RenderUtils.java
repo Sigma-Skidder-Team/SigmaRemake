@@ -441,23 +441,28 @@ public class RenderUtils {
         RenderSystem.disableBlend();
     }
 
-    public static void drawSprite(float var0, float var1, float var2, float var3, int var4, float var5, float var6, float var7, float var8) {
+    public static void drawTexturedQuad(float x, float y, float width, float height, int color, float u, float v, float textureWidth, float textureHeight) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-        var0 = (float) Math.round(var0);
-        var2 = (float) Math.round(var2);
-        var1 = (float) Math.round(var1);
-        var3 = (float) Math.round(var3);
-        float var11 = (float) (var4 >> 24 & 0xFF) / 255.0F;
-        float var12 = (float) (var4 >> 16 & 0xFF) / 255.0F;
-        float var13 = (float) (var4 >> 8 & 0xFF) / 255.0F;
-        float var14 = (float) (var4 & 0xFF) / 255.0F;
+
+        x = (float) Math.round(x);
+        y = (float) Math.round(y);
+        width = (float) Math.round(width);
+        height = (float) Math.round(height);
+
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue  = (float) (color & 0xFF) / 255.0F;
+
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-        RenderSystem.color4f(var12, var13, var14, var11);
+        RenderSystem.color4f(red, green, blue, alpha);
+
         GL11.glEnable(3042);
         GL11.glEnable(3553);
+
         GL11.glPixelStorei(3312, 0);
         GL11.glPixelStorei(3313, 0);
         GL11.glPixelStorei(3314, 0);
@@ -465,175 +470,366 @@ public class RenderUtils {
         GL11.glPixelStorei(3316, 0);
         GL11.glPixelStorei(3317, 4);
 
-        float var16 = 1.0f;
-        float var17 = 1.0f;
-        float var18 = var5 / var7;
-        float var19 = var6 / var8;
+        float texU = u / textureWidth;
+        float texV = v / textureHeight;
 
         GL11.glBegin(7);
-        GL11.glTexCoord2f(var18, var19);
-        GL11.glVertex2f(var0, var1);
-        GL11.glTexCoord2f(var18, var19 + var17);
-        GL11.glVertex2f(var0, var1 + var3);
-        GL11.glTexCoord2f(var18 + var16, var19 + var17);
-        GL11.glVertex2f(var0 + var2, var1 + var3);
-        GL11.glTexCoord2f(var18 + var16, var19);
-        GL11.glVertex2f(var0 + var2, var1);
+        GL11.glTexCoord2f(texU, texV);
+        GL11.glVertex2f(x, y);
+
+        GL11.glTexCoord2f(texU, texV + 1.0f);
+        GL11.glVertex2f(x, y + height);
+
+        GL11.glTexCoord2f(texU + 1.0f, texV + 1.0f);
+        GL11.glVertex2f(x + width, y + height);
+
+        GL11.glTexCoord2f(texU + 1.0f, texV);
+        GL11.glVertex2f(x + width, y);
         GL11.glEnd();
+
         GL11.glDisable(3553);
         GL11.glDisable(3042);
+
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
-    public static void method11465(int var0, int var1, int var2, int var3, int var4) {
-        method11466(var0, var1, var2, var3, var4, var0, var1);
+    public static void drawFloatingPanel(int x, int y, int width, int height, int color) {
+        drawFloatingPanelClipped(x, y, width, height, color, x, y);
     }
 
-    public static void method11466(int var0, int var1, int var2, int var3, int var4, int var5, int var6) {
-        int var9 = 36;
-        int var10 = 10;
-        int var11 = var9 - var10;
-        drawRoundedRect((float) (var0 + var10), (float) (var1 + var10), (float) (var0 + var2 - var10), (float) (var1 + var3 - var10), var4);
-        drawImage((float) (var0 - var11), (float) (var1 - var11), (float) var9, (float) var9, Resources.floatingCornerPNG, var4);
+
+    public static void drawFloatingPanelClipped(int x, int y, int width, int height, int color, int scissorX, int scissorY) {
+        int tileSize = 36;
+        int padding = 10;
+        int innerOffset = tileSize - padding;
+
+        drawRoundedRect(
+                (float) (x + padding),
+                (float) (y + padding),
+                (float) (x + width - padding),
+                (float) (y + height - padding),
+                color
+        );
+
+        drawImage(
+                (float) (x - innerOffset),
+                (float) (y - innerOffset),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 + var2 - var9 / 2), (float) (var1 + var9 / 2), 0.0F);
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var2 - var9 / 2), (float) (-var1 - var9 / 2), 0.0F);
-        drawImage((float) (var0 + var2 - var11), (float) (var1 - var11), (float) var9, (float) var9, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + width - innerOffset),
+                (float) (y - innerOffset),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 + var2 - var9 / 2), (float) (var1 + var3 + var9 / 2), 0.0F);
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var2 - var9 / 2), (float) (-var1 - var3 - var9 / 2), 0.0F);
-        drawImage((float) (var0 + var2 - var11), (float) (var1 + var10 + var3), (float) var9, (float) var9, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + width - innerOffset),
+                (float) (y + padding + height),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 - var9 / 2), (float) (var1 + var3 + var9 / 2), 0.0F);
+        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var9 / 2), (float) (-var1 - var3 - var9 / 2), 0.0F);
-        drawImage((float) (var0 + var10), (float) (var1 + var10 + var3), (float) var9, (float) var9, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + padding),
+                (float) (y + padding + height),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
-        ScissorUtils.startScissor(var5 - var9, var6 + var10, var5 - var11 + var9, var6 - var10 + var3);
 
-        for (int var12 = 0; var12 < var3; var12 += var9) {
-            drawImage((float) (var0 - var11), (float) (var1 + var10 + var12), (float) var9, (float) var9, Resources.floatingBorderPNG, var4);
+        ScissorUtils.startScissor(
+                scissorX - tileSize,
+                scissorY + padding,
+                scissorX - innerOffset + tileSize,
+                scissorY - padding + height
+        );
+
+        for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
+            drawImage(
+                    (float) (x - innerOffset),
+                    (float) (y + padding + offsetY),
+                    (float) tileSize,
+                    (float) tileSize,
+                    Resources.floatingBorderPNG,
+                    color
+            );
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var5, var6 - var11, var5 + var2 - var10, var6 + var10);
 
-        for (int var13 = 0; var13 < var2; var13 += var9) {
+        ScissorUtils.startScissor(
+                scissorX,
+                scissorY - innerOffset,
+                scissorX + width - padding,
+                scissorY + padding
+        );
+
+        for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var9 / 2), (float) (var1 + var9 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var9 / 2), (float) (-var1 - var9 / 2), 0.0F);
-            drawImage((float) (var0 - var11), (float) (var1 - var10 - var13), (float) var9, (float) var9, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - innerOffset),
+                    (float) (y - padding - offsetX),
+                    (float) tileSize,
+                    (float) tileSize,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var5 + var2 - var10, var6 - var11, var0 + var2 + var11, var6 + var3 - var10);
 
-        for (int var14 = 0; var14 < var3; var14 += var9) {
+        ScissorUtils.startScissor(
+                scissorX + width - padding,
+                scissorY - innerOffset,
+                x + width + innerOffset,
+                scissorY + height - padding
+        );
+
+        for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var9 / 2), (float) (var1 + var9 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var9 / 2), (float) (-var1 - var9 / 2), 0.0F);
-            drawImage((float) (var0 - var2 + var10), (float) (var1 - var10 - var14), (float) var9, (float) var9, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - width + padding),
+                    (float) (y - padding - offsetY),
+                    (float) tileSize,
+                    (float) tileSize,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var5 - var10, var6 - var11 + var3 - var9, var5 + var2 - var10, var6 + var3 + var10 * 2);
 
-        for (int var15 = 0; var15 < var2; var15 += var9) {
+        ScissorUtils.startScissor(
+                scissorX - padding,
+                scissorY - innerOffset + height - tileSize,
+                scissorX + width - padding,
+                scissorY + height + padding * 2
+        );
+
+        for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var9 / 2), (float) (var1 + var9 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var9 / 2), (float) (-var1 - var9 / 2), 0.0F);
-            drawImage((float) (var0 - var3 + var10), (float) (var1 + var10 + var15), (float) var9, (float) var9, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - height + padding),
+                    (float) (y + padding + offsetX),
+                    (float) tileSize,
+                    (float) tileSize,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
     }
 
-    public static void method11467(int var0, int var1, int var2, int var3, int var4) {
-        int var7 = 36;
-        int var8 = 10;
-        int var9 = var7 - var8;
-        drawRoundedRect((float) (var0 + var8), (float) (var1 + var8), (float) (var0 + var2 - var8), (float) (var1 + var3 - var8), var4);
-        drawImage((float) (var0 - var9), (float) (var1 - var9), (float) var7, (float) var7, Resources.floatingCornerPNG, var4);
+    public static void drawFloatingPanelScaled(int x, int y, int width, int height, int color) {
+        int tileSize = 36;
+        int padding = 10;
+        int innerOffset = tileSize - padding;
+
+        drawRoundedRect(
+                (float) (x + padding),
+                (float) (y + padding),
+                (float) (x + width - padding),
+                (float) (y + height - padding),
+                color
+        );
+
+        drawImage(
+                (float) (x - innerOffset),
+                (float) (y - innerOffset),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 + var2 - var7 / 2), (float) (var1 + var7 / 2), 0.0F);
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var2 - var7 / 2), (float) (-var1 - var7 / 2), 0.0F);
-        drawImage((float) (var0 + var2 - var9), (float) (var1 - var9), (float) var7, (float) var7, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + width - innerOffset),
+                (float) (y - innerOffset),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 + var2 - var7 / 2), (float) (var1 + var3 + var7 / 2), 0.0F);
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var2 - var7 / 2), (float) (-var1 - var3 - var7 / 2), 0.0F);
-        drawImage((float) (var0 + var2 - var9), (float) (var1 + var8 + var3), (float) var7, (float) var7, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + width - innerOffset),
+                (float) (y + padding + height),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
+
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (var0 - var7 / 2), (float) (var1 + var3 + var7 / 2), 0.0F);
+        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
         GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-var0 - var7 / 2), (float) (-var1 - var3 - var7 / 2), 0.0F);
-        drawImage((float) (var0 + var8), (float) (var1 + var8 + var3), (float) var7, (float) var7, Resources.floatingCornerPNG, var4);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                (float) (x + padding),
+                (float) (y + padding + height),
+                (float) tileSize,
+                (float) tileSize,
+                Resources.floatingCornerPNG,
+                color
+        );
         GL11.glPopMatrix();
-        ScissorUtils.startScissor(var0 - var7, var1 + var8, var0 - var9 + var7, var1 - var8 + var3, true);
 
-        for (int var10 = 0; var10 < var3; var10 += var7) {
-            drawImage((float) (var0 - var9), (float) (var1 + var8 + var10) - 0.4F, (float) var7, (float) var7 + 0.4F, Resources.floatingBorderPNG, var4);
+        ScissorUtils.startScissor(
+                x - tileSize,
+                y + padding,
+                x - innerOffset + tileSize,
+                y - padding + height,
+                true
+        );
+
+        for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
+            drawImage(
+                    (float) (x - innerOffset),
+                    (float) (y + padding + offsetY) - 0.4F,
+                    (float) tileSize,
+                    (float) tileSize + 0.4F,
+                    Resources.floatingBorderPNG,
+                    color
+            );
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var0, var1 - var9, var0 + var2 - var8, var1 + var8, true);
 
-        for (int var11 = 0; var11 < var2; var11 += var7) {
+        ScissorUtils.startScissor(
+                x,
+                y - innerOffset,
+                x + width - padding,
+                y + padding,
+                true
+        );
+
+        for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var7 / 2), (float) (var1 + var7 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var7 / 2), (float) (-var1 - var7 / 2), 0.0F);
-            drawImage((float) (var0 - var9), (float) (var1 - var8 - var11) - 0.4F, (float) var7, (float) var7 + 0.4F, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - innerOffset),
+                    (float) (y - padding - offsetX) - 0.4F,
+                    (float) tileSize,
+                    (float) tileSize + 0.4F,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var0 + var2 - var8, var1 - var9, var0 + var2 + var9, var1 + var3 - var8, true);
 
-        for (int var12 = 0; var12 < var3; var12 += var7) {
+        ScissorUtils.startScissor(
+                x + width - padding,
+                y - innerOffset,
+                x + width + innerOffset,
+                y + height - padding,
+                true
+        );
+
+        for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var7 / 2), (float) (var1 + var7 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var7 / 2), (float) (-var1 - var7 / 2), 0.0F);
-            drawImage((float) (var0 - var2 + var8), (float) (var1 - var8 - var12) - 0.4F, (float) var7, (float) var7 + 0.4F, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - width + padding),
+                    (float) (y - padding - offsetY) - 0.4F,
+                    (float) tileSize,
+                    (float) tileSize + 0.4F,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
-        ScissorUtils.startScissor(var0 - var8, var1 - var9 + var3 - var7, var0 + var2 - var8, var1 + var3 + var8 * 2, true);
 
-        for (int var13 = 0; var13 < var2; var13 += var7) {
+        ScissorUtils.startScissor(
+                x - padding,
+                y - innerOffset + height - tileSize,
+                x + width - padding,
+                y + height + padding * 2,
+                true
+        );
+
+        for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) (var0 + var7 / 2), (float) (var1 + var7 / 2), 0.0F);
+            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
             GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-var0 - var7 / 2), (float) (-var1 - var7 / 2), 0.0F);
-            drawImage((float) (var0 - var3 + var8), (float) (var1 + var8 + var13) - 0.4F, (float) var7, (float) var7 + 0.4F, Resources.floatingBorderPNG, var4);
+            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            drawImage(
+                    (float) (x - height + padding),
+                    (float) (y + padding + offsetX) - 0.4F,
+                    (float) tileSize,
+                    (float) tileSize + 0.4F,
+                    Resources.floatingBorderPNG,
+                    color
+            );
             GL11.glPopMatrix();
         }
 
         ScissorUtils.restoreScissor();
     }
 
-    public static void drawShadow(float var0, float var1, float var2, float var3, float var4, float var5) {
-        int var8 = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5);
-        drawImage(var0, var1, var4, var3, Resources.shadowRightPNG, var8, false);
-        drawImage(var0 + var2 - var4, var1, var4, var3, Resources.shadowLeftPNG, var8, false);
-        drawImage(var0, var1, var2, var4, Resources.shadowBottomPNG, var8, false);
-        drawImage(var0, var1 + var3 - var4, var2, var4, Resources.shadowTopPNG, var8, false);
+    public static void drawPanelShadow(float x, float y, float width, float height, float shadowSize, float alpha) {
+        int shadowColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
+
+        drawImage(x, y, shadowSize, height, Resources.shadowRightPNG, shadowColor, false);
+        drawImage(x + width - shadowSize, y, shadowSize, height, Resources.shadowLeftPNG, shadowColor, false);
+        drawImage(x, y, width, shadowSize, Resources.shadowBottomPNG, shadowColor, false);
+        drawImage(x, y + height - shadowSize, width, shadowSize, Resources.shadowTopPNG, shadowColor, false);
     }
 
 }

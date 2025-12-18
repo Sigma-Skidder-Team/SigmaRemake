@@ -28,7 +28,6 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 
 import io.github.sst.remake.gui.element.impl.Button;
-import net.minecraft.client.util.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -315,7 +314,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     @Override
     public void draw(float partialTicks) {
         this.drawBackground();
-        RenderUtils.method11465(
+        RenderUtils.drawFloatingPanel(
                 (int) ((float) client.getWindow().getWidth() * this.field21014),
                 114,
                 (int) ((float) client.getWindow().getWidth() * this.field21015) - this.titleOffset,

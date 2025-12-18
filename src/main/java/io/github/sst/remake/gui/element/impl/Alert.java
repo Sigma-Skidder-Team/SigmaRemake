@@ -6,9 +6,6 @@ import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
-import io.github.sst.remake.gui.screen.AltManagerScreen;
-import io.github.sst.remake.util.http.MicrosoftUtils;
-import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -20,14 +17,11 @@ import net.minecraft.client.MinecraftClient;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.util.BufferedImageUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Alert extends Element {
     public CustomGuiScreen screen;
@@ -240,7 +234,7 @@ public class Alert extends Element {
                     0.0F, 0.0F, (float) this.getWidth(), (float) this.getHeight(), ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F * var7)
             );
             if (var4 > 0) {
-                RenderUtils.method11465(
+                RenderUtils.drawFloatingPanel(
                         (this.width - var4) / 2, (this.height - var5) / 2, var4, var5, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var7)
                 );
             }

@@ -134,7 +134,7 @@ public class BanElement extends AnimatedIconPanel {
         GL11.glTranslatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
         if (this.servericon == null) {
             MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/misc/unknown_server.png"));
-            RenderUtils.drawSprite(
+            RenderUtils.drawTexturedQuad(
                     (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.0F, 0.0F, 64.0F, 64.0F
             );
         } else {

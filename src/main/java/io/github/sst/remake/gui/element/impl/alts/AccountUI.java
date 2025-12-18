@@ -60,7 +60,7 @@ public class AccountUI extends AnimatedIconPanel {
         var5 += var4;
         if (var5 - var4 <= var8) {
             if (var7 != 0.0F) {
-                RenderUtils.method11467(
+                RenderUtils.drawFloatingPanelScaled(
                         this.x,
                         var5,
                         this.width,
@@ -94,7 +94,7 @@ public class AccountUI extends AnimatedIconPanel {
         RenderUtils.drawImage(
                 (float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, this.selectedAccount.setHeadTexture(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), true
         );
-        RenderUtils.drawShadow((float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, 20.0F, 1.0F);
+        RenderUtils.drawPanelShadow((float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, 20.0F, 1.0F);
         RenderUtils.drawImage(
                 (float) (this.x + 1),
                 (float) this.y,
