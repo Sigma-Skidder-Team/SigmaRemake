@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.impl.JelloCredits;
 import io.github.sst.remake.gui.impl.JelloOptions;
 import io.github.sst.remake.gui.impl.JelloSpotlight;
-import io.github.sst.remake.gui.screen.JelloScreen;
+import io.github.sst.remake.gui.impl.JelloScreen;
 import io.github.sst.remake.gui.screen.holder.*;
 import io.github.sst.remake.gui.impl.JelloMenu;
 import io.github.sst.remake.gui.impl.JelloKeyboard;

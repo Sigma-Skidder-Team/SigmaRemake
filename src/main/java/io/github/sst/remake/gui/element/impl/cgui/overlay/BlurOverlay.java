@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.cgui.overlay;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
-import io.github.sst.remake.gui.screen.JelloScreen;
+import io.github.sst.remake.gui.impl.JelloScreen;
 import net.minecraft.client.MinecraftClient;
 
 public class BlurOverlay extends AnimatedIconPanel {

@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui.screen;
+package io.github.sst.remake.gui.impl;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
