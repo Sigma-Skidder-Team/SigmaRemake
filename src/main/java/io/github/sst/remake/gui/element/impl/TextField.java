@@ -81,7 +81,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         this.field20744 = this.field20744 + ((!this.focused ? 0.0F : 1.0F) - this.field20744) / 2.0F;
         if (this.focused) {
             if (this.field20752) {
-                this.maxLen = StringUtils.getStringLen(text, this.font, (float) this.method13271(), mouseX, this.field20746);
+                this.maxLen = StringUtils.getFittingCharacterCount(text, this.font, (float) this.method13271(), mouseX, this.field20746);
             }
         } else {
             this.maxLen = 0;
@@ -110,7 +110,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
             }
 
             this.field20752 = true;
-            this.maxLen = StringUtils.getStringLen(var6, this.font, (float) this.method13271(), mouseX, this.field20746);
+            this.maxLen = StringUtils.getFittingCharacterCount(var6, this.font, (float) this.method13271(), mouseX, this.field20746);
             if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), 340)
                     && !InputUtil.isKeyPressed(client.getWindow().getHandle(), 344)) {
                 this.startSelect = this.maxLen;

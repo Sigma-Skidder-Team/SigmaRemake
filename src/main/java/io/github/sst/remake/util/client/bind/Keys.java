@@ -1,5 +1,7 @@
 package io.github.sst.remake.util.client.bind;
 
+import lombok.Getter;
+
 public enum Keys {
     GRAVE(0, 63, "`", 96, 1),
     ONE(73, 63, "1", 49, 1),
@@ -63,8 +65,11 @@ public enum Keys {
     MENU(905, 63, "Menu", 348, 5),
     RIGHT_CONTROL(978, 82, "Ctrl", 345, 5);
 
+    @Getter
     public final int x;
+    @Getter
     public final int y;
+
     public final String name;
     public final int keycode;
     public final int row;
@@ -79,14 +84,6 @@ public enum Keys {
 
     public int method9026() {
         return 74 * (this.row - 1);
-    }
-
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
     }
 
     public int method9029() {

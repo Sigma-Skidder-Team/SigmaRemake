@@ -22,6 +22,7 @@ import org.newdawn.slick.opengl.Texture;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class JelloKeyboard extends Screen implements IMinecraft {
@@ -45,26 +46,26 @@ public class JelloKeyboard extends Screen implements IMinecraft {
         this.field20957
                 .onPress(
                         var2 -> {
-                            boolean var5 = false;
+                            boolean popOver = false;
 
-                            for (CustomGuiScreen var7 : this.getChildren()) {
-                                if (var7 instanceof PopOver) {
-                                    var5 = true;
+                            for (CustomGuiScreen child : this.getChildren()) {
+                                if (child instanceof PopOver) {
+                                    popOver = true;
                                     break;
                                 }
                             }
 
-                            if (this.field20957.field20696 == this.field20961 && var5) {
+                            if (this.field20957.field20696 == this.field20961 && popOver) {
                                 this.method13333();
                             } else {
                                 int[] var8 = this.field20957.method13105(this.field20957.field20696);
-                                String var9 = BindUtils.getKeyName(this.field20957.field20696);
+                                String bind = BindUtils.getKeyName(this.field20957.field20696);
                                 this.field20956 = new PopOver(
-                                        this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, var9
+                                        this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, bind
                                 );
                                 this.field20956.onPress(var1x -> this.method13329(this.field20957));
-                                this.field20956.method13713(var1x -> {
-                                    var1x.setReAddChildren(false);
+                                this.field20956.method13713(pop -> {
+                                    pop.setReAddChildren(false);
                                     this.method13331();
                                 });
                                 this.field20961 = this.field20957.field20696;
@@ -74,8 +75,8 @@ public class JelloKeyboard extends Screen implements IMinecraft {
         ShaderUtils.applyBlurShader();
     }
 
-    public static ArrayList<Class6984> method13328() {
-        ArrayList var2 = new ArrayList();
+    public static List<Class6984> method13328() {
+        List<Class6984> var2 = new ArrayList<>();
 
         for (Module var4 : Client.INSTANCE.moduleManager.modules) {
             var2.add(new Class6984(var4));
