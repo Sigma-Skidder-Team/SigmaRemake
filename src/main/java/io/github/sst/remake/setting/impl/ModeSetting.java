@@ -1,7 +1,9 @@
 package io.github.sst.remake.setting.impl;
 
+import com.google.gson.JsonObject;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
+import io.github.sst.remake.util.io.GsonUtils;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -39,5 +41,17 @@ public class ModeSetting extends Setting<String> {
             String mode = this.modes.get(index);
             this.setValue(mode);
         }
+    }
+
+    @Override
+    public JsonObject asJson(JsonObject jsonObject) {
+        this.value = GsonUtils.getStringOrDefault(jsonObject, "value", this.defaultValue);
+        boolean isValid = this.modes.contains(this.value);
+
+        if (!isValid) {
+            this.value = this.defaultValue;
+        }
+
+        return jsonObject;
     }
 }

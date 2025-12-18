@@ -6,6 +6,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.SmallImage;
 import io.github.sst.remake.gui.element.impl.cgui.SettingGroup;
+import io.github.sst.remake.gui.element.impl.cgui.config.ConfigScreen;
 import io.github.sst.remake.gui.element.impl.cgui.overlay.BlurOverlay;
 import io.github.sst.remake.gui.element.impl.cgui.overlay.BrainFreezeOverlay;
 import io.github.sst.remake.gui.element.impl.cgui.CategoryPanel;
@@ -35,7 +36,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
     //public MusicPlayer musicPlayer;
     public BrainFreezeOverlay brainFreeze;
-    //public ConfigScreen configButton;
+    public ConfigScreen configButton;
     public SettingGroup settingGroup;
     public CategoryPanel categoryPanel = null;
 
@@ -74,7 +75,7 @@ public class JelloScreen extends Screen implements IMinecraft {
         moreButton.setListening(false);
 
         //this.musicPlayer.setSelfVisible(true);
-        /*
+
         moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
             if (this.configButton != null && this.hasChild(this.configButton)) {
                 this.method13234(this.configButton);
@@ -83,7 +84,6 @@ public class JelloScreen extends Screen implements IMinecraft {
                 this.configButton.setReAddChildren(true);
             }
         }));
-         */
 
         animationProgress = new AnimationUtils(450, 125);
         this.blurOverlay = new BlurOverlay(this, this, "overlay");
@@ -103,7 +103,7 @@ public class JelloScreen extends Screen implements IMinecraft {
         super.updatePanelDimensions(mouseX, mouseY);
         ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
         this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule("BrainFreeze").enabled);
-        /*
+
         if (this.configButton != null) {
             int newHeightValue = mouseX - this.configButton.method13271();
             int newWidthValue = mouseY - this.configButton.method13272();
@@ -117,7 +117,6 @@ public class JelloScreen extends Screen implements IMinecraft {
             this.removeChildren(this.configButton);
             this.configButton = null;
         }
-         */
 
         if (animationProgress.getDirection() == AnimationUtils.Direction.BACKWARDS && this.settingGroup != null && !this.settingGroup.field20671) {
             this.settingGroup.field20671 = true;
@@ -228,9 +227,9 @@ public class JelloScreen extends Screen implements IMinecraft {
         if (Client.INSTANCE.configManager.profile != null && !Client.INSTANCE.notificationManager.isRendering()) {
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_20,
-                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(Client.INSTANCE.configManager.profile) - 80),
+                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(Client.INSTANCE.configManager.profile.name) - 80),
                     (float) (this.height - 47),
-                    Client.INSTANCE.configManager.profile,
+                    Client.INSTANCE.configManager.profile.name,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * Math.max(0.0F, Math.min(1.0F, alphaFactor)))
             );
         }

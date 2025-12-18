@@ -387,7 +387,6 @@ public class CustomGuiScreen implements IGuiEventListener {
         if (var1 != null) {
             for (CustomGuiScreen var5 : this.getChildren()) {
                 if (var5.getName().equals(var1.getName())) {
-                    System.out.println("Children with duplicate IDs! Child with id \"" + var5.getName() + "\" already exists in view \"" + this.getName() + "\"!");
                     return;
                 }
             }

@@ -1,13 +1,16 @@
 package io.github.sst.remake.setting;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-public class Setting<T> {
+public abstract class Setting<T> {
     private final List<ChangeListener<T>> listeners = new ArrayList<>();
     private BooleanSupplier hidden = () -> false;
 
@@ -55,5 +58,18 @@ public class Setting<T> {
 
     public void removeListener(ChangeListener<T> listener) {
         listeners.remove(listener);
+    }
+
+    public abstract JsonObject asJson(JsonObject jsonObject) throws JsonParseException;
+
+    public JsonObject fromJson(JsonObject jsonObject) {
+        Gson gson = new Gson();
+
+        jsonObject.addProperty("name", this.name);
+
+        JsonElement valueElement = gson.toJsonTree(this.value);
+        jsonObject.add("value", valueElement);
+
+        return jsonObject;
     }
 }

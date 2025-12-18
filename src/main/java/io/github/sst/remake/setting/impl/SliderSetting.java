@@ -1,7 +1,9 @@
 package io.github.sst.remake.setting.impl;
 
+import com.google.gson.JsonObject;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
+import io.github.sst.remake.util.io.GsonUtils;
 
 public class SliderSetting extends Setting<Float> {
     public float min, max, increment;
@@ -22,4 +24,11 @@ public class SliderSetting extends Setting<Float> {
             return 0;
         }
     }
+
+    @Override
+    public JsonObject asJson(JsonObject jsonObject) {
+        this.value = GsonUtils.getFloatOrDefault(jsonObject, "value", this.defaultValue);
+        return jsonObject;
+    }
+
 }
