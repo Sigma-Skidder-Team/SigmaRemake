@@ -98,7 +98,7 @@ public class JelloMenu extends Screen implements IMinecraft {
         this.addToList(this.mainMenuScreen = new MainPage(this, "main", 0, 0, this.width, this.height));
         this.addToList(this.changelogPage = new ChangelogPage(this, "changelog", 0, 0, this.width, this.height));
         this.changelogPage.setHovered(false);
-        this.changelogPage.method13294(true);
+        this.changelogPage.setReAddFlag(true);
     }
 
     public void goOut() {

@@ -1,7 +1,6 @@
 package io.github.sst.remake.util;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.text.Text;
 
 public interface IMinecraft {
@@ -14,7 +13,9 @@ public interface IMinecraft {
     }
 
     static void sendChatMessage(String text) {
-        client.getNetworkHandler().sendPacket(new ChatMessageC2SPacket(text));
+        final var nh = client.getNetworkHandler();
+        if (nh == null) return;
+        nh.sendChatMessage(text);
     }
 
 }

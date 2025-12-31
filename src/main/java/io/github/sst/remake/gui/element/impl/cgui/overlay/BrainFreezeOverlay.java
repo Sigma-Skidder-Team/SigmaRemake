@@ -22,7 +22,7 @@ public class BrainFreezeOverlay extends AnimatedIconPanel implements IMinecraft 
         this.setFocused(false);
         this.setHovered(false);
         this.setReAddChildren(false);
-        this.method13294(true);
+        this.setReAddFlag(true);
         this.setListening(false);
     }
 

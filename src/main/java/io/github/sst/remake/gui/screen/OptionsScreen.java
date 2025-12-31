@@ -4,7 +4,6 @@ import io.github.sst.remake.gui.screen.holder.OptionsHolder;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 public class OptionsScreen extends GameMenuScreen {
     public OptionsScreen() {
@@ -17,7 +16,7 @@ public class OptionsScreen extends GameMenuScreen {
                 width / 2 - 102,
                 height - 45,
                 204, 20,
-                new LiteralText("Jello for Fabric Options"),
+                Text.literal("Jello for Fabric Options"),
                 w -> client.openScreen(new OptionsHolder())
         ));
         super.init();
@@ -31,7 +30,7 @@ public class OptionsScreen extends GameMenuScreen {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return true;
     }
 }

@@ -53,7 +53,7 @@ public class CategoryPanel extends AnimatedIconPanel {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (!(this.field21195 >= 1.0F)) {
             this.setDraggable(false);
-            this.field20909 = false;
+            this.b2 = false;
         } else {
             this.field21197 = this.getX();
             this.field21198 = this.getY();

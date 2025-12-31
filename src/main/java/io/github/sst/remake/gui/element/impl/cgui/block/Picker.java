@@ -6,13 +6,9 @@ import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.render.font.FontUtils;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,19 +40,20 @@ public class Picker extends Element {
             this.addToList(this.field20642 = new ScrollableContentPanel(this, "scrollview", 0, 40, this.width, this.height - 40));
             List<Item> items = new ArrayList<>();
 
-            for (Item item : Registry.ITEM) {
+            for (Item item : Registries.ITEM) {
                 items.add(item);
             }
 
-            items.add(new BlockItem(Blocks.NETHER_PORTAL, new Item.Settings().group(ItemGroup.MISC)));
-            items.add(new BlockItem(Blocks.END_PORTAL, new Item.Settings().group(ItemGroup.MISC)));
+            // TODO(version/1.19.4): idk
+//            items.add(new BlockItem(Blocks.NETHER_PORTAL, new Item.Settings().group(ItemGroups.MISC)));
+//            items.add(new BlockItem(Blocks.END_PORTAL, new Item.Settings().group(ItemGroup.MISC)));
 
             for (Item item : prioritizeItemsByName(items, var1)) {
                 if (item != Items.AIR && (!this.field20644 || item instanceof BlockItem)) {
-                    Identifier texture = Registry.ITEM.getId(item);
+                    Identifier texture = Registries.ITEM.getId(item);
                     String var9;
                     if (item instanceof BlockItem && texture.getPath().equals("air")) {
-                        var9 = Registry.BLOCK.getKey(((BlockItem) item).getBlock()).toString();
+                        var9 = Registries.BLOCK.getKey(((BlockItem) item).getBlock()).toString();
                     } else {
                         var9 = texture.toString();
                     }

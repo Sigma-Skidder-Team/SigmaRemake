@@ -8,6 +8,7 @@ import net.minecraft.client.util.Session;
 import org.newdawn.slick.opengl.Texture;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Account {
     public static final String STEVE_UUID = "c06f8906-4c8a-4911-9c29-ea1dbd1aab82";
@@ -86,6 +87,7 @@ public class Account {
     }
 
     public Session toSession() {
-        return new Session(this.name, this.uuid, this.token, Session.AccountType.LEGACY.name());
+        final var empty = Optional.<String>empty();
+        return new Session(this.name, this.uuid, this.token, empty, empty, Session.AccountType.LEGACY);
     }
 }

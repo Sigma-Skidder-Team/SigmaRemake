@@ -2,7 +2,7 @@ package io.github.sst.remake.util.render;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
-import net.minecraft.client.gl.ShaderEffect;
+import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
@@ -15,34 +15,34 @@ public class ShaderUtils implements IMinecraft {
         return Client.INSTANCE.configManager.guiBlur;
     }
 
-    private static ShaderEffect getShader() {
-        return client.gameRenderer.getShader();
+    private static PostEffectProcessor getPostProcessor() {
+        return client.gameRenderer.getPostProcessor();
     }
 
     public static void applyBlurShader() {
         if (client.getCameraEntity() instanceof PlayerEntity && canBlur()) {
-            if (getShader() != null) {
-                getShader().close();
+            if (getPostProcessor() != null) {
+                getPostProcessor().close();
             }
 
-            client.gameRenderer.loadShader(BLUR_SHADER);
+            client.gameRenderer.loadPostProcessor(BLUR_SHADER);
         }
 
         setShaderRadius(20);
     }
 
     public static void resetShader() {
-        if (client.gameRenderer.forcedShaderIndex == GameRenderer.SHADER_COUNT) {
-            client.gameRenderer.shader = null;
+        if (client.gameRenderer.superSecretSettingIndex == GameRenderer.SUPER_SECRET_SETTING_COUNT) {
+            client.gameRenderer.postProcessor = null;
         } else {
-            client.gameRenderer.loadShader(GameRenderer.SHADERS_LOCATIONS[client.gameRenderer.forcedShaderIndex]);
+            client.gameRenderer.loadPostProcessor(GameRenderer.SUPER_SECRET_SETTING_PROGRAMS[client.gameRenderer.superSecretSettingIndex]);
         }
     }
 
     public static void setShaderRadius(int radius) {
-        if (getShader() != null) {
-            getShader().passes.get(0).getProgram().getUniformByName("Radius").set((float) radius);
-            getShader().passes.get(1).getProgram().getUniformByName("Radius").set((float) radius);
+        if (getPostProcessor() != null) {
+            getPostProcessor().passes.get(0).getProgram().getUniformByName("Radius").set((float) radius);
+            getPostProcessor().passes.get(1).getProgram().getUniformByName("Radius").set((float) radius);
         }
     }
 

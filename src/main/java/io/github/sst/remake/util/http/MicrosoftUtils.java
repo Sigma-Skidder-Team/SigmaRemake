@@ -2,8 +2,6 @@ package io.github.sst.remake.util.http;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpServer;
-import io.github.sst.remake.Client;
-import io.github.sst.remake.alt.Account;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;
@@ -153,7 +151,7 @@ public final class MicrosoftUtils {
 
                 final org.apache.http.HttpResponse res = client.execute(request);
 
-                final JsonObject json = new JsonParser().parse(EntityUtils.toString(res.getEntity())).getAsJsonObject();
+                final JsonObject json = JsonParser.parseString(EntityUtils.toString(res.getEntity())).getAsJsonObject();
                 return Optional.ofNullable(json.get("access_token"))
                         .map(JsonElement::getAsString)
                         .filter(token -> !StringUtils.isBlank(token))
@@ -311,7 +309,7 @@ public final class MicrosoftUtils {
 
                 final org.apache.http.HttpResponse res = client.execute(request);
 
-                final JsonObject json = new JsonParser().parse(EntityUtils.toString(res.getEntity())).getAsJsonObject();
+                final JsonObject json = JsonParser.parseString(EntityUtils.toString(res.getEntity())).getAsJsonObject();
                 return Optional.ofNullable(json.get("id"))
                         .map(JsonElement::getAsString)
                         .filter(uuid -> !StringUtils.isBlank(uuid))
@@ -319,7 +317,9 @@ public final class MicrosoftUtils {
                                 json.get("name").getAsString(),
                                 uuid,
                                 mcToken,
-                                Session.AccountType.MOJANG.toString()
+                                Optional.empty(),
+                                Optional.empty(),
+                                Session.AccountType.MOJANG
                         ))
                         .orElseThrow(() -> new Exception(
                                 json.has("error") ? String.format(

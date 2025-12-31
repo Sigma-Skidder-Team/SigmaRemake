@@ -8,7 +8,7 @@ import io.github.sst.remake.event.impl.window.WindowResizeEvent;
 import io.github.sst.remake.gui.impl.JelloLoad;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
-import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.gui.screen.SplashOverlay;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,8 +58,7 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))
     private void redirectOverlay(MinecraftClient instance, Overlay value) {
-        if (value instanceof SplashScreen) {
-            SplashScreen splash = (SplashScreen) value;
+        if (value instanceof SplashOverlay splash) {
             value = new JelloLoad(
                     splash.reload,
                     splash.exceptionHandler,
@@ -67,7 +66,7 @@ public abstract class MixinMinecraftClient {
             );
         }
 
-        instance.overlay = value;
+        instance.setOverlay(value);
     }
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))

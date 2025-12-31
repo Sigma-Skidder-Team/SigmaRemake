@@ -20,8 +20,8 @@ public class AccountElement extends AnimatedIconPanel {
     private final List<BanElement> bans = new ArrayList<>();
     private float field20815 = 0.0F;
 
-    public AccountElement(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, false);
+    public AccountElement(CustomGuiScreen parent, String iconName, int x, int y, int width, int height) {
+        super(parent, iconName, x, y, width, height, false);
     }
 
     public void handleSelectedAccount(Account account) {
@@ -36,21 +36,24 @@ public class AccountElement extends AnimatedIconPanel {
             Collections.reverse(accountBans);
 
             int index = 0;
-            int var14 = 90;
-            int var7 = 14;
+            int height = 90;
+            int hPadding = 14;
 
-            for (AccountBan var9 : accountBans) {
-                if (var9.getServer() != null && var9.getServer().getIcon() != null) {
-                    BanElement var10 = new BanElement(
-                            this, accountBans.get(index).address, 40, 100 + index * (var14 + var7), this.width - 90, var14, var9
+            for (AccountBan ban : accountBans) {
+                if (ban.getServer() != null && ban.getServer().getFavicon() != null) {
+                    BanElement el = new BanElement(
+                            this, accountBans.get(index).address,
+                            40, 100 + index * (height + hPadding),
+                            this.width - 90, height,
+                            ban
                     );
-                    this.addToList(var10);
-                    this.bans.add(var10);
+                    this.addToList(el);
+                    this.bans.add(el);
                     index++;
                 }
             }
 
-            this.setHeight(index * (var14 + var7) + 116);
+            this.setHeight(index * (height + hPadding) + 116);
         }
     }
 

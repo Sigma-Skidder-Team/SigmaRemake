@@ -185,7 +185,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
-        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.method13227()) {
+        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.hasFocusRecursive()) {
             if (animationCompleted) {
                 animationStarted = !animationStarted;
             }

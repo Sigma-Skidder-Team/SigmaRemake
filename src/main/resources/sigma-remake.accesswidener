@@ -1,27 +1,22 @@
 accessWidener v2 named
 
-accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String;FFILnet/minecraft/util/math/Matrix4f;ZZ)I
+accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String;FFILorg/joml/Matrix4f;ZZ)I
 
 accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
 
-accessible field net/minecraft/client/gui/screen/SplashScreen reload Lnet/minecraft/resource/ResourceReload;
-accessible field net/minecraft/client/gui/screen/SplashScreen exceptionHandler Ljava/util/function/Consumer;
-accessible field net/minecraft/client/gui/screen/SplashScreen reloading Z
+accessible method net/minecraft/client/gui/screen/Screen addDrawable (Lnet/minecraft/client/gui/Drawable;)Lnet/minecraft/client/gui/Drawable;
 
-accessible method net/minecraft/client/gui/screen/Screen addButton (Lnet/minecraft/client/gui/widget/ClickableWidget;)Lnet/minecraft/client/gui/widget/ClickableWidget;
-
-accessible method net/minecraft/client/render/GameRenderer loadShader (Lnet/minecraft/util/Identifier;)V
-accessible field net/minecraft/client/gl/ShaderEffect passes Ljava/util/List;
-
-accessible field net/minecraft/client/render/GameRenderer shader Lnet/minecraft/client/gl/ShaderEffect;
-accessible field net/minecraft/client/render/GameRenderer SHADERS_LOCATIONS [Lnet/minecraft/util/Identifier;
-accessible field net/minecraft/client/render/GameRenderer forcedShaderIndex I
-
-accessible field net/minecraft/client/network/AbstractClientPlayerEntity cachedScoreboardEntry Lnet/minecraft/client/network/PlayerListEntry;
-
-accessible field net/minecraft/world/dimension/DimensionType OVERWORLD Lnet/minecraft/world/dimension/DimensionType;
+accessible field net/minecraft/client/gl/PostEffectProcessor passes Ljava/util/List;
 
 mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
 accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
 
 accessible field net/minecraft/client/MinecraftClient currentFps I
+accessible field net/minecraft/client/gui/screen/SplashOverlay reload Lnet/minecraft/resource/ResourceReload;
+accessible field net/minecraft/client/gui/screen/SplashOverlay exceptionHandler Ljava/util/function/Consumer;
+accessible field net/minecraft/client/gui/screen/SplashOverlay reloading Z
+accessible method net/minecraft/client/render/GameRenderer loadPostProcessor (Lnet/minecraft/util/Identifier;)V
+accessible field net/minecraft/client/render/GameRenderer superSecretSettingIndex I
+accessible field net/minecraft/client/render/GameRenderer postProcessor Lnet/minecraft/client/gl/PostEffectProcessor;
+accessible field net/minecraft/client/render/GameRenderer SUPER_SECRET_SETTING_PROGRAMS [Lnet/minecraft/util/Identifier;
+accessible field net/minecraft/client/option/GameOptions fullscreen Lnet/minecraft/client/option/SimpleOption;

@@ -194,7 +194,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             accountUI.setAccountListRefreshing(true);
         }
 
-        accountUI.method13247((var2x, var3) -> {
+        accountUI.addSomething((var2x, var3) -> {
             if (var3 != 0) {
                 this.deleteAlert.onPress(element -> {
                     Client.INSTANCE.accountManager.remove(accountUI.selectedAccount);

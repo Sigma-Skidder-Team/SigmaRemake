@@ -17,6 +17,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Identifier;
 import org.apache.commons.codec.binary.Base64;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.util.BufferedImageUtil;
@@ -30,37 +32,42 @@ import java.io.IOException;
 import java.util.Date;
 
 public class BanElement extends AnimatedIconPanel {
-    public AccountBan ban = null;
-    public ServerInfo info = null;
-    public Texture servericon = null;
-    public Texture serverBanner = null;
-    private BufferedImage field21247;
-    private final AnimationUtils field21248;
+    public @NotNull AccountBan ban;
+    public @NotNull ServerInfo info;
+    public @Nullable Texture serverIcon = null;
+    public @Nullable Texture serverBanner = null;
+    private BufferedImage img;
+    private final AnimationUtils animUtil;
 
-    public BanElement(CustomGuiScreen parent, String text, int x, int y, int width, int height, AccountBan ban) {
+    public BanElement(
+            CustomGuiScreen parent, String text,
+            int x, int y,
+            int width, int height,
+            @NotNull AccountBan ban
+    ) {
         super(parent, text, x, y, width, height, false);
         this.ban = ban;
         this.info = ban.getServer();
-        this.field21248 = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
+        this.animUtil = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override
     public void draw(float partialTicks) {
         this.method13225();
-        float var4 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        float var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var4 = EasingFunctions.easeOutBack(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var5 = QuadraticEasing.easeInQuad(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.method13298()) {
-            this.field21248.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.animUtil.changeDirection(AnimationUtils.Direction.FORWARDS);
         } else if ((double) Math.abs(var4 - var5) < 0.7) {
-            this.field21248.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.animUtil.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
         if (this.method13272() + this.method13282() < MinecraftClient.getInstance().getWindow().getHeight() - 36 && this.method13272() + this.method13282() > 52) {
-            if (this.info != null && this.serverBanner == null) {
+            if (this.serverBanner == null) {
                 try {
-                    BufferedImage var6 = method13578(this.info.getIcon());
+                    BufferedImage var6 = parseImage(this.info.getFavicon());
                     if (var6 != null) {
-                        this.servericon = BufferedImageUtil.getTexture("servericon", var6);
+                        this.serverIcon = BufferedImageUtil.getTexture("servericon", var6);
                         this.serverBanner = BufferedImageUtil.getTexture(
                                 "servericon", ImageUtils.applyBlur(ImageUtils.adjustImageHSB(method13579(var6, 2.5, 2.5), 0.0F, 1.1F, 0.0F), 25)
                         );
@@ -82,8 +89,8 @@ public class BanElement extends AnimatedIconPanel {
             GL11.glPushMatrix();
             int var9 = this.width / 2;
             int var7 = this.height / 2;
-            if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-                var4 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+            if (this.animUtil.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+                var4 = QuadraticEasing.easeInQuad(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
             GL11.glTranslatef((float) (this.getX() + var9), (float) (this.getY() + var7), 0.0F);
@@ -107,7 +114,7 @@ public class BanElement extends AnimatedIconPanel {
                     (float) this.y,
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + 0.3F * this.field21248.calcPercent())
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + 0.3F * this.animUtil.calcPercent())
             );
         }
 
@@ -124,22 +131,22 @@ public class BanElement extends AnimatedIconPanel {
 
     public void method13576() {
         GL11.glPushMatrix();
-        float var5 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var5 = EasingFunctions.easeOutBack(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.animUtil.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            var5 = QuadraticEasing.easeInQuad(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         GL11.glTranslatef((float) (this.getX() + 44), (float) (this.getY() + 44), 0.0F);
         GL11.glScaled(1.0 + 0.1 * (double) var5, 1.0 + 0.1 * (double) var5, 0.0);
         GL11.glTranslatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
-        if (this.servericon == null) {
+        if (this.serverIcon == null) {
             MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/misc/unknown_server.png"));
             RenderUtils.drawTexturedQuad(
                     (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.0F, 0.0F, 64.0F, 64.0F
             );
         } else {
             RenderUtils.drawImage(
-                    (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, this.servericon, ClientColors.LIGHT_GREYISH_BLUE.getColor(), true
+                    (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, this.serverIcon, ClientColors.LIGHT_GREYISH_BLUE.getColor(), true
             );
         }
 
@@ -161,9 +168,9 @@ public class BanElement extends AnimatedIconPanel {
                 this.method13272() + this.method13282() + this.height
         );
         GL11.glPushMatrix();
-        float var11 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var11 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var11 = EasingFunctions.easeOutBack(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.animUtil.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            var11 = QuadraticEasing.easeInQuad(this.animUtil.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         GL11.glTranslatef((float) (this.getX() + 76), (float) (this.getY() + 44), 0.0F);
@@ -220,7 +227,13 @@ public class BanElement extends AnimatedIconPanel {
         ScissorUtils.restoreScissor();
     }
 
-    public static BufferedImage method13578(String var0) {
+    public static BufferedImage parseImage(byte[] image) throws IOException {
+        try (final var bais = new ByteArrayInputStream(image)) {
+            return ImageIO.read(bais);
+        }
+    }
+
+    public static BufferedImage parseBase64Image(String var0) {
         if (var0 == null) {
             return null;
         } else if (!Base64.isBase64(var0)) {

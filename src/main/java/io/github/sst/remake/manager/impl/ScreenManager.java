@@ -48,7 +48,7 @@ public class ScreenManager extends Manager implements IMinecraft {
                 this.currentScreen.modifierPressed(modifier);
             }
 
-            if (client.overlay == null) {
+            if (client.getOverlay() == null) {
                 for (int mouseButton : this.mouseButtonsPressed) {
                     this.currentScreen.onMouseDown(this.mousePositions[0], this.mousePositions[1], mouseButton);
                 }
@@ -69,7 +69,7 @@ public class ScreenManager extends Manager implements IMinecraft {
             this.charsTyped.clear();
 
             if (this.mouseScroll != 0.0) {
-                if (client.overlay == null) {
+                if (client.getOverlay() == null) {
                     this.currentScreen.onScroll((float) this.mouseScroll);
                 }
                 this.mouseScroll = 0.0;

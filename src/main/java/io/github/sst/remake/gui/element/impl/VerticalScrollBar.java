@@ -56,7 +56,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20908 = this.method13228(mouseX, mouseY, false);
+        this.b1 = this.method13228(mouseX, mouseY, false);
         this.field20794 = this.field20794
                 + (
                 this.field20796.getHeight() >= this.getHeight()
@@ -96,7 +96,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
-            this.field20908 = this.method13228(mouseX, mouseY, false);
+            this.b1 = this.method13228(mouseX, mouseY, false);
             if (this.method13298()) {
                 int var6 = mouseY - this.method13272();
                 if (var6 <= this.field20796.getY() + this.field20796.getHeight()) {

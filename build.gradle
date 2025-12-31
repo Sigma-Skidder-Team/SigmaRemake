@@ -23,7 +23,9 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+//  eh, who needs fabric API? uncomment fabric_api_version={...} in line 17 of gradle.properties
+//  if we actually need it lol
+//	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     implementation "com.google.code.gson:gson:2.13.2"
     implementation "dev.firstdark.discordrpc:discord-rpc:1.0.3"
@@ -49,13 +51,13 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 8
+	it.options.release = 17
 }
 
 java {
 
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {

@@ -26,7 +26,7 @@ public class Class4263 extends Element {
                 (float) (this.x + this.width / 2),
                 (float) (this.y + this.height / 2),
                 (float) this.width,
-                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.field20678 * 0.3F + (!this.field20909 ? 0.0F : 0.2F)) * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.field20678 * 0.3F + (!this.b2 ? 0.0F : 0.2F)) * partialTicks)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + (this.width - 10) / 2),

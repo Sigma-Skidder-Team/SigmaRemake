@@ -9,7 +9,7 @@ public class KeybindsHolder extends Screen {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return false;
     }
 }

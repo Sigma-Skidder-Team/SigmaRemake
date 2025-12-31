@@ -17,14 +17,15 @@ public class HUDManager extends Manager implements IMinecraft {
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onRender(Render2DEvent event) {
-        RenderSystem.pushMatrix();
-
+        final var ms = RenderSystem.getModelViewStack();
+        ms.push();
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
-        GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
+        ms.scale((float)localScaleFactor, (float)localScaleFactor, 1.0f);
+        final var sf = Client.INSTANCE.screenManager.scaleFactor;
+        ms.scale(sf, sf, 1.0f);
         RenderSystem.disableDepthTest();
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
+        ms.push(); // TODO: why are we pushing twice?
+        ms.translate(0.0F, 0.0F, 1000.0F);
 
         if (client.world != null) {
             GL11.glDisable(GL11.GL_LIGHTING);
@@ -45,7 +46,7 @@ public class HUDManager extends Manager implements IMinecraft {
 
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) 170.0F, (int) 104.0F, (int) 170.0F, (int) 104.0F);
 
             RenderSystem.disableBlend();
@@ -53,11 +54,11 @@ public class HUDManager extends Manager implements IMinecraft {
             new RenderClient2DEvent().call();
         }
 
-        if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
+        if (Client.INSTANCE.screenManager.currentScreen != null && client.getOverlay() == null) {
             Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
         }
 
-        RenderSystem.popMatrix();
+        ms.pop();
         RenderSystem.enableDepthTest();
         RenderSystem.enableAlphaTest();
         GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);

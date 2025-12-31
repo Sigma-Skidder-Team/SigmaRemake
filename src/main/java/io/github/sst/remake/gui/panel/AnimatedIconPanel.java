@@ -50,14 +50,14 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
 
     @Override
     public boolean method13212() {
-        return this.field20909 && !this.isDragging();
+        return this.b2 && !this.isDragging();
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
-            if (!this.field20909 && !this.field20877) {
+            if (!this.b2 && !this.field20877) {
                 this.sizeWidthThingy = this.getWidth() / 2;
                 this.sizeHeightThingy = this.getHeight() / 2;
             }
@@ -100,9 +100,9 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
         if (!this.isDragging() && this.isDraggable()) {
             boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
             boolean var7 = this.field20885
-                    && this.field20909
+                    && this.b2
                     && (Math.abs(this.mouseX - newHeight) > this.field20889 || Math.abs(this.mouseY - newWidth) > this.field20889);
-            boolean var8 = this.field20886 && this.field20909;
+            boolean var8 = this.field20886 && this.b2;
             if (var6 || var7 || var8) {
                 this.setDragging(true);
             }

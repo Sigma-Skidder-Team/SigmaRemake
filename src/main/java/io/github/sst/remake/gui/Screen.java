@@ -21,9 +21,9 @@ public abstract class Screen extends CustomGuiScreen implements IMinecraft {
 
     @Override
     public void keyPressed(int keyCode) {
-        if (keyCode == client.options.keyFullscreen.boundKey.getCode()) {
+        if (keyCode == client.options.fullscreenKey.boundKey.getCode()) {
             client.getWindow().toggleFullscreen();
-            client.options.fullscreen = client.getWindow().isFullscreen();
+            client.options.fullscreen.setValue(client.getWindow().isFullscreen());
         }
 
         super.keyPressed(keyCode);
