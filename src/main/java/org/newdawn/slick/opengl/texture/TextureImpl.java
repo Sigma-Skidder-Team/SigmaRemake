@@ -1,5 +1,7 @@
 package org.newdawn.slick.opengl.texture;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -22,6 +24,8 @@ import java.nio.IntBuffer;
  * @author Brian Matzon
  */
 public class TextureImpl implements Texture {
+    private static final Logger LOGGER = LogManager.getLogger("Slick2D");
+
     /**
      * The renderer to use for all GL operations
      */
@@ -416,7 +420,7 @@ public class TextureImpl implements Texture {
          * @return The new texture ID assigned to this texture
          */
         public int reload() {
-            Log.error("Reloading texture: " + ref);
+            LOGGER.error("Reloading texture: {}", ref);
             return InternalTextureLoader.get().reload(TextureImpl.this, srcPixelFormat, componentCount, minFilter, magFilter, textureBuffer);
         }
     }

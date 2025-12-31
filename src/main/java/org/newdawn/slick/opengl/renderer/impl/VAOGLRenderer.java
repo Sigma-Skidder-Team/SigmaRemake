@@ -1,7 +1,8 @@
-package org.newdawn.slick.opengl.renderer;
+package org.newdawn.slick.opengl.renderer.impl;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;

@@ -1,4 +1,8 @@
-package org.newdawn.slick.opengl.renderer;
+package org.newdawn.slick.opengl.renderer.impl;
+
+import org.newdawn.slick.opengl.renderer.LineStripRenderer;
+import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.opengl.renderer.SGL;
 
 public class DefaultLineStripRenderer implements LineStripRenderer {
     private SGL GL = Renderer.get();

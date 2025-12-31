@@ -1,7 +1,8 @@
-package org.newdawn.slick.opengl.renderer;
+package org.newdawn.slick.opengl.renderer.impl;
 
 import org.lwjgl.opengl.EXTSecondaryColor;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.renderer.SGL;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
