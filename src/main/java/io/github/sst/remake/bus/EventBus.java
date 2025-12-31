@@ -1,10 +1,9 @@
 package io.github.sst.remake.bus;
 
-import lombok.Getter;
-
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventBus {
 
@@ -32,7 +31,7 @@ public class EventBus {
             );
 
             subscribers
-                    .computeIfAbsent(eventType, k -> new ArrayList<>())
+                    .computeIfAbsent(eventType, k -> new CopyOnWriteArrayList<>())
                     .add(subscriber);
 
             // Sort by priority (higher first)
