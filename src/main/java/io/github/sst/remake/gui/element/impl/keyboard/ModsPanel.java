@@ -151,8 +151,7 @@ public class ModsPanel extends Element {
         for (Button var20 : var5.values()) {
             var20.setSelfVisible(true);
             var20.setY(var15);
-.
-                    var15 += var20.getHeight();
+            var15 += var20.getHeight();
         }
 
         if (var5.size() > 0) {
