@@ -1,10 +1,11 @@
 package io.github.sst.remake.gui.impl.menu;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.impl.changelog.ChangelogLoader;
 import io.github.sst.remake.gui.element.impl.changelog.Change;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -13,6 +14,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -36,9 +38,27 @@ public class ChangelogPage extends CustomGuiScreen {
         new Thread(() -> this.method13490(this.getChangelog())).start();
     }
 
-    public void method13490(JsonArray var1) {
-        if (var1 != null) {
-            this.getParent().addRunnable(new ChangelogLoader(this, var1));
+    public void method13490(JsonArray changelogJson) {
+        if (changelogJson != null) {
+            this.getParent().addRunnable(() -> {
+                int y = 75;
+
+                try {
+                    for (int i = 0; i < changelogJson.size(); i++) {
+                        JsonObject entry = changelogJson.get(i).getAsJsonObject();
+                        Change change;
+                        if (entry.has("url")) {
+                            Util.getOperatingSystem().open(entry.get("url").getAsString());
+                        }
+
+                        this.scrollPanel.getButton().showAlert(change = new Change(this.scrollPanel, "changelog" + i, entry));
+                        change.setY(y);
+                        y += change.getHeight();
+                    }
+                } catch (JsonParseException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
