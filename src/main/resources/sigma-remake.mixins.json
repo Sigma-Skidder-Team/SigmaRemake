@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "io.github.sst.remake.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "MixinClientBrandRetriever",
+    "MixinGameRenderer",
+    "MixinKeyboard",
+    "MixinMinecraftClient",
+    "MixinMouse",
+    "MixinWindow"
+  ]
+}

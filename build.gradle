@@ -1,11 +1,8 @@
 plugins {
-	id 'fabric-loom' version '1.10.5'
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
-	id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
-kotlin_version = project.kotlin_version
-fabric_kt_version = project.fabric_kt_version
 version = project.mod_version
 group = project.maven_group
 
@@ -14,15 +11,11 @@ base {
 }
 
 repositories {
-	maven {
-		name = "meteor-maven"
-		url = "https://maven.meteordev.org/releases"
-	}
-	maven {
-		name = "fabricmc-maven"
-		url = "https://maven.fabricmc.net/"
-	}
-	mavenCentral()
+    maven { url "https://raw.githubusercontent.com/WonderlandCentral/wonderland-repository/main" }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/sigma-remake.accesswidener")
 }
 
 dependencies {
@@ -32,45 +25,47 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation "meteordevelopment:orbit:${project.orbit_version}"
+    implementation "com.google.code.gson:gson:2.13.2"
+    implementation "dev.firstdark.discordrpc:discord-rpc:1.0.3"
 
-	implementation "org.reflections:reflections:${project.reflections_version}"
-	modImplementation "net.fabricmc:fabric-language-kotlin:$fabric_kt_version+kotlin.$kotlin_version"
-	include modImplementation("io.github.0x3c50.renderer:renderer-fabric:1.2.6.1")
-	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version"
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'org.slf4j:slf4j-simple:2.0.17'
+
+    implementation 'javazoom:jlayer:1.0.1'
+
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 }
 
 processResources {
 	inputs.property "version", project.version
-	inputs.property "kotlin_version", project.kotlin_version
 
 	filesMatching("fabric.mod.json") {
-		expand([
-		        version: project.version,
-				kotlin_version: project.kotlin_version
-		])
+		expand "version": inputs.properties.version
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 8
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
 
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {
+	inputs.property "archivesName", project.base.archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
@@ -79,14 +74,6 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
-}
-kotlin {
-	jvmToolchain(21)
 }
