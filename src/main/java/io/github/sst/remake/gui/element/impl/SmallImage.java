@@ -1,9 +1,11 @@
 package io.github.sst.remake.gui.element.impl;
 
+import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
+import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -42,9 +44,9 @@ public class SmallImage extends Button {
 
     @Override
     public void draw(float partialTicks) {
-        //if (this.texture.equals(Resources.optionsPNG1) && Client.getInstance().notificationManager.isRenderingNotification()) {
-        //     return;
-        // }
+        if (this.texture.equals(Resources.optionsPNG1) && Client.INSTANCE.notificationManager.isRendering()) {
+             return;
+        }
 
         float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
         RenderUtils.drawImage(

@@ -1,5 +1,7 @@
 package io.github.sst.remake.module.impl;
 
+import io.github.sst.remake.Client;
+import io.github.sst.remake.gui.element.impl.Notification;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.*;
@@ -14,5 +16,10 @@ public class TestModule extends Module {
 
     public TestModule() {
         super(Category.MISC, "Test", "A module for testing purposes.");
+    }
+
+    @Override
+    public void onEnable() {
+        Client.INSTANCE.notificationManager.send(new Notification(name, description));
     }
 }

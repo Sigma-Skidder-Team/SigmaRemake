@@ -19,6 +19,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 
@@ -192,6 +193,17 @@ public class JelloScreen extends Screen implements IMinecraft {
 
             fadeAmount -= this.settingGroup.animation.calcPercent() * 0.1F;
             alphaFactor *= 1.0F + var8 * 0.2F;
+        }
+
+        if (Client.INSTANCE.configManager.currentProfile != null && !Client.INSTANCE.notificationManager.isRendering()) {
+            String configName = Client.INSTANCE.configManager.currentProfile.name;
+            RenderUtils.drawString(
+                    FontUtils.HELVETICA_LIGHT_20,
+                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(configName) - 80),
+                    (float) (this.height - 47),
+                    configName,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * Math.max(0.0F, Math.min(1.0F, alphaFactor)))
+            );
         }
 
         for (CustomGuiScreen child : this.getChildren()) {
