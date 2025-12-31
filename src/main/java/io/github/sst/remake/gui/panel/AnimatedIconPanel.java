@@ -49,15 +49,15 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     }
 
     @Override
-    public boolean method13212() {
-        return this.field20909 && !this.isDragging();
+    public boolean isMouseDownOverComponent() {
+        return this.isMouseDownOverComponent && !this.isDragging();
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
-            if (!this.field20909 && !this.field20877) {
+            if (!this.isMouseDownOverComponent && !this.field20877) {
                 this.sizeWidthThingy = this.getWidth() / 2;
                 this.sizeHeightThingy = this.getHeight() / 2;
             }
@@ -73,8 +73,8 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
                 this.timerUtils.start();
                 this.mouseX = mouseX;
                 this.mouseY = mouseY;
-                this.sizeWidthThingy = this.mouseX - this.method13271();
-                this.sizeHeightThingy = this.mouseY - this.method13272();
+                this.sizeWidthThingy = this.mouseX - this.getAbsoluteX();
+                this.sizeHeightThingy = this.mouseY - this.getAbsoluteY();
             }
 
             return false;
@@ -100,15 +100,15 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
         if (!this.isDragging() && this.isDraggable()) {
             boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
             boolean var7 = this.field20885
-                    && this.field20909
+                    && this.isMouseDownOverComponent
                     && (Math.abs(this.mouseX - newHeight) > this.field20889 || Math.abs(this.mouseY - newWidth) > this.field20889);
-            boolean var8 = this.field20886 && this.field20909;
+            boolean var8 = this.field20886 && this.isMouseDownOverComponent;
             if (var6 || var7 || var8) {
                 this.setDragging(true);
             }
         } else if (this.isDragging()) {
-            this.setX(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.method13271()));
-            this.setY(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.method13272()));
+            this.setX(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
+            this.setY(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
             if (this.field20882) {
                 if (this.parent == null) {
                     if (this.getX() < 0) {

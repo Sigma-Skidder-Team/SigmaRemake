@@ -285,10 +285,10 @@ public class CustomGuiScreen implements IGuiEventListener {
             CustomGuiScreen var8 = this.children.get(i);
             boolean var9 = var8.getParent() != null
                     && var8.getParent() instanceof ScrollableContentPanel
-                    && var8.getParent().method13114(mouseX, mouseY)
+                    && var8.getParent().isMouseOverComponent(mouseX, mouseY)
                     && var8.getParent().isSelfVisible()
                     && var8.getParent().isHovered();
-            if (var6 || !var8.isHovered() || !var8.isSelfVisible() || !var8.method13114(mouseX, mouseY) && !var9) {
+            if (var6 || !var8.isHovered() || !var8.isSelfVisible() || !var8.isMouseOverComponent(mouseX, mouseY) && !var9) {
                 var8.setFocused(false);
                 if (var8 != null) {
                     for (CustomGuiScreen child : var8.getChildren()) {
@@ -302,9 +302,9 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
 
         if (!var6) {
-            this.field20909 = this.field20908 = true;
-            this.method13242();
-            this.method13248(mouseButton);
+            this.isMouseDownOverComponent = this.isHoveredInHierarchy = true;
+            this.requestFocus();
+            this.callMouseButtonCallbacks(mouseButton);
             return false;
         } else {
             return true;
@@ -313,7 +313,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     @Override
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
-        this.field20908 = this.method13114(mouseX, mouseY);
+        this.isHoveredInHierarchy = this.isMouseOverComponent(mouseX, mouseY);
 
         for (CustomGuiScreen child : this.children) {
             if (child.isHovered() && child.isSelfVisible()) {
@@ -322,11 +322,11 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
 
         this.onMouseButtonUsed(mouseButton);
-        if (this.method13212() && this.method13298()) {
+        if (this.isMouseDownOverComponent() && this.isHoveredInHierarchy()) {
             this.onMouseClick(mouseX, mouseY, mouseButton);
         }
 
-        this.field20909 = false;
+        this.isMouseDownOverComponent = false;
     }
 
     @Override
@@ -706,7 +706,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     /**
-     * used in {@link CustomGuiScreen#method13220} to re-add a child (if this returns true)
+     * used in {@link CustomGuiScreen#reorderChildren} to re-add a child (if this returns true)
      */
     public boolean shouldReAddChildren() {
         return this.reAddChildren;

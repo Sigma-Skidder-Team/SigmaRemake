@@ -22,7 +22,7 @@ public class SliderButton extends Button {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
         float var6 = (float) this.getX() / (float) (this.parent.getWidth() - this.getWidth());
-        if (!this.method13212() && !this.method13298() && !this.isDragging()) {
+        if (!this.isMouseDownOverComponent() && !this.isHoveredInHierarchy() && !this.isDragging()) {
             this.field20601.changeDirection(AnimationUtils.Direction.BACKWARDS);
         } else {
             this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);

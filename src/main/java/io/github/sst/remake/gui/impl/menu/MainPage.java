@@ -125,7 +125,7 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13224();
+        this.applyScaleTransforms();
         Texture largeLogo = Resources.logoLargePNG;
         int imageWidth = largeLogo.getImageWidth();
         int imageHeight = largeLogo.getImageHeight();

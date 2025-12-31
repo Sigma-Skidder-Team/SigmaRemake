@@ -43,7 +43,7 @@ public class Alert extends Element {
         this.alertName = name;
         this.setHovered(false);
         this.setReAddChildren(false);
-        this.method13243();
+        this.defocusSiblings();
         TextField var8 = null;
         TextField var9 = null;
 
@@ -239,14 +239,14 @@ public class Alert extends Element {
                 );
             }
 
-            super.method13279(var8, var8);
-            super.method13224();
+            super.setScale(var8, var8);
+            super.applyScaleTransforms();
             super.draw(var7);
         } else {
             if (this.isFocused()) {
                 this.setFocused(false);
                 this.setSelfVisible(false);
-                this.method13243();
+                this.defocusSiblings();
             }
         }
     }

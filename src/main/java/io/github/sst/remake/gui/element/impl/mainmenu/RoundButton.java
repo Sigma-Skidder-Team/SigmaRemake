@@ -36,7 +36,7 @@ public class RoundButton extends SmallImage {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20577 = this.method13298();
+        this.field20577 = this.isHoveredInHierarchy();
         if (!this.field20577) {
             if (this.method13029()) {
                 this.field20578.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -62,7 +62,7 @@ public class RoundButton extends SmallImage {
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.method13212() ? 0.0F : 0.1F;
+        float var4 = !this.isMouseDownOverComponent() ? 0.0F : 0.1F;
         float var5 = this.method13030();
         if (this.field20578.getDirection() == AnimationUtils.Direction.BACKWARDS) {
             var5 = this.method13031();

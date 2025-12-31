@@ -19,8 +19,8 @@ public class Class543 implements Runnable {
                 var5.method13712();
                 this.parent.field20957.method13104();
                 var5.setReAddChildren(true);
-                var5.method13242();
-                this.parent.method13234(this.parent.field20960);
+                var5.requestFocus();
+                this.parent.queueChildRemoval(this.parent.field20960);
             }
         }
     }

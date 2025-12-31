@@ -31,13 +31,13 @@ public class Button extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20584 = this.field20584 + (!this.method13298() ? -0.1F : 0.1F);
+        this.field20584 = this.field20584 + (!this.isHoveredInHierarchy() ? -0.1F : 0.1F);
         this.field20584 = Math.min(Math.max(0.0F, this.field20584), 1.0F);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.method13212() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
+        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
         int color = ColorHelper.applyAlpha(
                 ColorHelper.shiftTowardsOther(this.textColor.getPrimaryColor(), this.textColor.getSecondaryColor(), 1.0F - var4),
                 (float) (this.textColor.getPrimaryColor() >> 24 & 0xFF) / 255.0F * partialTicks

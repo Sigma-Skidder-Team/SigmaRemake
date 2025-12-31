@@ -75,8 +75,8 @@ public class ProfileGroup extends AnimatedIconPanel {
         });
         var13.setFont(FontUtils.HELVETICA_LIGHT_18);
         deleteButton.setFont(FontUtils.HELVETICA_LIGHT_18);
-        var13.setSize((var0, var1x) -> var0.setWidth(Math.round((float) var1x.getWidth() / 2.0F)));
-        deleteButton.setSize((var0, var1x) -> {
+        var13.addWidthSetter((var0, var1x) -> var0.setWidth(Math.round((float) var1x.getWidth() / 2.0F)));
+        deleteButton.addWidthSetter((var0, var1x) -> {
             var0.setX(Math.round((float) var1x.getWidth() / 2.0F));
             var0.setWidth(Math.round((float) var1x.getWidth() / 2.0F));
         });
@@ -104,7 +104,7 @@ public class ProfileGroup extends AnimatedIconPanel {
             this.profileName.method13148();
         });
         this.buttonList.setWidth(0);
-        this.buttonList.method13284(this.field21270);
+        this.buttonList.setTranslateX(this.field21270);
         this.field21264 = new AnimationUtils(100, 100, AnimationUtils.Direction.BACKWARDS);
         this.field21265 = new AnimationUtils(290, 290, AnimationUtils.Direction.BACKWARDS);
         this.animation = new AnimationUtils(200, 100, AnimationUtils.Direction.BACKWARDS);
@@ -137,8 +137,8 @@ public class ProfileGroup extends AnimatedIconPanel {
             }
         }
 
-        this.field21264.changeDirection(this.method13114(mouseX, mouseY) ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
-        if (!this.method13114(mouseX, mouseY)) {
+        this.field21264.changeDirection(this.isMouseOverComponent(mouseX, mouseY) ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        if (!this.isMouseOverComponent(mouseX, mouseY)) {
             this.field21265.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
@@ -163,9 +163,9 @@ public class ProfileGroup extends AnimatedIconPanel {
 
         this.buttonList.setHovered(this.field21265.calcPercent() == 1.0F);
         this.buttonList.setWidth(Math.max(0, (int) ((float) this.field21270 * var5)));
-        this.buttonList.method13284((int) ((float) this.field21270 * (1.0F - var5)));
+        this.buttonList.setTranslateX((int) ((float) this.field21270 * (1.0F - var5)));
         ScissorUtils.startScissor(this);
-        float var6 = this.method13212() && this.field21265.getDirection().equals(AnimationUtils.Direction.BACKWARDS) ? 0.03F : 0.0F;
+        float var6 = this.isMouseDownOverComponent() && this.field21265.getDirection().equals(AnimationUtils.Direction.BACKWARDS) ? 0.03F : 0.0F;
         RenderUtils.drawRoundedRect2(
                 (float) this.x,
                 (float) this.y,
@@ -183,7 +183,7 @@ public class ProfileGroup extends AnimatedIconPanel {
             );
         }
 
-        this.profileName.method13284(Math.round(-var5 * (float) this.width));
+        this.profileName.setTranslateX(Math.round(-var5 * (float) this.width));
         if (Client.INSTANCE.configManager.profile == this.currentProfile) {
             RenderUtils.drawImage(
                     (float) (this.getX() + this.getWidth() - 35) - var5 * (float) this.width,

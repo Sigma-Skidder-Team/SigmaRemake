@@ -26,23 +26,17 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class JelloKeyboard extends Screen implements IMinecraft {
-    private Texture field20954;
     public Date field20955;
     public PopOver field20956;
     public Keyboard field20957;
-    public boolean field20958 = false;
-    public boolean field20959;
     public ModsPanel field20960;
     public int field20961;
-    public boolean field20962;
-    private boolean field20963;
-    private boolean field20964;
 
     public JelloKeyboard() {
         super("KeybindManager");
         this.field20955 = new Date();
         this.addToList(this.field20957 = new Keyboard(this, "keyboard", (this.width - 1060) / 2, (this.height - 357) / 2));
-        this.field20957.method13279(0.4F, 0.4F);
+        this.field20957.setScale(0.4F, 0.4F);
         this.field20957
                 .onPress(
                         var2 -> {
@@ -111,15 +105,15 @@ public class JelloKeyboard extends Screen implements IMinecraft {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.method13212()) {
-            this.field20957.method13242();
+        if (this.isMouseDownOverComponent()) {
+            this.field20957.requestFocus();
             this.clearChildren();
             this.field20961 = 0;
             this.field20956 = null;
         }
 
         if (this.field20956 != null) {
-            this.field20957.method13242();
+            this.field20957.requestFocus();
             this.clearChildren();
             this.addToList(this.field20956);
             this.field20956 = null;
@@ -147,7 +141,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
     public void draw(float partialTicks) {
         partialTicks = (float) Math.min(200L, new Date().getTime() - this.field20955.getTime()) / 200.0F;
         float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
         float var5 = 0.25F * partialTicks;
         RenderUtils.drawRoundedRect(
                 (float) this.x,
@@ -156,7 +150,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
                 (float) (this.y + this.height),
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), var5)
         );
-        super.method13224();
+        super.applyScaleTransforms();
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_40,
                 (float) ((this.width - 1060) / 2),

@@ -54,7 +54,7 @@ public class ModsPanel extends Element {
             this.field21307 = var10.getText();
             this.field21308.setScrollOffset(0);
         });
-        var10.method13242();
+        var10.requestFocus();
         this.addToList(
                 this.field21308 = new ScrollableContentPanel(
                         this, "mods", this.field21304 + 30, this.field21303 + 30 + 120, this.field21305 - 30 * 2, this.field21306 - 30 * 2 - 120
@@ -113,7 +113,7 @@ public class ModsPanel extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.method13212()
+        if (this.isMouseDownOverComponent()
                 && (mouseX < this.field21304 || mouseY < this.field21303 || mouseX > this.field21304 + this.field21305 || mouseY > this.field21303 + this.field21306)) {
             this.field21311 = true;
         }
@@ -193,7 +193,7 @@ public class ModsPanel extends Element {
             var4 = QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F);
         }
 
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
         if (partialTicks == 0.0F && this.field21311) {
             this.notifyBindableActionSelected(this.selectedBindableAction);
         }
@@ -205,7 +205,7 @@ public class ModsPanel extends Element {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F * partialTicks)
         );
-        super.method13224();
+        super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
                 (float) this.field21304,
                 (float) this.field21303,

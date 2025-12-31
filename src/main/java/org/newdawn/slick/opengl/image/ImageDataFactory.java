@@ -36,22 +36,18 @@ public class ImageDataFactory {
      * not be used.
      */
     private static void checkProperty() {
-        if (!pngLoaderPropertyChecked) {
-            pngLoaderPropertyChecked = true;
+        if (pngLoaderPropertyChecked) return;
+        pngLoaderPropertyChecked = true;
 
-            try {
-                AccessController.doPrivileged((PrivilegedAction) () -> {
-                    String val = System.getProperty(PNG_LOADER);
-                    if ("false".equalsIgnoreCase(val)) {
-                        usePngLoader = false;
-                    }
-
-                    LOGGER.info("Use Java PNG Loader = " + usePngLoader);
-                    return null;
-                });
-            } catch (Throwable e) {
-                // ignore, security failure - probably an applet
-            }
+        try {
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                String val = System.getProperty(PNG_LOADER);
+                usePngLoader = !"false".equalsIgnoreCase(val);
+                LOGGER.info("Use Java PNG Loader = {}", usePngLoader);
+                return null;
+            });
+        } catch (Throwable ignored) {
+            // Security exception, likely in an applet context
         }
     }
 
@@ -69,6 +65,7 @@ public class ImageDataFactory {
         if (ref.endsWith(".tga")) {
             return new TGAImageData();
         }
+
         if (ref.endsWith(".png")) {
             CompositeImageData data = new CompositeImageData();
             if (usePngLoader) {

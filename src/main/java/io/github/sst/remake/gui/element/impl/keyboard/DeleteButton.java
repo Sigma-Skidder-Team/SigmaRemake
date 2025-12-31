@@ -16,7 +16,7 @@ public class DeleteButton extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.hoverAnimationProgress = this.hoverAnimationProgress + (!this.method13298() ? -0.14F : 0.14F);
+        this.hoverAnimationProgress = this.hoverAnimationProgress + (!this.isHoveredInHierarchy() ? -0.14F : 0.14F);
         this.hoverAnimationProgress = Math.min(Math.max(0.0F, this.hoverAnimationProgress), 1.0F);
     }
 
@@ -26,7 +26,7 @@ public class DeleteButton extends Element {
                 (float) (this.x + this.width / 2),
                 (float) (this.y + this.height / 2),
                 (float) this.width,
-                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.hoverAnimationProgress * 0.3F + (!this.field20909 ? 0.0F : 0.2F)) * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.hoverAnimationProgress * 0.3F + (!this.isMouseDownOverComponent ? 0.0F : 0.2F)) * partialTicks)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + (this.width - 10) / 2),

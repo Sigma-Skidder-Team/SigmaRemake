@@ -11,7 +11,7 @@ public class Class1376 implements Runnable {
 
     @Override
     public void run() {
-        this.parent.field20957.method13242();
+        this.parent.field20957.requestFocus();
         this.parent.clearChildren();
         this.parent.field20961 = 0;
     }

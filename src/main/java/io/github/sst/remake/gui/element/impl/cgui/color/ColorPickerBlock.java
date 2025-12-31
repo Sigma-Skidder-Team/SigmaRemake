@@ -30,9 +30,9 @@ public class ColorPickerBlock extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (this.field21350) {
-            int var5 = this.getMouseX() - this.method13271();
+            int var5 = this.getMouseX() - this.getAbsoluteX();
             this.method13680((float) var5 / (float) this.getWidth());
-            int var6 = this.getMouseY() - this.method13272();
+            int var6 = this.getMouseY() - this.getAbsoluteY();
             this.method13683(1.0F - (float) var6 / (float) this.getHeight());
         }
 

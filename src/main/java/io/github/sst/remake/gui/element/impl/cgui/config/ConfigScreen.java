@@ -97,7 +97,7 @@ public class ConfigScreen extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (mouseY > this.field21300.method13272() + this.field21300.getHeight()) {
+        if (mouseY > this.field21300.getAbsoluteY() + this.field21300.getHeight()) {
             this.field21300.method13119(false);
         }
 
@@ -146,11 +146,11 @@ public class ConfigScreen extends Element {
             var4 = VecUtils.interpolate(partialTicks, 0.38, 0.73, 0.0, 1.0);
         }
 
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.drawBackground((int) ((float) this.width * 0.25F * (1.0F - var4)));
-        this.method13284((int) ((float) this.width * 0.14F * (1.0F - var4)));
-        super.method13224();
-        super.method13225();
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setTranslateY((int) ((float) this.width * 0.25F * (1.0F - var4)));
+        this.setTranslateX((int) ((float) this.width * 0.14F * (1.0F - var4)));
+        super.applyScaleTransforms();
+        super.applyTranslationTransforms();
         int var5 = 10;
         int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
         RenderUtils.drawRoundedRect(
@@ -174,7 +174,7 @@ public class ConfigScreen extends Element {
             var7 = 0.9F + (1.0F - VecUtils.interpolate(this.field21300.field20703.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 
-        this.profileScrollView.method13279(var7, var7);
+        this.profileScrollView.setScale(var7, var7);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_25,
                 (float) (this.x + 25),

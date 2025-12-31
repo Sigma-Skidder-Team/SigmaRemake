@@ -40,7 +40,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
 
     private void method13511() {
         this.getChildren().add(this.buttonList = new CustomGuiScreen(this, "content", 0, 0, this.width, this.height));
-        this.buttonList.setSize(new ContentSize());
+        this.buttonList.addWidthSetter(new ContentSize());
         this.getChildren().add(this.scrollBar = new VerticalScrollBar(this, 11));
         this.scrollBar.setReAddChildren(true);
     }
@@ -64,7 +64,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
             this.buttonList.setY(-1 * this.scrollBar.getOffset());
 
             for (CustomGuiScreen var6 : this.getButton().getChildren()) {
-                for (IWidthSetter var8 : var6.method13260()) {
+                for (IWidthSetter var8 : var6.getWidthSetters()) {
                     var8.setWidth(var6, this);
                 }
             }
@@ -81,7 +81,7 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13224();
+        this.applyScaleTransforms();
         if (!this.field21203 || this.isSelfVisible()) {
             if (this.field21206) {
                 ScissorUtils.startScissor(this);
@@ -105,8 +105,8 @@ public class ScrollableContentPanel extends AnimatedIconPanel {
     }
 
     @Override
-    public boolean isntQueue(String var1) {
-        return this.buttonList.isntQueue(var1);
+    public boolean hasChildWithName(String var1) {
+        return this.buttonList.hasChildWithName(var1);
     }
 
     public CustomGuiScreen getButton() {

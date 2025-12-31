@@ -77,7 +77,7 @@ public class ModListView extends ScrollableContentPanel implements Animatable {
                         }
                     }
             );
-            var13.setSize(new ModListViewSize());
+            var13.addWidthSetter(new ModListViewSize());
             var3++;
         }
 
@@ -110,7 +110,7 @@ public class ModListView extends ScrollableContentPanel implements Animatable {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13225();
+        this.applyTranslationTransforms();
         super.draw(partialTicks * ((CategoryPanel) this.parent).field21195);
     }
 

@@ -78,7 +78,7 @@ public class JelloScreen extends Screen implements IMinecraft {
 
         moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
             if (this.configButton != null && this.hasChild(this.configButton)) {
-                this.method13234(this.configButton);
+                this.queueChildRemoval(this.configButton);
             } else {
                 this.addToList(this.configButton = new ConfigScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
                 this.configButton.setReAddChildren(true);
@@ -105,8 +105,8 @@ public class JelloScreen extends Screen implements IMinecraft {
         this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule("BrainFreeze").enabled);
 
         if (this.configButton != null) {
-            int newHeightValue = mouseX - this.configButton.method13271();
-            int newWidthValue = mouseY - this.configButton.method13272();
+            int newHeightValue = mouseX - this.configButton.getAbsoluteX();
+            int newWidthValue = mouseY - this.configButton.getAbsoluteY();
             boolean conditionMet = newHeightValue >= -10 && newWidthValue >= -10;
             if (!conditionMet) {
                 this.configButton.method13613();
@@ -155,7 +155,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     @Override
     public JsonObject toConfigWithExtra(JsonObject config) {
         ShaderUtils.resetShader();
-        this.method13234(this.blurOverlay);
+        this.queueChildRemoval(this.blurOverlay);
         return super.toConfigWithExtra(config);
     }
 
@@ -185,7 +185,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
-        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.method13227()) {
+        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.hasFocusedTextField()) {
             if (animationCompleted) {
                 animationStarted = !animationStarted;
             }
@@ -237,8 +237,8 @@ public class JelloScreen extends Screen implements IMinecraft {
         for (CustomGuiScreen child : this.getChildren()) {
             float x = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2) * (1.0F - alphaFactor) * 0.5F;
             float y = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2) * (1.0F - alphaFactor) * 0.5F;
-            child.draw((int) x, (int) y);
-            child.method13279(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
+            child.setTranslate((int) x, (int) y);
+            child.setScale(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
         }
 
         super.draw(partialTicks * Math.min(1.0F, alphaFactor) * fadeAmount);
@@ -247,6 +247,6 @@ public class JelloScreen extends Screen implements IMinecraft {
         }
 
         this.blurOverlay.setReAddChildren(false);
-        this.method13234(this.blurOverlay);
+        this.queueChildRemoval(this.blurOverlay);
     }
 }

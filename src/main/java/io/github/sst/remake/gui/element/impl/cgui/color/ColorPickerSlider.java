@@ -20,7 +20,7 @@ public class ColorPickerSlider extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        int var5 = this.getMouseX() - this.method13271();
+        int var5 = this.getMouseX() - this.getAbsoluteX();
         if (this.field20680) {
             this.method13097((float) var5 / (float) this.getWidth());
         }

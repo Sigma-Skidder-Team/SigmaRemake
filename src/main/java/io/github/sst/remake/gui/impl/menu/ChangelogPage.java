@@ -74,8 +74,8 @@ public class ChangelogPage extends CustomGuiScreen {
             fadeFactor = 1.0f;
         }
 
-        this.drawBackground((int) (150.0f * (1.0f - fadeFactor)));
-        this.method13225();
+        this.setTranslateY((int) (150.0f * (1.0f - fadeFactor)));
+        this.applyTranslationTransforms();
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_36, 100.0F, 100.0F, "Changelog", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
         TrueTypeFont jelloLightFont25 = FontUtils.HELVETICA_LIGHT_25;
         String versionText = "You're currently using Sigma Remake " + Client.VERSION;

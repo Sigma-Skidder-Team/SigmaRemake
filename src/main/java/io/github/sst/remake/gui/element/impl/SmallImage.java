@@ -46,7 +46,7 @@ public class SmallImage extends Button {
         //     return;
         // }
 
-        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.method13212() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
+        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
         RenderUtils.drawImage(
                 (float) this.getX(),
                 (float) this.getY(),

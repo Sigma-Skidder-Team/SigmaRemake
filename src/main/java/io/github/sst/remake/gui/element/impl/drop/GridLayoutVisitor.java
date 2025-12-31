@@ -43,7 +43,7 @@ public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
                     }
 
                     CustomGuiScreen tallestInPreviousRow = this.findTallestChild(previousRow);
-                    current.setSize((child, parent) -> child.setY(tallestInPreviousRow.getY() + child.getHeight() + this.verticalGap));
+                    current.addWidthSetter((child, parent) -> child.setY(tallestInPreviousRow.getY() + child.getHeight() + this.verticalGap));
                 }
 
                 CustomGuiScreen[] currentRow = new CustomGuiScreen[this.columns];
@@ -53,7 +53,7 @@ public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
                     if (i + j >= container.getChildren().size()) continue;
                     currentRow[j] = container.getChildren().get(i + j);
                     if (currentRow[j] == null) continue;
-                    this.findTallestChild(currentRow).setSize((child, parent) -> child.setY(current.getY() + current.getHeight() / 2));
+                    this.findTallestChild(currentRow).addWidthSetter((child, parent) -> child.setY(current.getY() + current.getHeight() / 2));
                 }
 
                 i += this.columns;

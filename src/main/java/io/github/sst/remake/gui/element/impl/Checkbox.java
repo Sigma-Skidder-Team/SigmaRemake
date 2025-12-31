@@ -37,7 +37,7 @@ public class Checkbox extends Element {
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.method13212() ? 0.43F : 0.6F;
+        float var4 = !this.isMouseDownOverComponent() ? 0.43F : 0.6F;
         RenderUtils.drawRoundedRect(
                 (float) this.x,
                 (float) this.y,
@@ -53,7 +53,7 @@ public class Checkbox extends Element {
                 (float) this.width,
                 (float) this.height,
                 10.0F,
-                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(-14047489, ClientColors.DEEP_TEAL.getColor(), !this.method13212() ? 1.0F : 0.9F), var5)
+                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(-14047489, ClientColors.DEEP_TEAL.getColor(), !this.isMouseDownOverComponent() ? 1.0F : 0.9F), var5)
         );
         GL11.glPushMatrix();
         GL11.glTranslatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);

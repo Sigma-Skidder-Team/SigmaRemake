@@ -36,7 +36,7 @@ public class Child extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20691 = Math.max(0.0F, Math.min(1.0F, this.field20691 + 0.2F * (float) (!this.method13212() && !this.field20692 ? -1 : 1)));
+        this.field20691 = Math.max(0.0F, Math.min(1.0F, this.field20691 + 0.2F * (float) (!this.isMouseDownOverComponent() && !this.field20692 ? -1 : 1)));
     }
 
     @Override

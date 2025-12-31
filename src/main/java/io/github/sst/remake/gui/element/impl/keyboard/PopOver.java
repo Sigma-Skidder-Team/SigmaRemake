@@ -68,7 +68,7 @@ public class PopOver extends Element {
             }
         }
 
-        this.method13242();
+        this.requestFocus();
         this.setFocused(true);
         this.clearChildren();
 
@@ -112,9 +112,9 @@ public class PopOver extends Element {
     public void draw(float partialTicks) {
         partialTicks = this.field21377.calcPercent();
         float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.method13284((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field21378 ? 1 : -1));
-        super.method13224();
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field21378 ? 1 : -1));
+        super.applyScaleTransforms();
         int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 10 / 2),
