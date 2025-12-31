@@ -5,6 +5,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloOptions;
+import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
 import io.github.sst.remake.gui.screen.holder.CreditsHolder;
 import io.github.sst.remake.gui.screen.holder.KeybindsHolder;
 import io.github.sst.remake.util.client.BindUtils;
@@ -28,7 +29,7 @@ public class OptionPage extends CustomGuiScreen {
         TextButton credits;
         this.addToList(credits = new TextButton(this, "credits", width / 2 - 100, height - 280, 200, 38, color, "Credits", FontUtils.HELVETICA_LIGHT_18));
         openKeybinds.onClick((screen, mouseButton) -> JelloOptions.showGUI(new KeybindsHolder(new LiteralText("Keybind Manager"))));
-        //openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new StringTextComponent("Click GUI"))));
+        openGui.onClick((screen, mouseButton) -> JelloOptions.showGUI(new ClickGuiHolder(new LiteralText("Click GUI"))));
         credits.onClick((screen, mouseButton) -> JelloOptions.showGUI(new CreditsHolder(new LiteralText("Jello Credits"))));
         Checkbox blurCheckbox;
         this.addToList(blurCheckbox = new Checkbox(this, "guiBlurCheckBox", width / 2 - 70, height - 220, 25, 25));

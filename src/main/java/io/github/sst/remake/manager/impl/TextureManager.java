@@ -5,7 +5,6 @@ import io.github.sst.remake.bus.Priority;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.render.Render2DEvent;
 import io.github.sst.remake.manager.Manager;
-import lombok.Getter;
 import org.newdawn.slick.opengl.texture.Texture;
 
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import java.util.List;
 
 public class TextureManager extends Manager {
 
-    @Getter
-    private final List<Texture> textures = new ArrayList<>();
+    public final List<Texture> textures = new ArrayList<>();
 
     public void add(Texture texture) {
         textures.add(texture);

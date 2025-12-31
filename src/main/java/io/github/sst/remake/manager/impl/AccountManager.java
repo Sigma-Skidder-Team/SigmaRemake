@@ -3,11 +3,12 @@ package io.github.sst.remake.manager.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.io.FileUtils;
-import io.github.sst.remake.util.io.audio.SoundUtils;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.File;
@@ -18,21 +19,7 @@ import java.util.List;
 public class AccountManager extends Manager {
 
     public final List<Account> accounts = new ArrayList<>();
-
     public Account currentAccount;
-
-    public boolean has(Account account) {
-        return this.accounts.contains(account);
-    }
-
-    public void add(Account account) {
-        this.accounts.add(account);
-        SoundUtils.play("connect");
-    }
-
-    public void remove(Account account) {
-        this.accounts.remove(account);
-    }
 
     public boolean login(Account account) {
         this.currentAccount = account;
@@ -42,9 +29,16 @@ public class AccountManager extends Manager {
         return true;
     }
 
-    @Override
-    public void init() {
-        add(new Account("Steve", "0", Account.STEVE_UUID));
+    public boolean has(Account account) {
+        return this.accounts.contains(account);
+    }
+
+    public void add(Account account) {
+        this.accounts.add(account);
+    }
+
+    public void remove(Account account) {
+        this.accounts.remove(account);
     }
 
     @Override
@@ -52,16 +46,14 @@ public class AccountManager extends Manager {
         JsonArray jsonArray = new JsonArray();
 
         for (Account account : this.accounts) {
-            jsonArray.add(
-                    com.google.gson.JsonParser.parseString(account.toJson()).getAsJsonObject()
-            );
+            jsonArray.add(JsonParser.parseString(account.toJson()).getAsJsonObject());
         }
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("alts", jsonArray);
 
         try {
-            FileUtils.save(jsonObject, new File(Client.INSTANCE.configManager.file + "/alts.json"));
+            FileUtils.save(jsonObject, new File(ConfigUtils.ALTS_FILE));
         } catch (IOException | JsonParseException e) {
             Client.LOGGER.error(e.getMessage());
         }

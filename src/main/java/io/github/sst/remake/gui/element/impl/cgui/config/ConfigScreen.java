@@ -1,13 +1,11 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
-import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloScreen;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
-import io.github.sst.remake.util.client.Profile;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -43,43 +41,11 @@ public class ConfigScreen extends Element {
     }
 
     public void method13610() {
-        Profile profile = Client.INSTANCE.configManager.profile;
-
-        if (profile == null) {
-            return;
-        }
-
-        int var5 = 1;
-
-        while (Client.INSTANCE.configManager.getByName(profile.name + " Copy " + var5)) {
-            var5++;
-        }
-
-        Client.INSTANCE.configManager.saveProfile(profile.cloneWithName(profile.name + " Copy " + var5));
-        this.addRunnable(() -> this.method13615());
-        this.field21300.method13119(false);
-    }
-
-    public void method13611(Profile var1) {
-        int profile = 1;
-
-        while (Client.INSTANCE.configManager.getByName(var1.name + " " + profile)) {
-            profile++;
-        }
-
-        Client.INSTANCE.configManager.saveProfile(var1.cloneWithName(var1.name + " " + profile));
-        this.addRunnable(() -> this.method13615());
+        this.addRunnable(this::method13615);
         this.field21300.method13119(false);
     }
 
     public void method13612() {
-        int profile = 1;
-
-        while (Client.INSTANCE.configManager.getByName("New Profile " + profile)) {
-            profile++;
-        }
-
-        Client.INSTANCE.configManager.saveProfile(new Profile("New Profile " + profile, new JsonObject()));
         this.addRunnable(this::method13615);
         this.field21300.method13119(false);
     }
@@ -114,15 +80,6 @@ public class ConfigScreen extends Element {
         this.addToList(this.profileScrollView = new ScrollableContentPanel(this, "profileScrollView", 10, 80, this.width - 20, this.height - 80 - 10));
         this.profileScrollView.setScrollOffset(var3);
         this.field21301.clear();
-        int var4 = 0;
-        int var5 = 70;
-
-        for (Profile var7 : Client.INSTANCE.configManager.profiles) {
-            ProfileGroup var8 = new ProfileGroup(this, "profile" + var4, 0, var5 * var4, this.profileScrollView.getWidth(), var5, var7, var4);
-            this.profileScrollView.addToList(var8);
-            this.field21301.add(var8);
-            var4++;
-        }
 
         JelloScreen var9 = (JelloScreen) this.getParent();
         var9.method13315();

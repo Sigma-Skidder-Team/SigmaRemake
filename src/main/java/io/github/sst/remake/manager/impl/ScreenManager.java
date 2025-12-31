@@ -84,15 +84,11 @@ public class ScreenManager extends Manager implements IMinecraft {
     @Subscribe
     public void onResize(WindowResizeEvent ignoredEvent) {
         if (this.currentScreen != null) {
-            modifyConfig(true);
-
             try {
                 this.currentScreen = this.currentScreen.getClass().newInstance();
             } catch (IllegalAccessException | InstantiationException exc) {
                 Client.LOGGER.warn(exc);
             }
-
-            modifyConfig(false);
         }
 
         if (client.getWindow().getWidth() != 0 && client.getWindow().getHeight() != 0) {
@@ -151,23 +147,10 @@ public class ScreenManager extends Manager implements IMinecraft {
     }
 
     public void handle(Screen screen) {
-        if (this.currentScreen != null) {
-            modifyConfig(true);
-        }
-
         this.currentScreen = screen;
-        modifyConfig(false);
 
         if (this.currentScreen != null) {
             this.currentScreen.updatePanelDimensions(this.mousePositions[0], this.mousePositions[1]);
-        }
-    }
-
-    private void modifyConfig(boolean save) {
-        if (save) {
-            Client.INSTANCE.configManager.saveConfig();
-        } else {
-            Client.INSTANCE.configManager.loadUIConfig();
         }
     }
 }
