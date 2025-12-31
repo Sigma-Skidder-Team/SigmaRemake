@@ -30,14 +30,17 @@ public class Client implements IMinecraft {
         LOGGER.info("Initializing...");
 
         rpcManager.init();
-        configManager.init();
+
         textureManager.init();
+
         screenManager.init();
         hudManager.init();
-        bindManager.init();
-        moduleManager.init();
-        accountManager.init();
         notificationManager.init();
+
+        moduleManager.init();
+        bindManager.init();
+        configManager.init();
+        accountManager.init();
 
         LOGGER.info("Initialized.");
     }
@@ -45,10 +48,11 @@ public class Client implements IMinecraft {
     public void shutdown() {
         LOGGER.info("Shutting down...");
 
+        moduleManager.shutdown();
+
         bindManager.shutdown();
         accountManager.shutdown();
         rpcManager.shutdown();
-        moduleManager.shutdown();
         configManager.shutdown();
         screenManager.shutdown();
         hudManager.shutdown();
