@@ -1,10 +1,10 @@
 package io.github.sst.remake.setting;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.util.io.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +63,20 @@ public abstract class Setting<T> {
     public abstract JsonObject asJson(JsonObject jsonObject) throws JsonParseException;
 
     public JsonObject fromJson(JsonObject jsonObject) {
-        Gson gson = new Gson();
-
         jsonObject.addProperty("name", this.name);
 
-        JsonElement valueElement = gson.toJsonTree(this.value);
+        JsonElement valueElement = GsonUtils.GSON.toJsonTree(this.value);
         jsonObject.add("value", valueElement);
 
         return jsonObject;
+    }
+
+    public void loadFromJson(JsonElement element) {
+        this.value = GsonUtils.GSON.fromJson(element, this.getValueClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<T> getValueClass() {
+        return (Class<T>) value.getClass();
     }
 }

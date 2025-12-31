@@ -1,10 +1,16 @@
 package io.github.sst.remake.manager.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.BrainFreezeModule;
 import io.github.sst.remake.module.impl.TestModule;
+import io.github.sst.remake.setting.Setting;
+import io.github.sst.remake.util.io.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +30,6 @@ public class ModuleManager extends Manager {
         super.init();
     }
 
-    @Override
-    public void shutdown() {
-        modules.clear();
-        super.shutdown();
-    }
-
     private void initModules() {
         modules.forEach(Module::onInit);
     }
@@ -42,5 +42,84 @@ public class ModuleManager extends Manager {
         return this.modules.stream().filter(mod ->
                 mod.category.equals(input)).collect(Collectors.toList()
         );
+    }
+
+    public JsonObject getJson() {
+        JsonObject profileObject = new JsonObject();
+        JsonArray modsArray = new JsonArray();
+
+        for (Module mod : modules) {
+            JsonObject moduleObject = new JsonObject();
+            JsonArray optionsArray = new JsonArray();
+
+            for (Setting<?> setting : mod.settings) {
+                JsonObject settingJson = new JsonObject();
+                optionsArray.add(setting.fromJson(settingJson));
+            }
+
+            moduleObject.addProperty("name", mod.name);
+            moduleObject.add("options", optionsArray);
+            moduleObject.addProperty("enabled", mod.enabled);
+
+            modsArray.add(moduleObject);
+        }
+
+        profileObject.add("mods", modsArray);
+        return profileObject;
+    }
+
+    public void loadJson(JsonObject profileObject) {
+        if (!profileObject.has("mods")) {
+            return;
+        }
+
+        JsonArray modsArray = profileObject.getAsJsonArray("mods");
+
+        for (JsonElement modElement : modsArray) {
+            JsonObject modObject = modElement.getAsJsonObject();
+            String modName = modObject.get("name").getAsString();
+
+            Module mod = null;
+            for (Module m : modules) {
+                if (m.name.equalsIgnoreCase(modName)) {
+                    mod = m;
+                    break;
+                }
+            }
+
+            if (mod == null) {
+                continue;
+            }
+
+            mod.setEnabled(false);
+
+            if (!modObject.has("options")) {
+                continue;
+            }
+
+            JsonArray optionsArray = modObject.getAsJsonArray("options");
+
+            for (JsonElement optionElement : optionsArray) {
+                JsonObject optionObject = optionElement.getAsJsonObject();
+                String settingName = optionObject.get("name").getAsString();
+
+                for (Setting<?> setting : mod.settings) {
+                    if (!setting.name.equalsIgnoreCase(settingName)) {
+                        continue;
+                    }
+
+                    if (!optionObject.has("value")) {
+                        break;
+                    }
+
+                    setting.loadFromJson(optionObject.get("value"));
+                    break;
+                }
+            }
+
+            if (modObject.has("enabled")) {
+                mod.setEnabled(modObject.get("enabled").getAsBoolean());
+            }
+        }
     }
 }
