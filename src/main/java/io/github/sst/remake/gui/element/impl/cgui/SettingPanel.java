@@ -9,7 +9,7 @@ import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.element.impl.cgui.block.Picker;
 import io.github.sst.remake.gui.element.impl.cgui.color.ColorPicker;
 import io.github.sst.remake.gui.element.impl.cgui.slider.Slider;
-import io.github.sst.remake.gui.interfaces.Class4342;
+import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class SettingPanel extends ScrollableContentPanel implements Class4342 {
+public class SettingPanel extends ScrollableContentPanel implements Animatable {
     private final Module module;
     public int field21222 = 200;
     private final HashMap<Text, Setting> field21223 = new HashMap<>();
@@ -297,7 +297,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
     }
 
     @Override
-    public boolean method13525() {
+    public boolean shouldAnimate() {
         return false;
     }
 

@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.impl;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.element.impl.keyboard.Class6984;
+import io.github.sst.remake.gui.element.impl.keyboard.BindableAction;
 import io.github.sst.remake.gui.element.impl.keyboard.Keyboard;
 import io.github.sst.remake.gui.element.impl.keyboard.ModsPanel;
 import io.github.sst.remake.gui.element.impl.keyboard.PopOver;
@@ -64,7 +64,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
                                         this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, bind
                                 );
                                 this.field20956.onPress(var1x -> this.method13329(this.field20957));
-                                this.field20956.method13713(pop -> {
+                                this.field20956.addAddButtonListener(pop -> {
                                     pop.setReAddChildren(false);
                                     this.method13331();
                                 });
@@ -75,15 +75,15 @@ public class JelloKeyboard extends Screen implements IMinecraft {
         ShaderUtils.applyBlurShader();
     }
 
-    public static List<Class6984> method13328() {
-        List<Class6984> var2 = new ArrayList<>();
+    public static List<BindableAction> getBindableActions() {
+        List<BindableAction> var2 = new ArrayList<>();
 
         for (Module var4 : Client.INSTANCE.moduleManager.modules) {
-            var2.add(new Class6984(var4));
+            var2.add(new BindableAction(var4));
         }
 
         for (Entry var6 : ScreenUtils.screenToScreenName.entrySet()) {
-            var2.add(new Class6984((Class<? extends net.minecraft.client.gui.screen.Screen>) var6.getKey()));
+            var2.add(new BindableAction((Class<? extends net.minecraft.client.gui.screen.Screen>) var6.getKey()));
         }
 
         return var2;

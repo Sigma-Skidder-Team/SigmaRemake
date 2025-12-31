@@ -5,23 +5,23 @@ import io.github.sst.remake.util.client.BindUtils;
 import io.github.sst.remake.util.client.ScreenUtils;
 import net.minecraft.client.gui.screen.Screen;
 
-public class Class6984 {
+public class BindableAction {
     public Module module;
     public Class<? extends Screen> screen;
 
-    public Class6984(Module module) {
+    public BindableAction(Module module) {
         this.module = module;
     }
 
-    public Class6984(Class<? extends Screen> screen) {
+    public BindableAction(Class<? extends Screen> screen) {
         this.screen = screen;
     }
 
-    public String method21596() {
+    public String getName() {
         return this.module == null ? ScreenUtils.screenToScreenName.get(this.screen) : this.module.getName();
     }
 
-    public String method21597() {
+    public String getType() {
         return this.module == null ? "Screen" : this.module.getCategory().toString();
     }
 

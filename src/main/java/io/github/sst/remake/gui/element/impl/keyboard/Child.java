@@ -22,7 +22,7 @@ public class Child extends Element {
     }
 
     public void method13102() {
-        for (Class6984 var4 : JelloKeyboard.method13328()) {
+        for (BindableAction var4 : JelloKeyboard.getBindableActions()) {
             int var5 = var4.getBind();
             if (var5 == this.field20690) {
                 this.field20693 = true;

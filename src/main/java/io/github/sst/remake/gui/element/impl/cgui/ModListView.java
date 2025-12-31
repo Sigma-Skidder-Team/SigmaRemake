@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.cgui;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Button;
-import io.github.sst.remake.gui.interfaces.Class4342;
+import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
@@ -16,7 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModListView extends ScrollableContentPanel implements Class4342 {
+public class ModListView extends ScrollableContentPanel implements Animatable {
     public final Category category;
     private final List<Button> field21215 = new ArrayList<>();
     private final boolean field21217;
@@ -102,7 +102,7 @@ public class ModListView extends ScrollableContentPanel implements Class4342 {
         super.updatePanelDimensions(mouseX, mouseY);
         CategoryPanel var5 = (CategoryPanel) this.parent;
         float var6 = (float) (0.07F * (60.0 / (double) MinecraftClient.currentFps));
-        this.field21218 = this.field21218 + (!this.method13525() ? 0.0F : (!this.field21217 ? var6 : -var6));
+        this.field21218 = this.field21218 + (!this.shouldAnimate() ? 0.0F : (!this.field21217 ? var6 : -var6));
         this.field21218 = Math.max(0.0F, Math.min(1.0F, this.field21218));
         var5.field21195 = this.method13524(this.field21218, 0.0F, 1.0F, 1.0F);
     }
@@ -114,7 +114,7 @@ public class ModListView extends ScrollableContentPanel implements Class4342 {
     }
 
     @Override
-    public boolean method13525() {
+    public boolean shouldAnimate() {
         return false;
     }
 
