@@ -1,6 +1,7 @@
 package io.github.sst.remake.setting.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
@@ -44,6 +45,20 @@ public class BlockListSetting extends Setting<List<String>> {
         jsonObject.add("value", jsonArray);
 
         return jsonObject;
+    }
+
+    @Override
+    public void loadFromJson(JsonElement element) {
+        if (element.isJsonArray()) {
+            JsonArray array = element.getAsJsonArray();
+            List<String> list = new ArrayList<>();
+            for (JsonElement e : array) {
+                list.add(e.getAsString());
+            }
+            this.value = list;
+        } else {
+            this.value = new ArrayList<>();
+        }
     }
 
 }
