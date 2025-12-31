@@ -8,7 +8,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class Text extends AnimatedIconPanel {
     public static ColorHelper defaultColorHelper = new ColorHelper(

@@ -1,4 +1,4 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.texture;
 
 /**
  * The description of a texture loaded by the TextureLoader utility

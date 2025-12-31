@@ -14,7 +14,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;

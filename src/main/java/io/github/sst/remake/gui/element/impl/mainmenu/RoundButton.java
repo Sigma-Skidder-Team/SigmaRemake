@@ -10,8 +10,8 @@ import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
+import org.newdawn.slick.opengl.texture.Texture;
 
 public class RoundButton extends SmallImage {
     public boolean field20577 = false;

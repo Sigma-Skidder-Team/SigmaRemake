@@ -12,7 +12,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import net.minecraft.client.util.InputUtil;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;

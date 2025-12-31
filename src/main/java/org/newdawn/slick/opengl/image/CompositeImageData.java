@@ -1,4 +1,6 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.image;
+
+import org.newdawn.slick.exception.CompositeIOException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

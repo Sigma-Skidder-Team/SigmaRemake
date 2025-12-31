@@ -1,6 +1,8 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.image.tga;
 
 import org.lwjgl.BufferUtils;
+import org.newdawn.slick.opengl.image.ImageData;
+import org.newdawn.slick.opengl.image.LoadableImageData;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;

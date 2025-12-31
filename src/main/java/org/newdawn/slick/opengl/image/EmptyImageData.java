@@ -1,6 +1,7 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.image;
 
 import org.lwjgl.BufferUtils;
+import org.newdawn.slick.opengl.texture.InternalTextureLoader;
 
 import java.nio.ByteBuffer;
 

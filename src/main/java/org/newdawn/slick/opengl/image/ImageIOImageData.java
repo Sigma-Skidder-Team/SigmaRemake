@@ -1,4 +1,4 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

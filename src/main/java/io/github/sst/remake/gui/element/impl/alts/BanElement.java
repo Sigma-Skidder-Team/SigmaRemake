@@ -18,8 +18,8 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Identifier;
 import org.apache.commons.codec.binary.Base64;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

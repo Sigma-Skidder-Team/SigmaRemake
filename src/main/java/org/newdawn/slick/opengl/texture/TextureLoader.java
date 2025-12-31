@@ -1,4 +1,4 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.texture;
 
 import org.lwjgl.opengl.GL11;
 

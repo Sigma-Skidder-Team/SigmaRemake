@@ -1,10 +1,11 @@
-package org.newdawn.slick;
+package org.newdawn.slick.opengl.font;
 
-import org.newdawn.slick.opengl.GLUtils;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.util.GLUtils;
+import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.util.image.BufferedImageUtil;
+import org.newdawn.slick.util.math.Color;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -338,15 +339,15 @@ public class TrueTypeFont implements Font {
      * @param color     The color to draw the text
      */
     public void drawString(float x, float y, String whatchars,
-                           Color color) {
+                           org.newdawn.slick.util.math.Color color) {
         drawString(x, y, whatchars, color, 0, whatchars.length() - 1);
     }
 
     /**
-     * @see Font#drawString(float, float, String, Color, int, int)
+     * @see Font#drawString(float, float, String, org.newdawn.slick.util.math.Color, int, int)
      */
     @Override
-    public void drawString(float x, float y, String string, Color color, int startIndex, int endIndex) {
+    public void drawString(float x, float y, String string, org.newdawn.slick.util.math.Color color, int startIndex, int endIndex) {
         color.bind();
         this.fontTexture.bind();
         IntObject intObject = null;

@@ -6,7 +6,7 @@ import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.render.Render2DEvent;
 import io.github.sst.remake.manager.Manager;
 import lombok.Getter;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;

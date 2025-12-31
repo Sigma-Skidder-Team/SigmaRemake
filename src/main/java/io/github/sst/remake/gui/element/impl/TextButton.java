@@ -6,7 +6,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class TextButton extends Element {
     public AnimationUtils lineAnim;

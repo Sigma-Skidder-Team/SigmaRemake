@@ -20,8 +20,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
+import org.newdawn.slick.opengl.texture.Texture;
 
 public class MainPage extends CustomGuiScreen implements IMinecraft {
     private final Button singleplayerButton;

@@ -5,7 +5,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

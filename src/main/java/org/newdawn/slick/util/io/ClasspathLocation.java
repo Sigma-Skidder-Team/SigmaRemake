@@ -1,4 +1,7 @@
-package org.newdawn.slick.util;
+package org.newdawn.slick.util.io;
+
+import org.newdawn.slick.util.resource.ResourceLoader;
+import org.newdawn.slick.util.resource.ResourceLocation;
 
 import java.io.InputStream;
 import java.net.URL;

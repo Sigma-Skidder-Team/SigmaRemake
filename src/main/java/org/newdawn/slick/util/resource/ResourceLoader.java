@@ -1,4 +1,7 @@
-package org.newdawn.slick.util;
+package org.newdawn.slick.util.resource;
+
+import org.newdawn.slick.util.io.ClasspathLocation;
+import org.newdawn.slick.util.io.FileSystemLocation;
 
 import java.io.BufferedInputStream;
 import java.io.File;

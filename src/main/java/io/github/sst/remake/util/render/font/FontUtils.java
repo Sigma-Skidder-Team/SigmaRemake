@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.render.font;
 
 import io.github.sst.remake.util.render.image.Resources;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.awt.*;
 import java.io.InputStream;

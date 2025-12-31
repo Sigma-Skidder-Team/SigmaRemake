@@ -1,4 +1,4 @@
-package org.newdawn.slick;
+package org.newdawn.slick.util.math;
 
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;

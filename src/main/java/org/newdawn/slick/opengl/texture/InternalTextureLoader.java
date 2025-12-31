@@ -1,9 +1,13 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.texture;
 
 import org.lwjgl.BufferUtils;
+import org.newdawn.slick.opengl.image.EmptyImageData;
+import org.newdawn.slick.opengl.image.ImageData;
+import org.newdawn.slick.opengl.image.ImageDataFactory;
+import org.newdawn.slick.opengl.image.LoadableImageData;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
-import org.newdawn.slick.util.ResourceLoader;
+import org.newdawn.slick.util.resource.ResourceLoader;
 
 import java.io.*;
 import java.lang.ref.SoftReference;

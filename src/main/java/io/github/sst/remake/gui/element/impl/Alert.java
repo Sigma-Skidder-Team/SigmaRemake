@@ -14,8 +14,8 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.client.MinecraftClient;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;

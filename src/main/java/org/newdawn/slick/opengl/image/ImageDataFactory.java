@@ -1,6 +1,9 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.image;
 
-import org.newdawn.slick.util.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.newdawn.slick.opengl.image.png.PNGImageData;
+import org.newdawn.slick.opengl.image.tga.TGAImageData;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -11,6 +14,8 @@ import java.security.PrivilegedAction;
  * @author kevin
  */
 public class ImageDataFactory {
+    private static final Logger LOGGER = LogManager.getLogger("Slick2D");
+
     /**
      * True if we're going to use the native PNG loader - cached so it doesn't have
      * the security check repeatedly
@@ -35,16 +40,14 @@ public class ImageDataFactory {
             pngLoaderPropertyChecked = true;
 
             try {
-                AccessController.doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        String val = System.getProperty(PNG_LOADER);
-                        if ("false".equalsIgnoreCase(val)) {
-                            usePngLoader = false;
-                        }
-
-                        Log.info("Use Java PNG Loader = " + usePngLoader);
-                        return null;
+                AccessController.doPrivileged((PrivilegedAction) () -> {
+                    String val = System.getProperty(PNG_LOADER);
+                    if ("false".equalsIgnoreCase(val)) {
+                        usePngLoader = false;
                     }
+
+                    LOGGER.info("Use Java PNG Loader = " + usePngLoader);
+                    return null;
                 });
             } catch (Throwable e) {
                 // ignore, security failure - probably an applet
@@ -59,7 +62,6 @@ public class ImageDataFactory {
      * @return The image data that can be used to retrieve the data for that resource
      */
     public static LoadableImageData getImageDataFor(String ref) {
-        LoadableImageData imageData;
         checkProperty();
 
         ref = ref.toLowerCase();

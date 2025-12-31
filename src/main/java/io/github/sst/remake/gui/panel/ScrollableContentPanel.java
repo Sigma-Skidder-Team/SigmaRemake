@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
 import io.github.sst.remake.gui.interfaces.IWidthSetter;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.ScissorUtils;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class ScrollableContentPanel extends AnimatedIconPanel {
     private boolean field21201;

@@ -1,9 +1,9 @@
-package org.newdawn.slick.util;
+package org.newdawn.slick.util.image;
 
-import org.newdawn.slick.opengl.ImageIOImageData;
-import org.newdawn.slick.opengl.InternalTextureLoader;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureImpl;
+import org.newdawn.slick.opengl.image.ImageIOImageData;
+import org.newdawn.slick.opengl.texture.InternalTextureLoader;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.opengl.texture.TextureImpl;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
 

@@ -1,4 +1,4 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.exception;
 
 import java.io.IOException;
 import java.util.ArrayList;

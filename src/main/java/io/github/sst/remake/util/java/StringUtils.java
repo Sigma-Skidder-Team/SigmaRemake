@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.java;
 
 import org.apache.commons.codec.binary.Base64;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.nio.charset.StandardCharsets;
 

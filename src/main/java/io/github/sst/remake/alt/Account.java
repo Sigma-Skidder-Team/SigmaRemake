@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import io.github.sst.remake.util.http.SkinUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.util.Session;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 

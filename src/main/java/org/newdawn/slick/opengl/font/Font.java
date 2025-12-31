@@ -1,4 +1,6 @@
-package org.newdawn.slick;
+package org.newdawn.slick.opengl.font;
+
+import org.newdawn.slick.util.math.Color;
 
 public interface Font {
     int getWidth(String var1);

@@ -18,7 +18,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Date;

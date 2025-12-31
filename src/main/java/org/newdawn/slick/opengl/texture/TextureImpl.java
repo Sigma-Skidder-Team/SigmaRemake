@@ -1,9 +1,8 @@
-package org.newdawn.slick.opengl;
+package org.newdawn.slick.opengl.texture;
 
 import org.lwjgl.BufferUtils;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.opengl.renderer.SGL;
-import org.newdawn.slick.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
