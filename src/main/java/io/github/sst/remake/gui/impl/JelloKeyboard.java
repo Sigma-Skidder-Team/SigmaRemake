@@ -18,7 +18,6 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import org.newdawn.slick.opengl.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,23 +83,55 @@ public class JelloKeyboard extends Screen implements IMinecraft {
     }
 
     private void method13329(Keyboard var1) {
-        this.addRunnable(new Class635(var1));
+        this.addRunnable(var1::method13104);
     }
 
     private void method13330() {
-        this.addRunnable(new Class544(this));
+        this.addRunnable(() -> {
+            for (CustomGuiScreen child : this.getChildren()) {
+                if (child instanceof PopOver) {
+                    PopOver pop = (PopOver) child;
+                    pop.method13712();
+                }
+            }
+        });
     }
 
     private void method13331() {
-        this.addRunnable(new Class1533(this));
+        this.addRunnable(() -> {
+            this.addToList(this.field20960 = new ModsPanel(this, "mods", 0, 0, width, height));
+            this.field20960.addBindableActionSelectedListener((panel, action) -> {
+                if (action != null) {
+                    action.setBind(this.field20957.field20696);
+                }
+
+                this.method13332();
+            });
+            this.field20960.setReAddChildren(true);
+        });
     }
 
     public void method13332() {
-        this.addRunnable(new Class543(this));
+        this.addRunnable(() -> {
+            for (CustomGuiScreen child : this.getChildren()) {
+                if (child instanceof PopOver) {
+                    PopOver pop = (PopOver) child;
+                    pop.method13712();
+                    this.field20957.method13104();
+                    pop.setReAddChildren(true);
+                    pop.requestFocus();
+                    this.queueChildRemoval(this.field20960);
+                }
+            }
+        });
     }
 
     private void method13333() {
-        this.addRunnable(new Class1376(this));
+        this.addRunnable(() -> {
+            this.field20957.requestFocus();
+            this.clearChildren();
+            this.field20961 = 0;
+        });
     }
 
     @Override
