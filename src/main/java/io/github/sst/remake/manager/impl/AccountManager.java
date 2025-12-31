@@ -8,7 +8,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.client.ConfigUtils;
-import io.github.sst.remake.util.io.FileUtils;
+import io.github.sst.remake.util.io.GsonUtils;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.File;
@@ -53,9 +53,9 @@ public class AccountManager extends Manager {
         jsonObject.add("alts", jsonArray);
 
         try {
-            FileUtils.save(jsonObject, new File(ConfigUtils.ALTS_FILE));
+            GsonUtils.save(jsonObject, new File(ConfigUtils.ALTS_FILE));
         } catch (IOException | JsonParseException e) {
-            Client.LOGGER.error(e.getMessage());
+            Client.LOGGER.error("Failed to save alts", e);
         }
     }
 }
