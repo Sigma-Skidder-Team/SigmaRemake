@@ -17,11 +17,11 @@ public class BindableActionEntry extends Element {
     public Date animationStartDate;
     public int entryIndex;
     public Date anotherAnimationDate;
-    public Class4263 deleteButton;
+    public DeleteButton deleteButton;
 
     public BindableActionEntry(CustomGuiScreen parent, String name, int x, int y, int width, int height, BindableAction bindableAction, int entryIndex) {
         super(parent, name, x, y, width, height, false);
-        this.addToList(this.deleteButton = new Class4263(this, "delete", 200, 20, 20, 20));
+        this.addToList(this.deleteButton = new DeleteButton(this, "delete", 200, 20, 20, 20));
         this.deleteButton.onClick((element, button) -> {
             this.animationStartDate = new Date();
             this.callUIHandlers();

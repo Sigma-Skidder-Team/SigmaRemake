@@ -6,18 +6,18 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class Class4263 extends Element {
-    public float field20678;
+public class DeleteButton extends Element {
+    public float hoverAnimationProgress;
 
-    public Class4263(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, false);
+    public DeleteButton(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+        super(parent, name, x, y, width, height, false);
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20678 = this.field20678 + (!this.method13298() ? -0.14F : 0.14F);
-        this.field20678 = Math.min(Math.max(0.0F, this.field20678), 1.0F);
+        this.hoverAnimationProgress = this.hoverAnimationProgress + (!this.method13298() ? -0.14F : 0.14F);
+        this.hoverAnimationProgress = Math.min(Math.max(0.0F, this.hoverAnimationProgress), 1.0F);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Class4263 extends Element {
                 (float) (this.x + this.width / 2),
                 (float) (this.y + this.height / 2),
                 (float) this.width,
-                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.field20678 * 0.3F + (!this.field20909 ? 0.0F : 0.2F)) * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.hoverAnimationProgress * 0.3F + (!this.field20909 ? 0.0F : 0.2F)) * partialTicks)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + (this.width - 10) / 2),

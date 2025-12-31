@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
-import io.github.sst.remake.gui.element.impl.drop.Class7262;
+import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.element.impl.drop.Sub;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -103,7 +103,7 @@ public class Dropdown extends Element {
         }
 
         this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        this.accept(new Class7262(1));
+        this.accept(new GridLayoutVisitor(1));
     }
 
     private int method13647() {

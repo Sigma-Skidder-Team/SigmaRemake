@@ -3,6 +3,7 @@ package io.github.sst.remake.gui.element.impl.cgui;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.Button;
+import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Category;
@@ -80,7 +81,7 @@ public class ModListView extends ScrollableContentPanel implements Animatable {
             var3++;
         }
 
-        this.getButton().accept(new Class7262(1));
+        this.getButton().accept(new GridLayoutVisitor(1));
     }
 
     private float method13523() {
