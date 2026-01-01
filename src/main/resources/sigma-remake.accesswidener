@@ -25,3 +25,8 @@ mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client
 accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
 
 accessible field net/minecraft/client/MinecraftClient currentFps I
+
+accessible field net/minecraft/client/gl/Framebuffer depthAttachment I
+
+mutable field net/minecraft/util/math/ChunkPos x I
+mutable field net/minecraft/util/math/ChunkPos z I
