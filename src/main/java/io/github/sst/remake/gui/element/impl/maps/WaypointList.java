@@ -49,7 +49,7 @@ public class WaypointList extends ScrollableContentPanel {
                 var6x.field20614.method13077(waypoint.waypointPos.getX(), waypoint.waypointPos.getZ());
             });
             waypoint.onPress(
-                    var3x -> {Client.INSTANCE.waypointManager.waypoints.remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
+                    var3x -> {Client.INSTANCE.waypointManager.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
                         this.buttonList.removeChildByName(waypoint.name);
                         this.field21209.remove(var3x);
                     }
@@ -95,13 +95,13 @@ public class WaypointList extends ScrollableContentPanel {
             }
 
             if (!var11.isDragging() && this.field21211.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                Client.INSTANCE.waypointManager.waypoints.clear();
+                Client.INSTANCE.waypointManager.getWaypoints().clear();
 
                 for (Waypoint var9 : this.field21209) {
-                    Client.INSTANCE.waypointManager.waypoints.add(new io.github.sst.remake.util.client.waypoint.Waypoint(var9.waypointName, var9.waypointPos.getX(), var9.waypointPos.getZ(), var9.waypointColor));
+                    Client.INSTANCE.waypointManager.getWaypoints().add(new io.github.sst.remake.util.client.waypoint.Waypoint(var9.waypointName, var9.waypointPos.getX(), var9.waypointPos.getZ(), var9.waypointColor));
                 }
 
-                Collections.reverse(Client.INSTANCE.waypointManager.waypoints);
+                Collections.reverse(Client.INSTANCE.waypointManager.getWaypoints());
                 Client.INSTANCE.waypointManager.save();
             }
 

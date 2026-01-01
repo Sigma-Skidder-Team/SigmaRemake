@@ -29,7 +29,7 @@ public class MapPanel extends Element {
         this.field20616 = 260;
         this.addToList(this.waypointList = new WaypointList(this, "waypointList", 0, 65, this.field20616, this.height - 65));
 
-        for (Waypoint var10 : Client.INSTANCE.waypointManager.waypoints) {
+        for (Waypoint var10 : Client.INSTANCE.waypointManager.getWaypoints()) {
             this.waypointList.addWaypoint(var10.name, new Vec3i(var10.x, 64, var10.z), var10.color);
         }
 

@@ -3,10 +3,11 @@ package io.github.sst.remake.manager.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
-import io.github.sst.remake.event.impl.player.ClientPlayerTickEvent;
-import io.github.sst.remake.event.impl.world.LoadWorldEvent;
+import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
+import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
@@ -14,6 +15,7 @@ import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.MapRegion;
 import io.github.sst.remake.util.client.waypoint.RegionPos;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
+import io.github.sst.remake.util.io.FileUtils;
 import io.github.sst.remake.util.io.GsonUtils;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
@@ -30,13 +32,16 @@ import java.util.*;
 
 public class WaypointManager extends Manager implements IMinecraft {
 
-    public final List<Waypoint> waypoints = new ArrayList<>();
+    private final List<Waypoint> waypoints = new ArrayList<>();
     public String identifier;
     public int pendingChunkSaveCount = 0;
+    private boolean loaded = false;
 
     @Override
     public void init() {
-        super.init();
+        if (!ConfigUtils.WAYPOINTS_FOLDER.exists()) {
+            ConfigUtils.WAYPOINTS_FOLDER.mkdirs();
+        }
 
         int color = -7687425;
 
@@ -49,6 +54,16 @@ public class WaypointManager extends Manager implements IMinecraft {
         }
 
         ((Buffer) WaypointUtils.defaultChunkBuffer).flip();
+
+        super.init();
+    }
+
+    public List<Waypoint> getWaypoints() {
+        if (!loaded) {
+            load();
+        }
+
+        return waypoints;
     }
 
     @Override
@@ -69,6 +84,7 @@ public class WaypointManager extends Manager implements IMinecraft {
         WaypointUtils.regionCache.clear();
         WaypointUtils.processedChunks.clear();
         WaypointUtils.borderChunks.clear();
+        this.loaded = false;
         this.waypoints.clear();
     }
 
@@ -201,6 +217,27 @@ public class WaypointManager extends Manager implements IMinecraft {
         }
     }
 
+    public void load() {
+        try {
+            String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
+            JsonObject waypointsObject = JsonParser.parseString(fileContent).getAsJsonObject();
+
+            if (!waypointsObject.has("waypoints")) {
+                waypointsObject.add("waypoints", new JsonArray());
+            }
+
+            JsonArray waypointsArray = waypointsObject.getAsJsonArray("waypoints");
+            for (int i = 0; i < waypointsArray.size(); i++) {
+                JsonObject waypointJson = waypointsArray.get(i).getAsJsonObject();
+                this.waypoints.add(new Waypoint(waypointJson));
+            }
+
+            this.loaded = true;
+        } catch (Exception e) {
+            Client.LOGGER.error("Failed to load waypoints from file", e);
+        }
+    }
+
     public void saveModifiedRegions() throws IOException {
         if (this.identifier != null) {
             try {
@@ -217,7 +254,7 @@ public class WaypointManager extends Manager implements IMinecraft {
     }
 
     private String getFormattedIdentifier() {
-        return new File("jello") + "/maps/" + WaypointUtils.getWorldIdentifier();
+        return new File(ConfigUtils.WAYPOINTS_FOLDER, WaypointUtils.getWorldIdentifier()).getAbsolutePath();
     }
 
 }

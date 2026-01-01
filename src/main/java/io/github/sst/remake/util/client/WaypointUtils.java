@@ -34,15 +34,15 @@ public class WaypointUtils implements IMinecraft {
 
     public static String getRegionFilePath(String baseDir, net.minecraft.world.chunk.Chunk chunk) {
         RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
-        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ".jmap";
+        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ConfigUtils.WAYPOINT_EXTENSION;
     }
 
     public static String getRegionFilePath(String baseDir, MapRegion region) {
-        return baseDir + "/" + region.regionX + "c" + region.regionZ + ".jmap";
+        return baseDir + "/" + region.regionX + "c" + region.regionZ + ConfigUtils.WAYPOINT_EXTENSION;
     }
 
     public static String getRegionFilePath(String baseDir, RegionPos regionPos) {
-        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ".jmap";
+        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ConfigUtils.WAYPOINT_EXTENSION;
     }
 
     public static String getWorldIdentifier() {

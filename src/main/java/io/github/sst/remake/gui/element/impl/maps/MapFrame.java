@@ -155,7 +155,7 @@ public class MapFrame extends Element implements IMinecraft {
         );
         GL11.glPopMatrix();
 
-        for (Waypoint var16 : Client.INSTANCE.waypointManager.waypoints) {
+        for (Waypoint var16 : Client.INSTANCE.waypointManager.getWaypoints()) {
             float var17 = (float) (this.chunkPos.x * 16) - this.field20651 * 16.0F;
             float var18 = (float) (this.chunkPos.z * 16) - this.field20650 * 16.0F;
             float var19 = (float) var16.x - var17 + 1.0F;
