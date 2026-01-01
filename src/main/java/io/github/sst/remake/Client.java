@@ -27,7 +27,7 @@ public class Client implements IMinecraft {
     public boolean loaded = false;
 
     public void start() {
-        LOGGER.info("Initializing...");
+        LOGGER.info("Starting Sigma Remake {}...", VERSION);
 
         rpcManager.init();
 
@@ -42,7 +42,7 @@ public class Client implements IMinecraft {
 
         notificationManager.init();
 
-        LOGGER.info("Initialized.");
+        LOGGER.info("Everything has been initialised.");
     }
 
     public void shutdown() {
@@ -59,7 +59,7 @@ public class Client implements IMinecraft {
         notificationManager.shutdown();
         textureManager.shutdown();
 
-        LOGGER.info("Done.");
+        LOGGER.info("Everything saved.");
     }
 
 }

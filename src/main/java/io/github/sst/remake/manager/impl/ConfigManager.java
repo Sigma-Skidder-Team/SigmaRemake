@@ -1,14 +1,17 @@
 package io.github.sst.remake.manager.impl;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
+import io.github.sst.remake.util.io.FileUtils;
 import io.github.sst.remake.util.io.GsonUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +21,8 @@ public class ConfigManager extends Manager implements IMinecraft {
     public List<Profile> profiles = new ArrayList<>();
     public Profile currentProfile;
 
-    public boolean guiBlur = false;
-    public boolean hqBlur = false;
+    public boolean guiBlur = true;
+    public boolean hqBlur = true;
 
     @Override
     public void init() {
@@ -32,11 +35,13 @@ public class ConfigManager extends Manager implements IMinecraft {
         }
 
         profiles = ConfigUtils.listAllProfiles();
+        loadClientConfig();
         loadProfile("Default");
     }
 
     @Override
     public void shutdown() {
+        saveClientConfig();
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
     }
 
@@ -92,6 +97,38 @@ public class ConfigManager extends Manager implements IMinecraft {
         } catch (Exception e) {
             Client.LOGGER.error("Failed to save profile", e);
         }
+    }
+
+    public void saveClientConfig() {
+        JsonObject object = new JsonObject();
+        object.addProperty("GUI Blur", guiBlur);
+        object.addProperty("GPU Acceleration", hqBlur);
+
+        try {
+            GsonUtils.save(object, ConfigUtils.CONFIG_FILE);
+            Client.LOGGER.info("Saved client configuration");
+        } catch (IOException e) {
+            Client.LOGGER.error("Failed to save client configuration", e);
+        }
+    }
+
+    public void loadClientConfig() {
+        JsonObject object = JsonParser.parseString(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
+
+        if (object.isEmpty()) {
+            Client.LOGGER.warn("Client configuration file is empty");
+            return;
+        }
+
+        if (object.has("GUI Blur")) {
+            guiBlur = object.get("GUI Blur").getAsBoolean();
+        }
+
+        if (object.has("GPU Acceleration")) {
+            guiBlur = object.get("GPU Acceleration").getAsBoolean();
+        }
+
+        Client.LOGGER.info("Loaded client configuration");
     }
 
     public Profile getProfileByName(String name) {
