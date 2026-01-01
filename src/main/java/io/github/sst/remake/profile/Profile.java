@@ -9,7 +9,15 @@ public class Profile {
     public final String name;
     public final JsonObject content;
 
+    public Profile(String name, Profile base) {
+        this(name, base.content);
+    }
+
     public String getFullName() {
         return name + ConfigUtils.EXTENSION;
+    }
+
+    public Profile clone(String name) {
+        return new Profile(name, this.content);
     }
 }

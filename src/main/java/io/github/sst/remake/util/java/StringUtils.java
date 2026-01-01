@@ -3,6 +3,8 @@ package io.github.sst.remake.util.java;
 import org.apache.commons.codec.binary.Base64;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class StringUtils {
@@ -79,5 +81,17 @@ public class StringUtils {
 
     public static byte[] parseBase64Binary(String base64String) {
         return Base64.decodeBase64(base64String);
+    }
+
+    public static String encode(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 encoding not supported", e);
+        }
     }
 }

@@ -1,11 +1,14 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
+import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloScreen;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
+import io.github.sst.remake.manager.impl.ConfigManager;
+import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -20,7 +23,7 @@ import java.util.List;
 public class ConfigScreen extends Element {
     public final AnimationUtils field21298;
     public ScrollableContentPanel profileScrollView;
-    public ConfigGroup field21300;
+    public ConfigGroup configGroup;
     private final List<ProfileGroup> field21301 = new ArrayList<>();
 
     public ConfigScreen(CustomGuiScreen var1, String var2, int var3, int var4) {
@@ -28,30 +31,57 @@ public class ConfigScreen extends Element {
         this.field21298 = new AnimationUtils(300, 100);
         this.setReAddChildren(true);
         this.setListening(false);
-        TextButton addButton;
-        this.addToList(
-                addButton = new TextButton(
-                        this, "addButton", this.width - 55, 0, FontUtils.HELVETICA_LIGHT_25.getWidth("Add"), 69, ColorHelper.DEFAULT_COLOR, "+", FontUtils.HELVETICA_LIGHT_25
-                )
-        );
-        addButton.onClick((var1x, var2x) -> this.field21300.method13119(true));
-        this.addToList(this.field21300 = new ConfigGroup(this, "profile", 0, 69, this.width, 200));
-        this.field21300.setReAddChildren(true);
+        TextButton addButton = new TextButton(this, "addButton", this.width - 55, 0, FontUtils.HELVETICA_LIGHT_25.getWidth("Add"), 69, ColorHelper.DEFAULT_COLOR, "+", FontUtils.HELVETICA_LIGHT_25);
+        addButton.onClick((var1x, var2x) -> this.configGroup.method13119(true));
+        this.addToList(addButton);
+        this.configGroup = new ConfigGroup(this, "profile", 0, 69, this.width, 200);
+        this.configGroup.setReAddChildren(true);
+        this.addToList(configGroup);
         this.method13615();
     }
 
     public void method13610() {
+        ConfigManager var3 = Client.INSTANCE.configManager;
+        Profile var4 = var3.currentProfile;
+        int var5 = 1;
+
+        while (var3.doesProfileExist(var4.name + " Copy " + var5)) {
+            var5++;
+        }
+
+        var3.saveProfile(var4.clone(var4.name + " Copy " + var5), true);
         this.addRunnable(this::method13615);
-        this.field21300.method13119(false);
+        this.configGroup.method13119(false);
+    }
+
+    public void method13611(Profile var1) {
+        ConfigManager var4 = Client.INSTANCE.configManager;
+        int var6 = 1;
+
+        while (var4.doesProfileExist(var1.name + " " + var6)) {
+            var6++;
+        }
+
+        var4.saveProfile(var1.clone(var1.name + " " + var6), true);
+        this.addRunnable(this::method13615);
+        this.configGroup.method13119(false);
     }
 
     public void method13612() {
+        ConfigManager var3 = Client.INSTANCE.configManager;
+        int var4 = 1;
+
+        while (var3.doesProfileExist("New Profile " + var4)) {
+            var4++;
+        }
+
+        var3.saveProfile(new Profile("New Profile " + var4, new JsonObject()), true);
         this.addRunnable(this::method13615);
-        this.field21300.method13119(false);
+        this.configGroup.method13119(false);
     }
 
     public void method13613() {
-        this.field21300.field20703.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.configGroup.field20703.changeDirection(AnimationUtils.Direction.BACKWARDS);
         if (this.field21298.getDirection() != AnimationUtils.Direction.BACKWARDS) {
             this.field21298.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
@@ -63,8 +93,8 @@ public class ConfigScreen extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (mouseY > this.field21300.getAbsoluteY() + this.field21300.getHeight()) {
-            this.field21300.method13119(false);
+        if (mouseY > this.configGroup.getAbsoluteY() + this.configGroup.getHeight()) {
+            this.configGroup.method13119(false);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -80,6 +110,16 @@ public class ConfigScreen extends Element {
         this.addToList(this.profileScrollView = new ScrollableContentPanel(this, "profileScrollView", 10, 80, this.width - 20, this.height - 80 - 10));
         this.profileScrollView.setScrollOffset(var3);
         this.field21301.clear();
+
+        int var4 = 0;
+        int var5 = 70;
+
+        for (Profile profile : Client.INSTANCE.configManager.profiles) {
+            ProfileGroup var8 = new ProfileGroup(this, "profile" + var4, 0, var5 * var4, this.profileScrollView.getWidth(), var5, profile);
+            this.profileScrollView.addToList(var8);
+            this.field21301.add(var8);
+            var4++;
+        }
 
         JelloScreen var9 = (JelloScreen) this.getParent();
         var9.method13315();
@@ -126,9 +166,9 @@ public class ConfigScreen extends Element {
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.25F)
         );
         RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) var5, var6);
-        float var7 = 0.9F + (1.0F - VecUtils.interpolate(this.field21300.field20703.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
-        if (this.field21300.field20703.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var7 = 0.9F + (1.0F - VecUtils.interpolate(this.field21300.field20703.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
+        float var7 = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.field20703.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
+        if (this.configGroup.field20703.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            var7 = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.field20703.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 
         this.profileScrollView.setScale(var7, var7);

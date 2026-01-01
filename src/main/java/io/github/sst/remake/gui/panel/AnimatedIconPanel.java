@@ -26,25 +26,25 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     public final TimerUtils timerUtils = new TimerUtils();
     public int field20888 = 300;
     public int field20889 = 2;
-    private final List<IDragListener> dragListeners = new ArrayList<IDragListener>();
+    private final List<IDragListener> dragListeners = new ArrayList<>();
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, boolean var7) {
-        super(screen, iconName, x, y, width, height);
+    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, boolean var7) {
+        super(screen, name, x, y, width, height);
         this.field20876 = var7;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, ColorHelper colorHelper, boolean var8) {
-        super(screen, iconName, x, y, width, height, colorHelper);
+    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, boolean var8) {
+        super(screen, name, x, y, width, height, colorHelper);
         this.field20876 = var8;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, ColorHelper colorHelper, String text, boolean var9) {
-        super(screen, iconName, x, y, width, height, colorHelper, text);
+    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String text, boolean var9) {
+        super(screen, name, x, y, width, height, colorHelper, text);
         this.field20876 = var9;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean var10) {
-        super(screen, iconName, x, y, width, height, colorHelper, var8, font);
+    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean var10) {
+        super(screen, name, x, y, width, height, colorHelper, var8, font);
         this.field20876 = var10;
     }
 

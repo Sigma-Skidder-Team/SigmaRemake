@@ -1,8 +1,10 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
+import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -10,22 +12,26 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
+import io.github.sst.remake.util.render.image.Resources;
 
 public class ProfileGroup extends AnimatedIconPanel {
     public CustomGuiScreen buttonList;
     public AnimationUtils field21264;
     public AnimationUtils field21265;
     public AnimationUtils animation;
+    public Profile profile;
     public TextField profileName;
     public final int field21270;
     public final int field21271;
     public boolean field21272 = false;
 
-    public ProfileGroup(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public ProfileGroup(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Profile profile) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field21270 = (int) ((float) var5 * 0.8F);
         this.field21271 = var6;
+        this.profile = profile;
 
         ColorHelper var11 = ColorHelper.DEFAULT_COLOR.clone();
         var11.setPrimaryColor(-11371052);
@@ -41,12 +47,26 @@ public class ProfileGroup extends AnimatedIconPanel {
         ConfigButton deleteButton;
         this.buttonList.addToList(deleteButton = new ConfigButton(this.buttonList, "remove", this.field21270 / 2, 0, this.field21270 / 2, var6, var12, "Delete"));
         this.buttonList.setHovered(false);
+        ColorHelper var15 = new ColorHelper(-892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
+        this.addToList(this.profileName = new TextField(this, "profileName", 16, 8, this.getWidth() - 60, 50, var15, profile.name));
+        this.profileName.setRoundedThingy(false);
+        this.profileName.setFont(FontUtils.HELVETICA_LIGHT_24);
+        this.profileName.setSelfVisible(false);
+        this.profileName.addKeyPressListener((var2x, var3x) -> {
+            if (this.profileName.isFocused() && var3x == 257) {
+                this.profileName.setSelfVisible(false);
+                this.profileName.setFocused(false);
+            }
+        });
         var13.setFont(FontUtils.HELVETICA_LIGHT_18);
         deleteButton.setFont(FontUtils.HELVETICA_LIGHT_18);
         var13.addWidthSetter((var0, var1x) -> var0.setWidth(Math.round((float) var1x.getWidth() / 2.0F)));
         deleteButton.addWidthSetter((var0, var1x) -> {
             var0.setX(Math.round((float) var1x.getWidth() / 2.0F));
             var0.setWidth(Math.round((float) var1x.getWidth() / 2.0F));
+        });
+        deleteButton.onClick((var1x, var2x) -> {
+            this.animation.changeDirection(AnimationUtils.Direction.FORWARDS);
         });
         var13.onClick((var1x, var2x) -> {
             this.field21265.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -62,9 +82,10 @@ public class ProfileGroup extends AnimatedIconPanel {
             if (var2x != 1) {
                 this.field21265.changeDirection(AnimationUtils.Direction.BACKWARDS);
                 if (this.field21265.calcPercent() == 0.0F) {
+                    Client.INSTANCE.configManager.loadProfile(this.profile);
                     SoundUtils.play("switch");
                     ConfigScreen var5x = (ConfigScreen) this.getParent().getParent().getParent();
-                    var5x.addRunnable(() -> var5x.method13615());
+                    var5x.addRunnable(var5x::method13615);
                 }
             } else {
                 this.field21265.changeDirection(AnimationUtils.Direction.FORWARDS);
@@ -92,7 +113,8 @@ public class ProfileGroup extends AnimatedIconPanel {
         if (this.animation.calcPercent() == 1.0F && !this.field21272) {
             this.field21272 = true;
             ConfigScreen var4 = (ConfigScreen) this.getParent().getParent().getParent();
-            var4.addRunnable(() -> var4.method13615());
+            //Client.INSTANCE.configManager.checkConfig(this.currentConfig);
+            var4.addRunnable(var4::method13615);
         }
 
         float var8 = VecUtils.interpolate(this.animation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
@@ -115,8 +137,28 @@ public class ProfileGroup extends AnimatedIconPanel {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.04F * this.field21264.calcPercent() + var6)
         );
+        if (!this.profileName.isFocused()) {
+            RenderUtils.drawString(
+                    FontUtils.HELVETICA_LIGHT_24,
+                    (float) (this.x + 20) - var5 * (float) this.width,
+                    (float) (this.y + 18),
+                    this.profile.name,
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.9F * partialTicks)
+            );
+        }
 
         this.profileName.setTranslateX(Math.round(-var5 * (float) this.width));
+        if (Client.INSTANCE.configManager.currentProfile == this.profile) {
+            RenderUtils.drawImage(
+                    (float) (this.getX() + this.getWidth() - 35) - var5 * (float) this.width,
+                    (float) (this.getY() + 27),
+                    17.0F,
+                    13.0F,
+                    Resources.activePNG,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), (1.0F - this.field21265.calcPercent()) * partialTicks)
+            );
+        }
+
         super.draw(partialTicks);
         ScissorUtils.restoreScissor();
     }

@@ -37,26 +37,38 @@ public class ConfigManager extends Manager implements IMinecraft {
 
     @Override
     public void shutdown() {
-        saveProfile("Default", Client.INSTANCE.moduleManager.getJson());
+        saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
     }
 
     public void loadProfile(String name) {
         Profile byName = getProfileByName(name);
         if (byName != null) {
-            Client.INSTANCE.moduleManager.loadJson(byName.content);
-            currentProfile = byName;
-            Client.LOGGER.info("Loaded profile {}", name);
+            loadProfile(byName);
             return;
         }
 
         Client.LOGGER.info("Profile by the name {} not found", name);
     }
 
-    public void saveProfile(String name, JsonObject content) {
+    public void loadProfile(Profile profile) {
+        Client.INSTANCE.moduleManager.loadJson(profile.content);
+        currentProfile = profile;
+        Client.LOGGER.info("Loaded profile {}", profile.name);
+    }
+
+    public void saveProfile(String name, JsonObject content, boolean add) {
+        saveProfile(new Profile(name, content), false);
+    }
+
+    public void saveProfile(Profile profile, boolean add) {
         try {
-            String fullName = name.endsWith(ConfigUtils.EXTENSION) ? name : name + ConfigUtils.EXTENSION;
-            GsonUtils.save(content, new File(ConfigUtils.PROFILES_FOLDER, fullName));
-            Client.LOGGER.info("Saving profile {}", name);
+            String fullName = profile.name.endsWith(ConfigUtils.EXTENSION) ? profile.name : profile.name + ConfigUtils.EXTENSION;
+            GsonUtils.save(profile.content, new File(ConfigUtils.PROFILES_FOLDER, fullName));
+            Client.LOGGER.info("Saving profile {}", profile.name);
+
+            if (add) {
+                profiles.add(profile);
+            }
         } catch (Exception e) {
             Client.LOGGER.error("Failed to save profile", e);
         }
@@ -67,6 +79,16 @@ public class ConfigManager extends Manager implements IMinecraft {
                 .filter(prof -> prof.name.equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public boolean doesProfileExist(String name) {
+        for (Profile config : this.profiles) {
+            if (config.name.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public List<String> getProfileNames() {
