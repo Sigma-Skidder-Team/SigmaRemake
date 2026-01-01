@@ -6,12 +6,12 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.profile.Profile;
+import io.github.sst.remake.util.http.NetUtils;
 import io.github.sst.remake.util.java.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public class OnlineProfileManager {
     public void fetchOnlineProfileNames() {
         try {
             HttpGet request = new HttpGet("https://jelloconnect.sigmaclient.cloud/profiles.php?v=" + Client.VERSION + "remake");
-            CloseableHttpResponse response = HttpClients.createDefault().execute(request);
+            CloseableHttpResponse response = NetUtils.getHttpClient().execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream inputStream = entity.getContent()) {
@@ -57,7 +57,7 @@ public class OnlineProfileManager {
     public JsonObject fetchOnlineProfileConfig(String profileName) {
         try {
             HttpGet request = new HttpGet("https://jelloconnect.sigmaclient.cloud/profiles/" + StringUtils.encode(profileName) + ".profile?v=" + Client.VERSION + "remake");
-            CloseableHttpResponse response = HttpClients.createDefault().execute(request);
+            CloseableHttpResponse response = NetUtils.getHttpClient().execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream inputStream = entity.getContent()) {
@@ -74,7 +74,7 @@ public class OnlineProfileManager {
     public Profile downloadOnlineProfile(String name) {
         try {
             JsonObject config = fetchOnlineProfileConfig(name);
-            if (config.size() > 0) {
+            if (!config.isEmpty()) {
                 return new Profile(name, config);
             }
         } catch (JsonParseException e) {

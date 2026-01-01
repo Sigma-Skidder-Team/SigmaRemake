@@ -8,6 +8,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.changelog.Change;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
+import io.github.sst.remake.util.http.NetUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -18,7 +19,6 @@ import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.io.InputStream;
@@ -111,7 +111,7 @@ public class ChangelogPage extends CustomGuiScreen {
     public JsonArray getChangelog() {
         if (cachedChangelog == null) {
             try {
-                HttpEntity entity = HttpClients.createDefault().execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=1.0.0remake")).getEntity();
+                HttpEntity entity = NetUtils.getHttpClient().execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=1.0.0remake")).getEntity();
                 if (entity != null) {
                     try (InputStream content = entity.getContent()) {
                         return cachedChangelog = JsonParser.parseString(IOUtils.toString(content, StandardCharsets.UTF_8)).getAsJsonArray();
