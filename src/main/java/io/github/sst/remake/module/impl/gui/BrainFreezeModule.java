@@ -1,4 +1,4 @@
-package io.github.sst.remake.module.impl;
+package io.github.sst.remake.module.impl.gui;
 
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;

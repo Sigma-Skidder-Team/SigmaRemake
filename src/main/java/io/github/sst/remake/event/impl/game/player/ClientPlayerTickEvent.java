@@ -1,4 +1,4 @@
-package io.github.sst.remake.event.impl.player;
+package io.github.sst.remake.event.impl.game.player;
 
 import io.github.sst.remake.event.Event;
 

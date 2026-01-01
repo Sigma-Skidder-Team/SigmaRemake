@@ -2,7 +2,7 @@ package io.github.sst.remake.manager.impl;
 
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
-import io.github.sst.remake.event.impl.player.ClientPlayerTickEvent;
+import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.gui.element.impl.Notification;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
