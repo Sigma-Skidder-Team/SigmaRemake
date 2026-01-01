@@ -50,8 +50,8 @@ public class JelloOptions extends Screen {
         int color1 = ColorHelper.shiftTowardsOther(-1072689136, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), value);
         int color2 = ColorHelper.shiftTowardsOther(-804253680, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F), value);
         RenderUtils.drawGradient(0, 0, this.getWidth(), this.getHeight(), color1, color2);
-        this.method13279(maxValue, maxValue);
-        this.method13224();
+        this.setScale(maxValue, maxValue);
+        this.applyScaleTransforms();
         super.draw(anim.calcPercent());
     }
 

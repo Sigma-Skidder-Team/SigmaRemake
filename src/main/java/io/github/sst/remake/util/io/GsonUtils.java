@@ -1,11 +1,16 @@
 package io.github.sst.remake.util.io;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class GsonUtils {
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     public static boolean getBooleanOrDefault(JsonObject jsonObject, String key, boolean defaultValue) {
         if (jsonObject == null) {
             return defaultValue;
@@ -107,6 +112,14 @@ public class GsonUtils {
             return jsonObject.getAsJsonArray(key);
         } catch (JsonParseException e) {
             return null;
+        }
+    }
+
+    public static void save(JsonObject jsonObject, File file) throws IOException {
+        String json = GSON.toJson(jsonObject);
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            IOUtils.write(json, outputStream, StandardCharsets.UTF_8);
         }
     }
 }

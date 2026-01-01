@@ -7,7 +7,6 @@ import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.SmallImage;
 import io.github.sst.remake.gui.element.impl.cgui.SettingGroup;
 import io.github.sst.remake.gui.element.impl.cgui.config.ConfigScreen;
-import io.github.sst.remake.gui.element.impl.cgui.overlay.BlurOverlay;
 import io.github.sst.remake.gui.element.impl.cgui.overlay.BrainFreezeOverlay;
 import io.github.sst.remake.gui.element.impl.cgui.CategoryPanel;
 import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
@@ -29,14 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JelloScreen extends Screen implements IMinecraft {
-    public BlurOverlay blurOverlay;
     private static AnimationUtils animationProgress;
     private static boolean animationStarted;
     private static boolean animationCompleted;
     private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
     //public MusicPlayer musicPlayer;
+    public ConfigScreen configScreen;
     public BrainFreezeOverlay brainFreeze;
-    public ConfigScreen configButton;
     public SettingGroup settingGroup;
     public CategoryPanel categoryPanel = null;
 
@@ -68,30 +66,27 @@ public class JelloScreen extends Screen implements IMinecraft {
 
         //this.addToList(this.musicPlayer = new MusicPlayer(this, "musicPlayer"));
         //this.musicPlayer.method13215(true);
+        //this.musicPlayer.setSelfVisible(true);
         SmallImage moreButton;
         this.addToList(moreButton = new SmallImage(this, "more", this.getWidth() - 69, this.getHeight() - 55, 55, 41, Resources.optionsPNG1));
 
         moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
         moreButton.setListening(false);
-
-        //this.musicPlayer.setSelfVisible(true);
-
         moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
-            if (this.configButton != null && this.hasChild(this.configButton)) {
-                this.method13234(this.configButton);
+            if (this.configScreen != null && this.hasChild(this.configScreen)) {
+                this.queueChildRemoval(this.configScreen);
             } else {
-                this.addToList(this.configButton = new ConfigScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
-                this.configButton.setReAddChildren(true);
+                this.addToList(this.configScreen = new ConfigScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
+                this.configScreen.setReAddChildren(true);
             }
         }));
 
         animationProgress = new AnimationUtils(450, 125);
-        this.blurOverlay = new BlurOverlay(this, this, "overlay");
         ShaderUtils.applyBlurShader();
         ShaderUtils.setShaderRadiusRounded(animationProgress.calcPercent());
     }
 
-    public void method13315() {
+    public void updateSideBar() {
         for (CategoryPanel panel : this.categoryPanels.values()) {
             panel.method13504();
         }
@@ -104,18 +99,18 @@ public class JelloScreen extends Screen implements IMinecraft {
         ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
         this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule("BrainFreeze").enabled);
 
-        if (this.configButton != null) {
-            int newHeightValue = mouseX - this.configButton.method13271();
-            int newWidthValue = mouseY - this.configButton.method13272();
-            boolean conditionMet = newHeightValue >= -10 && newWidthValue >= -10;
+        if (this.configScreen != null) {
+            int xOver = mouseX - this.configScreen.getAbsoluteX();
+            int yOver = mouseY - this.configScreen.getAbsoluteY();
+            boolean conditionMet = xOver >= -10 && yOver >= -10;
             if (!conditionMet) {
-                this.configButton.method13613();
+                this.configScreen.close();
             }
         }
 
-        if (this.configButton != null && this.configButton.method13614()) {
-            this.removeChildren(this.configButton);
-            this.configButton = null;
+        if (this.configScreen != null && this.configScreen.isClosed()) {
+            this.removeChildren(this.configScreen);
+            this.configScreen = null;
         }
 
         if (animationProgress.getDirection() == AnimationUtils.Direction.BACKWARDS && this.settingGroup != null && !this.settingGroup.field20671) {
@@ -155,7 +150,6 @@ public class JelloScreen extends Screen implements IMinecraft {
     @Override
     public JsonObject toConfigWithExtra(JsonObject config) {
         ShaderUtils.resetShader();
-        this.method13234(this.blurOverlay);
         return super.toConfigWithExtra(config);
     }
 
@@ -185,7 +179,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
-        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.method13227()) {
+        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.hasFocusedTextField()) {
             if (animationCompleted) {
                 animationStarted = !animationStarted;
             }
@@ -224,12 +218,13 @@ public class JelloScreen extends Screen implements IMinecraft {
             alphaFactor *= 1.0F + var8 * 0.2F;
         }
 
-        if (Client.INSTANCE.configManager.profile != null && !Client.INSTANCE.notificationManager.isRendering()) {
+        if (Client.INSTANCE.configManager.currentProfile != null && !Client.INSTANCE.notificationManager.isRendering()) {
+            String configName = Client.INSTANCE.configManager.currentProfile.name;
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_20,
-                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(Client.INSTANCE.configManager.profile.name) - 80),
+                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(configName) - 80),
                     (float) (this.height - 47),
-                    Client.INSTANCE.configManager.profile.name,
+                    configName,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * Math.max(0.0F, Math.min(1.0F, alphaFactor)))
             );
         }
@@ -237,16 +232,13 @@ public class JelloScreen extends Screen implements IMinecraft {
         for (CustomGuiScreen child : this.getChildren()) {
             float x = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2) * (1.0F - alphaFactor) * 0.5F;
             float y = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2) * (1.0F - alphaFactor) * 0.5F;
-            child.draw((int) x, (int) y);
-            child.method13279(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
+            child.setTranslate((int) x, (int) y);
+            child.setScale(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
         }
 
         super.draw(partialTicks * Math.min(1.0F, alphaFactor) * fadeAmount);
         if (this.categoryPanel != null) {
             this.categoryPanel.setReAddChildren(false);
         }
-
-        this.blurOverlay.setReAddChildren(false);
-        this.method13234(this.blurOverlay);
     }
 }

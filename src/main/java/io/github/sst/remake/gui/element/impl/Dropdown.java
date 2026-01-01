@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
-import io.github.sst.remake.gui.element.impl.drop.Class7262;
+import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.element.impl.drop.Sub;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -61,7 +61,7 @@ public class Dropdown extends Element {
         this.font = FontUtils.HELVETICA_LIGHT_18;
         Button dropdownButton;
         this.addToList(dropdownButton = new Button(this, "dropdownButton", 0, 0, this.getHeight(), this.getHeight(), this.textColor));
-        dropdownButton.setSize((var1, var2) -> {
+        dropdownButton.addWidthSetter((var1, var2) -> {
             var1.setX(0);
             var1.setY(0);
             var1.setWidth(this.getWidth());
@@ -103,7 +103,7 @@ public class Dropdown extends Element {
         }
 
         this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        this.accept(new Class7262(1));
+        this.accept(new GridLayoutVisitor(1));
     }
 
     private int method13647() {
@@ -137,20 +137,20 @@ public class Dropdown extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        if (!this.method13114(mouseX, mouseY) && this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (!this.isMouseOverComponent(mouseX, mouseY) && this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             this.method13658(false);
         }
 
-        int var5 = (mouseY - this.method13272()) / this.getHeight() - 1;
+        int var5 = (mouseY - this.getAbsoluteY()) / this.getHeight() - 1;
         if (var5 >= 0
                 && var5 < this.values.size()
                 && this.animation.getDirection() == AnimationUtils.Direction.FORWARDS
                 && this.animation.calcPercent() == 1.0F
-                && mouseX - this.method13271() < this.getWidth()) {
+                && mouseX - this.getAbsoluteX() < this.getWidth()) {
             for (Entry var9 : this.field21331.entrySet()) {
                 ((Sub) var9.getValue()).setSelfVisible((Integer) var9.getKey() == var5);
             }
-        } else if (!this.method13114(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
             for (Entry var7 : this.field21331.entrySet()) {
                 ((Sub) var7.getValue()).setSelfVisible(false);
             }
@@ -205,7 +205,7 @@ public class Dropdown extends Element {
         boolean var8 = this.animation.calcPercent() < 1.0F;
         if (var8) {
             ScissorUtils.startScissor(
-                    this.method13271(), this.method13272(), this.method13271() + this.getWidth() + 140, this.method13272() + this.getHeight() + this.method13647()
+                    this.getAbsoluteX(), this.getAbsoluteY(), this.getAbsoluteX() + this.getWidth() + 140, this.getAbsoluteY() + this.getHeight() + this.method13647()
             );
         }
 
@@ -230,7 +230,7 @@ public class Dropdown extends Element {
                 (float) (this.getX() + var9 - 6),
                 (float) (this.getY() + var10 - 14),
                 ">",
-                ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), partialTicks * 0.7F * (!this.method13114(this.getMouseX(), this.getMouseY()) ? 0.5F : 1.0F))
+                ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), partialTicks * 0.7F * (!this.isMouseOverComponent(this.getMouseX(), this.getMouseY()) ? 0.5F : 1.0F))
         );
     }
 
@@ -266,15 +266,15 @@ public class Dropdown extends Element {
     }
 
     @Override
-    public boolean method13114(int mouseX, int mouseY) {
+    public boolean isMouseOverComponent(int mouseX, int mouseY) {
         for (Entry var6 : this.field21331.entrySet()) {
-            if (((Sub) var6.getValue()).isSelfVisible() && ((Sub) var6.getValue()).method13114(mouseX, mouseY)) {
+            if (((Sub) var6.getValue()).isSelfVisible() && ((Sub) var6.getValue()).isMouseOverComponent(mouseX, mouseY)) {
                 return true;
             }
         }
 
-        mouseX -= this.method13271();
-        mouseY -= this.method13272();
+        mouseX -= this.getAbsoluteX();
+        mouseY -= this.getAbsoluteY();
         return mouseX >= 0 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.method13648();
     }
 }

@@ -9,7 +9,7 @@ import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.element.impl.cgui.block.Picker;
 import io.github.sst.remake.gui.element.impl.cgui.color.ColorPicker;
 import io.github.sst.remake.gui.element.impl.cgui.slider.Slider;
-import io.github.sst.remake.gui.interfaces.Class4342;
+import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class SettingPanel extends ScrollableContentPanel implements Class4342 {
+public class SettingPanel extends ScrollableContentPanel implements Animatable {
     private final Module module;
     public int field21222 = 200;
     private final HashMap<Text, Setting> field21223 = new HashMap<>();
@@ -53,7 +53,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
                     }
                 });
                 var45.onPress(element -> setting.setValue(((Checkbox) element).getValue()));
-                var45.setSize((var1x, var2x) -> var1x.setX(var2x.getWidth() - 24 - var5));
+                var45.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 24 - var5));
                 panel.addToList(var37);
                 panel.addToList(var45);
                 var4 += 24 + var5;
@@ -85,7 +85,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
                         setting.setValue(var8x);
                     }
                 });
-                var47.setSize((var1x, var2x) -> var1x.setX(var2x.getWidth() - 126 - var5));
+                var47.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 126 - var5));
                 panel.addToList(var36);
                 panel.addToList(var47);
                 var4 += 24 + var5;
@@ -142,7 +142,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
                     ((ModeSetting) setting).setModeByIndex(((Dropdown) var2x).getIndex());
                     var42.method13656(((ModeSetting) setting).getModeIndex());
                 });
-                var42.setSize((var2x, var3x) -> var2x.setX(panel.getWidth() - 123 - var5));
+                var42.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 123 - var5));
                 panel.addToList(var34);
                 panel.addToList(var42);
                 var4 += 27 + var5;
@@ -156,7 +156,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
                 }
 
                 new ContentSize().setWidth(var17, panel);
-                var17.setSize((var1x, var2x) -> var1x.setWidth(var2x.getWidth() - var5));
+                var17.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth() - var5));
                 panel.addToList(var17);
                 var4 += var17.getHeight() + var5;
                 break;
@@ -174,7 +174,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
                 );
                 this.field21223.put(var31, setting);
                 var39.onPress(var2x -> setting.setValue(var39.method13072()));
-                var39.setSize((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
+                var39.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
                 panel.addToList(var31);
                 panel.addToList(var39);
                 var4 += 200 + var5;
@@ -261,7 +261,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
         for (Entry var6 : this.field21223.entrySet()) {
             Text var7 = (Text) var6.getKey();
             Setting var8 = (Setting) var6.getValue();
-            if (var7.method13298() && var7.isVisible()) {
+            if (var7.isHoveredInHierarchy() && var7.isVisible()) {
                 var4 = true;
                 this.field21226 = var8.description;
                 this.field21227 = var8.name;
@@ -297,7 +297,7 @@ public class SettingPanel extends ScrollableContentPanel implements Class4342 {
     }
 
     @Override
-    public boolean method13525() {
+    public boolean shouldAnimate() {
         return false;
     }
 

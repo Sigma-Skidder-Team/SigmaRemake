@@ -16,10 +16,10 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureImpl;
+import org.newdawn.slick.util.math.Color;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.opengl.texture.TextureImpl;
 
 public class RenderUtils {
 

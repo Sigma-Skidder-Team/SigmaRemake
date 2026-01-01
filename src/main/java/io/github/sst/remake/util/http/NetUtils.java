@@ -1,5 +1,9 @@
 package io.github.sst.remake.util.http;
 
+import io.github.sst.remake.Client;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,10 +12,18 @@ import java.net.URL;
 
 public class NetUtils {
 
+    public static final String USER_AGENT = "SigmaRemake/" + Client.VERSION;
+
+    public static CloseableHttpClient getHttpClient() {
+        return HttpClientBuilder.create()
+                .setUserAgent(USER_AGENT)
+                .build();
+    }
+
     public static InputStream getInputStreamFromURL(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+        connection.setRequestProperty("User-Agent", USER_AGENT);
         connection.setRequestMethod("GET");
         connection.setDoInput(true);
         connection.connect();

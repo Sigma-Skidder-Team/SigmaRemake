@@ -18,7 +18,7 @@ public class EditButton extends AnimatedIconPanel {
     @Override
     public void draw(float partialTicks) {
         if (this.getWidth() != 0) {
-            this.method13225();
+            this.applyTranslationTransforms();
             float var4 = 1.0F - Math.min(1.0F, Math.max((float) this.getWidth() / (float) this.field20768, 0.0F));
             RenderUtils.drawRoundedRect2(
                     (float) this.x, (float) this.y, (float) this.field20768, (float) this.height, ColorHelper.applyAlpha(-3254955, partialTicks)

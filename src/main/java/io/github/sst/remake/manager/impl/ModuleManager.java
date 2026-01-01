@@ -1,8 +1,8 @@
 package io.github.sst.remake.manager.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
@@ -10,8 +10,8 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.BrainFreezeModule;
 import io.github.sst.remake.module.impl.TestModule;
 import io.github.sst.remake.setting.Setting;
+import io.github.sst.remake.util.io.GsonUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,12 +30,6 @@ public class ModuleManager extends Manager {
         super.init();
     }
 
-    @Override
-    public void shutdown() {
-        modules.clear();
-        super.shutdown();
-    }
-
     private void initModules() {
         modules.forEach(Module::onInit);
     }
@@ -50,82 +44,82 @@ public class ModuleManager extends Manager {
         );
     }
 
-    public JsonObject load(JsonObject json) {
-        JsonArray modsArray = null;
+    public JsonObject getJson() {
+        JsonObject profileObject = new JsonObject();
+        JsonArray modsArray = new JsonArray();
 
-        try {
-            modsArray = json.getAsJsonArray("mods");
-        } catch (JsonParseException e) {
-            Client.LOGGER.error("Failed to parse mods from profile", e);
+        for (Module mod : modules) {
+            JsonObject moduleObject = new JsonObject();
+            JsonArray optionsArray = new JsonArray();
+
+            for (Setting<?> setting : mod.settings) {
+                JsonObject settingJson = new JsonObject();
+                optionsArray.add(setting.fromJson(settingJson));
+            }
+
+            moduleObject.addProperty("name", mod.name);
+            moduleObject.add("options", optionsArray);
+            moduleObject.addProperty("enabled", mod.enabled);
+
+            modsArray.add(moduleObject);
         }
 
-        for (Module module : this.modules) {
-            if (module.enabled) {
-                module.onDisable();
-            }
+        profileObject.add("mods", modsArray);
+        return profileObject;
+    }
 
-            module.enabled = false;
-
-            for (Setting setting : module.settings) {
-                setting.value = setting.defaultValue;
-            }
+    public void loadJson(JsonObject profileObject) {
+        if (!profileObject.has("mods")) {
+            return;
         }
 
-        if (modsArray == null) {
-            Client.LOGGER.warn("Mods modsArray does not exist in config. Assuming a blank profile...");
-            return json;
-        }
+        JsonArray modsArray = profileObject.getAsJsonArray("mods");
 
-        for (int i = 0; i < modsArray.size(); i++) {
-            JsonObject moduleObject;
-            try {
-                moduleObject = modsArray.get(i).getAsJsonObject();
-            } catch (JsonParseException e) {
-                throw new JsonParseException("Failed to parse module in array", e);
-            }
+        for (JsonElement modElement : modsArray) {
+            JsonObject modObject = modElement.getAsJsonObject();
+            String modName = modObject.get("name").getAsString();
 
-            String moduleName = null;
-
-            try {
-                moduleName = moduleObject.get("name").getAsString();
-            } catch (JsonParseException e) {
-                throw new JsonParseException("Failed to parse module in array", e);
-            }
-
-            for (Module module : this.modules) {
-                if (module.getName().equals(moduleName)) {
-                    try {
-                        module.asJson(moduleObject);
-                    } catch (JsonParseException e) {
-                        Client.LOGGER.warn("Could not initialize mod {} from config", module.getName(), e);
-                    }
+            Module mod = null;
+            for (Module m : modules) {
+                if (m.name.equalsIgnoreCase(modName)) {
+                    mod = m;
                     break;
                 }
             }
-        }
 
-        for (Module module : this.modules) {
-            if (module.isEnabled()) {
-                Client.BUS.register(this);
-            } else {
-                Client.BUS.unregister(this);
+            if (mod == null) {
+                continue;
             }
 
-            module.onInit();
-        }
+            mod.setEnabled(false);
 
-        return json;
-    }
+            if (!modObject.has("options")) {
+                continue;
+            }
 
-    public void saveConfig(JsonObject json) {
-        json.addProperty("profile", Client.INSTANCE.configManager.profile.name);
-        Client.INSTANCE.configManager.profile.moduleConfig = load(new JsonObject());
+            JsonArray optionsArray = modObject.getAsJsonArray("options");
 
-        try {
-            Client.INSTANCE.configManager.saveAndReplaceConfigs();
-            Client.INSTANCE.bindManager.getKeybindsJSONObject(json);
-        } catch (IOException e) {
-            Client.LOGGER.warn("Was unable to save mod profiles", e);
+            for (JsonElement optionElement : optionsArray) {
+                JsonObject optionObject = optionElement.getAsJsonObject();
+                String settingName = optionObject.get("name").getAsString();
+
+                for (Setting<?> setting : mod.settings) {
+                    if (!setting.name.equalsIgnoreCase(settingName)) {
+                        continue;
+                    }
+
+                    if (!optionObject.has("value")) {
+                        break;
+                    }
+
+                    setting.loadFromJson(optionObject.get("value"));
+                    break;
+                }
+            }
+
+            if (modObject.has("enabled")) {
+                mod.setEnabled(modObject.get("enabled").getAsBoolean());
+            }
         }
     }
 }

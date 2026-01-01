@@ -14,7 +14,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class JelloMenu extends Screen implements IMinecraft {
         this.addToList(this.mainMenuScreen = new MainPage(this, "main", 0, 0, this.width, this.height));
         this.addToList(this.changelogPage = new ChangelogPage(this, "changelog", 0, 0, this.width, this.height));
         this.changelogPage.setHovered(false);
-        this.changelogPage.method13294(true);
+        this.changelogPage.setBringToFront(true);
     }
 
     public void goOut() {
@@ -133,7 +133,7 @@ public class JelloMenu extends Screen implements IMinecraft {
         }
 
         float scaleOffset = 0.07F * transitionProgress;
-        this.mainMenuScreen.method13279(1.0F - scaleOffset, 1.0F - scaleOffset);
+        this.mainMenuScreen.setScale(1.0F - scaleOffset, 1.0F - scaleOffset);
         this.mainMenuScreen.setHovered(this.field20972.calcPercent() == 0.0F);
         long elapsedTime = System.nanoTime() - currentTime;
         field20982 = Math.min(10.0F, Math.max(0.0F, (float) elapsedTime / 1.810361E7F / 2.0F));

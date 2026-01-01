@@ -28,7 +28,7 @@ public class ColorPickerBubble extends Element {
                 (float) (this.width - 2),
                 ColorHelper.applyAlpha(this.field21365, partialTicks)
         );
-        if (this.method13212()) {
+        if (this.isMouseDownOverComponent()) {
             RenderUtils.drawCircle(
                     (float) this.x + (float) this.width / 2.0F,
                     (float) this.y + (float) this.width / 2.0F,

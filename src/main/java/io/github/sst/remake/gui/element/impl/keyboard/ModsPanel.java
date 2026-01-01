@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
-import io.github.sst.remake.gui.interfaces.Class7875;
+import io.github.sst.remake.gui.interfaces.BindableActionSelectedListener;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.client.ScreenUtils;
@@ -34,9 +34,9 @@ public class ModsPanel extends Element {
     public int field21306;
     public String field21307;
     public ScrollableContentPanel field21308;
-    public Class6984 field21309;
+    public BindableAction selectedBindableAction;
     public boolean field21311 = false;
-    private final List<Class7875> field21312 = new ArrayList<>();
+    private final List<BindableActionSelectedListener> bindableActionSelectedListeners = new ArrayList<>();
 
     public ModsPanel(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -54,7 +54,7 @@ public class ModsPanel extends Element {
             this.field21307 = var10.getText();
             this.field21308.setScrollOffset(0);
         });
-        var10.method13242();
+        var10.requestFocus();
         this.addToList(
                 this.field21308 = new ScrollableContentPanel(
                         this, "mods", this.field21304 + 30, this.field21303 + 30 + 120, this.field21305 - 30 * 2, this.field21306 - 30 * 2 - 120
@@ -63,20 +63,20 @@ public class ModsPanel extends Element {
         int var11 = 10;
 
         for (Entry var13 : ScreenUtils.screenToScreenName.entrySet()) {
-            Class6984 var14 = new Class6984((Class<? extends Screen>) var13.getKey());
+            BindableAction var14 = new BindableAction((Class<? extends Screen>) var13.getKey());
             ColorHelper var15 = new ColorHelper(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.02F), -986896)
                     .setTextColor(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F))
                     .setWidthAlignment(FontAlignment.CENTER);
             Button var16;
             this.field21308
                     .addToList(
-                            var16 = new Button(this.field21308, var14.method21596(), 0, var11++ * 55, this.field21308.getWidth(), 55, var15, var14.method21596())
+                            var16 = new Button(this.field21308, var14.getName(), 0, var11++ * 55, this.field21308.getWidth(), 55, var15, var14.getName())
                     );
             var16.onClick((var2x, var3x) -> {
                 for (Entry var7 : ScreenUtils.screenToScreenName.entrySet()) {
-                    Class6984 var8 = new Class6984((Class<? extends Screen>) var7.getKey());
-                    if (var8.method21596().equals(var16.getName()) && !this.field21311) {
-                        this.field21309 = var8;
+                    BindableAction var8 = new BindableAction((Class<? extends Screen>) var7.getKey());
+                    if (var8.getName().equals(var16.getName()) && !this.field21311) {
+                        this.selectedBindableAction = var8;
                         this.field21311 = true;
                         break;
                     }
@@ -92,14 +92,14 @@ public class ModsPanel extends Element {
             this.field21308
                     .addToList(
                             var21 = new Button(
-                                    this.field21308, mod.getName(), 0, var11++ * 40, this.field21308.getWidth(), 40, var20, new Class6984(mod).method21596()
+                                    this.field21308, mod.getName(), 0, var11++ * 40, this.field21308.getWidth(), 40, var20, new BindableAction(mod).getName()
                             )
                     );
             var21.method13034(10);
             var21.onClick((var2x, var3x) -> {
                 for (Module mod2 : Client.INSTANCE.moduleManager.modules) {
                     if (mod2.getName().equals(var21.getText()) && !this.field21311) {
-                        this.field21309 = new Class6984(mod2);
+                        this.selectedBindableAction = new BindableAction(mod2);
                         this.field21311 = true;
                         break;
                     }
@@ -113,7 +113,7 @@ public class ModsPanel extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.method13212()
+        if (this.isMouseDownOverComponent()
                 && (mouseX < this.field21304 || mouseY < this.field21303 || mouseX > this.field21304 + this.field21305 || mouseY > this.field21303 + this.field21306)) {
             this.field21311 = true;
         }
@@ -193,9 +193,9 @@ public class ModsPanel extends Element {
             var4 = QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F);
         }
 
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
         if (partialTicks == 0.0F && this.field21311) {
-            this.method13624(this.field21309);
+            this.notifyBindableActionSelected(this.selectedBindableAction);
         }
 
         RenderUtils.drawRoundedRect(
@@ -205,7 +205,7 @@ public class ModsPanel extends Element {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F * partialTicks)
         );
-        super.method13224();
+        super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
                 (float) this.field21304,
                 (float) this.field21303,
@@ -224,13 +224,13 @@ public class ModsPanel extends Element {
         super.draw(partialTicks);
     }
 
-    public final void method13623(Class7875 var1) {
-        this.field21312.add(var1);
+    public final void addBindableActionSelectedListener(BindableActionSelectedListener listener) {
+        this.bindableActionSelectedListeners.add(listener);
     }
 
-    public final void method13624(Class6984 var1) {
-        for (Class7875 var5 : this.field21312) {
-            var5.method26411(this, var1);
+    public final void notifyBindableActionSelected(BindableAction action) {
+        for (BindableActionSelectedListener listener : this.bindableActionSelectedListeners) {
+            listener.onBindableActionSelected(this, action);
         }
     }
 }

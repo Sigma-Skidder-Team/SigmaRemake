@@ -4,7 +4,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.interfaces.IHandler;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
 import io.github.sst.remake.util.math.color.ColorHelper;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.util.ArrayList;
 import java.util.List;

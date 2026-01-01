@@ -53,8 +53,8 @@ public class Change extends CustomGuiScreen {
     @Override
     public void draw(float partialTicks) {
         float anim = VecUtils.interpolate(this.animation2.calcPercent(), 0.17, 1.0, 0.51, 1.0);
-        this.drawBackground((int) ((1.0F - anim) * 100.0F));
-        this.method13225();
+        this.setTranslateY((int) ((1.0F - anim) * 100.0F));
+        this.applyTranslationTransforms();
         partialTicks *= this.animation2.calcPercent();
         super.draw(partialTicks);
     }

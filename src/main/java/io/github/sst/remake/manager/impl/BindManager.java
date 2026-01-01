@@ -1,8 +1,5 @@
 package io.github.sst.remake.manager.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.input.KeyPressEvent;
@@ -142,28 +139,5 @@ public class BindManager extends Manager implements IMinecraft {
         }
 
         return binds;
-    }
-
-    public void getKeybindsJSONObject(JsonObject obj) throws JsonParseException {
-        JsonArray keybinds = new JsonArray();
-
-        // Add module keybinds
-        for (Module mod : Client.INSTANCE.moduleManager.modules) {
-            int key = mod.getKeycode();
-            if (key != -1 && key != 0) {
-                // Wrap in a Bind to reuse existing JSON serialization
-                keybinds.add(new Bind(key, mod).getKeybindData());
-            }
-        }
-
-        // Add screen keybinds
-        for (Map.Entry<Class<? extends Screen>, Integer> entry : BindUtils.SCREEN_BINDINGS.entrySet()) {
-            int key = entry.getValue();
-            if (key != -1 && key != 0) {
-                keybinds.add(new Bind(key, entry.getKey()).getKeybindData());
-            }
-        }
-
-        obj.add("keybinds", keybinds);
     }
 }

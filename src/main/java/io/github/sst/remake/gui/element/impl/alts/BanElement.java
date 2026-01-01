@@ -18,8 +18,8 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Identifier;
 import org.apache.commons.codec.binary.Base64;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -46,16 +46,16 @@ public class BanElement extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13225();
+        this.applyTranslationTransforms();
         float var4 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
         float var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.method13298()) {
+        if (this.isHoveredInHierarchy()) {
             this.field21248.changeDirection(AnimationUtils.Direction.FORWARDS);
         } else if ((double) Math.abs(var4 - var5) < 0.7) {
             this.field21248.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
-        if (this.method13272() + this.method13282() < MinecraftClient.getInstance().getWindow().getHeight() - 36 && this.method13272() + this.method13282() > 52) {
+        if (this.getAbsoluteY() + this.getTranslateY() < MinecraftClient.getInstance().getWindow().getHeight() - 36 && this.getAbsoluteY() + this.getTranslateY() > 52) {
             if (this.info != null && this.serverBanner == null) {
                 try {
                     BufferedImage var6 = method13578(this.info.getIcon());
@@ -155,10 +155,10 @@ public class BanElement extends AnimatedIconPanel {
         int var7 = (int) (var3 / 3600000L % 24L);
         int var8 = (int) (var3 / 86400000L);
         ScissorUtils.startScissor(
-                this.method13271() + this.method13280(),
-                this.method13272() + this.method13282(),
-                this.method13271() + this.method13280() + this.width,
-                this.method13272() + this.method13282() + this.height
+                this.getAbsoluteX() + this.getTranslateX(),
+                this.getAbsoluteY() + this.getTranslateY(),
+                this.getAbsoluteX() + this.getTranslateX() + this.width,
+                this.getAbsoluteY() + this.getTranslateY() + this.height
         );
         GL11.glPushMatrix();
         float var11 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);

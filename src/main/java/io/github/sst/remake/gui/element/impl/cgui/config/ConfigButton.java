@@ -11,7 +11,7 @@ public class ConfigButton extends Button {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13260().get(0).setWidth(this, this.parent);
+        this.getWidthSetters().get(0).setWidth(this, this.parent);
         super.draw(partialTicks);
     }
 }

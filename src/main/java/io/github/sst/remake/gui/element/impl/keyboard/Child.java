@@ -7,7 +7,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class Child extends Element {
     public final int field20690;
@@ -22,7 +22,7 @@ public class Child extends Element {
     }
 
     public void method13102() {
-        for (Class6984 var4 : JelloKeyboard.method13328()) {
+        for (BindableAction var4 : JelloKeyboard.getBindableActions()) {
             int var5 = var4.getBind();
             if (var5 == this.field20690) {
                 this.field20693 = true;
@@ -36,7 +36,7 @@ public class Child extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20691 = Math.max(0.0F, Math.min(1.0F, this.field20691 + 0.2F * (float) (!this.method13212() && !this.field20692 ? -1 : 1)));
+        this.field20691 = Math.max(0.0F, Math.min(1.0F, this.field20691 + 0.2F * (float) (!this.isMouseDownOverComponent() && !this.field20692 ? -1 : 1)));
     }
 
     @Override

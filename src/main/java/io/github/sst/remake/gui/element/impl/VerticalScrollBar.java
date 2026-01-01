@@ -16,13 +16,12 @@ import io.github.sst.remake.util.render.image.Resources;
 public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvider {
     public int offset;
     public float field20794;
-    public boolean field20795;
     public final VerticalScrollBarButton field20796;
     public TimerUtils field20797 = new TimerUtils();
 
     public VerticalScrollBar(CustomGuiScreen var1, int var2) {
         super(var1, "verticalScrollBar", var1.getWidth() - var2 - 5, 5, var2, var1.getHeight() - 10, false);
-        this.setSize((var1x, var2x) -> {
+        this.addWidthSetter((var1x, var2x) -> {
             var1x.setX(var2x.getWidth() - var2 - 5);
             var1x.setY(5);
             var1x.setWidth(var2);
@@ -34,7 +33,7 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public void onScroll(float scroll) {
         super.onScroll(scroll);
-        if (this.parent != null && this.parent.method13228(this.getMouseX(), this.getMouseY(), false) || ((ScrollableContentPanel) this.parent).field21208) {
+        if (this.parent != null && this.parent.isMouseOverComponentConsideringZOrder(this.getMouseX(), this.getMouseY(), false) || ((ScrollableContentPanel) this.parent).field21208) {
             float var4 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeight();
             float var5 = (float) this.getParent().getHeight();
             if (var4 == 0.0F) {
@@ -56,13 +55,13 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20908 = this.method13228(mouseX, mouseY, false);
+        this.isHoveredInHierarchy = this.isMouseOverComponentConsideringZOrder(mouseX, mouseY, false);
         this.field20794 = this.field20794
                 + (
                 this.field20796.getHeight() >= this.getHeight()
                         ? -1.0F
                         : (
-                        !this.method13298() && !this.field20796.isDragging() && (!this.field20797.isEnabled() || this.field20797.getElapsedTime() >= 500L)
+                        !this.isHoveredInHierarchy() && !this.field20796.isDragging() && (!this.field20797.isEnabled() || this.field20797.getElapsedTime() >= 500L)
                                 ? -0.05F
                                 : 0.05F
                 )
@@ -96,9 +95,9 @@ public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvi
     @Override
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
-            this.field20908 = this.method13228(mouseX, mouseY, false);
-            if (this.method13298()) {
-                int var6 = mouseY - this.method13272();
+            this.isHoveredInHierarchy = this.isMouseOverComponentConsideringZOrder(mouseX, mouseY, false);
+            if (this.isHoveredInHierarchy()) {
+                int var6 = mouseY - this.getAbsoluteY();
                 if (var6 <= this.field20796.getY() + this.field20796.getHeight()) {
                     if (var6 < this.field20796.getY()) {
                         this.offset = this.offset - (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeight() / 4.0F);

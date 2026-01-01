@@ -10,8 +10,8 @@ import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
+import org.newdawn.slick.opengl.texture.Texture;
 
 public class RoundButton extends SmallImage {
     public boolean field20577 = false;
@@ -36,7 +36,7 @@ public class RoundButton extends SmallImage {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20577 = this.method13298();
+        this.field20577 = this.isHoveredInHierarchy();
         if (!this.field20577) {
             if (this.method13029()) {
                 this.field20578.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -62,7 +62,7 @@ public class RoundButton extends SmallImage {
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.method13212() ? 0.0F : 0.1F;
+        float var4 = !this.isMouseDownOverComponent() ? 0.0F : 0.1F;
         float var5 = this.method13030();
         if (this.field20578.getDirection() == AnimationUtils.Direction.BACKWARDS) {
             var5 = this.method13031();

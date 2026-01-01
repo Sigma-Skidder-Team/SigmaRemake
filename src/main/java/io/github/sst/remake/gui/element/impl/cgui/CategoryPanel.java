@@ -42,8 +42,8 @@ public class CategoryPanel extends AnimatedIconPanel {
 
     private void method13505() {
         this.addToList(this.modListView = new ModListView(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
-        this.modListView.setSize(new ModListViewSize());
-        this.modListView.setSize((var0, var1) -> {
+        this.modListView.addWidthSetter(new ModListViewSize());
+        this.modListView.addWidthSetter((var0, var1) -> {
             var0.setY(60);
             var0.setHeight(var1.getHeight() - 60);
         });
@@ -53,7 +53,7 @@ public class CategoryPanel extends AnimatedIconPanel {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (!(this.field21195 >= 1.0F)) {
             this.setDraggable(false);
-            this.field20909 = false;
+            this.isMouseDownOverComponent = false;
         } else {
             this.field21197 = this.getX();
             this.field21198 = this.getY();
@@ -91,8 +91,8 @@ public class CategoryPanel extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        super.method13224();
-        super.method13225();
+        super.applyScaleTransforms();
+        super.applyTranslationTransforms();
         int var4 = (int) (1.0F + 10.0F * (1.0F - this.field21195));
         RenderUtils.drawRoundedRect(
                 (float) (this.getX() + (var4 - 1)),

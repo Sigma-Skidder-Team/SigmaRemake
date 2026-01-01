@@ -14,8 +14,8 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.client.MinecraftClient;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class Alert extends Element {
         this.alertName = name;
         this.setHovered(false);
         this.setReAddChildren(false);
-        this.method13243();
+        this.defocusSiblings();
         TextField var8 = null;
         TextField var9 = null;
 
@@ -239,14 +239,14 @@ public class Alert extends Element {
                 );
             }
 
-            super.method13279(var8, var8);
-            super.method13224();
+            super.setScale(var8, var8);
+            super.applyScaleTransforms();
             super.draw(var7);
         } else {
             if (this.isFocused()) {
                 this.setFocused(false);
                 this.setSelfVisible(false);
-                this.method13243();
+                this.defocusSiblings();
             }
         }
     }

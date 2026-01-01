@@ -25,7 +25,7 @@ public class PopOver extends Element {
     private final int field21376;
     private final AnimationUtils field21377;
     private boolean field21378 = false;
-    private final List<Class6601> field21379 = new ArrayList<Class6601>();
+    private final List<AddButtonListener> addButtonListeners = new ArrayList<AddButtonListener>();
 
     public PopOver(CustomGuiScreen var1, String var2, int var3, int var4, int var5, String var6) {
         super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.DEFAULT_COLOR, var6, false);
@@ -55,7 +55,7 @@ public class PopOver extends Element {
                         FontUtils.HELVETICA_LIGHT_25
                 )
         );
-        var9.onClick((var1x, var2x) -> this.method13714());
+        var9.onClick((var1x, var2x) -> this.notifyAddButtonListeners());
     }
 
     public void method13712() {
@@ -68,21 +68,21 @@ public class PopOver extends Element {
             }
         }
 
-        this.method13242();
+        this.requestFocus();
         this.setFocused(true);
         this.clearChildren();
 
-        for (Class6984 var10 : JelloKeyboard.method13328()) {
+        for (BindableAction var10 : JelloKeyboard.getBindableActions()) {
             int var7 = var10.getBind();
             if (var7 == this.field21376) {
-                Class4253 var8;
-                this.addToList(var8 = new Class4253(this, var10.method21596(), 0, 20 + 55 * var3, this.width, 55, var10, var3++));
+                BindableActionEntry var8;
+                this.addToList(var8 = new BindableActionEntry(this, var10.getName(), 0, 20 + 55 * var3, this.width, 55, var10, var3++));
                 var8.onPress(var2 -> {
                     var10.setBind(0);
                     this.callUIHandlers();
                 });
-                if (!children.isEmpty() && !children.contains(var10.method21596())) {
-                    var8.method13056();
+                if (!children.isEmpty() && !children.contains(var10.getName())) {
+                    var8.startHeightAnimation();
                 }
             }
         }
@@ -90,17 +90,17 @@ public class PopOver extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        Map<Integer, Class4253> var5 = new HashMap<>();
+        Map<Integer, BindableActionEntry> var5 = new HashMap<>();
 
         for (CustomGuiScreen child : this.getChildren()) {
-            if (child instanceof Class4253) {
-                var5.put(((Class4253) child).field20626, (Class4253) child);
+            if (child instanceof BindableActionEntry) {
+                var5.put(((BindableActionEntry) child).entryIndex, (BindableActionEntry) child);
             }
         }
 
         int var9 = 75;
 
-        for (Entry<Integer, Class4253> var11 : var5.entrySet()) {
+        for (Entry<Integer, BindableActionEntry> var11 : var5.entrySet()) {
             var11.getValue().setY(var9);
             var9 += var11.getValue().getHeight();
         }
@@ -112,9 +112,9 @@ public class PopOver extends Element {
     public void draw(float partialTicks) {
         partialTicks = this.field21377.calcPercent();
         float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.method13284((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field21378 ? 1 : -1));
-        super.method13224();
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field21378 ? 1 : -1));
+        super.applyScaleTransforms();
         int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 10 / 2),
@@ -162,17 +162,17 @@ public class PopOver extends Element {
         super.draw(partialTicks);
     }
 
-    public final void method13713(Class6601 var1) {
-        this.field21379.add(var1);
+    public final void addAddButtonListener(AddButtonListener listener) {
+        this.addButtonListeners.add(listener);
     }
 
-    public final void method13714() {
-        for (Class6601 var4 : this.field21379) {
-            var4.method20001(this);
+    public final void notifyAddButtonListeners() {
+        for (AddButtonListener listener : this.addButtonListeners) {
+            listener.onAddButtonClicked(this);
         }
     }
 
-    public interface Class6601 {
-        void method20001(PopOver var1);
+    public interface AddButtonListener {
+        void onAddButtonClicked(PopOver popover);
     }
 }

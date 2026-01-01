@@ -57,7 +57,7 @@ public class Sub extends Element {
             });
         }
 
-        this.accept(new Class7262(1));
+        this.accept(new GridLayoutVisitor(1));
     }
 
     private int method13635() {
@@ -135,9 +135,9 @@ public class Sub extends Element {
     }
 
     @Override
-    public boolean method13114(int mouseX, int mouseY) {
-        mouseX -= this.method13271();
-        mouseY -= this.method13272();
+    public boolean isMouseOverComponent(int mouseX, int mouseY) {
+        mouseX -= this.getAbsoluteX();
+        mouseY -= this.getAbsoluteY();
         return mouseX >= -10 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.method13635();
     }
 }

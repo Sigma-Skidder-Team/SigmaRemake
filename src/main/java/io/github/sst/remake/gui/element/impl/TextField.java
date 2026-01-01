@@ -12,7 +12,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import net.minecraft.client.util.InputUtil;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         this.field20744 = this.field20744 + ((!this.focused ? 0.0F : 1.0F) - this.field20744) / 2.0F;
         if (this.focused) {
             if (this.field20752) {
-                this.maxLen = StringUtils.getFittingCharacterCount(text, this.font, (float) this.method13271(), mouseX, this.field20746);
+                this.maxLen = StringUtils.getFittingCharacterCount(text, this.font, (float) this.getAbsoluteX(), mouseX, this.field20746);
             }
         } else {
             this.maxLen = 0;
@@ -110,7 +110,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
             }
 
             this.field20752 = true;
-            this.maxLen = StringUtils.getFittingCharacterCount(var6, this.font, (float) this.method13271(), mouseX, this.field20746);
+            this.maxLen = StringUtils.getFittingCharacterCount(var6, this.font, (float) this.getAbsoluteX(), mouseX, this.field20746);
             if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), 340)
                     && !InputUtil.isKeyPressed(client.getWindow().getHandle(), 344)) {
                 this.startSelect = this.maxLen;
@@ -122,8 +122,8 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         }
     }
 
-    public void method13148() {
-        this.method13242();
+    public void startFocus() {
+        this.requestFocus();
         this.maxLen = this.text.length();
         this.startSelect = 0;
         this.endSelect = this.maxLen;
@@ -330,7 +330,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13225();
+        this.applyTranslationTransforms();
         float var4 = 1000.0F;
         boolean var5 = this.focused && (float) this.timer.getElapsedTime() > var4 / 2.0F;
         if ((float) this.timer.getElapsedTime() > var4) {

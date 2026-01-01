@@ -44,7 +44,7 @@ public class SettingGroup extends Element {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.method13212()
+        if (this.isMouseDownOverComponent()
                 && (mouseX < this.settingX || mouseY < this.settingY || mouseX > this.settingX + this.settingWidth || mouseY > this.settingY + this.settingHeight)) {
             this.field20671 = true;
         }
@@ -70,7 +70,7 @@ public class SettingGroup extends Element {
             var4 = QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F);
         }
 
-        this.method13279(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
+        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
         RenderUtils.drawRoundedRect(
                 (float) this.x,
                 (float) this.y,
@@ -78,7 +78,7 @@ public class SettingGroup extends Element {
                 (float) this.height,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.45F * partialTicks)
         );
-        super.method13224();
+        super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
                 (float) this.settingX,
                 (float) this.settingY,

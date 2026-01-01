@@ -54,8 +54,8 @@ public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
             this.field20933 = (float) client.getWindow().getHeight();
         }
 
-        float var5 = (float) (mouseX - this.method13271());
-        float var6 = (float) (mouseY - this.method13272());
+        float var5 = (float) (mouseX - this.getAbsoluteX());
+        float var6 = (float) (mouseY - this.getAbsoluteY());
         this.field20934 = (float) (1.0 - Math.sqrt(var5 * var5 + var6 * var6) / (double) this.field20938);
         if (!(Math.sqrt(var5 * var5 + var6 * var6) < (double) this.field20938)) {
             this.field20928 = this.field20928 - (this.field20928 - this.field20930) * 0.05F * JelloMenu.field20982;

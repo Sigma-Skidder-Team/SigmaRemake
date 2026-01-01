@@ -165,7 +165,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.searchBox.addChangeListener(var1 -> this.updateAccountList(false));
         TextButton addButton;
         this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.HELVETICA_LIGHT_25));
-        this.alts.method13242();
+        this.alts.requestFocus();
         addButton.onClick((var1, var2) -> {
             if (this.method13369()) {
                 this.loginDialog.method13603(!this.loginDialog.isHovered());
@@ -194,7 +194,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             accountUI.setAccountListRefreshing(true);
         }
 
-        accountUI.method13247((var2x, var3) -> {
+        accountUI.addMouseButtonCallback((var2x, var3) -> {
             if (var3 != 0) {
                 this.deleteAlert.onPress(element -> {
                     Client.INSTANCE.accountManager.remove(accountUI.selectedAccount);
@@ -348,10 +348,10 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                             }
 
                             float var9 = VecUtils.interpolate(accountUI.field20805.calcPercent(), 0.51, 0.82, 0.0, 0.99);
-                            accountUI.method13284((int) (-((1.0F - var9) * (float) (var7.getWidth() + 30))));
+                            accountUI.setTranslateX((int) (-((1.0F - var9) * (float) (var7.getWidth() + 30))));
                             var3 = accountUI.field20805.calcPercent();
                         } else {
-                            accountUI.method13284(0);
+                            accountUI.setTranslateX(0);
                             accountUI.field20805.changeDirection(AnimationUtils.Direction.FORWARDS);
                         }
                     }
@@ -375,7 +375,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         for (CustomGuiScreen var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (CustomGuiScreen var7 : var5.getChildren()) {
-                    if (var7.method13280() != 0 && var7.getX() > this.width) {
+                    if (var7.getTranslateX() != 0 && var7.getX() > this.width) {
                         return false;
                     }
                 }
@@ -442,7 +442,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         for (CustomGuiScreen var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (CustomGuiScreen var7 : var5.getChildren()) {
-                    this.alts.method13234(var7);
+                    this.alts.queueChildRemoval(var7);
                 }
             }
         }

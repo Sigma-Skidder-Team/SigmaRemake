@@ -49,13 +49,13 @@ public class AccountUI extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13225();
+        this.applyTranslationTransforms();
         this.color = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 2.0F);
         int var4 = ((ScrollableContentPanel) this.parent.getParent()).getScrollOffset();
         int var5 = Math.max(0, this.y - var4);
         int var6 = Math.max(0, this.height + Math.min(100, this.y - var4 - var5));
         float var7 = (float) Math.min(50, var6) / 50.0F;
-        int var8 = this.getParent().getParent().getHeight() + this.getParent().getParent().method13272();
+        int var8 = this.getParent().getParent().getHeight() + this.getParent().getParent().getAbsoluteY();
         int var9 = 0;
         var5 += var4;
         if (var5 - var4 <= var8) {
@@ -65,7 +65,7 @@ public class AccountUI extends AnimatedIconPanel {
                         var5,
                         this.width,
                         Math.max(20, var6),
-                        ColorHelper.applyAlpha(!this.method13212() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color, var7)
+                        ColorHelper.applyAlpha(!this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color, var7)
                 );
                 ScissorUtils.startScissor(this.x, var5, this.x + this.width + 20, var5 + var6, true);
                 if (this.selectedAccount != null) {
@@ -79,7 +79,7 @@ public class AccountUI extends AnimatedIconPanel {
                                 18.0F * this.field20803.calcPercent() * (float) var6 / 100.0F,
                                 (float) (47 * var6) / 100.0F,
                                 Resources.selectPNG,
-                                !this.method13212() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
+                                !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
                         );
                     }
 
@@ -101,7 +101,7 @@ public class AccountUI extends AnimatedIconPanel {
                 100.0F,
                 100.0F,
                 Resources.cerclePNG,
-                !this.method13212() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
+                !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
         );
     }
 

@@ -12,6 +12,7 @@
   },
   "client": [
     "MixinClientBrandRetriever",
+    "MixinClientPlayerEntity",
     "MixinGameRenderer",
     "MixinKeyboard",
     "MixinMinecraftClient",

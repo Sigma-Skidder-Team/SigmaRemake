@@ -1,188 +1,158 @@
 package io.github.sst.remake.manager.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.manager.Manager;
-import io.github.sst.remake.module.Module;
+import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.client.Profile;
+import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import io.github.sst.remake.util.io.GsonUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConfigManager extends Manager implements IMinecraft {
 
-    private static final String configFolder = "/profiles/";
-    private static final String configFileExtension = ".profile";
+    public List<Profile> profiles = new ArrayList<>();
+    public Profile currentProfile;
 
-    public final File file = new File("sigma5");
-    public JsonObject config;
-
-    public boolean guiBlur = false;
-    public boolean hqBlur = false;
-
-    public final List<Profile> profiles = new ArrayList<>();
-    public Profile profile;
+    public boolean guiBlur = true;
+    public boolean hqBlur = true;
 
     @Override
     public void init() {
-        try {
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-
-            config = FileUtils.readJsonFile(new File(file + "/config.json"));
-        } catch (IOException e) {
-            Client.LOGGER.error("Failed to load default config", e);
+        if (!ConfigUtils.CLIENT_FOLDER.exists()) {
+            ConfigUtils.CLIENT_FOLDER.mkdirs();
         }
+
+        if (!ConfigUtils.PROFILES_FOLDER.exists()) {
+            ConfigUtils.PROFILES_FOLDER.mkdirs();
+        }
+
+        profiles = ConfigUtils.listAllProfiles();
+        loadClientConfig();
+        loadProfile("Default");
     }
 
+    @Override
     public void shutdown() {
-        try {
-            FileUtils.save(config, new File(file + "/config.json"));
-        } catch (IOException e) {
-            Client.LOGGER.error(e.getMessage());
+        saveClientConfig();
+        saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
+    }
+
+    public void renameProfile(Profile from, String to) {
+        String oldName = from.name;
+        if (ConfigUtils.renameProfile(from, to)) {
+            Client.LOGGER.info("Renamed profile '{}' to '{}'", oldName, to);
         }
     }
 
-    public void saveConfig() {
-        JsonObject uiConfig = Client.INSTANCE.configManager.config;
-        Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
-
-        if (currentScreen != null) {
-            JsonObject json = currentScreen.toConfigWithExtra(new JsonObject());
-            if (json.size() != 0) {
-                uiConfig.add(currentScreen.getName(), json);
+    public void deleteProfile(Profile profile) {
+        if (profiles.contains(profile)) {
+            profiles.remove(profile);
+            if (ConfigUtils.deleteProfile(profile)) {
+                loadProfile("Default");
             }
-        }
-
-        uiConfig.addProperty("guiBlur", true);
-        uiConfig.addProperty("hqIngameBlur", true);
-        uiConfig.addProperty("hidpicocoa", true);
-    }
-
-    public void loadUIConfig() {
-        JsonObject uiConfig = Client.INSTANCE.configManager.config;
-        Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
-
-        if (currentScreen != null) {
-            JsonObject json = null;
-
-            try {
-                json = Client.INSTANCE.configManager.config.getAsJsonObject(currentScreen.getName());
-            } catch (Exception e) {
-                json = new JsonObject();
-            } finally {
-                currentScreen.loadConfig(json);
-            }
-        }
-
-        if (uiConfig.has("guiBlur")) {
-            Client.INSTANCE.configManager.guiBlur = uiConfig.get("guiBlur").getAsBoolean();
-        }
-
-        if (uiConfig.has("hqIngameBlur")) {
-            Client.INSTANCE.configManager.hqBlur = uiConfig.get("hqIngameBlur").getAsBoolean();
+            Client.LOGGER.info("Removed & deleted profile '{}'", profile.name);
+        } else {
+            Client.LOGGER.info("Profile '{}' doesn't exist anymore", profile.name);
         }
     }
 
-    public void saveProfile(Profile config) {
-        try {
-            this.profiles.add(0, config);
-
-            File configItself = new File(file + configFolder + config.name + configFileExtension);
-
-            if (configItself.getParentFile() != null) {
-                configItself.getParentFile().mkdirs();
-            }
-
-            JsonObject jsonConfig = config.saveToJson(new JsonObject());
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String prettyJson = gson.toJson(new com.google.gson.JsonParser().parse(jsonConfig.toString()));
-
-            Files.write(configItself.toPath(), prettyJson.getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save config: " + config.name, e);
-        }
-    }
-
-    public void loadProfile(Profile profile) {
-        shutdown();
-
-        if (this.profile == null) {
+    public void loadProfile(String name) {
+        Profile byName = getProfileByName(name);
+        if (byName != null) {
+            loadProfile(byName);
             return;
         }
 
-        this.profile.moduleConfig = loadCurrentConfig(new JsonObject());
-        this.profile = profile;
-        config.addProperty("profile", profile.name);
-
-        Client.INSTANCE.moduleManager.load(profile.moduleConfig);
-        shutdown();
+        Client.LOGGER.info("Profile by the name '{}' not found", name);
     }
 
-    public void saveAndReplaceConfigs() throws IOException {
-        this.profile.moduleConfig = loadCurrentConfig(new JsonObject());
-        File configFolderFolder = new File(file + configFolder);
-        if (!configFolderFolder.exists()) {
-            configFolderFolder.mkdirs();
-        }
+    public void loadProfile(Profile profile) {
+        Client.INSTANCE.moduleManager.loadJson(profile.content);
+        currentProfile = profile;
+        Client.LOGGER.info("Loaded profile '{}'", profile.name);
+    }
 
-        File[] configs = configFolderFolder.listFiles((var0, var1) -> var1.toLowerCase().endsWith(configFileExtension));
+    public void saveProfile(String name, JsonObject content, boolean add) {
+        saveProfile(new Profile(name, content), add);
+    }
 
-        for (File configItself : configs) {
-            configItself.delete();
-        }
+    public void saveProfile(Profile profile, boolean add) {
+        try {
+            String fullName = profile.name.endsWith(ConfigUtils.EXTENSION) ? profile.name : profile.name + ConfigUtils.EXTENSION;
+            GsonUtils.save(profile.content, new File(ConfigUtils.PROFILES_FOLDER, fullName));
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        for (Profile profile : this.profiles) {
-            File configItself = new File(file + configFolder + profile.name + configFileExtension);
-            if (!configItself.exists()) {
-                configItself.createNewFile();
+            if (add) {
+                profiles.add(profile);
             }
 
-            String json = gson.toJson(profile.saveToJson(new JsonObject()));
-
-            try (FileOutputStream outputStream = new FileOutputStream(configItself)) {
-                IOUtils.write(json, outputStream, "UTF-8");
-            }
+            Client.LOGGER.info("{} profile '{}'", add ? "Adding" : "Saving", profile.name);
+        } catch (Exception e) {
+            Client.LOGGER.error("Failed to save profile", e);
         }
     }
 
-    private JsonObject loadCurrentConfig(JsonObject obj) {
-        JsonArray array = new JsonArray();
+    public void saveClientConfig() {
+        JsonObject object = new JsonObject();
+        object.addProperty("GUI Blur", guiBlur);
+        object.addProperty("GPU Acceleration", hqBlur);
 
-        for (Module module : Client.INSTANCE.moduleManager.modules) {
-            array.add(module.fromJson(new JsonObject()));
+        try {
+            GsonUtils.save(object, ConfigUtils.CONFIG_FILE);
+            Client.LOGGER.info("Saved client configuration");
+        } catch (IOException e) {
+            Client.LOGGER.error("Failed to save client configuration", e);
         }
-
-        obj.add("mods", array);
-        return obj;
     }
 
-    public boolean getByName(String name) {
-        for (Profile profile : this.profiles) {
-            if (profile.name.equalsIgnoreCase(name)) {
+    public void loadClientConfig() {
+        JsonObject object = JsonParser.parseString(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
+
+        if (object.isEmpty()) {
+            Client.LOGGER.warn("Client configuration file is empty");
+            return;
+        }
+
+        if (object.has("GUI Blur")) {
+            guiBlur = object.get("GUI Blur").getAsBoolean();
+        }
+
+        if (object.has("GPU Acceleration")) {
+            guiBlur = object.get("GPU Acceleration").getAsBoolean();
+        }
+
+        Client.LOGGER.info("Loaded client configuration");
+    }
+
+    public Profile getProfileByName(String name) {
+        return this.profiles.stream()
+                .filter(prof -> prof.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean doesProfileExist(String name) {
+        for (Profile config : this.profiles) {
+            if (config.name.equalsIgnoreCase(name)) {
                 return true;
             }
         }
 
         return false;
     }
+
+    public List<String> getProfileNames() {
+        return this.profiles
+                .stream()
+                .map(prof -> prof.name)
+                .collect(Collectors.toList());
+    }
+
 }

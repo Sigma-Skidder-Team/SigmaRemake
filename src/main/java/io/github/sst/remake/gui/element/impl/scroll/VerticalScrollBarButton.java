@@ -71,7 +71,7 @@ public class VerticalScrollBarButton extends AnimatedIconPanel {
     @Override
     public void draw(float partialTicks) {
         int var4 = 5;
-        partialTicks *= !this.field20877 ? (!this.field20908 ? 0.3F : 0.7F) : 0.75F;
+        partialTicks *= !this.field20877 ? (!this.isHoveredInHierarchy ? 0.3F : 0.7F) : 0.75F;
         int var5 = this.x;
         int var6 = this.width;
 

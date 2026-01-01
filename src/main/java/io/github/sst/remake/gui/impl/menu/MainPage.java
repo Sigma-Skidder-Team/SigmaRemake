@@ -20,8 +20,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
+import org.newdawn.slick.opengl.texture.Texture;
 
 public class MainPage extends CustomGuiScreen implements IMinecraft {
     private final Button singleplayerButton;
@@ -125,7 +125,7 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13224();
+        this.applyScaleTransforms();
         Texture largeLogo = Resources.logoLargePNG;
         int imageWidth = largeLogo.getImageWidth();
         int imageHeight = largeLogo.getImageHeight();

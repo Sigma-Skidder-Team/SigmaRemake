@@ -27,35 +27,39 @@ public class Client implements IMinecraft {
     public boolean loaded = false;
 
     public void start() {
-        LOGGER.info("Initializing...");
+        LOGGER.info("Starting Sigma Remake {}...", VERSION);
 
         rpcManager.init();
-        configManager.init();
+
         textureManager.init();
         screenManager.init();
         hudManager.init();
-        bindManager.init();
-        moduleManager.init();
+
         accountManager.init();
+        moduleManager.init();
+        bindManager.init();
+        configManager.init();
+
         notificationManager.init();
 
-        LOGGER.info("Initialized.");
+        LOGGER.info("Everything has been initialised.");
     }
 
     public void shutdown() {
         LOGGER.info("Shutting down...");
 
+        moduleManager.shutdown();
+
         bindManager.shutdown();
         accountManager.shutdown();
         rpcManager.shutdown();
-        moduleManager.shutdown();
         configManager.shutdown();
         screenManager.shutdown();
         hudManager.shutdown();
         notificationManager.shutdown();
         textureManager.shutdown();
 
-        LOGGER.info("Done.");
+        LOGGER.info("Everything saved.");
     }
 
 }

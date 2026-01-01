@@ -17,7 +17,7 @@ public class BlockButton extends Element {
     @Override
     public void draw(float partialTicks) {
         byte var4 = 5;
-        if (this.method13700() || this.method13298()) {
+        if (this.method13700() || this.isHoveredInHierarchy()) {
             RenderUtils.drawPanelShadow(
                     (float) this.x,
                     (float) this.y,

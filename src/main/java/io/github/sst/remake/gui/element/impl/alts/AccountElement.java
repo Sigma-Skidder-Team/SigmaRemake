@@ -28,7 +28,7 @@ public class AccountElement extends AnimatedIconPanel {
         this.currentAccount = account;
 
         for (BanElement ban : this.bans) {
-            this.method13234(ban);
+            this.queueChildRemoval(ban);
         }
 
         if (account != null) {
@@ -56,7 +56,7 @@ public class AccountElement extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        this.method13225();
+        this.applyTranslationTransforms();
         this.field20815 = (float) ((double) this.field20815 + (this.isSelfVisible() ? 0.33 : -0.33));
         this.field20815 = Math.min(1.0F, Math.max(0.0F, this.field20815));
 

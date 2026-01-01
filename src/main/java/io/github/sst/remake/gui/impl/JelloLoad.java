@@ -8,7 +8,7 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.ResourceReload;
-import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.texture.Texture;
 import net.minecraft.util.Util;
 import org.lwjgl.opengl.GL11;
 

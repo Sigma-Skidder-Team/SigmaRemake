@@ -7,7 +7,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class Slider extends Element {
     private float field20732;
@@ -55,7 +55,7 @@ public class Slider extends Element {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         this.field20735
                 .changeDirection(
-                        !this.method13298() && !this.field20734.method13298() && !this.method13212() && !this.field20734.isDragging()
+                        !this.isHoveredInHierarchy() && !this.field20734.isHoveredInHierarchy() && !this.isMouseDownOverComponent() && !this.field20734.isDragging()
                                 ? AnimationUtils.Direction.BACKWARDS
                                 : AnimationUtils.Direction.FORWARDS
                 );

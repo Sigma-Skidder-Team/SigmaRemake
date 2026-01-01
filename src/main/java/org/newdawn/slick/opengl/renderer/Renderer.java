@@ -1,5 +1,10 @@
 package org.newdawn.slick.opengl.renderer;
 
+import org.newdawn.slick.opengl.renderer.impl.DefaultLineStripRenderer;
+import org.newdawn.slick.opengl.renderer.impl.ImmediateModeOGLRenderer;
+import org.newdawn.slick.opengl.renderer.impl.QuadBasedLineStripRenderer;
+import org.newdawn.slick.opengl.renderer.impl.VAOGLRenderer;
+
 public class Renderer {
     public static final int IMMEDIATE_RENDERER = 1;
     public static final int VERTEX_ARRAY_RENDERER = 2;

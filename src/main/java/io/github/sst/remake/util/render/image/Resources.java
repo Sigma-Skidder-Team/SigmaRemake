@@ -1,9 +1,9 @@
 package io.github.sst.remake.util.render.image;
 
 import io.github.sst.remake.Client;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
+import org.newdawn.slick.opengl.texture.TextureLoader;
+import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
