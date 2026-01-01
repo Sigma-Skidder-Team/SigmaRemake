@@ -2,6 +2,8 @@ package io.github.sst.remake.util.math.color;
 
 import io.github.sst.remake.util.render.font.FontAlignment;
 
+import java.awt.*;
+
 /**
  * A utility class for managing colors, likely used for UI rendering.
  * It allows storing and manipulating different color components and related properties.
@@ -283,5 +285,30 @@ public class ColorHelper {
 
     public static float getAlpha(int color) {
         return (float) (color >> 24 & 0xFF) / 255.0F;
+    }
+
+    public static Color calculateAverageColor(Color... colors) {
+        if (colors == null || colors.length == 0) {
+            return Color.WHITE;
+        }
+
+        float weight = 1.0F / colors.length;
+        float totalRed = 0.0F;
+        float totalGreen = 0.0F;
+        float totalBlue = 0.0F;
+        float totalAlpha = 0.0F;
+
+        for (Color color : colors) {
+            if (color == null) {
+                color = Color.BLACK;
+            }
+
+            totalRed += color.getRed() * weight;
+            totalGreen += color.getGreen() * weight;
+            totalBlue += color.getBlue() * weight;
+            totalAlpha += color.getAlpha() * weight;
+        }
+
+        return new Color(totalRed / 255.0F, totalGreen / 255.0F, totalBlue / 255.0F, totalAlpha / 255.0F);
     }
 }
