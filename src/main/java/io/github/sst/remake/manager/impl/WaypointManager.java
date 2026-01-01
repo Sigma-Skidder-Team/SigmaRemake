@@ -33,7 +33,8 @@ import java.util.*;
 public class WaypointManager extends Manager implements IMinecraft {
 
     private final List<Waypoint> waypoints = new ArrayList<>();
-    public String identifier;
+    public String mapRegionIdentifier;
+    private String logicalIdentifier;
     public int pendingChunkSaveCount = 0;
     private boolean loaded = false;
 
@@ -80,7 +81,8 @@ public class WaypointManager extends Manager implements IMinecraft {
             Client.LOGGER.error("Failed to save waypoints", e);
         }
 
-        this.identifier = this.getFormattedIdentifier();
+        this.mapRegionIdentifier = this.getFormattedIdentifier();
+        this.logicalIdentifier = WaypointUtils.getWorldIdentifier();
         WaypointUtils.regionCache.clear();
         WaypointUtils.processedChunks.clear();
         WaypointUtils.borderChunks.clear();
@@ -91,7 +93,7 @@ public class WaypointManager extends Manager implements IMinecraft {
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
         if (client.world != null) {
-            if (this.identifier != null) {
+            if (this.mapRegionIdentifier != null) {
                 if (client.player.age % 140 == 0) {
                     RegionPos playerRegion = RegionPos.fromChunkPos(client.world.getChunk(client.player.getBlockPos()).getPos());
                     Iterator<Map.Entry<Long, MapRegion>> regionIterator = WaypointUtils.regionCache.entrySet().iterator();
@@ -105,7 +107,7 @@ public class WaypointManager extends Manager implements IMinecraft {
                         if (distance > 2.0) {
                             try {
                                 ObjectOutputStream out = new ObjectOutputStream(
-                                        new FileOutputStream(WaypointUtils.getRegionFilePath(this.identifier, entry.getValue()))
+                                        new FileOutputStream(WaypointUtils.getRegionFilePath(this.mapRegionIdentifier, entry.getValue()))
                                 );
                                 entry.getValue().write(out);
                                 out.close();
@@ -119,7 +121,7 @@ public class WaypointManager extends Manager implements IMinecraft {
                     }
                 }
 
-                String id = this.identifier;
+                String id = this.mapRegionIdentifier;
                 int processedChunksCount = 0;
 
                 for (int i = 0; i < client.world.getChunkManager().chunks.chunks.length(); i++) {
@@ -194,42 +196,49 @@ public class WaypointManager extends Manager implements IMinecraft {
     }
 
     public void save() {
-        if (this.identifier != null) {
-            JsonObject waypointsObject = new JsonObject();
-            JsonArray waypointsArray = new JsonArray();
+        try {
+            if (this.logicalIdentifier == null) return;
 
+            String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
+            JsonObject allWaypointsObject = fileContent.isEmpty() ? new JsonObject() : JsonParser.parseString(fileContent).getAsJsonObject();
+
+            JsonArray currentWorldWaypointsArray = new JsonArray();
             for (Waypoint waypoint : this.waypoints) {
                 JsonObject waypointObject = new JsonObject();
                 waypointObject.addProperty("name", waypoint.name);
                 waypointObject.addProperty("color", waypoint.color);
                 waypointObject.addProperty("x", waypoint.x);
                 waypointObject.addProperty("z", waypoint.z);
-                waypointsArray.add(waypointObject);
+                currentWorldWaypointsArray.add(waypointObject);
             }
 
-            waypointsObject.add("waypoints", waypointsArray);
+            allWaypointsObject.add(this.logicalIdentifier, currentWorldWaypointsArray);
 
-            try {
-                GsonUtils.save(waypointsObject, ConfigUtils.WAYPOINTS_FILE);
-            } catch (IOException | JsonParseException e) {
-                Client.LOGGER.error("Failed to save waypoints", e);
-            }
+            GsonUtils.save(allWaypointsObject, ConfigUtils.WAYPOINTS_FILE);
+        } catch (Exception e) {
+            Client.LOGGER.error("Failed to save waypoints", e);
         }
     }
 
     public void load() {
         try {
-            String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
-            JsonObject waypointsObject = JsonParser.parseString(fileContent).getAsJsonObject();
+            this.waypoints.clear();
+            this.logicalIdentifier = WaypointUtils.getWorldIdentifier();
 
-            if (!waypointsObject.has("waypoints")) {
-                waypointsObject.add("waypoints", new JsonArray());
+            String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
+            if (fileContent.isEmpty()) {
+                this.loaded = true;
+                return;
             }
 
-            JsonArray waypointsArray = waypointsObject.getAsJsonArray("waypoints");
-            for (int i = 0; i < waypointsArray.size(); i++) {
-                JsonObject waypointJson = waypointsArray.get(i).getAsJsonObject();
-                this.waypoints.add(new Waypoint(waypointJson));
+            JsonObject allWaypointsObject = JsonParser.parseString(fileContent).getAsJsonObject();
+
+            if (allWaypointsObject.has(this.logicalIdentifier)) {
+                JsonArray waypointsArray = allWaypointsObject.getAsJsonArray(this.logicalIdentifier);
+                for (int i = 0; i < waypointsArray.size(); i++) {
+                    JsonObject waypointJson = waypointsArray.get(i).getAsJsonObject();
+                    this.waypoints.add(new Waypoint(waypointJson, this.logicalIdentifier));
+                }
             }
 
             this.loaded = true;
@@ -239,10 +248,10 @@ public class WaypointManager extends Manager implements IMinecraft {
     }
 
     public void saveModifiedRegions() throws IOException {
-        if (this.identifier != null) {
+        if (this.mapRegionIdentifier != null) {
             try {
                 for (Map.Entry<Long, MapRegion> entry : WaypointUtils.regionCache.entrySet()) {
-                    ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(WaypointUtils.getRegionFilePath(identifier, entry.getValue()))));
+                    ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(WaypointUtils.getRegionFilePath(mapRegionIdentifier, entry.getValue()))));
                     entry.getValue().write(outputStream);
                     outputStream.close();
                 }
