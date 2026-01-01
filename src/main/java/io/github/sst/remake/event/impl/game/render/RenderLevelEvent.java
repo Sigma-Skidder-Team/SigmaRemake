@@ -1,4 +1,4 @@
-package io.github.sst.remake.event.impl.render;
+package io.github.sst.remake.event.impl.game.render;
 
 import io.github.sst.remake.event.Event;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package io.github.sst.remake.module.impl;
+package io.github.sst.remake.module.impl.misc;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.element.impl.Notification;

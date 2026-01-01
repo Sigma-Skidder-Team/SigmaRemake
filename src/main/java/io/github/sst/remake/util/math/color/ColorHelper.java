@@ -2,6 +2,8 @@ package io.github.sst.remake.util.math.color;
 
 import io.github.sst.remake.util.render.font.FontAlignment;
 
+import java.awt.*;
+
 /**
  * A utility class for managing colors, likely used for UI rendering.
  * It allows storing and manipulating different color components and related properties.
@@ -283,5 +285,68 @@ public class ColorHelper {
 
     public static float getAlpha(int color) {
         return (float) (color >> 24 & 0xFF) / 255.0F;
+    }
+
+    public static Color calculateAverageColor(Color... colors) {
+        if (colors == null || colors.length == 0) {
+            return Color.WHITE;
+        }
+
+        float weight = 1.0F / colors.length;
+        float totalRed = 0.0F;
+        float totalGreen = 0.0F;
+        float totalBlue = 0.0F;
+        float totalAlpha = 0.0F;
+
+        for (Color color : colors) {
+            if (color == null) {
+                color = Color.BLACK;
+            }
+
+            totalRed += color.getRed() * weight;
+            totalGreen += color.getGreen() * weight;
+            totalBlue += color.getBlue() * weight;
+            totalAlpha += color.getAlpha() * weight;
+        }
+
+        return new Color(totalRed / 255.0F, totalGreen / 255.0F, totalBlue / 255.0F, totalAlpha / 255.0F);
+    }
+
+    public static Color blendColor(Color first, Color second, float factor) {
+        float newFactor = 1.0F - factor;
+        float blendedR = (float) first.getRed() * factor + (float) second.getRed() * newFactor;
+        float blendedG = (float) first.getGreen() * factor + (float) second.getGreen() * newFactor;
+        float blendedB = (float) first.getBlue() * factor + (float) second.getBlue() * newFactor;
+        return new Color(blendedR / 255.0F, blendedG / 255.0F, blendedB / 255.0F);
+    }
+
+    public static float[] unpackColorToRGBA(int color) {
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+
+        return new float[]{red, green, blue, alpha};
+    }
+
+    public static int blendColors(int color1, int color2, float factor) {
+        int a1 = color1 >> 24 & 0xFF;
+        int r1 = color1 >> 16 & 0xFF;
+        int g1 = color1 >> 8 & 0xFF;
+        int b1 = color1 & 0xFF;
+
+        int a2 = color2 >> 24 & 0xFF;
+        int r2 = color2 >> 16 & 0xFF;
+        int g2 = color2 >> 8 & 0xFF;
+        int b2 = color2 & 0xFF;
+
+        float inverseFactor = 1.0F - factor;
+
+        float blendedA = a1 * factor + a2 * inverseFactor;
+        float blendedR = r1 * factor + r2 * inverseFactor;
+        float blendedG = g1 * factor + g2 * inverseFactor;
+        float blendedB = b1 * factor + b2 * inverseFactor;
+
+        return ((int) blendedA << 24) | (((int) blendedR & 0xFF) << 16) | (((int) blendedG & 0xFF) << 8) | ((int) blendedB & 0xFF);
     }
 }

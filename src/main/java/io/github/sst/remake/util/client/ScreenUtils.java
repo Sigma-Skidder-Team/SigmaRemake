@@ -2,13 +2,8 @@ package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.impl.JelloCredits;
-import io.github.sst.remake.gui.impl.JelloOptions;
-import io.github.sst.remake.gui.impl.JelloSpotlight;
-import io.github.sst.remake.gui.impl.JelloScreen;
+import io.github.sst.remake.gui.impl.*;
 import io.github.sst.remake.gui.screen.holder.*;
-import io.github.sst.remake.gui.impl.JelloMenu;
-import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.gui.screen.OptionsScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -31,11 +26,13 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(CreditsHolder.class, JelloCredits.class);
         replacementScreens.put(SpotlightHolder.class, JelloSpotlight.class);
         replacementScreens.put(ClickGuiHolder.class, JelloScreen.class);
+        replacementScreens.put(MapsHolder.class, JelloMaps.class);
 
         // Sigma Screen -> Screen Name
         screenToScreenName.put(KeybindsHolder.class, "Keybind Manager");
         screenToScreenName.put(SpotlightHolder.class, "Spotlight");
         screenToScreenName.put(ClickGuiHolder.class, "Click GUI");
+        screenToScreenName.put(MapsHolder.class, "Maps");
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {

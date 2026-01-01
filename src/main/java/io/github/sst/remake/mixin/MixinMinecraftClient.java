@@ -2,9 +2,10 @@ package io.github.sst.remake.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.event.impl.RunLoopEvent;
+import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
+import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.impl.JelloLoad;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
@@ -54,6 +55,11 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
     private void injectOpenScreen(CallbackInfo ci) {
         new OpenScreenEvent().call();
+    }
+
+    @Inject(method = "joinWorld", at = @At(value = "HEAD"))
+    private void injectJoinWorld(CallbackInfo ci) {
+        new LoadWorldEvent().call();
     }
 
     @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))

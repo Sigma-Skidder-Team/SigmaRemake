@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Priority;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
-import io.github.sst.remake.event.impl.render.Render2DEvent;
+import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.DrawableHelper;

@@ -3,6 +3,7 @@ package io.github.sst.remake.util.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -21,7 +22,9 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureImpl;
 
-public class RenderUtils {
+import java.nio.ByteBuffer;
+
+public class RenderUtils implements IMinecraft {
 
     private static float getScaleFactor() {
         return Client.INSTANCE.screenManager.scaleFactor;
@@ -935,4 +938,269 @@ public class RenderUtils {
         drawRoundedRect(xEnd - (float) thickness, yStart, xEnd, yEnd, color);
     }
 
+    public static void drawTexturedQuad(
+            float x,
+            float y,
+            float width,
+            float height,
+            ByteBuffer pixelBuffer,
+            int color,
+            float textureOffsetX,
+            float textureOffsetY,
+            float textureWidth,
+            float textureHeight,
+            boolean flipX,
+            boolean flipY
+    ) {
+        if (pixelBuffer == null) {
+            return;
+        }
+
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+
+        x = (float) Math.round(x);
+        y = (float) Math.round(y);
+        width = (float) Math.round(width);
+        height = (float) Math.round(height);
+
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue  = (float) (color & 0xFF) / 255.0F;
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.color4f(red, green, blue, alpha);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexImage2D(
+                GL11.GL_TEXTURE_2D,
+                0,
+                GL11.GL_RGB,
+                (int) textureWidth,
+                (int) textureHeight,
+                0,
+                GL11.GL_RGB,
+                GL11.GL_UNSIGNED_BYTE,
+                pixelBuffer
+        );
+
+        float u = textureOffsetX / textureWidth;
+        float v = textureOffsetY / textureHeight;
+
+        float uMax = 1.0f;
+        float vMax = 1.0f;
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? vMax : 0.0F));
+        GL11.glVertex2f(x, y);
+
+        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? 0.0F : vMax));
+        GL11.glVertex2f(x, y + height);
+
+        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? 0.0F : vMax));
+        GL11.glVertex2f(x + width, y + height);
+
+        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? vMax : 0.0F));
+        GL11.glVertex2f(x + width, y);
+        GL11.glEnd();
+
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    public static void drawRotatedTriangle() {
+        GL11.glTranslatef(0.0F, 0.0F, 0.3F);
+        GL11.glNormal3f(0.0F, 0.0F, 1.0F);
+        GL11.glRotated(-37.0, 1.0, 0.0, 0.0);
+
+        GL11.glBegin(GL11.GL_TRIANGLES);
+        GL11.glVertex2f(0.0F, 0.4985F);
+        GL11.glVertex2f(-0.3F, 0.0F);
+        GL11.glVertex2f(0.3F, 0.0F);
+        GL11.glEnd();
+    }
+
+    public static void drawColoredRect(float x1, float y1, float x2, float y2, int color) {
+        if (x1 < x2) {
+            int temp = (int) x1;
+            x1 = x2;
+            x2 = temp;
+        }
+
+        if (y1 < y2) {
+            int temp = (int) y1;
+            y1 = y2;
+            y2 = temp;
+        }
+
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue  = (float) (color & 0xFF) / 255.0F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.SRC_ALPHA,
+                GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SrcFactor.ONE,
+                GlStateManager.DstFactor.ZERO
+        );
+
+        RenderSystem.color4f(red, green, blue, alpha);
+
+        buffer.begin(7, VertexFormats.POSITION);
+        buffer.vertex(x1, y2, 0.0).next();
+        buffer.vertex(x2, y2, 0.0).next();
+        buffer.vertex(x2, y1, 0.0).next();
+        buffer.vertex(x1, y1, 0.0).next();
+
+        tessellator.draw();
+
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    public static void drawColoredRotatedTriangle(int color) {
+        GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
+        drawRotatedTriangle();
+    }
+
+    public static void drawCircleOutline(float radius) {
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        for (int angle = 0; angle < 360; angle++) {
+            double rad = angle * Math.PI / 180.0;
+            GL11.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
+        }
+        GL11.glEnd();
+    }
+
+    public static void drawFilledCircle(float radius) {
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        for (int angle = 0; angle < 360; angle++) {
+            double rad = angle * Math.PI / 180.0;
+            GL11.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
+        }
+        GL11.glEnd();
+    }
+
+    public static void drawRotatingTriangles(int color) {
+        for (int angle = 0; angle <= 270; angle += 90) {
+            GL11.glPushMatrix();
+            GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL.getColor(), color, 0.04F * angle / 90.0F));
+            GL11.glPopMatrix();
+        }
+
+        for (int angle = 0; angle <= 270; angle += 90) {
+            GL11.glPushMatrix();
+            GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
+            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL.getColor(), color, 0.04F * angle / 90.0F));
+            GL11.glPopMatrix();
+        }
+    }
+
+    public static void drawWaypointIndicator(float x, float y, float z, String label, int color, float scale) {
+        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(3042);
+        GL11.glEnable(2848);
+        GL11.glDisable(3553);
+        GL11.glDisable(2929);
+        GL11.glDisable(2896);
+        GL11.glDepthMask(false);
+
+        // Draw shadow circle
+        GL11.glPushMatrix();
+        GL11.glAlphaFunc(519, 0.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.114F);
+        GL11.glTranslated(x + 0.5, y, z + 0.5);
+        GL11.glRotatef(90.0F, -1.0F, 0.0F, 0.0F);
+        drawFilledCircle(0.5F);
+        GL11.glPopMatrix();
+
+        // Draw rotating outline circle
+        GL11.glPushMatrix();
+        GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
+        GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
+        GL11.glRotatef((float) (client.player.age % 90 * 4), 0.0F, -1.0F, 0.0F);
+        GL11.glLineWidth(1.4F + 1.4F / scale);
+        drawCircleOutline(0.6F);
+        GL11.glPopMatrix();
+
+        // Draw rotating triangles
+        GL11.glPushMatrix();
+        GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
+        GL11.glRotatef((float) (client.player.age % 90 * 4), 0.0F, 1.0F, 0.0F);
+        drawRotatingTriangles(color);
+        GL11.glPopMatrix();
+
+        // Draw label background and text
+        GL11.glPushMatrix();
+        GL11.glAlphaFunc(519, 0.0F);
+        GL11.glTranslated(x + 0.5, y + 1.9, z + 0.5);
+        GL11.glRotatef(client.gameRenderer.getCamera().getYaw(), 0.0F, -1.0F, 0.0F);
+        GL11.glRotatef(client.gameRenderer.getCamera().getPitch(), 1.0F, 0.0F, 0.0F);
+
+        TrueTypeFont font = FontUtils.HELVETICA_LIGHT_25;
+
+        GL11.glPushMatrix();
+        GL11.glScalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
+        GL11.glTranslated(0.0, -20.0 * Math.sqrt(Math.sqrt(scale)), 0.0);
+
+        int bgColor = ColorHelper.applyAlpha(
+                ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.DEEP_TEAL.getColor(), 75.0F),
+                0.5F
+        );
+
+        drawColoredRect(
+                (float) (-font.getWidth(label) / 2 - 14),
+                -5.0F,
+                (float) font.getWidth(label) / 2.0F + 14.0F,
+                (float) (font.getHeight() + 7),
+                bgColor
+        );
+
+        drawRoundedRect(
+                (float) (-font.getWidth(label) / 2 - 14),
+                -5.0F,
+                (float) (font.getWidth(label) + 28),
+                (float) (font.getHeight() + 12),
+                20.0F,
+                0.5F
+        );
+
+        GL11.glTranslated((double) -font.getWidth(label) / 2, 0.0, 0.0);
+        drawString(font, 0.0F, 0.0F, label, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F));
+
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+
+        GL11.glEnable(3553);
+        GL11.glEnable(2929);
+        GL11.glEnable(2896);
+        GL11.glDisable(2848);
+        GL11.glDepthMask(true);
+        GL11.glDisable(3042);
+    }
 }

@@ -4,12 +4,10 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.util.IMinecraft;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
 @Getter
 public abstract class Module implements IMinecraft {
 
@@ -41,8 +39,9 @@ public abstract class Module implements IMinecraft {
     public void onInit() {
     }
 
-    public void toggle() {
-        setEnabled(!enabled);
+    public void setEnabled(boolean enabled) {
+        if (this.enabled == enabled) return;
+        this.enabled = enabled;
 
         if (this.enabled) {
             Client.BUS.register(this);
@@ -51,6 +50,14 @@ public abstract class Module implements IMinecraft {
             Client.BUS.unregister(this);
             this.onDisable();
         }
+    }
+
+    public void setKeycode(int keycode) {
+        this.keycode = keycode;
+    }
+
+    public void toggle() {
+        setEnabled(!enabled);
     }
 
 }
