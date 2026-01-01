@@ -113,6 +113,11 @@ public class ConfigManager extends Manager implements IMinecraft {
     }
 
     public void loadClientConfig() {
+        if (!ConfigUtils.CONFIG_FILE.exists()) {
+            Client.LOGGER.warn("Client configuration file doesn't exist");
+            return;
+        }
+
         JsonObject object = JsonParser.parseString(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
 
         if (object.isEmpty()) {
