@@ -86,7 +86,7 @@ public class JelloScreen extends Screen implements IMinecraft {
         ShaderUtils.setShaderRadiusRounded(animationProgress.calcPercent());
     }
 
-    public void method13315() {
+    public void updateSideBar() {
         for (CategoryPanel panel : this.categoryPanels.values()) {
             panel.method13504();
         }
@@ -104,11 +104,11 @@ public class JelloScreen extends Screen implements IMinecraft {
             int yOver = mouseY - this.configScreen.getAbsoluteY();
             boolean conditionMet = xOver >= -10 && yOver >= -10;
             if (!conditionMet) {
-                this.configScreen.method13613();
+                this.configScreen.close();
             }
         }
 
-        if (this.configScreen != null && this.configScreen.method13614()) {
+        if (this.configScreen != null && this.configScreen.isClosed()) {
             this.removeChildren(this.configScreen);
             this.configScreen = null;
         }

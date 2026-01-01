@@ -122,7 +122,7 @@ public class TextField extends AnimatedIconPanel implements IMinecraft {
         }
     }
 
-    public void method13148() {
+    public void startFocus() {
         this.requestFocus();
         this.maxLen = this.text.length();
         this.startSelect = 0;

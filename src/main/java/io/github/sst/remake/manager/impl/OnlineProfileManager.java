@@ -19,22 +19,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnlineProfilesManager {
-    public final List<String> cachedOnlineProfiles = new ArrayList<>();
+public class OnlineProfileManager {
+    public final List<String> cachedProfileNames = new ArrayList<>();
 
-    public OnlineProfilesManager() {
+    public OnlineProfileManager() {
     }
 
-    public void cache(OnlineProfileListener listener) {
+    public void getOnlineProfileNames(ProfileNamesListener listener) {
         new Thread(() -> {
-            if (this.cachedOnlineProfiles.isEmpty())
-                this.fetchOnlineProfiles();
+            if (this.cachedProfileNames.isEmpty())
+                this.fetchOnlineProfileNames();
 
-            listener.onProfilesRetrieved(cachedOnlineProfiles);
+            listener.onProfileNamesReceived(cachedProfileNames);
         }).start();
     }
 
-    public void fetchOnlineProfiles() {
+    public void fetchOnlineProfileNames() {
         try {
             HttpGet request = new HttpGet("https://jelloconnect.sigmaclient.cloud/profiles.php?v=" + Client.VERSION + "remake");
             CloseableHttpResponse response = HttpClients.createDefault().execute(request);
@@ -45,7 +45,7 @@ public class OnlineProfilesManager {
                     JsonArray jsonArray = JsonParser.parseString(content).getAsJsonArray();
 
                     for (int i = 0; i < jsonArray.size(); i++) {
-                        cachedOnlineProfiles.add(jsonArray.get(i).getAsString());
+                        cachedProfileNames.add(jsonArray.get(i).getAsString());
                     }
                 }
             }
@@ -54,7 +54,7 @@ public class OnlineProfilesManager {
         }
     }
 
-    public JsonObject fetchProfileConfig(String profileName) {
+    public JsonObject fetchOnlineProfileConfig(String profileName) {
         try {
             HttpGet request = new HttpGet("https://jelloconnect.sigmaclient.cloud/profiles/" + StringUtils.encode(profileName) + ".profile?v=" + Client.VERSION + "remake");
             CloseableHttpResponse response = HttpClients.createDefault().execute(request);
@@ -71,20 +71,19 @@ public class OnlineProfilesManager {
         return new JsonObject();
     }
 
-    public Profile createProfileFromOnlineConfig(Profile base, String name) {
-        Profile newProfile = new Profile(name, base);
-
+    public Profile downloadOnlineProfile(String name) {
         try {
-            Profile settingsProfile = new Profile("settings", fetchProfileConfig(name).getAsJsonObject());
-            Client.INSTANCE.moduleManager.loadJson(settingsProfile.content);
+            JsonObject config = fetchOnlineProfileConfig(name);
+            if (config.size() > 0) {
+                return new Profile(name, config);
+            }
         } catch (JsonParseException e) {
-            throw new RuntimeException("Failed to parse profile configuration", e);
+            Client.LOGGER.error("Failed to parse profile configuration for {}", name, e);
         }
-
-        return newProfile;
+        return null;
     }
 
-    public interface OnlineProfileListener {
-        void onProfilesRetrieved(List<String> profileNames);
+    public interface ProfileNamesListener {
+        void onProfileNamesReceived(List<String> profileNames);
     }
 }

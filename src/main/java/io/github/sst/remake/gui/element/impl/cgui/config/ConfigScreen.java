@@ -21,157 +21,157 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigScreen extends Element {
-    public final AnimationUtils field21298;
+    public final AnimationUtils openAnimation;
     public ScrollableContentPanel profileScrollView;
     public ConfigGroup configGroup;
-    private final List<ProfileGroup> field21301 = new ArrayList<>();
+    private final List<ProfileGroup> profileGroups = new ArrayList<>();
 
-    public ConfigScreen(CustomGuiScreen var1, String var2, int var3, int var4) {
-        super(var1, var2, var3 - 250, var4 - 500, 250, 500, ColorHelper.DEFAULT_COLOR, false);
-        this.field21298 = new AnimationUtils(300, 100);
+    public ConfigScreen(CustomGuiScreen parent, String name, int x, int y) {
+        super(parent, name, x - 250, y - 500, 250, 500, ColorHelper.DEFAULT_COLOR, false);
+        this.openAnimation = new AnimationUtils(300, 100);
         this.setReAddChildren(true);
         this.setListening(false);
         TextButton addButton = new TextButton(this, "addButton", this.width - 55, 0, FontUtils.HELVETICA_LIGHT_25.getWidth("Add"), 69, ColorHelper.DEFAULT_COLOR, "+", FontUtils.HELVETICA_LIGHT_25);
-        addButton.onClick((var1x, var2x) -> this.configGroup.method13119(true));
+        addButton.onClick((mouseX, mouseY) -> this.configGroup.setExpanded(true));
         this.addToList(addButton);
         this.configGroup = new ConfigGroup(this, "profile", 0, 69, this.width, 200);
         this.configGroup.setReAddChildren(true);
         this.addToList(configGroup);
-        this.method13615();
+        this.reload();
     }
 
-    public void method13610() {
-        ConfigManager var3 = Client.INSTANCE.configManager;
-        Profile var4 = var3.currentProfile;
-        int var5 = 1;
+    public void duplicateSelectedProfile() {
+        ConfigManager configManager = Client.INSTANCE.configManager;
+        Profile currentProfile = configManager.currentProfile;
+        int i = 1;
 
-        while (var3.doesProfileExist(var4.name + " Copy " + var5)) {
-            var5++;
+        while (configManager.doesProfileExist(currentProfile.name + " Copy " + i)) {
+            i++;
         }
 
-        var3.saveProfile(var4.clone(var4.name + " Copy " + var5), true);
-        this.addRunnable(this::method13615);
-        this.configGroup.method13119(false);
+        configManager.saveProfile(currentProfile.clone(currentProfile.name + " Copy " + i), true);
+        this.addRunnable(this::reload);
+        this.configGroup.setExpanded(false);
     }
 
-    public void method13611(Profile var1) {
-        ConfigManager var4 = Client.INSTANCE.configManager;
-        int var6 = 1;
+    public void importProfile(Profile profile) {
+        ConfigManager configManager = Client.INSTANCE.configManager;
+        int i = 1;
 
-        while (var4.doesProfileExist(var1.name + " " + var6)) {
-            var6++;
+        while (configManager.doesProfileExist(profile.name + " " + i)) {
+            i++;
         }
 
-        var4.saveProfile(var1.clone(var1.name + " " + var6), true);
-        this.addRunnable(this::method13615);
-        this.configGroup.method13119(false);
+        configManager.saveProfile(profile.clone(profile.name + " " + i), true);
+        this.addRunnable(this::reload);
+        this.configGroup.setExpanded(false);
     }
 
-    public void method13612() {
-        ConfigManager var3 = Client.INSTANCE.configManager;
-        int var4 = 1;
+    public void createBlankProfile() {
+        ConfigManager configManager = Client.INSTANCE.configManager;
+        int i = 1;
 
-        while (var3.doesProfileExist("New Profile " + var4)) {
-            var4++;
+        while (configManager.doesProfileExist("New Profile " + i)) {
+            i++;
         }
 
-        var3.saveProfile(new Profile("New Profile " + var4, new JsonObject()), true);
-        this.addRunnable(this::method13615);
-        this.configGroup.method13119(false);
+        configManager.saveProfile(new Profile("New Profile " + i, new JsonObject()), true);
+        this.addRunnable(this::reload);
+        this.configGroup.setExpanded(false);
     }
 
-    public void method13613() {
-        this.configGroup.field20703.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        if (this.field21298.getDirection() != AnimationUtils.Direction.BACKWARDS) {
-            this.field21298.changeDirection(AnimationUtils.Direction.BACKWARDS);
+    public void close() {
+        this.configGroup.expandAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        if (this.openAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
+            this.openAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
     }
 
-    public boolean method13614() {
-        return this.field21298.getDirection() == AnimationUtils.Direction.BACKWARDS && this.field21298.calcPercent() == 0.0F;
+    public boolean isClosed() {
+        return this.openAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS && this.openAnimation.calcPercent() == 0.0F;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (mouseY > this.configGroup.getAbsoluteY() + this.configGroup.getHeight()) {
-            this.configGroup.method13119(false);
+            this.configGroup.setExpanded(false);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
     }
 
-    public void method13615() {
-        int var3 = 0;
+    public void reload() {
+        int scrollOffset = 0;
         if (this.profileScrollView != null) {
-            var3 = this.profileScrollView.getScrollOffset();
+            scrollOffset = this.profileScrollView.getScrollOffset();
             this.removeChildren(this.profileScrollView);
         }
 
         this.addToList(this.profileScrollView = new ScrollableContentPanel(this, "profileScrollView", 10, 80, this.width - 20, this.height - 80 - 10));
-        this.profileScrollView.setScrollOffset(var3);
-        this.field21301.clear();
+        this.profileScrollView.setScrollOffset(scrollOffset);
+        this.profileGroups.clear();
 
-        int var4 = 0;
-        int var5 = 70;
+        int i = 0;
+        int height = 70;
 
         for (Profile profile : Client.INSTANCE.configManager.profiles) {
-            ProfileGroup var8 = new ProfileGroup(this, "profile" + var4, 0, var5 * var4, this.profileScrollView.getWidth(), var5, profile);
-            this.profileScrollView.addToList(var8);
-            this.field21301.add(var8);
-            var4++;
+            ProfileGroup profileGroup = new ProfileGroup(this, "profile" + i, 0, height * i, this.profileScrollView.getWidth(), height, profile);
+            this.profileScrollView.addToList(profileGroup);
+            this.profileGroups.add(profileGroup);
+            i++;
         }
 
-        JelloScreen var9 = (JelloScreen) this.getParent();
-        var9.method13315();
+        JelloScreen jelloScreen = (JelloScreen) this.getParent();
+        jelloScreen.updateSideBar();
     }
 
-    public void method13616() {
-        int var3 = 0;
+    public void updatePositions() {
+        int y = 0;
 
-        for (ProfileGroup var5 : this.field21301) {
-            var5.setY(var3);
-            var3 += var5.getHeight();
+        for (ProfileGroup profileGroup : this.profileGroups) {
+            profileGroup.setY(y);
+            y += profileGroup.getHeight();
         }
     }
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = this.field21298.calcPercent();
-        this.method13616();
-        float var4 = VecUtils.interpolate(partialTicks, 0.37, 1.48, 0.17, 0.99);
-        if (this.field21298.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var4 = VecUtils.interpolate(partialTicks, 0.38, 0.73, 0.0, 1.0);
+        partialTicks = this.openAnimation.calcPercent();
+        this.updatePositions();
+        float scale = VecUtils.interpolate(partialTicks, 0.37, 1.48, 0.17, 0.99);
+        if (this.openAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            scale = VecUtils.interpolate(partialTicks, 0.38, 0.73, 0.0, 1.0);
         }
 
-        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.setTranslateY((int) ((float) this.width * 0.25F * (1.0F - var4)));
-        this.setTranslateX((int) ((float) this.width * 0.14F * (1.0F - var4)));
+        this.setScale(0.8F + scale * 0.2F, 0.8F + scale * 0.2F);
+        this.setTranslateY((int) ((float) this.width * 0.25F * (1.0F - scale)));
+        this.setTranslateX((int) ((float) this.width * 0.14F * (1.0F - scale)));
         super.applyScaleTransforms();
         super.applyTranslationTransforms();
-        int var5 = 10;
-        int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
+        int padding = 10;
+        int color = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var5 / 2),
-                (float) (this.y + var5 / 2),
-                (float) (this.width - var5),
-                (float) (this.height - var5),
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.width - padding),
+                (float) (this.height - padding),
                 35.0F,
                 partialTicks
         );
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var5 / 2),
-                (float) (this.y + var5 / 2),
-                (float) (this.x - var5 / 2 + this.width),
-                (float) (this.y - var5 / 2 + this.height),
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.x - padding / 2 + this.width),
+                (float) (this.y - padding / 2 + this.height),
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.25F)
         );
-        RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) var5, var6);
-        float var7 = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.field20703.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
-        if (this.configGroup.field20703.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            var7 = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.field20703.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
+        RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) padding, color);
+        float profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
+        if (this.configGroup.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 
-        this.profileScrollView.setScale(var7, var7);
+        this.profileScrollView.setScale(profileViewScale, profileViewScale);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_25,
                 (float) (this.x + 25),
