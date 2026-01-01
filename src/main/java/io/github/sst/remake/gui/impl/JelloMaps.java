@@ -16,40 +16,40 @@ import io.github.sst.remake.util.client.waypoint.Waypoint;
 import java.util.Date;
 
 public class JelloMaps extends Screen implements IMinecraft {
-    public Date field21035;
-    public MapPanel field21036;
-    public WaypointPanel field21041;
+    public Date creationTime;
+    public MapPanel mapPanel;
+    public WaypointPanel waypointPanel;
 
     public JelloMaps() {
         super("Maps");
-        this.field21035 = new Date();
+        this.creationTime = new Date();
         int var3 = Math.max(300, Math.min(850, client.getWindow().getWidth() - 40));
         int var4 = Math.max(200, Math.min(550, client.getWindow().getHeight() - 80));
-        this.addToList(this.field21036 = new MapPanel(this, "mapView", (this.width - var3) / 2, (this.height - var4) / 2, var3, var4));
-        this.field21036.field20614.method13080((frame, mouseX, mouseY, vec) -> this.addRunnable(() -> {
-            if (this.field21041 == null) {
-                this.addToList(this.field21041 = new WaypointPanel(this, "popover", mouseX, mouseY, vec));
-                method13389(this.field21041);
+        this.addToList(this.mapPanel = new MapPanel(this, "mapView", (this.width - var3) / 2, (this.height - var4) / 2, var3, var4));
+        this.mapPanel.mapFrame.addRightClickListener((frame, mouseX, mouseY, vec) -> this.addRunnable(() -> {
+            if (this.waypointPanel == null) {
+                this.addToList(this.waypointPanel = new WaypointPanel(this, "popover", mouseX, mouseY, vec));
+                setupWaypointPanelListener(this.waypointPanel);
             }
         }));
-        this.field21036.field20614.method13082(var1 -> this.method13390());
+        this.mapPanel.mapFrame.addUpdateListener(var1 -> this.closeWaypointPanel());
         ShaderUtils.applyBlurShader();
     }
 
-    private void method13389(WaypointPanel var1) {
-        var1.method13131((var1x, var2, var3, var4) -> {
-            this.field21036.waypointList.addWaypoint(var2, var3, var4);
+    private void setupWaypointPanelListener(WaypointPanel panel) {
+        panel.method13131((var1x, var2, var3, var4) -> {
+            this.mapPanel.waypointList.addWaypoint(var2, var3, var4);
             Client.INSTANCE.waypointManager.add(new Waypoint(var2, var3.getX(), var3.getZ(), var4));
-            this.method13390();
+            this.closeWaypointPanel();
         });
     }
 
-    private void method13390() {
+    private void closeWaypointPanel() {
         for (CustomGuiScreen child : this.getChildren()) {
             if (child instanceof WaypointPanel) {
                 this.addRunnable(() -> {
                     this.removeChildren(child);
-                    this.field21041 = null;
+                    this.waypointPanel = null;
                 });
             }
         }
@@ -77,7 +77,7 @@ public class JelloMaps extends Screen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = (float) Math.min(200L, new Date().getTime() - this.field21035.getTime()) / 200.0F;
+        partialTicks = (float) Math.min(200L, new Date().getTime() - this.creationTime.getTime()) / 200.0F;
         float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
         this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
         float var5 = 0.25F * partialTicks;
