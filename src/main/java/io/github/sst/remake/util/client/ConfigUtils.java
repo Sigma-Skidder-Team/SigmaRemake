@@ -15,7 +15,9 @@ public class ConfigUtils {
     public static final File CLIENT_FOLDER = new File("jello-remake");
 
     public static final File PROFILES_FOLDER = new File(CLIENT_FOLDER, "profiles");
+    public static final File WAYPOINTS_FOLDER = new File(CLIENT_FOLDER, "waypoints");
     public static final String EXTENSION = ".json";
+    public static final String WAYPOINT_EXTENSION = ".jmap";
 
     public static final String ALTS_FILE = CLIENT_FOLDER + "/alts" + EXTENSION;
     public static final File CONFIG_FILE = new File(CLIENT_FOLDER, "config" + EXTENSION);
