@@ -25,7 +25,6 @@ public class ProfileGroup extends AnimatedIconPanel {
     public TextField profileName;
     public final int editButtonsWidth;
     public final int initialHeight;
-    public boolean deleted = false;
 
     public ProfileGroup(CustomGuiScreen parent, String name, int x, int y, int width, int height, Profile profile) {
         super(parent, name, x, y, width, height, false);
@@ -66,7 +65,9 @@ public class ProfileGroup extends AnimatedIconPanel {
         });
         deleteButton.onClick((mouseX, mouseY) -> {
             this.deleteAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
-            Client.INSTANCE.configManager.deleteProfile(profile);
+            Client.INSTANCE.configManager.deleteProfile(this.profile);
+            ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
+            configScreen.addRunnable(configScreen::reload);
         });
         renameButton.onClick((mouseX, mouseY) -> {
             this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -117,13 +118,6 @@ public class ProfileGroup extends AnimatedIconPanel {
 
     @Override
     public void draw(float partialTicks) {
-        if (this.deleteAnimation.calcPercent() == 1.0F && !this.deleted) {
-            this.deleted = true;
-            ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
-            Client.INSTANCE.configManager.deleteProfile(this.profile);
-            configScreen.addRunnable(configScreen::reload);
-        }
-
         float deleteAnimationPercentage = VecUtils.interpolate(this.deleteAnimation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
         this.setHeight(Math.round((1.0F - deleteAnimationPercentage) * (float) this.initialHeight));
         partialTicks *= 1.0F - this.deleteAnimation.calcPercent();

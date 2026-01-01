@@ -54,9 +54,9 @@ public class ConfigManager extends Manager implements IMinecraft {
                 loadProfile("Default");
             }
             Client.LOGGER.info("Removed & deleted profile '{}'", profile.name);
+        } else {
+            Client.LOGGER.info("Profile '{}' doesn't exist anymore", profile.name);
         }
-
-        Client.LOGGER.info("Profile '{}' doesn't exist anymore", profile.name);
     }
 
     public void loadProfile(String name) {
