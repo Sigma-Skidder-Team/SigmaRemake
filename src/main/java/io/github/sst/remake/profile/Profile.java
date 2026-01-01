@@ -1,7 +1,6 @@
 package io.github.sst.remake.profile;
 
 import com.google.gson.JsonObject;
-import io.github.sst.remake.util.client.ConfigUtils;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -11,10 +10,6 @@ public class Profile {
 
     public Profile(String name, Profile base) {
         this(name, base.content);
-    }
-
-    public String getFullName() {
-        return name + ConfigUtils.EXTENSION;
     }
 
     public Profile clone(String name) {

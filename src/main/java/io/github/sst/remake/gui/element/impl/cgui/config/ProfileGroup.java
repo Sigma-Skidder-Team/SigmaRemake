@@ -66,6 +66,7 @@ public class ProfileGroup extends AnimatedIconPanel {
         });
         deleteButton.onClick((mouseX, mouseY) -> {
             this.deleteAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+            Client.INSTANCE.configManager.deleteProfile(profile);
         });
         renameButton.onClick((mouseX, mouseY) -> {
             this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -119,7 +120,7 @@ public class ProfileGroup extends AnimatedIconPanel {
         if (this.deleteAnimation.calcPercent() == 1.0F && !this.deleted) {
             this.deleted = true;
             ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
-            //Client.INSTANCE.configManager.deleteProfile(this.profile);
+            Client.INSTANCE.configManager.deleteProfile(this.profile);
             configScreen.addRunnable(configScreen::reload);
         }
 

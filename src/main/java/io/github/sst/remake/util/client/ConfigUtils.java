@@ -44,6 +44,25 @@ public class ConfigUtils {
         return profiles;
     }
 
+    public static boolean deleteProfile(Profile profile) {
+        if (profile == null) {
+            return false;
+        }
 
+        File file = new File(PROFILES_FOLDER, profile.name + EXTENSION);
+
+        if (!file.exists() || !file.isFile()) {
+            Client.LOGGER.error("Profile file not found: {}", file.getAbsolutePath());
+            return false;
+        }
+
+        boolean deleted = file.delete();
+
+        if (!deleted) {
+            Client.LOGGER.error("Failed to delete profile: {}", profile.name);
+        }
+
+        return deleted;
+    }
 
 }

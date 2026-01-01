@@ -40,6 +40,18 @@ public class ConfigManager extends Manager implements IMinecraft {
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
     }
 
+    public void deleteProfile(Profile profile) {
+        if (profiles.contains(profile)) {
+            profiles.remove(profile);
+            if (ConfigUtils.deleteProfile(profile)) {
+                loadProfile("Default");
+            }
+            Client.LOGGER.info("Removed & deleted profile '{}'", profile.name);
+        }
+
+        Client.LOGGER.info("Profile '{}' doesn't exist anymore", profile.name);
+    }
+
     public void loadProfile(String name) {
         Profile byName = getProfileByName(name);
         if (byName != null) {
@@ -47,28 +59,29 @@ public class ConfigManager extends Manager implements IMinecraft {
             return;
         }
 
-        Client.LOGGER.info("Profile by the name {} not found", name);
+        Client.LOGGER.info("Profile by the name '{}' not found", name);
     }
 
     public void loadProfile(Profile profile) {
         Client.INSTANCE.moduleManager.loadJson(profile.content);
         currentProfile = profile;
-        Client.LOGGER.info("Loaded profile {}", profile.name);
+        Client.LOGGER.info("Loaded profile '{}'", profile.name);
     }
 
     public void saveProfile(String name, JsonObject content, boolean add) {
-        saveProfile(new Profile(name, content), false);
+        saveProfile(new Profile(name, content), add);
     }
 
     public void saveProfile(Profile profile, boolean add) {
         try {
             String fullName = profile.name.endsWith(ConfigUtils.EXTENSION) ? profile.name : profile.name + ConfigUtils.EXTENSION;
             GsonUtils.save(profile.content, new File(ConfigUtils.PROFILES_FOLDER, fullName));
-            Client.LOGGER.info("Saving profile {}", profile.name);
 
             if (add) {
                 profiles.add(profile);
             }
+
+            Client.LOGGER.info("{} profile '{}'", add ? "Adding" : "Saving", profile.name);
         } catch (Exception e) {
             Client.LOGGER.error("Failed to save profile", e);
         }
