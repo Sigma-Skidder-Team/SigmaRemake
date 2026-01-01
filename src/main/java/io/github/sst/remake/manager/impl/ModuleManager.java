@@ -3,14 +3,13 @@ package io.github.sst.remake.manager.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.module.impl.BrainFreezeModule;
-import io.github.sst.remake.module.impl.TestModule;
+import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
+import io.github.sst.remake.module.impl.misc.TestModule;
+import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
-import io.github.sst.remake.util.io.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,7 @@ public class ModuleManager extends Manager {
     public void init() {
         modules.add(new TestModule());
         modules.add(new BrainFreezeModule());
+        modules.add(new WaypointsModule());
         initModules();
         super.init();
     }

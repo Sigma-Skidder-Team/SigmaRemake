@@ -2,10 +2,10 @@ package io.github.sst.remake.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.event.impl.RunLoopEvent;
+import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
-import io.github.sst.remake.event.impl.world.LoadWorldEvent;
+import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.impl.JelloLoad;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;

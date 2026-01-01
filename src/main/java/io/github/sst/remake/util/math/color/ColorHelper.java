@@ -319,4 +319,34 @@ public class ColorHelper {
         float blendedB = (float) first.getBlue() * factor + (float) second.getBlue() * newFactor;
         return new Color(blendedR / 255.0F, blendedG / 255.0F, blendedB / 255.0F);
     }
+
+    public static float[] unpackColorToRGBA(int color) {
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
+
+        return new float[]{red, green, blue, alpha};
+    }
+
+    public static int blendColors(int color1, int color2, float factor) {
+        int a1 = color1 >> 24 & 0xFF;
+        int r1 = color1 >> 16 & 0xFF;
+        int g1 = color1 >> 8 & 0xFF;
+        int b1 = color1 & 0xFF;
+
+        int a2 = color2 >> 24 & 0xFF;
+        int r2 = color2 >> 16 & 0xFF;
+        int g2 = color2 >> 8 & 0xFF;
+        int b2 = color2 & 0xFF;
+
+        float inverseFactor = 1.0F - factor;
+
+        float blendedA = a1 * factor + a2 * inverseFactor;
+        float blendedR = r1 * factor + r2 * inverseFactor;
+        float blendedG = g1 * factor + g2 * inverseFactor;
+        float blendedB = b1 * factor + b2 * inverseFactor;
+
+        return ((int) blendedA << 24) | (((int) blendedR & 0xFF) << 16) | (((int) blendedG & 0xFF) << 8) | ((int) blendedB & 0xFF);
+    }
 }
