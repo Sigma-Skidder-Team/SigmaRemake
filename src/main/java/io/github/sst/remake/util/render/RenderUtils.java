@@ -21,6 +21,8 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureImpl;
 
+import java.nio.ByteBuffer;
+
 public class RenderUtils {
 
     private static float getScaleFactor() {
@@ -933,6 +935,92 @@ public class RenderUtils {
         drawRoundedRect(x, yStart, xEnd - (float) thickness, yStart + (float) thickness, color);
         drawRoundedRect(x, yStart + (float) thickness, x + (float) thickness, yEnd - (float) thickness, color);
         drawRoundedRect(xEnd - (float) thickness, yStart, xEnd, yEnd, color);
+    }
+
+    public static void drawTexturedQuad(
+            float x,
+            float y,
+            float width,
+            float height,
+            ByteBuffer pixelBuffer,
+            int color,
+            float textureOffsetX,
+            float textureOffsetY,
+            float textureWidth,
+            float textureHeight,
+            boolean flipX,
+            boolean flipY
+    ) {
+        if (pixelBuffer == null) {
+            return;
+        }
+
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+
+        x = (float) Math.round(x);
+        y = (float) Math.round(y);
+        width = (float) Math.round(width);
+        height = (float) Math.round(height);
+
+        float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float green = (float) (color >> 8 & 0xFF) / 255.0F;
+        float blue  = (float) (color & 0xFF) / 255.0F;
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.color4f(red, green, blue, alpha);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexImage2D(
+                GL11.GL_TEXTURE_2D,
+                0,
+                GL11.GL_RGB,
+                (int) textureWidth,
+                (int) textureHeight,
+                0,
+                GL11.GL_RGB,
+                GL11.GL_UNSIGNED_BYTE,
+                pixelBuffer
+        );
+
+        float u = textureOffsetX / textureWidth;
+        float v = textureOffsetY / textureHeight;
+
+        float uMax = 1.0f;
+        float vMax = 1.0f;
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? vMax : 0.0F));
+        GL11.glVertex2f(x, y);
+
+        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? 0.0F : vMax));
+        GL11.glVertex2f(x, y + height);
+
+        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? 0.0F : vMax));
+        GL11.glVertex2f(x + width, y + height);
+
+        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? vMax : 0.0F));
+        GL11.glVertex2f(x + width, y);
+        GL11.glEnd();
+
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 
 }

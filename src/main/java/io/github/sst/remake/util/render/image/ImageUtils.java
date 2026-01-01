@@ -190,7 +190,7 @@ public class ImageUtils {
     }
 
     public static BufferedImage expandCanvas(BufferedImage source, int padding, int fillColor) {
-        int newWidth  = source.getWidth()  + padding * 2;
+        int newWidth = source.getWidth() + padding * 2;
         int newHeight = source.getHeight() + padding * 2;
 
         BufferedImage result = new BufferedImage(newWidth, newHeight, source.getType());
@@ -214,6 +214,66 @@ public class ImageUtils {
         }
 
         return result;
+    }
+
+    public static BufferedImage method35039(int var0, int var1, int var2, int var3, int var4, int var5, boolean var6) {
+        return method35036(var0, var1, var2, var3, var4, var5, ClientColors.DEEP_TEAL.getColor(), var6);
+    }
+
+    private static BufferedImage method35036(int var0, int var1, int var2, int var3, int var4, int var5, int var6, boolean var7) {
+        int var10 = 4;
+        var1 = (int) ((float) var1 * getScaleFactor());
+        var0 = (int) ((float) var0 * getScaleFactor());
+        var2 = (int) ((float) var2 * getScaleFactor());
+        var3 = (int) ((float) var3 * getScaleFactor());
+        var4 = (int) ((float) var4 * getScaleFactor());
+        var1 = MinecraftClient.getInstance().getWindow().getFramebufferHeight() - var1 - var3;
+        if (var4 <= 0) {
+            var4 = 1;
+        }
+
+        ByteBuffer var11 = BufferUtils.createByteBuffer(var2 * var3 * var10);
+        GL11.glReadPixels(var0, var1, var2, var3, 6408, 5121, var11);
+        BufferedImage var12 = new BufferedImage(var2 / var4, var3 / var4, 1);
+
+        for (int var13 = var4 / 2; var13 < var2; var13 += var4) {
+            for (int var14 = var4 / 2; var14 < var3; var14 += var4) {
+                if (var13 / var4 < var2 / var4 && var14 / var4 < var3 / var4) {
+                    int var15 = (var13 + var2 * var14) * var10;
+                    int var16 = var11.get(var15) & 255;
+                    int var17 = var11.get(var15 + 1) & 255;
+                    int var18 = var11.get(var15 + 2) & 255;
+                    var12.setRGB(var13 / var4, var3 / var4 - (var14 / var4 + 1), 0xFF000000 | var16 << 16 | var17 << 8 | var18);
+                }
+            }
+        }
+
+        if (var5 <= 1) {
+            return var12;
+        } else {
+            return !var7 ? applyBlur(method35040(var12, var5, var6), var5) : applyBlur(addPadding(var12, var5), var5);
+        }
+    }
+
+    private static BufferedImage method35040(BufferedImage var0, int var1, int var2) {
+        int var5 = var0.getWidth() + var1 * 2;
+        int var6 = var0.getHeight() + var1 * 2;
+        BufferedImage var7 = new BufferedImage(var5, var6, var0.getType());
+        if (var2 != ClientColors.DEEP_TEAL.getColor()) {
+            for (int var8 = 0; var8 < var5; var8++) {
+                for (int var9 = 0; var9 < var6; var9++) {
+                    var7.setRGB(var8, var9, var2);
+                }
+            }
+        }
+
+        for (int var10 = 0; var10 < var0.getWidth(); var10++) {
+            for (int var11 = 0; var11 < var0.getHeight(); var11++) {
+                var7.setRGB(var1 + var10, var1 + var11, var0.getRGB(var10, var11));
+            }
+        }
+
+        return var7;
     }
 
 }
