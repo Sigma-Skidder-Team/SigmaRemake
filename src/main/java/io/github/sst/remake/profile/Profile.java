@@ -1,11 +1,11 @@
 package io.github.sst.remake.profile;
 
 import com.google.gson.JsonObject;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Profile {
-    public final String name;
+    public String name;
     public final JsonObject content;
 
     public Profile(String name, Profile base) {

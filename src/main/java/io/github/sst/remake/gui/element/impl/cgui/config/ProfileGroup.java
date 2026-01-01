@@ -96,7 +96,7 @@ public class ProfileGroup extends AnimatedIconPanel {
     public void rename(String newName) {
         this.profileName.setSelfVisible(false);
         this.profileName.setFocused(false);
-        //Client.INSTANCE.configManager.renameProfile(this.profile, newName);
+        Client.INSTANCE.configManager.renameProfile(this.profile, newName);
         ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
         configScreen.addRunnable(configScreen::reload);
     }

@@ -65,4 +65,33 @@ public class ConfigUtils {
         return deleted;
     }
 
+    public static boolean renameProfile(Profile profile, String newName) {
+        if (profile == null || newName == null) {
+            return false;
+        }
+
+        File oldFile = new File(PROFILES_FOLDER, profile.name + EXTENSION);
+        File newFile = new File(PROFILES_FOLDER, newName + EXTENSION);
+
+        if (!oldFile.exists() || !oldFile.isFile()) {
+            Client.LOGGER.error("Profile file not found: {}", oldFile.getAbsolutePath());
+            return false;
+        }
+
+        if (newFile.exists()) {
+            Client.LOGGER.error("Profile with name already exists: {}", newName);
+            return false;
+        }
+
+        boolean renamed = oldFile.renameTo(newFile);
+
+        if (!renamed) {
+            Client.LOGGER.error("Failed to rename profile from '{}' to '{}'", profile.name, newName);
+        } else {
+            profile.name = newName;
+        }
+
+        return renamed;
+    }
+
 }

@@ -40,6 +40,13 @@ public class ConfigManager extends Manager implements IMinecraft {
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
     }
 
+    public void renameProfile(Profile from, String to) {
+        String oldName = from.name;
+        if (ConfigUtils.renameProfile(from, to)) {
+            Client.LOGGER.info("Renamed profile '{}' to '{}'", oldName, to);
+        }
+    }
+
     public void deleteProfile(Profile profile) {
         if (profiles.contains(profile)) {
             profiles.remove(profile);
