@@ -23,6 +23,7 @@ public class Client implements IMinecraft {
     public final BindManager bindManager = new BindManager();
     public final AccountManager accountManager = new AccountManager();
     public final NotificationManager notificationManager = new NotificationManager();
+    public final WaypointManager waypointManager = new WaypointManager();
 
     public boolean loaded = false;
 
@@ -40,6 +41,8 @@ public class Client implements IMinecraft {
         bindManager.init();
         configManager.init();
 
+        waypointManager.init();
+
         notificationManager.init();
 
         LOGGER.info("Everything has been initialised.");
@@ -48,6 +51,7 @@ public class Client implements IMinecraft {
     public void shutdown() {
         LOGGER.info("Shutting down...");
 
+        waypointManager.shutdown();
         moduleManager.shutdown();
 
         bindManager.shutdown();

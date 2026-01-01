@@ -30,3 +30,6 @@ accessible field net/minecraft/client/gl/Framebuffer depthAttachment I
 
 mutable field net/minecraft/util/math/ChunkPos x I
 mutable field net/minecraft/util/math/ChunkPos z I
+
+accessible field net/minecraft/client/world/ClientChunkManager chunks Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;
+accessible field net/minecraft/client/world/ClientChunkManager$ClientChunkMap chunks Ljava/util/concurrent/atomic/AtomicReferenceArray;

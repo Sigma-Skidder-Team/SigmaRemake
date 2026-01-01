@@ -311,4 +311,12 @@ public class ColorHelper {
 
         return new Color(totalRed / 255.0F, totalGreen / 255.0F, totalBlue / 255.0F, totalAlpha / 255.0F);
     }
+
+    public static Color blendColor(Color first, Color second, float factor) {
+        float newFactor = 1.0F - factor;
+        float blendedR = (float) first.getRed() * factor + (float) second.getRed() * newFactor;
+        float blendedG = (float) first.getGreen() * factor + (float) second.getGreen() * newFactor;
+        float blendedB = (float) first.getBlue() * factor + (float) second.getBlue() * newFactor;
+        return new Color(blendedR / 255.0F, blendedG / 255.0F, blendedB / 255.0F);
+    }
 }
