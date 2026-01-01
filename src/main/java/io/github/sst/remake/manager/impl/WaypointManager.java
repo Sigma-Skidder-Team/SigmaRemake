@@ -11,8 +11,8 @@ import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.client.WaypointUtils;
-import io.github.sst.remake.util.client.waypoint.Class2531;
-import io.github.sst.remake.util.client.waypoint.Class7927;
+import io.github.sst.remake.util.client.waypoint.MapRegion;
+import io.github.sst.remake.util.client.waypoint.RegionPos;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.io.GsonUtils;
 import net.minecraft.world.World;
@@ -32,24 +32,23 @@ public class WaypointManager extends Manager implements IMinecraft {
 
     public final List<Waypoint> waypoints = new ArrayList<>();
     public String identifier;
-    public int field36373 = 0;
-    private boolean field36369 = false;
+    public int pendingChunkSaveCount = 0;
 
     @Override
     public void init() {
         super.init();
 
-        int var3 = -7687425;
+        int color = -7687425;
 
-        for (int var4 = 0; var4 < 16; var4++) {
-            for (int var5 = 0; var5 < 16; var5++) {
-                WaypointUtils.field36376.put((byte) (var3 >> 16 & 0xFF));
-                WaypointUtils.field36376.put((byte) (var3 >> 8 & 0xFF));
-                WaypointUtils.field36376.put((byte) (var3 & 0xFF));
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                WaypointUtils.defaultChunkBuffer.put((byte) (color >> 16 & 0xFF));
+                WaypointUtils.defaultChunkBuffer.put((byte) (color >> 8 & 0xFF));
+                WaypointUtils.defaultChunkBuffer.put((byte) (color & 0xFF));
             }
         }
 
-        ((Buffer) WaypointUtils.field36376).flip();
+        ((Buffer) WaypointUtils.defaultChunkBuffer).flip();
     }
 
     @Override
@@ -61,16 +60,15 @@ public class WaypointManager extends Manager implements IMinecraft {
     public void onLoadWorld(LoadWorldEvent event) {
         try {
             save();
-            method29997();
+            saveModifiedRegions();
         } catch (IOException e) {
             Client.LOGGER.error("Failed to save waypoints", e);
         }
 
         this.identifier = this.getFormattedIdentifier();
-        WaypointUtils.field36372.clear();
-        WaypointUtils.field36366.clear();
-        WaypointUtils.field36367.clear();
-        this.field36369 = false;
+        WaypointUtils.regionCache.clear();
+        WaypointUtils.processedChunks.clear();
+        WaypointUtils.borderChunks.clear();
         this.waypoints.clear();
     }
 
@@ -78,99 +76,96 @@ public class WaypointManager extends Manager implements IMinecraft {
     public void onTick(ClientPlayerTickEvent event) {
         if (client.world != null) {
             if (this.identifier != null) {
-                boolean var4 = false;
-                if (!var4) {
-                    if (client.player.age % 140 == 0) {
-                        Class2531 var5 = Class7927.method26605(client.world.getChunk(client.player.getBlockPos()).getPos());
-                        Iterator<Map.Entry<Long, Class7927>> var6 = WaypointUtils.field36372.entrySet().iterator();
+                if (client.player.age % 140 == 0) {
+                    RegionPos playerRegion = RegionPos.fromChunkPos(client.world.getChunk(client.player.getBlockPos()).getPos());
+                    Iterator<Map.Entry<Long, MapRegion>> regionIterator = WaypointUtils.regionCache.entrySet().iterator();
 
-                        while (var6.hasNext()) {
-                            Map.Entry var7 = var6.next();
-                            Class2531 var8 = new Class2531((Long) var7.getKey());
-                            double var9 = var5.field16734 - var8.field16734;
-                            double var11 = var5.field16735 - var8.field16735;
-                            double var13 = Math.sqrt(var9 * var9 + var11 * var11);
-                            if (var13 > 2.0) {
+                    while (regionIterator.hasNext()) {
+                        Map.Entry<Long, MapRegion> entry = regionIterator.next();
+                        RegionPos regionPos = new RegionPos(entry.getKey());
+                        double deltaX = playerRegion.x - regionPos.x;
+                        double deltaZ = playerRegion.z - regionPos.z;
+                        double distance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+                        if (distance > 2.0) {
+                            try {
+                                ObjectOutputStream out = new ObjectOutputStream(
+                                        new FileOutputStream(WaypointUtils.getRegionFilePath(this.identifier, entry.getValue()))
+                                );
+                                entry.getValue().write(out);
+                                out.close();
+                            } catch (IOException e) {
+                                Client.LOGGER.warn("Failed to write region", e);
+                            }
+
+                            this.pendingChunkSaveCount = Math.max(0, this.pendingChunkSaveCount - entry.getValue().chunkData.size());
+                            regionIterator.remove();
+                        }
+                    }
+                }
+
+                String id = this.identifier;
+                int processedChunksCount = 0;
+
+                for (int i = 0; i < client.world.getChunkManager().chunks.chunks.length(); i++) {
+                    WorldChunk chunk = client.world.getChunkManager().chunks.chunks.get(i);
+                    if (chunk != null) {
+                        boolean isProcessed = WaypointUtils.processedChunks.contains(chunk.getPos());
+                        boolean isBorder = WaypointUtils.borderChunks.contains(chunk.getPos());
+                        if ((!isProcessed || isBorder)
+                                && !chunk.isEmpty()
+                                && client.world.getChunkManager().isChunkLoaded(chunk.getPos().x, chunk.getPos().z)
+                                && client.world.getRegistryKey() == World.OVERWORLD) {
+                            if (!isProcessed) {
+                                WaypointUtils.processedChunks.add(chunk.getPos());
+                            }
+
+                            boolean neighborsLoaded = WaypointUtils.areNeighborsLoaded(chunk);
+                            if (!neighborsLoaded && !isBorder) {
+                                WaypointUtils.borderChunks.add(chunk.getPos());
+                            } else if (neighborsLoaded && isBorder) {
+                                WaypointUtils.borderChunks.remove(chunk.getPos());
+                            } else if (!neighborsLoaded && isBorder) {
+                                continue;
+                            }
+
+                            new Thread(() -> {
                                 try {
-                                    ObjectOutputStream var15 = new ObjectOutputStream(
-                                            new FileOutputStream(WaypointUtils.method30001(this.identifier, (Class7927) var7.getValue()))
-                                    );
-                                    ((Class7927) var7.getValue()).method26603(var15);
-                                    var15.close();
-                                } catch (IOException e) {
-                                    Client.LOGGER.warn("Failed to method26603", e);
-                                }
-
-                                this.field36373 = Math.max(0, this.field36373 - ((Class7927) var7.getValue()).field33959.size());
-                                var6.remove();
-                            }
-                        }
-                    }
-
-                    String var23 = this.identifier;
-                    int var24 = 0;
-
-                    for (int var25 = 0; var25 < client.world.getChunkManager().chunks.chunks.length(); var25++) {
-                        WorldChunk var17 = client.world.getChunkManager().chunks.chunks.get(var25);
-                        if (var17 != null) {
-                            boolean var18 = WaypointUtils.field36366.contains(var17.getPos());
-                            boolean var19 = WaypointUtils.field36367.contains(var17.getPos());
-                            if ((!var18 || var19)
-                                    && !var17.isEmpty()
-                                    && client.world.getChunkManager().isChunkLoaded(var17.getPos().x, var17.getPos().z)
-                                    && client.world.getRegistryKey() == World.OVERWORLD) {
-                                if (!var18) {
-                                    WaypointUtils.field36366.add(var17.getPos());
-                                }
-
-                                boolean var20 = WaypointUtils.method30004(var17);
-                                if (!var20 && !var19) {
-                                    WaypointUtils.field36367.add(var17.getPos());
-                                } else if (var20 && var19) {
-                                    WaypointUtils.field36367.remove(var17.getPos());
-                                } else if (!var20 && var19) {
-                                    continue;
-                                }
-
-                                new Thread(() -> {
-                                    try {
-                                        new File(var23).mkdirs();
-                                        File var5x = new File(WaypointUtils.method30002(var23, var17));
-                                        Class2531 var6x = Class7927.method26605(var17.getPos());
-                                        Class7927 var7x = WaypointUtils.field36372.get(var6x.method10678());
-                                        ByteBuffer var8x = WaypointUtils.method30005(var17, WaypointUtils.method30004(var17));
-                                        if (var7x != null) {
-                                            var7x.method26599(var8x, var17.getPos());
-                                        } else if (!var5x.exists()) {
-                                            var7x = new Class7927(var6x.field16734, var6x.field16735);
-                                            var7x.method26599(var8x, var17.getPos());
-                                            WaypointUtils.field36372.put(var6x.method10678(), var7x);
-                                            WaypointUtils.field36374.clear();
-                                        } else if (WaypointUtils.method29996(var6x)) {
-                                            var7x = WaypointUtils.field36372.get(var6x.method10678());
-                                            var7x.method26599(var8x, var17.getPos());
-                                        }
-
-                                        this.field36373++;
-                                    } catch (IOException e) {
-                                        Client.LOGGER.warn("Failed to do something", e);
+                                    new File(id).mkdirs();
+                                    File regionFile = new File(WaypointUtils.getRegionFilePath(id, chunk));
+                                    RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
+                                    MapRegion mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
+                                    ByteBuffer chunkMap = WaypointUtils.generateChunkMap(chunk, WaypointUtils.areNeighborsLoaded(chunk));
+                                    if (mapRegion != null) {
+                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                    } else if (!regionFile.exists()) {
+                                        mapRegion = new MapRegion(regionPos.x, regionPos.z);
+                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        WaypointUtils.regionCache.put(regionPos.toLong(), mapRegion);
+                                        WaypointUtils.missingRegionFiles.clear();
+                                    } else if (WaypointUtils.loadRegionFromFile(regionPos)) {
+                                        mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
+                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
                                     }
-                                }).start();
-                                if (++var24 > 6) {
-                                    break;
+
+                                    this.pendingChunkSaveCount++;
+                                } catch (IOException e) {
+                                    Client.LOGGER.warn("Failed to process chunk for map", e);
                                 }
+                            }).start();
+                            if (++processedChunksCount > 6) {
+                                break;
                             }
                         }
                     }
+                }
 
-                    if (this.field36373 > 32) {
-                        this.field36373 = 0;
+                if (this.pendingChunkSaveCount > 32) {
+                    this.pendingChunkSaveCount = 0;
 
-                        try {
-                            this.method29997();
-                        } catch (IOException e) {
-                            Client.LOGGER.warn("Failed to do method29997", e);
-                        }
+                    try {
+                        this.saveModifiedRegions();
+                    } catch (IOException e) {
+                        Client.LOGGER.warn("Failed to save modified regions", e);
                     }
                 }
             }
@@ -206,16 +201,17 @@ public class WaypointManager extends Manager implements IMinecraft {
         }
     }
 
-    public void method29997() throws IOException {
+    public void saveModifiedRegions() throws IOException {
         if (this.identifier != null) {
             try {
-                for (Map.Entry entry : WaypointUtils.field36372.entrySet()) {
-                    ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(WaypointUtils.method30001(identifier, (Class7927) entry.getValue()))));
-                    ((Class7927) entry.getValue()).method26603(outputStream);
+                for (Map.Entry<Long, MapRegion> entry : WaypointUtils.regionCache.entrySet()) {
+                    ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(WaypointUtils.getRegionFilePath(identifier, entry.getValue()))));
+                    entry.getValue().write(outputStream);
                     outputStream.close();
                 }
-            } catch (ConcurrentModificationException e) {
-                Client.LOGGER.warn("Failed to method29997", e);
+            }
+            catch (ConcurrentModificationException e) {
+                Client.LOGGER.warn("Failed to save modified regions", e);
             }
         }
     }
@@ -225,3 +221,4 @@ public class WaypointManager extends Manager implements IMinecraft {
     }
 
 }
+

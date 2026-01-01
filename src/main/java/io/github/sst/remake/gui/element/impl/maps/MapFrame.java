@@ -116,7 +116,7 @@ public class MapFrame extends Element implements IMinecraft {
         }
 
         if (this.field20654 == null || this.field20649 != this.field20655 || !this.field20658.equals(var5)) {
-            this.field20654 = WaypointUtils.method30003(var5, this.field20649 * 2);
+            this.field20654 = WaypointUtils.createMapTexture(var5, this.field20649 * 2);
         }
 
         if (this.field20654 == null || this.field20649 != this.field20655 || this.field20651 != this.field20657 || this.field20650 != this.field20656) {

@@ -38,14 +38,6 @@ public class MapPanel extends Element {
     }
 
     @Override
-    public void updatePanelDimensions(int mouseX, int mouseY) {
-        super.updatePanelDimensions(mouseX, mouseY);
-        if (this.isMouseDownOverComponent) {
-            WaypointUtils.field36375.clear();
-        }
-    }
-
-    @Override
     public void draw(float partialTicks) {
         int var4 = 14;
         RenderUtils.drawRoundedRect(

@@ -3,8 +3,8 @@ package io.github.sst.remake.util.client;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.waypoint.Chunk;
-import io.github.sst.remake.util.client.waypoint.Class2531;
-import io.github.sst.remake.util.client.waypoint.Class7927;
+import io.github.sst.remake.util.client.waypoint.RegionPos;
+import io.github.sst.remake.util.client.waypoint.MapRegion;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
@@ -26,25 +26,23 @@ import java.util.List;
 
 public class WaypointUtils implements IMinecraft {
 
-    private static final int field36370 = 10;
-    public static HashMap<Long, Class7927> field36372 = new HashMap<>();
-    public static HashMap<Long, ByteBuffer> field36375 = new HashMap<>();
-    public static final List<ChunkPos> field36366 = new ArrayList<ChunkPos>();
-    public static final List<ChunkPos> field36367 = new ArrayList<ChunkPos>();
-    public static ByteBuffer field36376 = BufferUtils.createByteBuffer(field36370 * 16 * field36370 * 16 * 3);
-    public static List<Class2531> field36374 = new ArrayList<>();
+    public static HashMap<Long, MapRegion> regionCache = new HashMap<>();
+    public static final List<ChunkPos> processedChunks = new ArrayList<ChunkPos>();
+    public static final List<ChunkPos> borderChunks = new ArrayList<ChunkPos>();
+    public static ByteBuffer defaultChunkBuffer = BufferUtils.createByteBuffer(10 * 16 * 10 * 16 * 3);
+    public static List<RegionPos> missingRegionFiles = new ArrayList<>();
 
-    public static String method30000(String var1, Class2531 var2) {
-        return var1 + "/" + var2.field16734 + "c" + var2.field16735 + ".jmap";
+    public static String getRegionFilePath(String baseDir, net.minecraft.world.chunk.Chunk chunk) {
+        RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
+        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ".jmap";
     }
 
-    public static String method30001(String var1, Class7927 var2) {
-        return var1 + "/" + var2.field33957 + "c" + var2.field33958 + ".jmap";
+    public static String getRegionFilePath(String baseDir, MapRegion region) {
+        return baseDir + "/" + region.regionX + "c" + region.regionZ + ".jmap";
     }
 
-    public static String method30002(String var1, net.minecraft.world.chunk.Chunk var2) throws FileNotFoundException {
-        Class2531 var5 = Class7927.method26605(var2.getPos());
-        return var1 + "/" + var5.field16734 + "c" + var5.field16735 + ".jmap";
+    public static String getRegionFilePath(String baseDir, RegionPos regionPos) {
+        return baseDir + "/" + regionPos.x + "c" + regionPos.z + ".jmap";
     }
 
     public static String getWorldIdentifier() {
@@ -59,14 +57,14 @@ public class WaypointUtils implements IMinecraft {
         return identifier;
     }
 
-    public static boolean method30004(net.minecraft.world.chunk.Chunk var1) {
+    public static boolean areNeighborsLoaded(net.minecraft.world.chunk.Chunk var1) {
         WorldChunk var4 = client.world.getChunk(var1.getPos().x, var1.getPos().z + 1);
         WorldChunk var5 = client.world.getChunk(var1.getPos().x, var1.getPos().z - 1);
         return var4 != null && !var4.isEmpty() && var5 != null && !var5.isEmpty();
     }
 
 
-    public static ByteBuffer method30005(net.minecraft.world.chunk.Chunk var1, boolean var2) {
+    public static ByteBuffer generateChunkMap(net.minecraft.world.chunk.Chunk var1, boolean var2) {
         ByteBuffer var5 = BufferUtils.createByteBuffer(768);
         int var6 = var1.getPos().x * 16;
         int var7 = var1.getPos().z * 16;
@@ -87,93 +85,92 @@ public class WaypointUtils implements IMinecraft {
         return var5;
     }
 
-    public static Chunk method30003(ChunkPos var1, int var2) {
-        List<ChunkPos> var5 = new ArrayList<>();
+    public static Chunk createMapTexture(ChunkPos chunkPos, int size) {
+        List<ChunkPos> chunkPositions = new ArrayList<>();
 
-        for (int var6 = -var2 / 2; var6 < var2 / 2; var6++) {
-            for (int var7 = -var2 / 2; var7 < var2 / 2; var7++) {
-                var5.add(new ChunkPos(var1.x + var6, var1.z + var7));
+        for (int i = -size / 2; i < size / 2; i++) {
+            for (int j = -size / 2; j < size / 2; j++) {
+                chunkPositions.add(new ChunkPos(chunkPos.x + i, chunkPos.z + j));
             }
         }
 
-        ByteBuffer var21 = BufferUtils.createByteBuffer(var2 * 16 * var2 * 16 * 3);
-        int var22 = 0;
-        int var8 = var21.position();
+        ByteBuffer buffer = BufferUtils.createByteBuffer(size * 16 * size * 16 * 3);
+        int i = 0;
+        int bufferPos = buffer.position();
 
-        for (ChunkPos var11 : var5) {
-            ByteBuffer var12 = field36376.duplicate();
-            Long var13 = ChunkPos.toLong(var11.x, var11.z);
-            ((Buffer) var12).position(0);
-            Class2531 var14 = Class7927.method26605(var11);
-            Class7927 var15 = field36372.get(var14.method10678());
-            if (var15 != null) {
-                ByteBuffer var16 = var15.method26600(var11);
-                if (var16 != null) {
-                    var12 = var16.duplicate();
+        for (ChunkPos pos : chunkPositions) {
+            ByteBuffer chunkBuffer = defaultChunkBuffer.duplicate();
+            ((Buffer) chunkBuffer).position(0);
+            RegionPos regionPos = RegionPos.fromChunkPos(pos);
+            MapRegion mapRegion = regionCache.get(regionPos.toLong());
+            if (mapRegion != null) {
+                ByteBuffer data = mapRegion.getChunkData(pos);
+                if (data != null) {
+                    chunkBuffer = data.duplicate();
                 }
             } else {
                 try {
-                    if (method29996(var14)) {
-                        var15 = field36372.get(var14.method10678());
-                        ByteBuffer var24 = var15.method26600(var11);
-                        if (var24 != null) {
-                            var12 = var24.duplicate();
+                    if (loadRegionFromFile(regionPos)) {
+                        mapRegion = regionCache.get(regionPos.toLong());
+                        ByteBuffer data = mapRegion.getChunkData(pos);
+                        if (data != null) {
+                            chunkBuffer = data.duplicate();
                         }
                     }
                 } catch (IOException e) {
-                    Client.LOGGER.warn("Failed to method30003", e);
+                    Client.LOGGER.warn("Failed to create map texture", e);
                 }
             }
 
-            int var25 = var21.position();
-            int var17 = var21.position();
+            int currentPos = buffer.position();
+            int pos2 = buffer.position();
 
-            for (int var18 = 0; var18 < 16; var18++) {
-                for (int var19 = 0; var19 < 16; var19++) {
-                    var21.put(var12.get());
-                    var21.put(var12.get());
-                    var21.put(var12.get());
+            for (int j = 0; j < 16; j++) {
+                for (int k = 0; k < 16; k++) {
+                    buffer.put(chunkBuffer.get());
+                    buffer.put(chunkBuffer.get());
+                    buffer.put(chunkBuffer.get());
                 }
 
-                var25 += 16 * var2 * 3;
-                if (var25 < var21.limit()) {
-                    ((Buffer) var21).position(var25);
-                }
-            }
-
-            var8 += 48;
-            if (var17 + 48 < var21.limit()) {
-                ((Buffer) var21).position(var17 + 48);
-            }
-
-            if (var22 != var8 / (48 * var2)) {
-                var22 = var8 / (48 * var2);
-                if (256 * var2 * 3 * var22 < var21.limit()) {
-                    ((Buffer) var21).position(256 * var2 * 3 * var22);
+                currentPos += 16 * size * 3;
+                if (currentPos < buffer.limit()) {
+                    ((Buffer) buffer).position(currentPos);
                 }
             }
 
-            ((Buffer) var12).position(0);
+            bufferPos += 48;
+            if (pos2 + 48 < buffer.limit()) {
+                ((Buffer) buffer).position(pos2 + 48);
+            }
+
+            if (i != bufferPos / (48 * size)) {
+                i = bufferPos / (48 * size);
+                if (256 * size * 3 * i < buffer.limit()) {
+                    ((Buffer) buffer).position(256 * size * 3 * i);
+                }
+            }
+
+            ((Buffer) chunkBuffer).position(0);
         }
 
-        ((Buffer) var21).position(16 * var2 * 16 * var2 * 3);
-        ((Buffer) var21).flip();
-        return new Chunk(var21, 16 * var2, 16 * var2);
+        ((Buffer) buffer).position(16 * size * 16 * size * 3);
+        ((Buffer) buffer).flip();
+        return new Chunk(buffer, 16 * size, 16 * size);
     }
 
-    public static boolean method29996(Class2531 var1) throws IOException {
-        if (!field36374.contains(var1)) {
+    public static boolean loadRegionFromFile(RegionPos regionPos) throws IOException {
+        if (!missingRegionFiles.contains(regionPos)) {
             String identifier = Client.INSTANCE.waypointManager.identifier;
-            File var5 = new File(method30000(identifier, var1));
-            if (var5.exists()) {
-                FileInputStream var6 = new FileInputStream(var5);
-                ObjectInputStream var7 = new ObjectInputStream(var6);
-                Class7927 var8 = new Class7927(var1.field16734, var1.field16735);
-                var8.method26604(var7);
-                field36372.put(var1.method10678(), var8);
+            File file = new File(getRegionFilePath(identifier, regionPos));
+            if (file.exists()) {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                MapRegion mapRegion = new MapRegion(regionPos.x, regionPos.z);
+                mapRegion.read(objectInputStream);
+                regionCache.put(regionPos.toLong(), mapRegion);
                 return true;
             } else {
-                field36374.add(var1);
+                missingRegionFiles.add(regionPos);
                 return false;
             }
         } else {
