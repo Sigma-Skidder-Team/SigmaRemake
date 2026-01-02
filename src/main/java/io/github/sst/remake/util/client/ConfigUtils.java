@@ -21,6 +21,7 @@ public class ConfigUtils {
 
     public static final String ALTS_FILE = CLIENT_FOLDER + "/alts" + EXTENSION;
     public static final File CONFIG_FILE = new File(CLIENT_FOLDER, "config" + EXTENSION);
+    public static final File SCREENS_FILE = new File(CLIENT_FOLDER, "screens" + EXTENSION);
     public static final File WAYPOINTS_FILE = new File(CLIENT_FOLDER, "waypoints" + EXTENSION);
 
     public static List<Profile> listAllProfiles() {
