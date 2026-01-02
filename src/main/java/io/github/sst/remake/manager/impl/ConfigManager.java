@@ -210,7 +210,12 @@ public class ConfigManager extends Manager implements IMinecraft {
         return this.profiles.stream()
                 .filter(prof -> prof.name.equals(name))
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> {
+                    if (name.trim().equals("Default")) {
+                        return new Profile(name, new JsonObject());
+                    }
+                    return null;
+                });
     }
 
     public boolean doesProfileExist(String name) {
