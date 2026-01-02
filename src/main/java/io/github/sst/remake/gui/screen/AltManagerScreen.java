@@ -14,7 +14,9 @@ import io.github.sst.remake.gui.element.impl.alts.AccountElement;
 import io.github.sst.remake.gui.element.impl.alts.AccountUI;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.http.CookieLoginUtils;
 import io.github.sst.remake.util.http.MicrosoftUtils;
+import io.github.sst.remake.util.io.FileUtils;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -28,7 +30,9 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 
 import io.github.sst.remake.gui.element.impl.Button;
+import net.minecraft.util.Util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -271,7 +275,26 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                         break;
                     }
                     case "Cookie login": {
-                        System.out.println("Cookie login clicked");
+                        File file = FileUtils.openTxtFile();
+                        if (file != null) {
+                            try {
+                                CookieLoginUtils.LoginData session = CookieLoginUtils.loginWithCookie(file);
+                                if (session == null) {
+                                    SoundUtils.play("error");
+                                    return;
+                                }
+
+                                Account account = new Account(session.username, session.playerID, session.token);
+                                if (!Client.INSTANCE.accountManager.has(account)) {
+                                    Client.INSTANCE.accountManager.add(account);
+                                }
+
+                                this.updateAccountList(false);
+                            } catch (Exception e) {
+                                SoundUtils.play("error");
+                                this.updateAccountList(false);
+                            }
+                        }
                         break;
                     }
                     case "Web login": {
