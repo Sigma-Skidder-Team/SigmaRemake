@@ -12,7 +12,6 @@
     "requireAnnotations": true
   },
   "client": [
-    "MixinChatHud",
     "MixinClientBrandRetriever",
     "MixinClientPlayerEntity",
     "MixinGameRenderer",
