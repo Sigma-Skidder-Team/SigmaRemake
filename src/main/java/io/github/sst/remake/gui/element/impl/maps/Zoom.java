@@ -64,7 +64,7 @@ public class Zoom extends Element {
 
         try {
             if (this.needsRedraw) {
-                BufferedImage var6 = ImageUtils.method35039(this.getAbsoluteX(), this.getAbsoluteY(), this.width, this.height, 3, 10, true);
+                BufferedImage var6 = ImageUtils.captureRegionImage(this.getAbsoluteX(), this.getAbsoluteY(), this.width, this.height, 3, 10, true);
                 this.averageBackgroundColor = ColorHelper.calculateAverageColor(new Color(var6.getRGB(6, 7)), new Color(var6.getRGB(6, 22))).getRGB();
                 this.averageBackgroundColor = ColorHelper.shiftTowardsBlack(this.averageBackgroundColor, 0.25F);
                 if (this.backgroundTexture != null) {
