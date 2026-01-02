@@ -1,4 +1,4 @@
-package io.github.sst.remake.event.impl.input;
+package io.github.sst.remake.event.impl.client;
 
 import io.github.sst.remake.event.Cancellable;
 import lombok.RequiredArgsConstructor;
