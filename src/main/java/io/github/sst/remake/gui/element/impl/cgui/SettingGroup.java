@@ -23,12 +23,12 @@ public class SettingGroup extends Element {
     public final Module module;
     public boolean field20671 = false;
 
-    public SettingGroup(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Module var7) {
-        super(var1, var2, var3, var4, var5, var6, false);
+    public SettingGroup(CustomGuiScreen var1, String var2, int x, int y, int width, int height, Module var7) {
+        super(var1, var2, x, y, width, height, false);
         this.settingWidth = 500;
-        this.settingHeight = (int) Math.min(600.0F, (float) var6 * 0.7F);
-        this.settingX = (var5 - this.settingWidth) / 2;
-        this.settingY = (var6 - this.settingHeight) / 2 + 20;
+        this.settingHeight = (int) Math.min(600.0F, (float) height * 0.7F);
+        this.settingX = (width - this.settingWidth) / 2;
+        this.settingY = (height - this.settingHeight) / 2 + 20;
         this.module = var7;
         int var10 = 10;
         int var11 = 59;
@@ -52,14 +52,6 @@ public class SettingGroup extends Element {
         this.animation1.changeDirection(this.field20671 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
         this.animation.changeDirection(this.field20671 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
         super.updatePanelDimensions(mouseX, mouseY);
-    }
-
-    private boolean method13084(String var1, String var2) {
-        return var1 == null || var1 == "" || var2 == null || var2.toLowerCase().contains(var1.toLowerCase());
-    }
-
-    private boolean method13085(String var1, String var2) {
-        return var1 == null || var1 == "" || var2 == null || var2.toLowerCase().startsWith(var1.toLowerCase());
     }
 
     @Override
@@ -94,15 +86,33 @@ public class SettingGroup extends Element {
                 this.module.getName(),
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
-        ScissorUtils.startScissor((float) this.settingX, (float) this.settingY, (float) (this.settingWidth - 30), (float) this.settingHeight);
+        String description = this.module.getDescription();
+        int maxWidth = this.settingWidth - 60;
+
+        if (FontUtils.HELVETICA_LIGHT_20.getWidth(description) > maxWidth) {
+            String ellipsis = "...";
+            int ellipsisWidth = FontUtils.HELVETICA_LIGHT_20.getWidth(ellipsis);
+            StringBuilder trimmed = new StringBuilder();
+            int currentWidth = 0;
+            for (char c : description.toCharArray()) {
+                int charWidth = FontUtils.HELVETICA_LIGHT_20.getWidth(String.valueOf(c));
+                if (currentWidth + charWidth + ellipsisWidth > maxWidth) {
+                    break;
+                }
+                trimmed.append(c);
+                currentWidth += charWidth;
+            }
+            description = trimmed + ellipsis;
+        }
+
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_20,
                 (float) (30 + this.settingX),
                 (float) (30 + this.settingY),
-                this.module.getDescription(),
+                description,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.7F)
         );
-        ScissorUtils.restoreScissor();
+
         super.draw(partialTicks);
     }
 }
