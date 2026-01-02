@@ -7,6 +7,7 @@ import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
+import io.github.sst.remake.module.impl.gui.CoordsModule;
 import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
@@ -26,6 +27,7 @@ public class ModuleManager extends Manager {
         modules.add(new TestModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());
+        modules.add(new CoordsModule());
         initModules();
         super.init();
     }
