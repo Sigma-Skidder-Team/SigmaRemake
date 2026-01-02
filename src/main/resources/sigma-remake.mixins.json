@@ -15,6 +15,7 @@
     "MixinClientBrandRetriever",
     "MixinClientPlayerEntity",
     "MixinGameRenderer",
+    "MixinInGameHud",
     "MixinKeyboard",
     "MixinMinecraftClient",
     "MixinMouse",

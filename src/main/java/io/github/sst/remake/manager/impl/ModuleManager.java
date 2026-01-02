@@ -6,10 +6,7 @@ import com.google.gson.JsonObject;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
-import io.github.sst.remake.module.impl.gui.CompassModule;
-import io.github.sst.remake.module.impl.gui.CoordsModule;
-import io.github.sst.remake.module.impl.gui.MiniMapModule;
+import io.github.sst.remake.module.impl.gui.*;
 import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
@@ -26,12 +23,13 @@ public class ModuleManager extends Manager {
 
     @Override
     public void init() {
-        modules.add(new TestModule());
+        modules.add(new ActiveModsModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());
         modules.add(new CoordsModule());
         modules.add(new CompassModule());
         modules.add(new MiniMapModule());
+        modules.add(new TestModule());
         initModules();
         super.init();
     }
