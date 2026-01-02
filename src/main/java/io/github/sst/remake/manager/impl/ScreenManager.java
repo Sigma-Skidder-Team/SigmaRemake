@@ -1,5 +1,6 @@
 package io.github.sst.remake.manager.impl;
 
+import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
@@ -84,10 +85,13 @@ public class ScreenManager extends Manager implements IMinecraft {
     @Subscribe
     public void onResize(WindowResizeEvent ignoredEvent) {
         if (this.currentScreen != null) {
+            Client.INSTANCE.configManager.saveScreenConfig(false);
+
             try {
                 this.currentScreen = this.currentScreen.getClass().newInstance();
-            } catch (IllegalAccessException | InstantiationException exc) {
-                Client.LOGGER.warn(exc);
+                Client.INSTANCE.configManager.loadScreenConfig();
+            } catch (IllegalAccessException | InstantiationException e) {
+                Client.LOGGER.warn("Failed to resize & set screen", e);
             }
         }
 
@@ -147,7 +151,11 @@ public class ScreenManager extends Manager implements IMinecraft {
     }
 
     public void handle(Screen screen) {
+        Client.INSTANCE.configManager.saveScreenConfig(false);
+
         this.currentScreen = screen;
+
+        Client.INSTANCE.configManager.loadScreenConfig();
 
         if (this.currentScreen != null) {
             this.currentScreen.updatePanelDimensions(this.mousePositions[0], this.mousePositions[1]);

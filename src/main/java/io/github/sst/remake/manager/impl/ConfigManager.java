@@ -1,8 +1,10 @@
 package io.github.sst.remake.manager.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
@@ -24,6 +26,9 @@ public class ConfigManager extends Manager implements IMinecraft {
     public boolean guiBlur = true;
     public boolean hqBlur = true;
 
+    public JsonObject screenConfig = new JsonObject();
+    private boolean hasLoadedScreens = false;
+
     @Override
     public void init() {
         if (!ConfigUtils.CLIENT_FOLDER.exists()) {
@@ -36,12 +41,14 @@ public class ConfigManager extends Manager implements IMinecraft {
 
         profiles = ConfigUtils.listAllProfiles();
         loadClientConfig();
+        loadScreenConfig();
         loadProfile("Default");
     }
 
     @Override
     public void shutdown() {
         saveClientConfig();
+        saveScreenConfig(true);
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
     }
 
@@ -85,6 +92,11 @@ public class ConfigManager extends Manager implements IMinecraft {
     }
 
     public void saveProfile(Profile profile, boolean add) {
+        if (profile == null) {
+            Client.LOGGER.error("No loaded profile found.");
+            return;
+        }
+
         try {
             String fullName = profile.name.endsWith(ConfigUtils.EXTENSION) ? profile.name : profile.name + ConfigUtils.EXTENSION;
             GsonUtils.save(profile.content, new File(ConfigUtils.PROFILES_FOLDER, fullName));
@@ -104,6 +116,10 @@ public class ConfigManager extends Manager implements IMinecraft {
         object.addProperty("GUI Blur", guiBlur);
         object.addProperty("GPU Acceleration", hqBlur);
 
+        JsonObject bindsObject = new JsonObject();
+        Client.INSTANCE.bindManager.save(bindsObject);
+        object.add("Binds", bindsObject);
+
         try {
             GsonUtils.save(object, ConfigUtils.CONFIG_FILE);
             Client.LOGGER.info("Saved client configuration");
@@ -118,9 +134,9 @@ public class ConfigManager extends Manager implements IMinecraft {
             return;
         }
 
-        JsonObject object = JsonParser.parseString(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
+        JsonObject object = new JsonParser().parse(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
 
-        if (object.isEmpty()) {
+        if (object.size() == 0) {
             Client.LOGGER.warn("Client configuration file is empty");
             return;
         }
@@ -133,14 +149,73 @@ public class ConfigManager extends Manager implements IMinecraft {
             guiBlur = object.get("GPU Acceleration").getAsBoolean();
         }
 
+        if (object.has("Binds")) {
+            Client.INSTANCE.bindManager.load(object.get("Binds").getAsJsonObject());
+        }
+
         Client.LOGGER.info("Loaded client configuration");
+    }
+
+    public void saveScreenConfig(boolean hard) {
+        Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
+        if (currentScreen != null) {
+            JsonObject currentScreenConfig = currentScreen.toConfigWithExtra(new JsonObject());
+            if (currentScreenConfig.size() != 0) {
+                this.screenConfig.add(currentScreen.getName(), currentScreenConfig);
+            }
+        }
+
+        if (hard) {
+            try {
+                GsonUtils.save(this.screenConfig, ConfigUtils.SCREENS_FILE);
+            } catch (IOException e) {
+                Client.LOGGER.error("Failed to save screen configuration", e);
+            }
+        }
+    }
+
+    public void loadScreenConfig() {
+        if (!hasLoadedScreens) {
+            if (ConfigUtils.SCREENS_FILE.exists()) {
+                try {
+                    String fileContent = FileUtils.readFile(ConfigUtils.SCREENS_FILE);
+                    if (!fileContent.trim().isEmpty()) {
+                        this.screenConfig = new JsonParser().parse(fileContent).getAsJsonObject();
+                        Client.LOGGER.info("Loaded screen configuration");
+                    }
+                } catch (Exception e) {
+                    Client.LOGGER.error("Failed to parse screen configuration", e);
+                    this.screenConfig = new JsonObject();
+                }
+            }
+            hasLoadedScreens = true;
+        }
+
+        Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
+        if (currentScreen != null) {
+            JsonObject configForScreen = null;
+
+            if (this.screenConfig.has(currentScreen.getName())) {
+                JsonElement element = this.screenConfig.get(currentScreen.getName());
+                if (element != null && element.isJsonObject()) {
+                    configForScreen = element.getAsJsonObject();
+                }
+            }
+
+            currentScreen.loadConfig(configForScreen != null ? configForScreen : new JsonObject());
+        }
     }
 
     public Profile getProfileByName(String name) {
         return this.profiles.stream()
                 .filter(prof -> prof.name.equals(name))
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> {
+                    if (name.trim().equals("Default")) {
+                        return new Profile(name, new JsonObject());
+                    }
+                    return null;
+                });
     }
 
     public boolean doesProfileExist(String name) {

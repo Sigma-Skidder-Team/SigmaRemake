@@ -3,6 +3,7 @@ package io.github.sst.remake.gui.element.impl.maps;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.impl.maps.MapPanelClickListener;
 import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -18,22 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapPanel extends Element {
-    public int field20613;
-    public MapFrame field20614;
+    public MapFrame mapFrame;
     public WaypointList waypointList;
-    public int field20616;
-    private final List<Class9514> field20617 = new ArrayList<>();
+    public int waypointListWidth;
+    private final List<MapPanelClickListener> clickListeners = new ArrayList<>();
 
     public MapPanel(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
-        this.field20616 = 260;
-        this.addToList(this.waypointList = new WaypointList(this, "waypointList", 0, 65, this.field20616, this.height - 65));
+        this.waypointListWidth = 260;
+        this.addToList(this.waypointList = new WaypointList(this, "waypointList", 0, 65, this.waypointListWidth, this.height - 65));
 
         for (Waypoint var10 : Client.INSTANCE.waypointManager.getWaypoints()) {
             this.waypointList.addWaypoint(var10.name, new Vec3i(var10.x, 64, var10.z), var10.color);
         }
 
-        this.addToList(this.field20614 = new MapFrame(this, "mapFrame", this.field20616, 0, this.width - this.field20616, this.height));
+        this.addToList(this.mapFrame = new MapFrame(this, "mapFrame", this.waypointListWidth, 0, this.width - this.waypointListWidth, this.height));
         this.setListening(false);
     }
 
@@ -62,9 +62,9 @@ public class MapPanel extends Element {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5)
         );
         RenderUtils.drawRoundedButton(
-                (float) (this.x + this.field20616),
+                (float) (this.x + this.waypointListWidth),
                 (float) this.y,
-                (float) (this.width - this.field20616),
+                (float) (this.width - this.waypointListWidth),
                 (float) this.height,
                 14.0F,
                 -7687425
@@ -80,11 +80,11 @@ public class MapPanel extends Element {
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
-        this.field20614.draw(partialTicks);
+        this.mapFrame.draw(partialTicks);
         GL11.glPopMatrix();
         StencilUtils.endStencil();
         RenderUtils.drawRoundedRect2(
-                (float) (this.x + this.field20616),
+                (float) (this.x + this.waypointListWidth),
                 (float) (this.y),
                 1.0F,
                 (float) this.height,
@@ -109,13 +109,13 @@ public class MapPanel extends Element {
         );
     }
 
-    public final void method13043(Class9514 var1) {
-        this.field20617.add(var1);
+    public final void addClickListener(MapPanelClickListener listener) {
+        this.clickListeners.add(listener);
     }
 
-    public final void method13044(int var1, int var2, Vector3m var3) {
-        for (Class9514 var7 : this.field20617) {
-            var7.method36764(this, var1, var2, var3);
+    public final void fireClickEvent(int mouseX, int mouseY, Vector3m position) {
+        for (MapPanelClickListener listener : this.clickListeners) {
+            listener.onMapClick(this, mouseX, mouseY, position);
         }
     }
 }

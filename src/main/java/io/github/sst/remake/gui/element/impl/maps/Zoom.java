@@ -22,11 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Zoom extends Element {
-    public int field20684;
-    public List<Class7086> field20685 = new ArrayList<>();
-    public int field20686 = 0;
-    public boolean field20687 = true;
-    private Texture field20688;
+    public int averageBackgroundColor;
+    public List<ZoomParticle> zoomParticles = new ArrayList<>();
+    public int zoomCooldown = 0;
+    public boolean needsRedraw = true;
+    private Texture backgroundTexture;
 
     public Zoom(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -36,46 +36,46 @@ public class Zoom extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        if (this.isMouseDownOverComponent && this.field20686 <= 0) {
+        if (this.isMouseDownOverComponent && this.zoomCooldown <= 0) {
             if (mouseY >= this.getAbsoluteY() + this.getHeight() / 2) {
-                ((MapFrame) this.parent).method13076(false);
-                this.field20685.add(new Class7086(this, false));
+                ((MapFrame) this.parent).zoom(false);
+                this.zoomParticles.add(new ZoomParticle(this, false));
             } else {
-                ((MapFrame) this.parent).method13076(true);
-                this.field20685.add(new Class7086(this, true));
+                ((MapFrame) this.parent).zoom(true);
+                this.zoomParticles.add(new ZoomParticle(this, true));
             }
 
-            if (this.field20686 != 0) {
-                this.field20686 = 14;
+            if (this.zoomCooldown != 0) {
+                this.zoomCooldown = 14;
             } else {
-                this.field20686 = 3;
+                this.zoomCooldown = 3;
             }
         }
 
-        this.field20686--;
+        this.zoomCooldown--;
         if (!this.isMouseDownOverComponent) {
-            this.field20686 = -1;
+            this.zoomCooldown = -1;
         }
     }
 
     @Override
     public void draw(float partialTicks) {
-        Iterator var4 = this.field20685.iterator();
+        Iterator<ZoomParticle> var4 = this.zoomParticles.iterator();
 
         try {
-            if (this.field20687) {
+            if (this.needsRedraw) {
                 BufferedImage var6 = ImageUtils.method35039(this.getAbsoluteX(), this.getAbsoluteY(), this.width, this.height, 3, 10, true);
-                this.field20684 = ColorHelper.calculateAverageColor(new Color(var6.getRGB(6, 7)), new Color(var6.getRGB(6, 22))).getRGB();
-                this.field20684 = ColorHelper.shiftTowardsBlack(this.field20684, 0.25F);
-                if (this.field20688 != null) {
-                    this.field20688.release();
+                this.averageBackgroundColor = ColorHelper.calculateAverageColor(new Color(var6.getRGB(6, 7)), new Color(var6.getRGB(6, 22))).getRGB();
+                this.averageBackgroundColor = ColorHelper.shiftTowardsBlack(this.averageBackgroundColor, 0.25F);
+                if (this.backgroundTexture != null) {
+                    this.backgroundTexture.release();
                 }
 
-                this.field20688 = BufferedImageUtil.getTexture("blur", var6);
-                this.field20687 = false;
+                this.backgroundTexture = BufferedImageUtil.getTexture("blur", var6);
+                this.needsRedraw = false;
             }
 
-            if (this.field20688 != null) {
+            if (this.backgroundTexture != null) {
                 RenderUtils.drawRoundedRect(
                         (float) (this.x + 8),
                         (float) (this.y + 8),
@@ -103,25 +103,25 @@ public class Zoom extends Element {
                         (float) (this.y - 1),
                         (float) (this.width + 2),
                         (float) (this.height + 2),
-                        this.field20688,
+                        this.backgroundTexture,
                         ClientColors.LIGHT_GREYISH_BLUE.getColor()
                 );
 
                 while (var4.hasNext()) {
-                    Class7086 var11 = (Class7086) var4.next();
+                    ZoomParticle var11 = var4.next();
                     int var7 = this.height / 2;
-                    int var8 = this.y + (var11.field30491 ? 0 : var7);
+                    int var8 = this.y + (var11.isZoomIn ? 0 : var7);
                     int var9 = this.width / 2;
                     ScissorUtils.startScissor(this.x, var8, this.x + this.width, var8 + var7, true);
                     RenderUtils.drawFilledArc(
                             (float) (this.x + var9),
                             (float) (var8 + this.height / 4),
-                            (float) (var9 * 2 - 4) * var11.field30490 + 4.0F,
-                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), (1.0F - var11.field30490 * (0.5F + var11.field30490 * 0.5F)) * 0.4F)
+                            (float) (var9 * 2 - 4) * var11.animationProgress + 4.0F,
+                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), (1.0F - var11.animationProgress * (0.5F + var11.animationProgress * 0.5F)) * 0.4F)
                     );
                     ScissorUtils.restoreScissor();
-                    var11.field30490 = Math.min(var11.field30490 + 3.0F / (float) MinecraftClient.currentFps, 1.0F);
-                    if (var11.field30490 == 1.0F) {
+                    var11.animationProgress = Math.min(var11.animationProgress + 3.0F / (float) MinecraftClient.currentFps, 1.0F);
+                    if (var11.animationProgress == 1.0F) {
                         var4.remove();
                     }
                 }
@@ -153,15 +153,16 @@ public class Zoom extends Element {
         super.draw(partialTicks);
     }
 
-    public static class Class7086 {
-        public float field30490;
-        public boolean field30491;
-        public final Zoom field30492;
+    public static class ZoomParticle {
+        public float animationProgress;
+        public boolean isZoomIn;
+        public final Zoom parentZoom;
 
-        public Class7086(Zoom var1, boolean var2) {
-            this.field30492 = var1;
-            this.field30490 = 0.0F;
-            this.field30491 = var2;
+        public ZoomParticle(Zoom parent, boolean isZoomIn) {
+            this.parentZoom = parent;
+            this.animationProgress = 0.0F;
+            this.isZoomIn = isZoomIn;
         }
     }
 }
+

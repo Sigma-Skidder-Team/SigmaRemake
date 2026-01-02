@@ -1,14 +1,31 @@
 package io.github.sst.remake.gui.screen;
 
+import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.screen.holder.OptionsHolder;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
+import java.io.IOException;
+import java.util.Date;
+
 public class OptionsScreen extends GameMenuScreen {
+    private static long lastSaveTime;
+
     public OptionsScreen() {
         super(true);
+
+        long now = System.currentTimeMillis();
+        if (now - lastSaveTime >= 3000L) {
+            lastSaveTime = now;
+
+            Client.LOGGER.info("Saving profiles...");
+
+            Client.INSTANCE.configManager.saveProfile(Client.INSTANCE.configManager.currentProfile, false);
+            Client.INSTANCE.configManager.saveScreenConfig(true);
+            Client.INSTANCE.configManager.saveClientConfig();
+        }
     }
 
     @Override

@@ -46,7 +46,7 @@ public class AccountManager extends Manager {
         JsonArray jsonArray = new JsonArray();
 
         for (Account account : this.accounts) {
-            jsonArray.add(JsonParser.parseString(account.toJson()).getAsJsonObject());
+            jsonArray.add(new JsonParser().parse(account.toJson()).getAsJsonObject());
         }
 
         JsonObject jsonObject = new JsonObject();

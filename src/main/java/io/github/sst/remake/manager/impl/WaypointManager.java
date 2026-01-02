@@ -44,6 +44,8 @@ public class WaypointManager extends Manager implements IMinecraft {
             ConfigUtils.WAYPOINTS_FOLDER.mkdirs();
         }
 
+        load();
+
         int color = -7687425;
 
         for (int i = 0; i < 16; i++) {
@@ -67,11 +69,6 @@ public class WaypointManager extends Manager implements IMinecraft {
         return waypoints;
     }
 
-    @Override
-    public void shutdown() {
-        save();
-    }
-
     @Subscribe
     public void onLoadWorld(LoadWorldEvent event) {
         try {
@@ -82,7 +79,7 @@ public class WaypointManager extends Manager implements IMinecraft {
         }
 
         this.mapRegionIdentifier = this.getFormattedIdentifier();
-        this.logicalIdentifier = WaypointUtils.getWorldIdentifier();
+        this.logicalIdentifier = this.getFormattedIdentifier();
         WaypointUtils.regionCache.clear();
         WaypointUtils.processedChunks.clear();
         WaypointUtils.borderChunks.clear();
@@ -200,7 +197,7 @@ public class WaypointManager extends Manager implements IMinecraft {
             if (this.logicalIdentifier == null) return;
 
             String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
-            JsonObject allWaypointsObject = fileContent.isEmpty() ? new JsonObject() : JsonParser.parseString(fileContent).getAsJsonObject();
+            JsonObject allWaypointsObject = fileContent.trim().isEmpty() ? new JsonObject() : new JsonParser().parse(fileContent).getAsJsonObject();
 
             JsonArray currentWorldWaypointsArray = new JsonArray();
             for (Waypoint waypoint : this.waypoints) {
@@ -226,12 +223,12 @@ public class WaypointManager extends Manager implements IMinecraft {
             this.logicalIdentifier = WaypointUtils.getWorldIdentifier();
 
             String fileContent = FileUtils.readFile(ConfigUtils.WAYPOINTS_FILE);
-            if (fileContent.isEmpty()) {
+            if (fileContent.trim().isEmpty()) {
                 this.loaded = true;
                 return;
             }
 
-            JsonObject allWaypointsObject = JsonParser.parseString(fileContent).getAsJsonObject();
+            JsonObject allWaypointsObject = new JsonParser().parse(fileContent).getAsJsonObject();
 
             if (allWaypointsObject.has(this.logicalIdentifier)) {
                 JsonArray waypointsArray = allWaypointsObject.getAsJsonArray(this.logicalIdentifier);

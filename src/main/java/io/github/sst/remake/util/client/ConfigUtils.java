@@ -21,6 +21,7 @@ public class ConfigUtils {
 
     public static final String ALTS_FILE = CLIENT_FOLDER + "/alts" + EXTENSION;
     public static final File CONFIG_FILE = new File(CLIENT_FOLDER, "config" + EXTENSION);
+    public static final File SCREENS_FILE = new File(CLIENT_FOLDER, "screens" + EXTENSION);
     public static final File WAYPOINTS_FILE = new File(CLIENT_FOLDER, "waypoints" + EXTENSION);
 
     public static List<Profile> listAllProfiles() {
@@ -36,8 +37,8 @@ public class ConfigUtils {
         for (File file : files) {
             if (file.isFile() && file.getName().endsWith(EXTENSION)) {
                 String name = file.getName().substring(0, file.getName().length() - EXTENSION.length());
-                JsonObject content = JsonParser
-                        .parseString(FileUtils.readFile(file))
+                JsonObject content = new JsonParser()
+                        .parse(FileUtils.readFile(file))
                         .getAsJsonObject();
 
                 profiles.add(new Profile(name, content));

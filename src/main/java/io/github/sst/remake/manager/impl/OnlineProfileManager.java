@@ -42,7 +42,7 @@ public class OnlineProfileManager {
             if (entity != null) {
                 try (InputStream inputStream = entity.getContent()) {
                     String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                    JsonArray jsonArray = JsonParser.parseString(content).getAsJsonArray();
+                    JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
 
                     for (int i = 0; i < jsonArray.size(); i++) {
                         cachedProfileNames.add(jsonArray.get(i).getAsString());
@@ -62,7 +62,7 @@ public class OnlineProfileManager {
             if (entity != null) {
                 try (InputStream inputStream = entity.getContent()) {
                     String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                    return JsonParser.parseString(content).getAsJsonObject();
+                    return new JsonParser().parse(content).getAsJsonObject();
                 }
             }
         } catch (IOException e) {
@@ -74,7 +74,7 @@ public class OnlineProfileManager {
     public Profile downloadOnlineProfile(String name) {
         try {
             JsonObject config = fetchOnlineProfileConfig(name);
-            if (!config.isEmpty()) {
+            if (config.size() != 0) {
                 return new Profile(name, config);
             }
         } catch (JsonParseException e) {
