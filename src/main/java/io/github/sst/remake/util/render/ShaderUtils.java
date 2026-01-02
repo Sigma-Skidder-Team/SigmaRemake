@@ -33,6 +33,9 @@ public class ShaderUtils implements IMinecraft {
 
     public static void resetShader() {
         if (client.gameRenderer.forcedShaderIndex == GameRenderer.SHADER_COUNT) {
+            if (getShader() != null) {
+                getShader().close();
+            }
             client.gameRenderer.shader = null;
         } else {
             client.gameRenderer.loadShader(GameRenderer.SHADERS_LOCATIONS[client.gameRenderer.forcedShaderIndex]);
