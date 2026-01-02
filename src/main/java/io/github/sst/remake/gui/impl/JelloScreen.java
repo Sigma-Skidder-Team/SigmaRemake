@@ -12,6 +12,7 @@ import io.github.sst.remake.gui.element.impl.cgui.CategoryPanel;
 import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.EasingFunctions;
@@ -97,7 +98,7 @@ public class JelloScreen extends Screen implements IMinecraft {
         //this.musicPlayer.setSelfVisible(this.musicPlayer.getWidth() < this.getWidth() && this.musicPlayer.getHeight() < this.getHeight());
         super.updatePanelDimensions(mouseX, mouseY);
         ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
-        this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule("BrainFreeze").enabled);
+        this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule(BrainFreezeModule.class).enabled);
 
         if (this.configScreen != null) {
             int xOver = mouseX - this.configScreen.getAbsoluteX();

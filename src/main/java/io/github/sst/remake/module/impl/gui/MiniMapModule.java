@@ -43,12 +43,12 @@ public class MiniMapModule extends Module {
     }
 
     @Subscribe
-    public void onWorldLoad(LoadWorldEvent event) {
+    public void onWorldLoad(LoadWorldEvent ignoredEvent) {
         trackedChunks.clear();
     }
 
     @Subscribe
-    public void onTick(ClientPlayerTickEvent event) {
+    public void onTick(ClientPlayerTickEvent ignoredEvent) {
         if (!isEnabled() || client.player == null || client.world == null) {
             return;
         }
@@ -210,7 +210,7 @@ public class MiniMapModule extends Module {
     }
 
     private List<WorldChunk> collectNearbyChunks() {
-        List<WorldChunk> chunks = new ArrayList<WorldChunk>();
+        List<WorldChunk> chunks = new ArrayList<>();
         for (int x = -mapChunkRadius / 2; x < mapChunkRadius / 2; x++) {
             for (int z = -mapChunkRadius / 2; z < mapChunkRadius / 2; z++) {
                 chunks.add(client.world.getChunk(client.player.chunkX + x, client.player.chunkZ + z));

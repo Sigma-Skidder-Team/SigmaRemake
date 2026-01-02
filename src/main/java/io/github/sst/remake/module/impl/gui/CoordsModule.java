@@ -25,7 +25,7 @@ public class CoordsModule extends Module {
     }
 
     @Subscribe
-    public void onPlayerTick(ClientPlayerTickEvent event) {
+    public void onPlayerTick(ClientPlayerTickEvent ignoredEvent) {
         boolean hasMoved = playerX != client.player.getX() || playerY != client.player.getY() || playerZ != client.player.getZ();
         playerX = client.player.getX();
         playerY = client.player.getY();

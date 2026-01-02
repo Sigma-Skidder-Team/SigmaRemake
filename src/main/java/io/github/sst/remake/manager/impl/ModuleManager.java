@@ -44,6 +44,15 @@ public class ModuleManager extends Manager {
         return this.modules.stream().filter(m -> m.name.equalsIgnoreCase(input)).findFirst().orElse(null);
     }
 
+    public <V extends Module> V getModule(final Class<V> clazz) {
+        final Module obj = modules.stream().filter(ob -> ob.getClass().equals(clazz)).findFirst().orElse(null);
+
+        if (obj == null)
+            return null;
+
+        return clazz.cast(obj);
+    }
+
     public List<Module> getModulesByCategory(Category input) {
         return this.modules.stream().filter(mod ->
                 mod.category.equals(input)).collect(Collectors.toList()
