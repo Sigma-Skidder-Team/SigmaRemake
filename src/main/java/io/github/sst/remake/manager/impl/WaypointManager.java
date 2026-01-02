@@ -44,6 +44,8 @@ public class WaypointManager extends Manager implements IMinecraft {
             ConfigUtils.WAYPOINTS_FOLDER.mkdirs();
         }
 
+        load();
+
         int color = -7687425;
 
         for (int i = 0; i < 16; i++) {
@@ -67,11 +69,6 @@ public class WaypointManager extends Manager implements IMinecraft {
         return waypoints;
     }
 
-    @Override
-    public void shutdown() {
-        save();
-    }
-
     @Subscribe
     public void onLoadWorld(LoadWorldEvent event) {
         try {
@@ -82,7 +79,7 @@ public class WaypointManager extends Manager implements IMinecraft {
         }
 
         this.mapRegionIdentifier = this.getFormattedIdentifier();
-        this.logicalIdentifier = WaypointUtils.getWorldIdentifier();
+        this.logicalIdentifier = this.getFormattedIdentifier();
         WaypointUtils.regionCache.clear();
         WaypointUtils.processedChunks.clear();
         WaypointUtils.borderChunks.clear();
