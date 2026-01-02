@@ -1,5 +1,7 @@
 package io.github.sst.remake.manager.impl;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.input.KeyPressEvent;
@@ -21,6 +23,48 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class BindManager extends Manager implements IMinecraft {
+
+    public void save(JsonObject object) {
+        JsonObject moduleBinds = new JsonObject();
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            if (module.getKeycode() != 0) {
+                moduleBinds.addProperty(module.getName(), module.getKeycode());
+            }
+        }
+        object.add("Modules", moduleBinds);
+
+        JsonObject screenBinds = new JsonObject();
+        for (Map.Entry<Class<? extends Screen>, Integer> entry : BindUtils.SCREEN_BINDINGS.entrySet()) {
+            screenBinds.addProperty(entry.getKey().getName(), entry.getValue());
+        }
+        object.add("Screens", screenBinds);
+    }
+
+    public void load(JsonObject object) {
+        if (object.has("Modules")) {
+            JsonObject moduleBinds = object.getAsJsonObject("Modules");
+            for (Map.Entry<String, JsonElement> entry : moduleBinds.entrySet()) {
+                Module module = Client.INSTANCE.moduleManager.getModule(entry.getKey());
+                if (module != null) {
+                    module.setKeycode(entry.getValue().getAsInt());
+                }
+            }
+        }
+
+        if (object.has("Screens")) {
+            JsonObject screenBinds = object.getAsJsonObject("Screens");
+            for (Map.Entry<String, JsonElement> entry : screenBinds.entrySet()) {
+                try {
+                    Class<?> screenClass = Class.forName(entry.getKey());
+                    if (Screen.class.isAssignableFrom(screenClass)) {
+                        BindUtils.SCREEN_BINDINGS.put((Class<? extends Screen>) screenClass, entry.getValue().getAsInt());
+                    }
+                } catch (ClassNotFoundException e) {
+                    Client.LOGGER.warn("Could not find screen class for bind: " + entry.getKey());
+                }
+            }
+        }
+    }
 
     private final Map<Integer, List<Bind>> bindCache = new HashMap<>();
 

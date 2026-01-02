@@ -104,6 +104,10 @@ public class ConfigManager extends Manager implements IMinecraft {
         object.addProperty("GUI Blur", guiBlur);
         object.addProperty("GPU Acceleration", hqBlur);
 
+        JsonObject bindsObject = new JsonObject();
+        Client.INSTANCE.bindManager.save(bindsObject);
+        object.add("Binds", bindsObject);
+
         try {
             GsonUtils.save(object, ConfigUtils.CONFIG_FILE);
             Client.LOGGER.info("Saved client configuration");
@@ -126,6 +130,10 @@ public class ConfigManager extends Manager implements IMinecraft {
 
         if (object.has("GPU Acceleration")) {
             guiBlur = object.get("GPU Acceleration").getAsBoolean();
+        }
+
+        if (object.has("Binds")) {
+            Client.INSTANCE.bindManager.load(object.get("Binds").getAsJsonObject());
         }
 
         Client.LOGGER.info("Loaded client configuration");
