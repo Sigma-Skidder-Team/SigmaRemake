@@ -35,7 +35,10 @@ public class BindManager extends Manager implements IMinecraft {
 
         JsonObject screenBinds = new JsonObject();
         for (Map.Entry<Class<? extends Screen>, Integer> entry : BindUtils.SCREEN_BINDINGS.entrySet()) {
-            screenBinds.addProperty(entry.getKey().getName(), entry.getValue());
+            String screenName = ScreenUtils.getNameForTarget(entry.getKey());
+            if (screenName != null && !screenName.isEmpty()) {
+                screenBinds.addProperty(screenName, entry.getValue());
+            }
         }
         object.add("Screens", screenBinds);
     }
@@ -54,12 +57,10 @@ public class BindManager extends Manager implements IMinecraft {
         if (object.has("Screens")) {
             JsonObject screenBinds = object.getAsJsonObject("Screens");
             for (Map.Entry<String, JsonElement> entry : screenBinds.entrySet()) {
-                try {
-                    Class<?> screenClass = Class.forName(entry.getKey());
-                    if (Screen.class.isAssignableFrom(screenClass)) {
-                        BindUtils.SCREEN_BINDINGS.put((Class<? extends Screen>) screenClass, entry.getValue().getAsInt());
-                    }
-                } catch (ClassNotFoundException e) {
+                Class<? extends Screen> screenClass = ScreenUtils.getScreenByName(entry.getKey());
+                if (screenClass != null) {
+                    BindUtils.SCREEN_BINDINGS.put(screenClass, entry.getValue().getAsInt());
+                } else {
                     Client.LOGGER.warn("Could not find screen class for bind: " + entry.getKey());
                 }
             }
