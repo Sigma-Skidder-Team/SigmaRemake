@@ -571,7 +571,7 @@ public class RenderUtils implements IMinecraft {
         );
         GL11.glPopMatrix();
 
-        ScissorUtils.startScissor(
+        ScissorUtils.startScissorNoGL(
                 scissorX - tileSize,
                 scissorY + padding,
                 scissorX - innerOffset + tileSize,
@@ -591,7 +591,7 @@ public class RenderUtils implements IMinecraft {
 
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(
+        ScissorUtils.startScissorNoGL(
                 scissorX,
                 scissorY - innerOffset,
                 scissorX + width - padding,
@@ -616,7 +616,7 @@ public class RenderUtils implements IMinecraft {
 
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(
+        ScissorUtils.startScissorNoGL(
                 scissorX + width - padding,
                 scissorY - innerOffset,
                 x + width + innerOffset,
@@ -641,7 +641,7 @@ public class RenderUtils implements IMinecraft {
 
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(
+        ScissorUtils.startScissorNoGL(
                 scissorX - padding,
                 scissorY - innerOffset + height - tileSize,
                 scissorX + width - padding,
@@ -1202,5 +1202,9 @@ public class RenderUtils implements IMinecraft {
         GL11.glDisable(2848);
         GL11.glDepthMask(true);
         GL11.glDisable(3042);
+    }
+
+    public static void drawRect(float x, float y, float width, float height, int color) {
+        drawColoredRect(x, y, x + width, y + height, color);
     }
 }

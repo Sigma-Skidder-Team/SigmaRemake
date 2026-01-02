@@ -35,3 +35,5 @@ accessible field net/minecraft/client/world/ClientChunkManager chunks Lnet/minec
 accessible field net/minecraft/client/world/ClientChunkManager$ClientChunkMap chunks Ljava/util/concurrent/atomic/AtomicReferenceArray;
 
 accessible field net/minecraft/client/MinecraftClient renderTickCounter Lnet/minecraft/client/render/RenderTickCounter;
+
+accessible field net/minecraft/world/chunk/WorldChunk loadedToWorld Z
