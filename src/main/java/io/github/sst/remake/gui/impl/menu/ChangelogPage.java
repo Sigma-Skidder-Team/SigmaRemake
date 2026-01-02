@@ -114,7 +114,7 @@ public class ChangelogPage extends CustomGuiScreen {
                 HttpEntity entity = NetUtils.getHttpClient().execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=1.0.0remake")).getEntity();
                 if (entity != null) {
                     try (InputStream content = entity.getContent()) {
-                        return cachedChangelog = JsonParser.parseString(IOUtils.toString(content, StandardCharsets.UTF_8)).getAsJsonArray();
+                        return cachedChangelog = new JsonParser().parse(IOUtils.toString(content, StandardCharsets.UTF_8)).getAsJsonArray();
                     }
                 }
             } catch (Exception e) {

@@ -134,9 +134,9 @@ public class ConfigManager extends Manager implements IMinecraft {
             return;
         }
 
-        JsonObject object = JsonParser.parseString(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
+        JsonObject object = new JsonParser().parse(FileUtils.readFile(ConfigUtils.CONFIG_FILE)).getAsJsonObject();
 
-        if (object.isEmpty()) {
+        if (object.size() == 0) {
             Client.LOGGER.warn("Client configuration file is empty");
             return;
         }
@@ -160,7 +160,7 @@ public class ConfigManager extends Manager implements IMinecraft {
         Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
         if (currentScreen != null) {
             JsonObject currentScreenConfig = currentScreen.toConfigWithExtra(new JsonObject());
-            if (!currentScreenConfig.isEmpty()) {
+            if (currentScreenConfig.size() != 0) {
                 this.screenConfig.add(currentScreen.getName(), currentScreenConfig);
             }
         }
@@ -180,7 +180,7 @@ public class ConfigManager extends Manager implements IMinecraft {
                 try {
                     String fileContent = FileUtils.readFile(ConfigUtils.SCREENS_FILE);
                     if (!fileContent.trim().isEmpty()) {
-                        this.screenConfig = JsonParser.parseString(fileContent).getAsJsonObject();
+                        this.screenConfig = new JsonParser().parse(fileContent).getAsJsonObject();
                         Client.LOGGER.info("Loaded screen configuration");
                     }
                 } catch (Exception e) {

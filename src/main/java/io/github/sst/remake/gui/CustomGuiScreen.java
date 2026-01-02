@@ -520,7 +520,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         for (CustomGuiScreen child : this.children) {
             if (child.isListening()) {
                 JsonObject var7 = child.toConfigWithExtra(new JsonObject());
-                if (!var7.isEmpty()) {
+                if (var7.size() != 0) {
                     children.add(var7);
                 }
             }

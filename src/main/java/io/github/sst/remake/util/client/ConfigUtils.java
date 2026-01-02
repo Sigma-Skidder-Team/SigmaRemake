@@ -37,8 +37,8 @@ public class ConfigUtils {
         for (File file : files) {
             if (file.isFile() && file.getName().endsWith(EXTENSION)) {
                 String name = file.getName().substring(0, file.getName().length() - EXTENSION.length());
-                JsonObject content = JsonParser
-                        .parseString(FileUtils.readFile(file))
+                JsonObject content = new JsonParser()
+                        .parse(FileUtils.readFile(file))
                         .getAsJsonObject();
 
                 profiles.add(new Profile(name, content));
