@@ -41,13 +41,13 @@ public class CompassModule extends Module {
             int markerSpacing = 60;
             int debugOffset = !client.options.debugEnabled ? 0 : 60;
 
-            List<Integer> angles = this.generateCompassAngles((int) MathHelper.wrapDegrees(client.player.yaw), halfMarkers);
+            List<Integer> angles = this.generateCompassAngles((int) wrapDegrees(client.player.yaw), halfMarkers);
             int baseAngle = angles.get(halfMarkers);
-            if (baseAngle == 0 && MathHelper.wrapDegrees(client.player.yaw) > 345.0F) {
+            if (baseAngle == 0 && wrapDegrees(client.player.yaw) > 345.0F) {
                 baseAngle = 360;
             }
 
-            float angleOffset = 7.0F + MathHelper.wrapDegrees(client.player.yaw) - (float) baseAngle;
+            float angleOffset = 7.0F + wrapDegrees(client.player.yaw) - (float) baseAngle;
             double scrollOffset = angleOffset / 15.0F * (float) markerSpacing;
 
             GL11.glAlphaFunc(519, 0.0F);
@@ -115,11 +115,11 @@ public class CompassModule extends Module {
         List<Integer> angles = new ArrayList<>();
 
         for (int i = roundedBase - 15 * halfMarkers; i < roundedBase; i += 15) {
-            angles.add((int) MathHelper.wrapDegrees((float) i));
+            angles.add((int) wrapDegrees((float) i));
         }
 
         for (int i = roundedBase; i < roundedBase + 15 * (halfMarkers + 1); i += 15) {
-            angles.add((int) MathHelper.wrapDegrees((float) i));
+            angles.add((int) wrapDegrees((float) i));
         }
 
         return angles;
@@ -127,5 +127,14 @@ public class CompassModule extends Module {
 
     private int roundToNearest15(int value) {
         return (value + 7) / 15 * 15;
+    }
+
+    private float wrapDegrees(float angle) {
+        angle %= 360.0F;
+        if (angle < 0.0F) {
+            angle += 360.0F;
+        }
+
+        return angle;
     }
 }
