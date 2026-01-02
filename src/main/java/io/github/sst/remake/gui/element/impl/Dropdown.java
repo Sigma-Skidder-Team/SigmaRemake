@@ -204,7 +204,7 @@ public class Dropdown extends Element {
 
         boolean var8 = this.animation.calcPercent() < 1.0F;
         if (var8) {
-            ScissorUtils.startScissor(
+            ScissorUtils.startScissorNoGL(
                     this.getAbsoluteX(), this.getAbsoluteY(), this.getAbsoluteX() + this.getWidth() + 140, this.getAbsoluteY() + this.getHeight() + this.method13647()
             );
         }

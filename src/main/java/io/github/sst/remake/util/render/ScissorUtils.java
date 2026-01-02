@@ -27,6 +27,10 @@ public class ScissorUtils {
         startScissor((int) x, (int) y, (int) width, (int) height, true);
     }
 
+    public static void startScissorNoGL(int x, int y, int width, int height) {
+        startScissor(x, y, width, height, false);
+    }
+
     public static void startScissor(int x, int y, int width, int height, boolean useOpenGLCoordinates) {
         if (!useOpenGLCoordinates) {
             float scaleFactor = getScaleFactor();

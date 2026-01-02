@@ -83,7 +83,7 @@ public class NotificationManager extends Manager implements IMinecraft {
                 RenderUtils.drawRoundedRect(
                         (float) (var7 + field39923 - 1), (float) (var8 + 1), (float) (var7 + field39923), (float) (var8 + field39924 - 1), var11
                 );
-                ScissorUtils.startScissor(var7, var8, var7 + field39923 - field39927, var8 + field39924);
+                ScissorUtils.startScissorNoGL(var7, var8, var7 + field39923 - field39927, var8 + field39924);
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_LIGHT_20, (float) (var7 + field39924 + field39927 - 2), (float) (var8 + field39927), notif.title, var12
                 );

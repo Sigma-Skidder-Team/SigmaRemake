@@ -115,8 +115,6 @@ public class BanElement extends AnimatedIconPanel {
             if (this.info != null) {
                 this.method13576();
                 this.method13577();
-                Resources.shoutIconPNG.bind();
-                Resources.shoutIconPNG.bind();
                 super.draw(partialTicks);
             }
         }
@@ -144,8 +142,6 @@ public class BanElement extends AnimatedIconPanel {
         }
 
         GL11.glPopMatrix();
-        Resources.shoutIconPNG.bind();
-        Resources.shoutIconPNG.bind();
     }
 
     public void method13577() {
@@ -154,7 +150,7 @@ public class BanElement extends AnimatedIconPanel {
         int var6 = (int) (var3 / 60000L % 60L);
         int var7 = (int) (var3 / 3600000L % 24L);
         int var8 = (int) (var3 / 86400000L);
-        ScissorUtils.startScissor(
+        ScissorUtils.startScissorNoGL(
                 this.getAbsoluteX() + this.getTranslateX(),
                 this.getAbsoluteY() + this.getTranslateY(),
                 this.getAbsoluteX() + this.getTranslateX() + this.width,
