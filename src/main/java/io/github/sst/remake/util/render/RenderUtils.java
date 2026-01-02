@@ -1203,4 +1203,8 @@ public class RenderUtils implements IMinecraft {
         GL11.glDepthMask(true);
         GL11.glDisable(3042);
     }
+
+    public static void drawRect(float x, float y, float width, float height, int color) {
+        drawColoredRect(x, y, x + width, y + height, color);
+    }
 }
