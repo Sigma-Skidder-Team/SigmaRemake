@@ -29,13 +29,25 @@ public class MapFrame extends Element implements IMinecraft {
     public float chunkOffsetX = 0.0F;
     public int lastMouseX;
     public int lastMouseY;
-    public Chunk mapTextureChunk;
     public int lastZoomLevel;
     public float lastChunkOffsetY;
     public float lastChunkOffsetX;
-    public ChunkPos lastCenterChunkPos;
     private final List<MapRightClickListener> rightClickListeners = new ArrayList<>();
     private final List<MapFrameUpdateListener> updateListeners = new ArrayList<>();
+
+    private static class MapTextureData {
+        final Chunk texture;
+        final ChunkPos center;
+
+        MapTextureData(Chunk texture, ChunkPos center) {
+            this.texture = texture;
+            this.center = center;
+        }
+    }
+
+    private MapTextureData currentMapTextureData;
+    private volatile MapTextureData nextMapTextureData;
+    private volatile boolean isGeneratingTexture = false;
 
     public MapFrame(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -108,49 +120,62 @@ public class MapFrame extends Element implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        ChunkPos var5 = new ChunkPos(this.chunkPos.x, this.chunkPos.z);
-        var5.x = (int) ((double) var5.x - Math.floor(this.chunkOffsetX));
-        var5.z = (int) ((double) var5.z - Math.floor(this.chunkOffsetY));
+        ChunkPos idealCenterChunk = new ChunkPos((int)((double)this.chunkPos.x - Math.floor(this.chunkOffsetX)), (int)((double)this.chunkPos.z - Math.floor(this.chunkOffsetY)));
         if (partialTicks != 1.0F) {
             this.zoom.needsRedraw = true;
         }
 
-        if (this.mapTextureChunk == null || this.zoomLevel != this.lastZoomLevel || !this.lastCenterChunkPos.equals(var5)) {
-            this.mapTextureChunk = WaypointUtils.createMapTexture(var5, this.zoomLevel * 2);
+        if (this.nextMapTextureData != null) {
+            this.currentMapTextureData = this.nextMapTextureData;
+            this.nextMapTextureData = null;
+            this.isGeneratingTexture = false;
         }
 
-        if (this.mapTextureChunk == null || this.zoomLevel != this.lastZoomLevel || this.chunkOffsetX != this.lastChunkOffsetX || this.chunkOffsetY != this.lastChunkOffsetY) {
+        boolean needsNewTexture = this.currentMapTextureData == null || this.zoomLevel != this.lastZoomLevel || !this.currentMapTextureData.center.equals(idealCenterChunk);
+        if (needsNewTexture && !this.isGeneratingTexture) {
+            this.isGeneratingTexture = true;
+            new Thread(() -> {
+                Chunk newTexture = WaypointUtils.createMapTexture(idealCenterChunk, this.zoomLevel * 2);
+                this.nextMapTextureData = new MapTextureData(newTexture, idealCenterChunk);
+            }).start();
+        }
+
+        if (this.currentMapTextureData == null || this.zoomLevel != this.lastZoomLevel || this.chunkOffsetX != this.lastChunkOffsetX || this.chunkOffsetY != this.lastChunkOffsetY) {
             this.zoom.needsRedraw = true;
         }
 
-        if (this.mapTextureChunk != null) {
+        if (this.currentMapTextureData != null) {
             int var6 = Math.max(this.width, this.height);
             int var7 = (this.width - var6) / 2;
             int var8 = (this.height - var6) / 2;
             float var9 = (float) this.zoomLevel / ((float) this.zoomLevel - 1.0F);
-            float var10 = (float) var6 / ((float) this.zoomLevel * 2.0F);
-            double var11 = ((double) this.chunkOffsetY - Math.floor(this.chunkOffsetY)) * (double) var10;
-            double var13 = ((double) this.chunkOffsetX - Math.floor(this.chunkOffsetX)) * (double) var10;
-            TextureManager textureManager = client.getTextureManager();
-            textureManager.bindTexture(TextureManager.MISSING_IDENTIFIER);
+            float pixelsPerChunk = (float)var6 / ((float)this.zoomLevel * 2.0F);
+
+            double floorX = this.chunkPos.x - this.currentMapTextureData.center.x;
+            double floorZ = this.chunkPos.z - this.currentMapTextureData.center.z;
+
+            double translationY = (this.chunkOffsetX - floorX) * pixelsPerChunk;
+            double translationX = (this.chunkOffsetY - floorZ) * pixelsPerChunk;
+
+            client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
             ScissorUtils.startScissor(this.x, this.y, this.x + this.width, this.y + this.height, true);
             GL11.glPushMatrix();
             GL11.glTranslatef((float) (this.x + this.width / 2), (float) (this.y + this.height / 2), 0.0F);
             GL11.glScalef(var9, var9, 0.0F);
             GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
             GL11.glTranslatef((float) (-this.x - this.width / 2), (float) (-this.y - this.height / 2), 0.0F);
-            GL11.glTranslated(-var11, var13, 0.0);
+            GL11.glTranslated(-translationX, translationY, 0.0);
             RenderUtils.drawTexturedQuad(
                     (float) (this.x + var7),
                     (float) (this.y + var8),
                     (float) var6,
                     (float) var6,
-                    this.mapTextureChunk.pixelBuffer,
+                    this.currentMapTextureData.texture.pixelBuffer,
                     ClientColors.LIGHT_GREYISH_BLUE.getColor(),
                     0.0F,
                     0.0F,
-                    (float) this.mapTextureChunk.width,
-                    (float) this.mapTextureChunk.height,
+                    (float) this.currentMapTextureData.texture.width,
+                    (float) this.currentMapTextureData.texture.height,
                     true,
                     false
             );
@@ -187,7 +212,6 @@ public class MapFrame extends Element implements IMinecraft {
         this.lastChunkOffsetY = this.chunkOffsetY;
         this.lastChunkOffsetX = this.chunkOffsetX;
         this.lastZoomLevel = this.zoomLevel;
-        this.lastCenterChunkPos = var5;
         super.draw(partialTicks);
     }
 
