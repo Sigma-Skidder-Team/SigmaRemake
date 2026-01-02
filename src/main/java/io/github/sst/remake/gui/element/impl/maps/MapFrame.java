@@ -11,7 +11,6 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import io.github.sst.remake.gui.element.impl.maps.MapFrameUpdateListener;
 import io.github.sst.remake.util.client.waypoint.Chunk;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import net.minecraft.client.texture.TextureManager;

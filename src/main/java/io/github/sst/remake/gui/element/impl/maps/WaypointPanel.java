@@ -85,8 +85,8 @@ public class WaypointPanel extends Element {
         if (this.field20728.getText() != null && this.field20728.getText().contains(" ")) {
             String[] var3 = this.field20728.getText().split(" ");
             if (var3.length == 2 && var3[0].matches("-?\\d+") && var3[1].matches("-?\\d+")) {
-                int var4 = Integer.valueOf(var3[0]);
-                int var5 = Integer.valueOf(var3[1]);
+                int var4 = Integer.parseInt(var3[0]);
+                int var5 = Integer.parseInt(var3[1]);
                 return new Vec3i(var4, 0, var5);
             }
         }
