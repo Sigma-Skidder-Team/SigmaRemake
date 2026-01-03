@@ -62,12 +62,12 @@ public class AnimationUtils {
      * @see #getDuration()
      */
     public void updateStartTime(final float progress) {
-        switch (this.direction.ordinal()) {
-            case 1: {
+        switch (this.direction) {
+            case BACKWARDS: {
                 this.startTime = new Date(new Date().getTime() - (long) (progress * this.duration));
                 break;
             }
-            case 2: {
+            case FORWARDS: {
                 this.reverseStartTime = new Date(new Date().getTime() - (long) ((1.0f - progress) * this.reverseDuration));
                 break;
             }
