@@ -1,8 +1,7 @@
 package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.impl.*;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.screen.clickgui.JelloClickGuiScreen;
 import io.github.sst.remake.gui.screen.holder.*;
 import io.github.sst.remake.gui.screen.keyboard.KeyboardScreen;
@@ -11,6 +10,7 @@ import io.github.sst.remake.gui.screen.options.CreditsScreen;
 import io.github.sst.remake.gui.screen.options.OptionsScreen;
 import io.github.sst.remake.gui.screen.options.OptionsButtonScreen;
 import io.github.sst.remake.gui.screen.mainmenu.MainMenuScreen;
+import io.github.sst.remake.gui.screen.spotlight.JelloSpotlightScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -30,7 +30,7 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(KeybindsHolder.class, KeyboardScreen.class);
         replacementScreens.put(OptionsHolder.class, OptionsScreen.class);
         replacementScreens.put(CreditsHolder.class, CreditsScreen.class);
-        replacementScreens.put(SpotlightHolder.class, JelloSpotlight.class);
+        replacementScreens.put(SpotlightHolder.class, JelloSpotlightScreen.class);
         replacementScreens.put(ClickGuiHolder.class, JelloClickGuiScreen.class);
         replacementScreens.put(MapsHolder.class, JelloMapsScreen.class);
 

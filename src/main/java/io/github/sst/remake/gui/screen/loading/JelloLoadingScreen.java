@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui.impl;
+package io.github.sst.remake.gui.screen.loading;
 
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class JelloLoad extends Overlay implements IMinecraft {
+public class JelloLoadingScreen extends Overlay implements IMinecraft {
 
     public static Texture sigmaLogo;
     public static Texture back;
@@ -29,7 +29,7 @@ public class JelloLoad extends Overlay implements IMinecraft {
     private final Consumer<Optional<Throwable>> exceptionHandler;
     private final boolean reloading;
 
-    public JelloLoad(ResourceReload monitor, Consumer<Optional<Throwable>> exceptionHandler, boolean reloading) {
+    public JelloLoadingScreen(ResourceReload monitor, Consumer<Optional<Throwable>> exceptionHandler, boolean reloading) {
         this.reloadMonitor = monitor;
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;

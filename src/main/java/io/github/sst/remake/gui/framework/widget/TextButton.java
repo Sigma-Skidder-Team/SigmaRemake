@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.framework.widget;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;

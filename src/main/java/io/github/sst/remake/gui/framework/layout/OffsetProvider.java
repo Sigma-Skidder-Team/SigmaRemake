@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui.interfaces;
+package io.github.sst.remake.gui.framework.layout;
 
 public interface OffsetProvider {
     int getOffset();

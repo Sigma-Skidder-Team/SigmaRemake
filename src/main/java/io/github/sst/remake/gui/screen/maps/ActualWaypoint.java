@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.maps;
 
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.util.client.waypoint.WaypointColors;
 import io.github.sst.remake.util.math.anim.AnimationUtils;

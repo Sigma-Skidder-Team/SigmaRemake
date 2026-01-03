@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui.element.impl.alert;
+package io.github.sst.remake.gui.framework.widget.internal;
 
 public class AlertComponent {
     public ComponentType componentType;

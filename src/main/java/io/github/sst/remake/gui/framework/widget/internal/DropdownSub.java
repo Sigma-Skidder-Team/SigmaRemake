@@ -1,7 +1,7 @@
-package io.github.sst.remake.gui.element.impl.drop;
+package io.github.sst.remake.gui.framework.widget.internal;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -13,12 +13,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class Sub extends InteractiveWidget {
+public class DropdownSub extends InteractiveWidget {
     public static final ColorHelper color = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
     public int field21324 = 0;
 
-    public Sub(GuiComponent screen, String iconName, int x, int y, int width, int height, List<String> values, int var8) {
+    public DropdownSub(GuiComponent screen, String iconName, int x, int y, int width, int height, List<String> values, int var8) {
         super(screen, iconName, x, y, width, height, color, false);
         this.values = values;
         this.field21324 = var8;

@@ -1,11 +1,11 @@
 package io.github.sst.remake.gui.framework.widget;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
-import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
-import io.github.sst.remake.gui.element.impl.alert.ComponentType;
-import io.github.sst.remake.gui.panel.Widget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
+import io.github.sst.remake.gui.framework.widget.internal.AlertComponent;
+import io.github.sst.remake.gui.framework.widget.internal.ComponentType;
+import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;

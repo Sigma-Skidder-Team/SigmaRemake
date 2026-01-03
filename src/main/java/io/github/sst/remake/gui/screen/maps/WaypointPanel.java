@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.screen.maps;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.framework.widget.TextField;

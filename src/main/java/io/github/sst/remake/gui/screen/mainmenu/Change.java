@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.screen.mainmenu;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

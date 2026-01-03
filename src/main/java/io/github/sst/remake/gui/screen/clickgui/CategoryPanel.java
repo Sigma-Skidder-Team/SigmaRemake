@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.panel.Widget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;

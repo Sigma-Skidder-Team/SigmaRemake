@@ -1,11 +1,11 @@
 package io.github.sst.remake.gui.screen.keyboard;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.widget.TextField;
-import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
+import io.github.sst.remake.gui.framework.widget.VerticalScrollBar;
 import io.github.sst.remake.gui.framework.event.BindableActionListener;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Module;

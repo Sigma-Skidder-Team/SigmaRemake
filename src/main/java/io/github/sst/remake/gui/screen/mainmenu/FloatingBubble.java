@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.mainmenu;
 
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;

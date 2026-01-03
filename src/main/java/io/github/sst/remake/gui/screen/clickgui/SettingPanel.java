@@ -1,15 +1,14 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
 import io.github.sst.remake.gui.framework.layout.ContentSize;
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Checkbox;
-import io.github.sst.remake.gui.element.impl.Dropdown;
+import io.github.sst.remake.gui.framework.widget.Dropdown;
 import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.screen.clickgui.block.Picker;
 import io.github.sst.remake.gui.screen.clickgui.color.ColorPicker;
 import io.github.sst.remake.gui.screen.clickgui.slider.Slider;
-import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
@@ -24,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class SettingPanel extends ScrollablePanel implements Animatable {
+public class SettingPanel extends ScrollablePanel {
     private final Module module;
     public int field21222 = 200;
     private final HashMap<Text, Setting> field21223 = new HashMap<>();
@@ -294,11 +293,6 @@ public class SettingPanel extends ScrollablePanel implements Animatable {
                 this.field21226,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.field21225.calcPercent())
         );
-    }
-
-    @Override
-    public boolean shouldAnimate() {
-        return false;
     }
 
 }

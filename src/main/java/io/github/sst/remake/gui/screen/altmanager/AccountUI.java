@@ -1,9 +1,9 @@
 package io.github.sst.remake.gui.screen.altmanager;
 
 import io.github.sst.remake.alt.Account;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.impl.alert.LoadingIndicator;
-import io.github.sst.remake.gui.panel.Widget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.widget.internal.LoadingIndicator;
+import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

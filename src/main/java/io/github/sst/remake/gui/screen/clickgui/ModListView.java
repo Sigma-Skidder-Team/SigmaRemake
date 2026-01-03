@@ -1,10 +1,9 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
-import io.github.sst.remake.gui.interfaces.Animatable;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
@@ -17,7 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModListView extends ScrollablePanel implements Animatable {
+public class ModListView extends ScrollablePanel {
     public final Category category;
     private final List<Button> field21215 = new ArrayList<>();
     private final boolean field21217;
@@ -114,7 +113,6 @@ public class ModListView extends ScrollablePanel implements Animatable {
         super.draw(partialTicks * ((CategoryPanel) this.parent).field21195);
     }
 
-    @Override
     public boolean shouldAnimate() {
         return false;
     }

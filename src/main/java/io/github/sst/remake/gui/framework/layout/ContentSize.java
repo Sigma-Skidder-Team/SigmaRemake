@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.framework.layout;
 
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 
 public class ContentSize implements WidthSetter {
     @Override

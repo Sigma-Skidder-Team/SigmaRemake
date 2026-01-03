@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.framework.widget;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.panel.Widget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;

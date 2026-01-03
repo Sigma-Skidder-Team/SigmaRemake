@@ -2,8 +2,8 @@ package io.github.sst.remake.gui.screen.clickgui;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.framework.widget.Image;
 import io.github.sst.remake.gui.screen.clickgui.config.ConfigScreen;
 import io.github.sst.remake.gui.screen.clickgui.overlay.BrainFreezeOverlay;

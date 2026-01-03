@@ -1,10 +1,9 @@
-package io.github.sst.remake.gui.element.impl;
+package io.github.sst.remake.gui.framework.widget;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
-import io.github.sst.remake.gui.element.impl.drop.Sub;
-import io.github.sst.remake.gui.framework.widget.Button;
+import io.github.sst.remake.gui.framework.widget.internal.DropdownSub;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -26,7 +25,7 @@ public class Dropdown extends InteractiveWidget {
     public int selectedIdx;
     public boolean field21328;
     private final AnimationUtils animation = new AnimationUtils(220, 220);
-    private final Map<Integer, Sub> field21331 = new HashMap<Integer, Sub>();
+    private final Map<Integer, DropdownSub> field21331 = new HashMap<Integer, DropdownSub>();
 
     public Dropdown(GuiComponent var1, String typeThingIdk, int x, int y, int width, int height, List<String> values, int selectedIdx) {
         super(var1, typeThingIdk, x, y, width, height, field21325, false);
@@ -36,7 +35,7 @@ public class Dropdown extends InteractiveWidget {
     }
 
     public void method13643(List<String> var1, int var2) {
-        Sub var5 = new Sub(this, "sub" + var2, this.width + 10, this.getHeight() * (var2 + 1), 200, this.getHeight(), var1, 0);
+        DropdownSub var5 = new DropdownSub(this, "sub" + var2, this.width + 10, this.getHeight() * (var2 + 1), 200, this.getHeight(), var1, 0);
         this.field21331.put(var2, var5);
         var5.setSelfVisible(false);
         var5.onPress(var2x -> {
@@ -47,10 +46,10 @@ public class Dropdown extends InteractiveWidget {
         this.addToList(var5);
     }
 
-    public Sub method13645(int var1) {
+    public DropdownSub method13645(int var1) {
         for (Entry var5 : this.field21331.entrySet()) {
             if ((Integer) var5.getKey() == var1) {
-                return (Sub) var5.getValue();
+                return (DropdownSub) var5.getValue();
             }
         }
 
@@ -111,10 +110,10 @@ public class Dropdown extends InteractiveWidget {
         int var3 = this.method13648();
 
         for (Entry var5 : this.field21331.entrySet()) {
-            if (((Sub) var5.getValue()).isSelfVisible()) {
+            if (((DropdownSub) var5.getValue()).isSelfVisible()) {
                 var3 = Math.max(
                         var3,
-                        (((Sub) var5.getValue()).values.size() - 1) * ((Sub) var5.getValue()).getHeight() + ((Sub) var5.getValue()).getY()
+                        (((DropdownSub) var5.getValue()).values.size() - 1) * ((DropdownSub) var5.getValue()).getHeight() + ((DropdownSub) var5.getValue()).getY()
                 );
             }
         }
@@ -149,11 +148,11 @@ public class Dropdown extends InteractiveWidget {
                 && this.animation.calcPercent() == 1.0F
                 && mouseX - this.getAbsoluteX() < this.getWidth()) {
             for (Entry var9 : this.field21331.entrySet()) {
-                ((Sub) var9.getValue()).setSelfVisible((Integer) var9.getKey() == var5);
+                ((DropdownSub) var9.getValue()).setSelfVisible((Integer) var9.getKey() == var5);
             }
         } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             for (Entry var7 : this.field21331.entrySet()) {
-                ((Sub) var7.getValue()).setSelfVisible(false);
+                ((DropdownSub) var7.getValue()).setSelfVisible(false);
             }
         }
     }
@@ -189,7 +188,7 @@ public class Dropdown extends InteractiveWidget {
 
             for (Entry var6 : this.field21331.entrySet()) {
                 if (this.selectedIdx == (Integer) var6.getKey()) {
-                    var4 = " (" + ((Sub) var6.getValue()).values.get(((Sub) var6.getValue()).field21324) + ")";
+                    var4 = " (" + ((DropdownSub) var6.getValue()).values.get(((DropdownSub) var6.getValue()).field21324) + ")";
                 }
             }
 
@@ -269,7 +268,7 @@ public class Dropdown extends InteractiveWidget {
     @Override
     public boolean isMouseOverComponent(int mouseX, int mouseY) {
         for (Entry var6 : this.field21331.entrySet()) {
-            if (((Sub) var6.getValue()).isSelfVisible() && ((Sub) var6.getValue()).isMouseOverComponent(mouseX, mouseY)) {
+            if (((DropdownSub) var6.getValue()).isSelfVisible() && ((DropdownSub) var6.getValue()).isMouseOverComponent(mouseX, mouseY)) {
                 return true;
             }
         }

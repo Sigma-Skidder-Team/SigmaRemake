@@ -1,6 +1,5 @@
-package io.github.sst.remake.gui.panel;
+package io.github.sst.remake.gui.framework.core;
 
-import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.gui.framework.event.DragListener;
 import io.github.sst.remake.gui.framework.event.DragHandler;

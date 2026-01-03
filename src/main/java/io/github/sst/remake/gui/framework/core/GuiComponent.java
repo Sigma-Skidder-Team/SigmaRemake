@@ -1,11 +1,11 @@
-package io.github.sst.remake.gui;
+package io.github.sst.remake.gui.framework.core;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.widget.TextField;
-import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
+import io.github.sst.remake.gui.framework.layout.GuiComponentVisitor;
 import io.github.sst.remake.gui.framework.event.InputListener;
 import io.github.sst.remake.gui.framework.layout.WidthSetter;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;

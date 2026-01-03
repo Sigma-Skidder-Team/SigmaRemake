@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.screen.clickgui.block;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.item.ItemStack;
 

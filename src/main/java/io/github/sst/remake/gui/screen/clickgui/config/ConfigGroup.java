@@ -1,10 +1,10 @@
 package io.github.sst.remake.gui.screen.clickgui.config;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.widget.TextButton;
-import io.github.sst.remake.gui.element.impl.alert.LoadingIndicator;
+import io.github.sst.remake.gui.framework.widget.internal.LoadingIndicator;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.manager.impl.OnlineProfileManager;

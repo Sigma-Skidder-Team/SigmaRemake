@@ -2,8 +2,8 @@ package io.github.sst.remake.gui.screen.clickgui.config;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.screen.clickgui.JelloClickGuiScreen;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;

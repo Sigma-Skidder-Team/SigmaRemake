@@ -1,9 +1,9 @@
 package io.github.sst.remake.gui.screen.clickgui.block;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.TextField;
-import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
+import io.github.sst.remake.gui.framework.layout.GuiComponentVisitor;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.block.Blocks;

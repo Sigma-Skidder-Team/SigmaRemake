@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui;
+package io.github.sst.remake.gui.framework.core;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.util.IMinecraft;

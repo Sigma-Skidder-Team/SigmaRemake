@@ -1,4 +1,4 @@
-package io.github.sst.remake.gui.element.impl;
+package io.github.sst.remake.gui.screen.notifications;
 
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.render.image.Resources;

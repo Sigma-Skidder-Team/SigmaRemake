@@ -1,8 +1,8 @@
 package io.github.sst.remake.gui.screen.keyboard;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ScreenUtils;

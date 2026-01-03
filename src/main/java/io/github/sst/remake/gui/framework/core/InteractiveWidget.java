@@ -1,8 +1,6 @@
-package io.github.sst.remake.gui.element;
+package io.github.sst.remake.gui.framework.core;
 
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.interfaces.InteractiveWidgetHandler;
-import io.github.sst.remake.gui.panel.Widget;
+import io.github.sst.remake.gui.framework.event.InteractiveWidgetHandler;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 

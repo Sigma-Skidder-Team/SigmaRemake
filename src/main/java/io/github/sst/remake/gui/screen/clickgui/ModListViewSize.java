@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.layout.WidthSetter;
 import net.minecraft.client.MinecraftClient;
 

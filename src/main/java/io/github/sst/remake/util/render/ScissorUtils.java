@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.render;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;

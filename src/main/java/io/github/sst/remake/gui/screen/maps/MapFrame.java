@@ -1,8 +1,8 @@
 package io.github.sst.remake.gui.screen.maps;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

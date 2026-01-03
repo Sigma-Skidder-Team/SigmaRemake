@@ -1,13 +1,12 @@
-package io.github.sst.remake.gui.impl;
+package io.github.sst.remake.gui.screen.spotlight;
 
-import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.element.impl.spotlight.SpotlightDialog;
+import io.github.sst.remake.gui.framework.core.Screen;
 import net.minecraft.client.MinecraftClient;
 
-public class JelloSpotlight extends Screen {
+public class JelloSpotlightScreen extends Screen {
     public SpotlightDialog dialog;
 
-    public JelloSpotlight() {
+    public JelloSpotlightScreen() {
         super("Spotlight");
         this.setListening(false);
         int x = (this.getWidth() - 675) / 2;

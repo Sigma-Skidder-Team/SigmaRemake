@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.screen.options;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Checkbox;
 import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;

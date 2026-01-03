@@ -1,8 +1,8 @@
-package io.github.sst.remake.gui.element.impl.spotlight;
+package io.github.sst.remake.gui.screen.spotlight;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;

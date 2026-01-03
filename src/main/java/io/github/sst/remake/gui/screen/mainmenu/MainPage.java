@@ -1,8 +1,8 @@
 package io.github.sst.remake.gui.screen.mainmenu;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextButton;

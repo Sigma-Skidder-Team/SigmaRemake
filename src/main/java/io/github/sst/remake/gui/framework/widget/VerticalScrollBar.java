@@ -1,11 +1,10 @@
-package io.github.sst.remake.gui.element.impl;
+package io.github.sst.remake.gui.framework.widget;
 
 import com.google.gson.JsonObject;
-import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.element.impl.scroll.VerticalScrollBarButton;
-import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
-import io.github.sst.remake.gui.panel.Widget;
-import io.github.sst.remake.gui.interfaces.OffsetProvider;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.widget.internal.VerticalScrollBarButton;
+import io.github.sst.remake.gui.framework.core.Widget;
+import io.github.sst.remake.gui.framework.layout.OffsetProvider;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

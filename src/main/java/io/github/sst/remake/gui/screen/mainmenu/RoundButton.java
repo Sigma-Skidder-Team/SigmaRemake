@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.mainmenu;
 
-import io.github.sst.remake.gui.GuiComponent;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.Image;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.BufferUtils;

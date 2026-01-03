@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.options;
 
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.gui.screen.holder.OptionsHolder;
