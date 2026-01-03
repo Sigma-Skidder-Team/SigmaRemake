@@ -198,7 +198,7 @@ public class KeyStrokesModule extends Module {
         }
     }
 
-    public static class KeyAnimationData {
+    private static class KeyAnimationData {
         public Keystroke keyStroke;
         public AnimationUtils animation;
 
