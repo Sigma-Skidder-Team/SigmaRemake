@@ -2,8 +2,8 @@ package io.github.sst.remake.gui.panel;
 
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.gui.interfaces.IDragListener;
-import io.github.sst.remake.gui.interfaces.INestedGuiEventHandler;
+import io.github.sst.remake.gui.interfaces.DragListener;
+import io.github.sst.remake.gui.interfaces.DragHandler;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
@@ -11,7 +11,7 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Widget extends GuiComponent implements INestedGuiEventHandler, IMinecraft {
+public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public boolean field20876;
     public boolean field20877;
     public int mouseX;
@@ -26,7 +26,7 @@ public class Widget extends GuiComponent implements INestedGuiEventHandler, IMin
     public final TimerUtils timerUtils = new TimerUtils();
     public int field20888 = 300;
     public int field20889 = 2;
-    private final List<IDragListener> dragListeners = new ArrayList<>();
+    private final List<DragListener> dragListeners = new ArrayList<>();
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, boolean var7) {
         super(screen, name, x, y, width, height);
@@ -176,13 +176,13 @@ public class Widget extends GuiComponent implements INestedGuiEventHandler, IMin
         }
     }
 
-    public Widget addDragListener(IDragListener listener) {
+    public Widget addDragListener(DragListener listener) {
         this.dragListeners.add(listener);
         return this;
     }
 
     public void notifyDragListeners() {
-        for (IDragListener listener : this.dragListeners) {
+        for (DragListener listener : this.dragListeners) {
             listener.onDragStart(this);
         }
     }

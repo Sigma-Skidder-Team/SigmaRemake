@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.interfaces;
 /**
  * Interface for handling various GUI events.
  */
-public interface IGuiEventListener {
+public interface InputEventListener {
 
     /**
      * Called when a character is typed.

@@ -1,10 +1,10 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
 import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.interfaces.IWidthSetter;
+import io.github.sst.remake.gui.interfaces.WidthSetter;
 import net.minecraft.client.MinecraftClient;
 
-public class ModListViewSize implements IWidthSetter {
+public class ModListViewSize implements WidthSetter {
     @Override
     public void setWidth(GuiComponent forScreen, GuiComponent fromWidthOfThisScreen) {
         forScreen.setX(0);

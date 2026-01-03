@@ -1,9 +1,9 @@
 package io.github.sst.remake.gui.element.impl.drop;
 
 import io.github.sst.remake.gui.GuiComponent;
-import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
+import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
 
-public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
+public class GridLayoutVisitor implements GuiComponentVisitor {
     public int columns;
     public int verticalGap;
 

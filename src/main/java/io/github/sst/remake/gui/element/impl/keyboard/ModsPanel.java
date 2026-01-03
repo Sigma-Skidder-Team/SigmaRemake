@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
-import io.github.sst.remake.gui.interfaces.BindableActionSelectedListener;
+import io.github.sst.remake.gui.interfaces.BindableActionListener;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.client.ScreenUtils;
@@ -36,7 +36,7 @@ public class ModsPanel extends InteractiveWidget {
     public ScrollableContentPanel field21308;
     public BindableAction selectedBindableAction;
     public boolean field21311 = false;
-    private final List<BindableActionSelectedListener> bindableActionSelectedListeners = new ArrayList<>();
+    private final List<BindableActionListener> bindableActionListeners = new ArrayList<>();
 
     public ModsPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -224,12 +224,12 @@ public class ModsPanel extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
-    public final void addBindableActionSelectedListener(BindableActionSelectedListener listener) {
-        this.bindableActionSelectedListeners.add(listener);
+    public final void addBindableActionSelectedListener(BindableActionListener listener) {
+        this.bindableActionListeners.add(listener);
     }
 
     public final void notifyBindableActionSelected(BindableAction action) {
-        for (BindableActionSelectedListener listener : this.bindableActionSelectedListeners) {
+        for (BindableActionListener listener : this.bindableActionListeners) {
             listener.onBindableActionSelected(this, action);
         }
     }

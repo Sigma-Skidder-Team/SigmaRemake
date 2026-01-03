@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.cgui.block;
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.TextField;
-import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
+import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.block.Blocks;
@@ -126,7 +126,7 @@ public class Picker extends InteractiveWidget {
         return this.values;
     }
 
-    public static class Class7260 implements ICustomGuiScreenVisitor {
+    public static class Class7260 implements GuiComponentVisitor {
         public int field31149;
 
         public Class7260(int var1) {

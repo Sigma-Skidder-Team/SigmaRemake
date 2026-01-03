@@ -1,8 +1,8 @@
 package io.github.sst.remake.gui;
 
-import io.github.sst.remake.gui.interfaces.IWidthSetter;
+import io.github.sst.remake.gui.interfaces.WidthSetter;
 
-public class ContentSize implements IWidthSetter {
+public class ContentSize implements WidthSetter {
     @Override
     public void setWidth(GuiComponent of, GuiComponent to) {
         int width = 0;

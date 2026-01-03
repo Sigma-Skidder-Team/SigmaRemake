@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.element.impl.TextField;
-import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
-import io.github.sst.remake.gui.interfaces.IGuiEventListener;
-import io.github.sst.remake.gui.interfaces.IWidthSetter;
+import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
+import io.github.sst.remake.gui.interfaces.InputEventListener;
+import io.github.sst.remake.gui.interfaces.WidthSetter;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -24,8 +24,8 @@ import java.util.List;
 
 @Setter
 @Getter
-public class GuiComponent implements IGuiEventListener {
-    private final List<IWidthSetter> widthSetters = new ArrayList<>();
+public class GuiComponent implements InputEventListener {
+    private final List<WidthSetter> widthSetters = new ArrayList<>();
     private final List<GuiComponent> childrenToAdd = new ArrayList<>();
     private final List<GuiComponent> childrenToRemove = new ArrayList<>();
     private final List<MouseButtonCallback> mouseButtonCallbacks = new ArrayList<>();
@@ -195,7 +195,7 @@ public class GuiComponent implements IGuiEventListener {
 
         this.isMouseDownOverComponent = this.isMouseDownOverComponent & this.isHoveredInHierarchy;
 
-        for (IWidthSetter widthSetter : this.getWidthSetters()) {
+        for (WidthSetter widthSetter : this.getWidthSetters()) {
             if (this.visible) {
                 widthSetter.setWidth(this, this.getParent());
             }
@@ -573,7 +573,7 @@ public class GuiComponent implements IGuiEventListener {
         }
     }
 
-    public void accept(ICustomGuiScreenVisitor visitor) {
+    public void accept(GuiComponentVisitor visitor) {
         visitor.visit(this);
     }
 
@@ -626,11 +626,11 @@ public class GuiComponent implements IGuiEventListener {
         }
     }
 
-    public List<IWidthSetter> getWidthSetters() {
+    public List<WidthSetter> getWidthSetters() {
         return this.widthSetters;
     }
 
-    public void addWidthSetter(IWidthSetter widthSetter) {
+    public void addWidthSetter(WidthSetter widthSetter) {
         this.widthSetters.add(widthSetter);
     }
 

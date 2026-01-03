@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.panel;
 import io.github.sst.remake.gui.ContentSize;
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
-import io.github.sst.remake.gui.interfaces.IWidthSetter;
+import io.github.sst.remake.gui.interfaces.WidthSetter;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.ScissorUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
@@ -64,7 +64,7 @@ public class ScrollableContentPanel extends Widget {
             this.buttonList.setY(-1 * this.scrollBar.getOffset());
 
             for (GuiComponent var6 : this.getButton().getChildren()) {
-                for (IWidthSetter var8 : var6.getWidthSetters()) {
+                for (WidthSetter var8 : var6.getWidthSetters()) {
                     var8.setWidth(var6, this);
                 }
             }

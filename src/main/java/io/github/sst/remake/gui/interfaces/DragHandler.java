@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.interfaces;
 
-public interface INestedGuiEventHandler {
+public interface DragHandler {
     void handleMovementAndCheckBoundaries(int var1, int var2);
 
     boolean isDraggable();
