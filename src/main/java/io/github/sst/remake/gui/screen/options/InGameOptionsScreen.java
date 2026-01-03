@@ -7,10 +7,10 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
-public class OptionsButtonScreen extends GameMenuScreen {
+public class InGameOptionsScreen extends GameMenuScreen {
     private static long lastSaveTime;
 
-    public OptionsButtonScreen() {
+    public InGameOptionsScreen() {
         super(true);
 
         long now = System.currentTimeMillis();
