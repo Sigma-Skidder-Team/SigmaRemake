@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class Child extends Widget {
+public class Child extends Element {
     public final int field20690;
     private float field20691;
     private boolean field20692 = false;

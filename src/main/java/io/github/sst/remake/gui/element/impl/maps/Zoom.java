@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Zoom extends Widget {
+public class Zoom extends Element {
     public int averageBackgroundColor;
     public List<ZoomParticle> zoomParticles = new ArrayList<>();
     public int zoomCooldown = 0;

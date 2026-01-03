@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -10,7 +10,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.util.math.Vec3i;
 
-public class Waypoint extends Widget {
+public class Waypoint extends Element {
     public int targetY;
     public final AnimationUtils dragAnimation;
     public final AnimationUtils deleteAnimation;

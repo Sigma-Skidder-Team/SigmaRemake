@@ -1,12 +1,12 @@
 package io.github.sst.remake.gui.element.impl.cgui.color;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class ColorPickerBubble extends Widget {
+public class ColorPickerBubble extends Element {
     public int field21365;
 
     public ColorPickerBubble(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, int var7) {

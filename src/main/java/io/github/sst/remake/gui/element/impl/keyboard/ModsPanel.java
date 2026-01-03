@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class ModsPanel extends Widget {
+public class ModsPanel extends Element {
     public AnimationUtils field21302;
     public int field21303;
     public int field21304;

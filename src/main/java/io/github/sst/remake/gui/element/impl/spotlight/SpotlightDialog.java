@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.spotlight;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -14,7 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpotlightDialog extends Widget {
+public class SpotlightDialog extends Element {
     public TextField query;
     public String field20640;
 

@@ -1,13 +1,13 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class Button extends Widget {
+public class Button extends Element {
     public float field20584;
     private int field20585 = 0;
     public int field20586 = 0;

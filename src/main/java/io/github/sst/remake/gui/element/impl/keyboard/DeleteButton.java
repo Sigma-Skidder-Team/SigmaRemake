@@ -1,12 +1,12 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class DeleteButton extends Widget {
+public class DeleteButton extends Element {
     public float hoverAnimationProgress;
 
     public DeleteButton(CustomGuiScreen parent, String name, int x, int y, int width, int height) {

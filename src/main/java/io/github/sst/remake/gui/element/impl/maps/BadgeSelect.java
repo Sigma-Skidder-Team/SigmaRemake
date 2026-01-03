@@ -1,12 +1,12 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.client.waypoint.WaypointColors;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 
-public class BadgeSelect extends Widget {
+public class BadgeSelect extends Element {
     public int field21296;
 
     public BadgeSelect(CustomGuiScreen var1, String var2, int var3, int var4) {

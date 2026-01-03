@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloKeyboard;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PopOver extends Widget {
+public class PopOver extends Element {
     private final int field21376;
     private final AnimationUtils field21377;
     private boolean field21378 = false;

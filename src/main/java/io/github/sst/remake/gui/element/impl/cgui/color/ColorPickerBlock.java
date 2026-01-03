@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui.color;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Widget;
+import io.github.sst.remake.gui.element.Element;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.ScissorUtils;
 
 import java.awt.*;
 
-public class ColorPickerBlock extends Widget {
+public class ColorPickerBlock extends Element {
     private static String[] field20602;
     public float field21347;
     private float field21348 = 0.0F;
