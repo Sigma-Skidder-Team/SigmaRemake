@@ -13,7 +13,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
 public class Change extends CustomGuiScreen {
-    public AnimationUtils animation2 = new AnimationUtils(370, 150, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils animation2 = new AnimationUtils(370, 150, AnimationUtils.Direction.FORWARDS);
 
     public Change(CustomGuiScreen var1, String var2, JsonObject var3) throws JsonParseException {
         super(var1, var2);

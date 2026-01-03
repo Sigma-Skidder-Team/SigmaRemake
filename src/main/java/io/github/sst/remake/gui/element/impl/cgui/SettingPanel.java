@@ -272,7 +272,7 @@ public class SettingPanel extends ScrollableContentPanel implements Animatable {
         GL11.glPushMatrix();
         super.draw(partialTicks);
         GL11.glPopMatrix();
-        this.field21225.changeDirection(!var4 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.field21225.changeDirection(!var4 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 10),

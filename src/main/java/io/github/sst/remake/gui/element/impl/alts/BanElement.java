@@ -12,7 +12,6 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Identifier;
@@ -41,7 +40,7 @@ public class BanElement extends AnimatedIconPanel {
         super(parent, text, x, y, width, height, false);
         this.ban = ban;
         this.info = ban.getServer();
-        this.field21248 = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
+        this.field21248 = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
     }
 
     @Override
@@ -50,9 +49,9 @@ public class BanElement extends AnimatedIconPanel {
         float var4 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
         float var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.isHoveredInHierarchy()) {
-            this.field21248.changeDirection(AnimationUtils.Direction.FORWARDS);
-        } else if ((double) Math.abs(var4 - var5) < 0.7) {
             this.field21248.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        } else if ((double) Math.abs(var4 - var5) < 0.7) {
+            this.field21248.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
 
         if (this.getAbsoluteY() + this.getTranslateY() < MinecraftClient.getInstance().getWindow().getHeight() - 36 && this.getAbsoluteY() + this.getTranslateY() > 52) {
@@ -82,7 +81,7 @@ public class BanElement extends AnimatedIconPanel {
             GL11.glPushMatrix();
             int var9 = this.width / 2;
             int var7 = this.height / 2;
-            if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 var4 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
@@ -123,7 +122,7 @@ public class BanElement extends AnimatedIconPanel {
     public void method13576() {
         GL11.glPushMatrix();
         float var5 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
             var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -158,7 +157,7 @@ public class BanElement extends AnimatedIconPanel {
         );
         GL11.glPushMatrix();
         float var11 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
             var11 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 

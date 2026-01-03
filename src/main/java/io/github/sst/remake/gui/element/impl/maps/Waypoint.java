@@ -23,7 +23,7 @@ public class Waypoint extends Element {
         this.targetY = y;
         this.dragAnimation = new AnimationUtils(114, 114);
         this.deleteAnimation = new AnimationUtils(200, 200);
-        this.deleteAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.deleteAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.waypointName = var7;
         this.waypointPos = var8;
         this.waypointColor = var9;
@@ -33,10 +33,10 @@ public class Waypoint extends Element {
     @Override
     public void updatePanelDimensions(int newHeight, int newWidth) {
         super.updatePanelDimensions(newHeight, newWidth);
-        this.dragAnimation.changeDirection(!this.isDragging() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.dragAnimation.changeDirection(!this.isDragging() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         boolean var5 = this.isDragging() || newHeight > this.getAbsoluteX() + this.getWidth() - 62;
         this.setDraggable(var5);
-        if (this.deleteAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.deleteAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
             this.setDraggable(false);
             this.setX(Math.round((float) this.getWidth() * QuadraticEasing.easeInQuad(this.deleteAnimation.calcPercent(), 0.0F, 1.0F, 1.0F)));
             if (this.deleteAnimation.calcPercent() == 1.0F) {
@@ -46,7 +46,7 @@ public class Waypoint extends Element {
     }
 
     public void startDeleteAnimation() {
-        this.deleteAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.deleteAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override

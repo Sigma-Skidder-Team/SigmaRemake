@@ -28,8 +28,8 @@ public class JelloMenu extends Screen implements IMinecraft {
     private boolean field20968 = true;
     public MainPage mainMenuScreen;
     public ChangelogPage changelogPage;
-    public AnimationUtils field20972 = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
-    public AnimationUtils animation = new AnimationUtils(200, 200, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils field20972 = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
+    public AnimationUtils animation = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
     private final AnimationUtils field20974 = new AnimationUtils(325, 325);
     private final AnimationUtils field20975 = new AnimationUtils(800, 800);
     private static Texture background;
@@ -81,8 +81,8 @@ public class JelloMenu extends Screen implements IMinecraft {
             background = Resources.createPaddedBlurredTexture("background/panorama5.png", 0.075F, 8);
         }
 
-        this.field20974.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        this.field20975.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.field20974.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.field20975.changeDirection(AnimationUtils.Direction.FORWARDS);
         int var3 = client.getWindow().getWidth() * client.getWindow().getHeight() / 14000;
         Random var4 = new Random();
 
@@ -102,17 +102,17 @@ public class JelloMenu extends Screen implements IMinecraft {
     }
 
     public void goOut() {
-        this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.field20972.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.changelogPage.setHovered(false);
     }
 
     public void method13341() {
-        this.field20972.changeDirection(AnimationUtils.Direction.FORWARDS);
-        this.animation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
     }
 
     public void animateIn() {
-        this.field20972.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
         this.changelogPage.setHovered(true);
     }
 
@@ -128,7 +128,7 @@ public class JelloMenu extends Screen implements IMinecraft {
     @Override
     public void draw(float partialTicks) {
         float transitionProgress = AnimationUtils.calculateTransition(this.field20972.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field20972.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.field20972.getDirection() == AnimationUtils.Direction.FORWARDS) {
             transitionProgress = AnimationUtils.calculateBackwardTransition(this.field20972.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -157,8 +157,8 @@ public class JelloMenu extends Screen implements IMinecraft {
                 this.field20967 = (int) ((float) this.field20967 + deltaY * field20982);
             }
         } else {
-            this.field20974.changeDirection(AnimationUtils.Direction.FORWARDS);
-            this.field20975.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.field20974.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.field20975.changeDirection(AnimationUtils.Direction.BACKWARDS);
             float parallaxFactor = 0.5F - (float) this.field20967 / (float) client.getWindow().getWidth() * -1.0F;
             float backgroundOpacity = 1.0F - this.field20974.calcPercent();
             float foregroundOpacity = 1.0F - this.field20975.calcPercent();
@@ -249,7 +249,7 @@ public class JelloMenu extends Screen implements IMinecraft {
                 }
             }
 
-            if (this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            if (this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_50,
                         (float) (this.width / 2),

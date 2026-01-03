@@ -48,7 +48,7 @@ public class Slider extends Element {
     private void method13136() {
         this.addToList(this.field20734 = new SliderButton(this, this.getHeight()));
         this.field20732 = -1.0F;
-        this.field20735 = new AnimationUtils(114, 114, AnimationUtils.Direction.BACKWARDS);
+        this.field20735 = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     }
 
     @Override
@@ -56,8 +56,8 @@ public class Slider extends Element {
         this.field20735
                 .changeDirection(
                         !this.isHoveredInHierarchy() && !this.field20734.isHoveredInHierarchy() && !this.isMouseDownOverComponent() && !this.field20734.isDragging()
-                                ? AnimationUtils.Direction.BACKWARDS
-                                : AnimationUtils.Direction.FORWARDS
+                                ? AnimationUtils.Direction.FORWARDS
+                                : AnimationUtils.Direction.BACKWARDS
                 );
         super.updatePanelDimensions(mouseX, mouseY);
     }

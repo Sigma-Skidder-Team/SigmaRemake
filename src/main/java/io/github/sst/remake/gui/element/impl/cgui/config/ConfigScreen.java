@@ -81,14 +81,14 @@ public class ConfigScreen extends Element {
     }
 
     public void close() {
-        this.configGroup.expandAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        if (this.openAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
-            this.openAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.configGroup.expandAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        if (this.openAnimation.getDirection() != AnimationUtils.Direction.FORWARDS) {
+            this.openAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
     }
 
     public boolean isClosed() {
-        return this.openAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS && this.openAnimation.calcPercent() == 0.0F;
+        return this.openAnimation.getDirection() == AnimationUtils.Direction.FORWARDS && this.openAnimation.calcPercent() == 0.0F;
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ConfigScreen extends Element {
         partialTicks = this.openAnimation.calcPercent();
         this.updatePositions();
         float scale = VecUtils.interpolate(partialTicks, 0.37, 1.48, 0.17, 0.99);
-        if (this.openAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.openAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             scale = VecUtils.interpolate(partialTicks, 0.38, 0.73, 0.0, 1.0);
         }
 
@@ -167,7 +167,7 @@ public class ConfigScreen extends Element {
         );
         RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) padding, color);
         float profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
-        if (this.configGroup.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.configGroup.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 

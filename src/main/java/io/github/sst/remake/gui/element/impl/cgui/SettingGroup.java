@@ -9,7 +9,6 @@ import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
 public class SettingGroup extends Element {
@@ -49,8 +48,8 @@ public class SettingGroup extends Element {
             this.field20671 = true;
         }
 
-        this.animation1.changeDirection(this.field20671 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
-        this.animation.changeDirection(this.field20671 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.animation1.changeDirection(this.field20671 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.animation.changeDirection(this.field20671 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         super.updatePanelDimensions(mouseX, mouseY);
     }
 

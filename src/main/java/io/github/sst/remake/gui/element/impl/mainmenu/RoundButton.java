@@ -15,7 +15,7 @@ import org.newdawn.slick.opengl.texture.Texture;
 
 public class RoundButton extends SmallImage {
     public boolean field20577 = false;
-    public AnimationUtils field20578 = new AnimationUtils(160, 140, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils field20578 = new AnimationUtils(160, 140, AnimationUtils.Direction.FORWARDS);
 
     public RoundButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10);
@@ -39,11 +39,11 @@ public class RoundButton extends SmallImage {
         this.field20577 = this.isHoveredInHierarchy();
         if (!this.field20577) {
             if (this.method13029()) {
-                this.field20578.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                this.field20578.changeDirection(AnimationUtils.Direction.FORWARDS);
                 this.setReAddChildren(false);
             }
         } else {
-            this.field20578.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.field20578.changeDirection(AnimationUtils.Direction.BACKWARDS);
             this.setReAddChildren(true);
         }
     }
@@ -64,7 +64,7 @@ public class RoundButton extends SmallImage {
     public void draw(float partialTicks) {
         float var4 = !this.isMouseDownOverComponent() ? 0.0F : 0.1F;
         float var5 = this.method13030();
-        if (this.field20578.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.field20578.getDirection() == AnimationUtils.Direction.FORWARDS) {
             var5 = this.method13031();
         }
 

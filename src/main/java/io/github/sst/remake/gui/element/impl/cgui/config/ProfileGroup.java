@@ -64,24 +64,24 @@ public class ProfileGroup extends AnimatedIconPanel {
             button.setWidth(Math.round((float) editButton.getWidth() / 2.0F));
         });
         deleteButton.onClick((mouseX, mouseY) -> {
-            this.deleteAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.deleteAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
             Client.INSTANCE.configManager.deleteProfile(this.profile);
             ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
             configScreen.addRunnable(configScreen::reload);
         });
         renameButton.onClick((mouseX, mouseY) -> {
-            this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.slideAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
             this.profileName.setSelfVisible(true);
             this.profileName.startFocus();
         });
         this.editButtons.setWidth(0);
         this.editButtons.setTranslateX(this.editButtonsWidth);
-        this.hoverAnimation = new AnimationUtils(100, 100, AnimationUtils.Direction.BACKWARDS);
-        this.slideAnimation = new AnimationUtils(290, 290, AnimationUtils.Direction.BACKWARDS);
-        this.deleteAnimation = new AnimationUtils(200, 100, AnimationUtils.Direction.BACKWARDS);
+        this.hoverAnimation = new AnimationUtils(100, 100, AnimationUtils.Direction.FORWARDS);
+        this.slideAnimation = new AnimationUtils(290, 290, AnimationUtils.Direction.FORWARDS);
+        this.deleteAnimation = new AnimationUtils(200, 100, AnimationUtils.Direction.FORWARDS);
         this.onClick((mouseX, mouseY) -> {
             if (mouseY != 1) {
-                this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                this.slideAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
                 if (this.slideAnimation.calcPercent() == 0.0F) {
                     Client.INSTANCE.configManager.loadProfile(this.profile);
                     SoundUtils.play("switch");
@@ -89,7 +89,7 @@ public class ProfileGroup extends AnimatedIconPanel {
                     configScreen.addRunnable(configScreen::reload);
                 }
             } else {
-                this.slideAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+                this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
             }
         });
     }
@@ -108,9 +108,9 @@ public class ProfileGroup extends AnimatedIconPanel {
             this.rename(this.profileName.getText());
         }
 
-        this.hoverAnimation.changeDirection(this.isMouseOverComponent(mouseX, mouseY) ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.hoverAnimation.changeDirection(this.isMouseOverComponent(mouseX, mouseY) ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
         if (!this.isMouseOverComponent(mouseX, mouseY)) {
-            this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.slideAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -122,7 +122,7 @@ public class ProfileGroup extends AnimatedIconPanel {
         this.setHeight(Math.round((1.0F - deleteAnimationPercentage) * (float) this.initialHeight));
         partialTicks *= 1.0F - this.deleteAnimation.calcPercent();
         float slideAnimationPercentage = VecUtils.interpolate(this.slideAnimation.calcPercent(), 0.28, 1.26, 0.33, 1.04);
-        if (this.slideAnimation.getDirection().equals(AnimationUtils.Direction.BACKWARDS)) {
+        if (this.slideAnimation.getDirection().equals(AnimationUtils.Direction.FORWARDS)) {
             slideAnimationPercentage = AnimationUtils.calculateBackwardTransition(this.slideAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -130,7 +130,7 @@ public class ProfileGroup extends AnimatedIconPanel {
         this.editButtons.setWidth(Math.max(0, (int) ((float) this.editButtonsWidth * slideAnimationPercentage)));
         this.editButtons.setTranslateX((int) ((float) this.editButtonsWidth * (1.0F - slideAnimationPercentage)));
         ScissorUtils.startScissor(this);
-        float hoverPercentage = this.isMouseDownOverComponent() && this.slideAnimation.getDirection().equals(AnimationUtils.Direction.BACKWARDS) ? 0.03F : 0.0F;
+        float hoverPercentage = this.isMouseDownOverComponent() && this.slideAnimation.getDirection().equals(AnimationUtils.Direction.FORWARDS) ? 0.03F : 0.0F;
         RenderUtils.drawRoundedRect2(
                 (float) this.x,
                 (float) this.y,

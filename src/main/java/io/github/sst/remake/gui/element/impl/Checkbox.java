@@ -28,7 +28,7 @@ public class Checkbox extends Element {
     public void method13705(boolean value, boolean var2) {
         if (value != this.getValue()) {
             this.value = value;
-            this.field21370.changeDirection(!this.value ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+            this.field21370.changeDirection(!this.value ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
             if (var2) {
                 this.callUIHandlers();
             }

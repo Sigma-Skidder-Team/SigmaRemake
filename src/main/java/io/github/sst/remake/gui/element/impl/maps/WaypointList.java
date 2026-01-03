@@ -13,7 +13,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WaypointList extends ScrollableContentPanel {
@@ -25,7 +24,7 @@ public class WaypointList extends ScrollableContentPanel {
 
     public WaypointList(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
-        this.trashcanAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.field20883 = true;
         this.setListening(false);
     }
@@ -66,7 +65,7 @@ public class WaypointList extends ScrollableContentPanel {
         }
 
         for (Waypoint waypoint : this.waypoints) {
-            if (!waypoint.isDragging() && waypoint.deleteAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (!waypoint.isDragging() && waypoint.deleteAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 waypoint.targetY = currentY + 5;
             } else {
                 waypoint.targetY = waypoint.getY();
@@ -76,7 +75,7 @@ public class WaypointList extends ScrollableContentPanel {
 
         for (Waypoint waypoint : this.waypoints) {
             if (waypoint.isDragging()) {
-                this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+                this.trashcanAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
                 if (mouseX > this.getAbsoluteX() + 10
                         && mouseX < this.getAbsoluteX() + 50
                         && mouseY < this.getAbsoluteY() + this.getHeight() - 10
@@ -90,7 +89,7 @@ public class WaypointList extends ScrollableContentPanel {
                 break;
             }
 
-            this.trashcanAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
     }
 

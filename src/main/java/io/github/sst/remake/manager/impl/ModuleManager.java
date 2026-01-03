@@ -29,6 +29,7 @@ public class ModuleManager extends Manager {
         modules.add(new CoordsModule());
         modules.add(new CompassModule());
         modules.add(new MiniMapModule());
+        modules.add(new KeyStrokesModule());
         modules.add(new TestModule());
         initModules();
         super.init();

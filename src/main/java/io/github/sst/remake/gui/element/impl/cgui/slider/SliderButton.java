@@ -12,7 +12,7 @@ public class SliderButton extends Button {
 
     public SliderButton(Slider var1, int var2) {
         super(var1, "sliderButton", 0, 0, var2, var2, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()));
-        this.field20601.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.setDraggable(true);
         this.field20886 = true;
         this.field20600 = var1;
@@ -23,9 +23,9 @@ public class SliderButton extends Button {
         super.updatePanelDimensions(mouseX, mouseY);
         float var6 = (float) this.getX() / (float) (this.parent.getWidth() - this.getWidth());
         if (!this.isMouseDownOverComponent() && !this.isHoveredInHierarchy() && !this.isDragging()) {
-            this.field20601.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        } else {
             this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
+        } else {
+            this.field20601.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
         this.field20600.method13139(var6);

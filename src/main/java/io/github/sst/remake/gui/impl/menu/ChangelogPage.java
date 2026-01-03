@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChangelogPage extends CustomGuiScreen {
-    public AnimationUtils animation = new AnimationUtils(380, 200, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils animation = new AnimationUtils(380, 200, AnimationUtils.Direction.FORWARDS);
     public ScrollableContentPanel scrollPanel;
     private static JsonArray cachedChangelog;
 
@@ -69,7 +69,7 @@ public class ChangelogPage extends CustomGuiScreen {
             if (this.isHovered() && this.isSelfVisible()) {
                 for (CustomGuiScreen var9 : this.scrollPanel.getButton().getChildren()) {
                     Change var10 = (Change) var9;
-                    var10.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
+                    var10.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
                     if ((double) var10.animation2.calcPercent() < 0.5) {
                         break;
                     }
@@ -77,7 +77,7 @@ public class ChangelogPage extends CustomGuiScreen {
             } else {
                 for (CustomGuiScreen var6 : this.scrollPanel.getButton().getChildren()) {
                     Change var7 = (Change) var6;
-                    var7.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                    var7.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
                 }
             }
         }
@@ -85,12 +85,12 @@ public class ChangelogPage extends CustomGuiScreen {
 
     @Override
     public void draw(float partialTicks) {
-        this.animation.changeDirection(!this.isHovered() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.animation.changeDirection(!this.isHovered() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         partialTicks *= this.animation.calcPercent();
 
         float fadeFactor = VecUtils.interpolate(this.animation.calcPercent(), 0.17f, 1.0f, 0.51f, 1.0f);
 
-        if (this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             fadeFactor = 1.0f;
         }
 

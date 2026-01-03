@@ -17,7 +17,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 
 public class CoordsModule extends Module {
-    private final AnimationUtils coordinateAnimation = new AnimationUtils(1500, 1500, AnimationUtils.Direction.BACKWARDS);
+    private final AnimationUtils coordinateAnimation = new AnimationUtils(1500, 1500, AnimationUtils.Direction.FORWARDS);
     private double playerX, playerY, playerZ;
 
     public CoordsModule() {
@@ -33,11 +33,11 @@ public class CoordsModule extends Module {
 
         boolean shouldAnimate = hasMoved || (!client.player.isOnGround()) || client.player.isSneaking();
         if (!shouldAnimate) {
-            if (this.coordinateAnimation.calcPercent() == 1.0F && this.coordinateAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                this.coordinateAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            if (this.coordinateAnimation.calcPercent() == 1.0F && this.coordinateAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+                this.coordinateAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
             }
         } else {
-            this.coordinateAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.coordinateAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
     }
 
@@ -53,7 +53,7 @@ public class CoordsModule extends Module {
         float textWidth = (float) FontUtils.HELVETICA_LIGHT_18.getWidth(coordinatesText);
         float scaleFactor = Math.min(1.0F, maxTextWidth / textWidth);
 
-        if (this.coordinateAnimation.getDirection() != AnimationUtils.Direction.FORWARDS) {
+        if (this.coordinateAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
             scaleFactor *= 0.9F + QuadraticEasing.easeInQuad(Math.min(1.0F, this.coordinateAnimation.calcPercent() * 8.0F), 0.0F, 1.0F, 1.0F) * 0.1F;
         } else {
             scaleFactor *= 0.9F + EasingFunctions.easeOutBack(Math.min(1.0F, this.coordinateAnimation.calcPercent() * 7.0F), 0.0F, 1.0F, 1.0F) * 0.1F;

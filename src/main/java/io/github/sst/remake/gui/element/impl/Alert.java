@@ -162,7 +162,7 @@ public class Alert extends Element {
             }
         }
 
-        this.field21282.changeDirection(!hovered ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.field21282.changeDirection(!hovered ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         super.setHovered(hovered);
     }
 
@@ -208,7 +208,7 @@ public class Alert extends Element {
     }
 
     public float method13602(float var1, float var2) {
-        return this.field21282.getDirection() != AnimationUtils.Direction.BACKWARDS
+        return this.field21282.getDirection() != AnimationUtils.Direction.FORWARDS
                 ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
                 : 0.5F + QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F) * 0.5F;
     }

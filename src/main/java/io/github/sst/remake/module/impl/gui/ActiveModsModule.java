@@ -80,7 +80,7 @@ public class ActiveModsModule extends Module {
 
         for (Module module : this.scaleInAnimations.keySet()) {
             if (animations.value) {
-                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
             }
         }
 
@@ -155,12 +155,12 @@ public class ActiveModsModule extends Module {
         for (Module module : Client.INSTANCE.moduleManager.modules) {
             if (module.getCategory() != Category.GUI) {
                 this.activeModules.add(module);
-                this.scaleInAnimations.put(module, new AnimationUtils(150, 150, AnimationUtils.Direction.BACKWARDS));
+                this.scaleInAnimations.put(module, new AnimationUtils(150, 150, AnimationUtils.Direction.FORWARDS));
 
                 if (!this.animations.value) {
                     continue;
                 }
-                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
             }
         }
 

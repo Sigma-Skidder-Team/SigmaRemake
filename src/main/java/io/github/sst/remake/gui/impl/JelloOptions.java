@@ -31,7 +31,7 @@ public class JelloOptions extends Screen {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS && anim.calcPercent() == 0.0F && mcScreen != null) {
+        if (anim.getDirection() == AnimationUtils.Direction.FORWARDS && anim.calcPercent() == 0.0F && mcScreen != null) {
             MinecraftClient.getInstance().openScreen(mcScreen);
         }
 
@@ -42,7 +42,7 @@ public class JelloOptions extends Screen {
     public void draw(float partialTicks) {
         float maxValue = 1.3F - EasingFunctions.easeOutBack(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
         float value = 1.0F;
-        if (anim.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (anim.getDirection() == AnimationUtils.Direction.FORWARDS) {
             maxValue = 0.7F + QuadraticEasing.easeOutQuad(anim.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
             value = anim.calcPercent();
         }
@@ -57,7 +57,7 @@ public class JelloOptions extends Screen {
 
     public static void showGUI(net.minecraft.client.gui.screen.Screen screen) {
         mcScreen = screen;
-        anim.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        anim.changeDirection(AnimationUtils.Direction.FORWARDS);
     }
 
     @Override

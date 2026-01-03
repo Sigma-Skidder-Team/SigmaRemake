@@ -20,7 +20,7 @@ public class TextButton extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.lineAnim.changeDirection(!this.isHoveredInHierarchy() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.lineAnim.changeDirection(!this.isHoveredInHierarchy() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override

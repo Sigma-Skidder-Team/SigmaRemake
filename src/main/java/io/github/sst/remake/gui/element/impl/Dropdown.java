@@ -102,7 +102,7 @@ public class Dropdown extends Element {
             });
         }
 
-        this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.animation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.accept(new GridLayoutVisitor(1));
     }
 
@@ -123,7 +123,7 @@ public class Dropdown extends Element {
 
     private int method13648() {
         float var3 = AnimationUtils.calculateTransition(this.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.animation.getDirection() != AnimationUtils.Direction.FORWARDS) {
+        if (this.animation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
             var3 = QuadraticEasing.easeInQuad(this.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -137,20 +137,20 @@ public class Dropdown extends Element {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        if (!this.isMouseOverComponent(mouseX, mouseY) && this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (!this.isMouseOverComponent(mouseX, mouseY) && this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
             this.method13658(false);
         }
 
         int var5 = (mouseY - this.getAbsoluteY()) / this.getHeight() - 1;
         if (var5 >= 0
                 && var5 < this.values.size()
-                && this.animation.getDirection() == AnimationUtils.Direction.FORWARDS
+                && this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS
                 && this.animation.calcPercent() == 1.0F
                 && mouseX - this.getAbsoluteX() < this.getWidth()) {
             for (Entry var9 : this.field21331.entrySet()) {
                 ((Sub) var9.getValue()).setSelfVisible((Integer) var9.getKey() == var5);
             }
-        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             for (Entry var7 : this.field21331.entrySet()) {
                 ((Sub) var7.getValue()).setSelfVisible(false);
             }
@@ -257,7 +257,7 @@ public class Dropdown extends Element {
 
     public void method13658(boolean var1) {
         this.field21328 = var1;
-        this.animation.changeDirection(!this.method13657() ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.animation.changeDirection(!this.method13657() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override

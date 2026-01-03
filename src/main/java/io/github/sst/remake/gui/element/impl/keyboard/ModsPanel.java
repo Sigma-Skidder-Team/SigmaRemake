@@ -118,7 +118,7 @@ public class ModsPanel extends Element {
             this.field21311 = true;
         }
 
-        this.field21302.changeDirection(this.field21311 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.field21302.changeDirection(this.field21311 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         Map<String, Button> var5 = new TreeMap();
         Map<String, Button> var6 = new TreeMap();
         Map<String, Button> var7 = new TreeMap();

@@ -19,7 +19,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class ConfigGroup extends Element {
-    public AnimationUtils expandAnimation = new AnimationUtils(300, 200, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils expandAnimation = new AnimationUtils(300, 200, AnimationUtils.Direction.FORWARDS);
     private final int maxHeight;
     private final ScrollableContentPanel profileList;
     private final OnlineProfileManager onlineProfileManager;
@@ -86,7 +86,7 @@ public class ConfigGroup extends Element {
     }
 
     public void setExpanded(boolean expanded) {
-        this.expandAnimation.changeDirection(!expanded ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.expandAnimation.changeDirection(!expanded ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ConfigGroup extends Element {
     @Override
     public void draw(float partialTicks) {
         float var4 = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
-        if (this.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             var4 = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16);
         }
 

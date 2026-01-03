@@ -18,9 +18,9 @@ public class AccountUI extends AnimatedIconPanel {
     private final LoadingIndicator loadingIndicator;
     private boolean refreshing = false;
 
-    private final AnimationUtils field20803 = new AnimationUtils(814, 114, AnimationUtils.Direction.BACKWARDS);
+    private final AnimationUtils field20803 = new AnimationUtils(814, 114, AnimationUtils.Direction.FORWARDS);
     private float loadingProgress = 0.0F;
-    public AnimationUtils field20805 = new AnimationUtils(800, 300, AnimationUtils.Direction.BACKWARDS);
+    public AnimationUtils field20805 = new AnimationUtils(800, 300, AnimationUtils.Direction.FORWARDS);
     private int errorState = 0;
     private int lastErrorState = 0;
     private int color = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 20.0F);
@@ -37,14 +37,14 @@ public class AccountUI extends AnimatedIconPanel {
     }
 
     public void method13167(boolean var1, boolean var2) {
-        this.field20803.changeDirection(!var1 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        this.field20803.changeDirection(!var1 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         if (var2) {
             this.field20803.updateStartTime(1.0F);
         }
     }
 
     public boolean method13168() {
-        return this.field20803.getDirection() == AnimationUtils.Direction.FORWARDS;
+        return this.field20803.getDirection() == AnimationUtils.Direction.BACKWARDS;
     }
 
     @Override

@@ -19,13 +19,13 @@ public class ActualWaypoint extends Button {
         super(var1, var2, var3, var4, 18, 18);
         this.color = color;
         this.field20599 = new AnimationUtils(250, 250);
-        this.field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
     }
 
     @Override
     public void draw(float partialTicks) {
         if (this.field20598 && partialTicks == 1.0F) {
-            this.field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
         int var4 = (int) (EasingFunctions.easeInOutCustomBack(this.field20599.calcPercent(), 0.0F, 1.0F, 1.0F, 7.0F) * 3.0F);

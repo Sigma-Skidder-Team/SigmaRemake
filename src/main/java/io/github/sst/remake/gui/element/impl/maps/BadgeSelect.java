@@ -28,12 +28,12 @@ public class BadgeSelect extends Element {
                 for (CustomGuiScreen var6 : var1x.getParent().getChildren()) {
                     if (var6 instanceof ActualWaypoint) {
                         ((ActualWaypoint) var6).field20598 = false;
-                        ((ActualWaypoint) var6).field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                        ((ActualWaypoint) var6).field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
                     }
                 }
 
                 ((ActualWaypoint) var1x).field20598 = true;
-                ((ActualWaypoint) var1x).field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
+                ((ActualWaypoint) var1x).field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
                 this.field21296 = ((ActualWaypoint) var1x).color.color;
             });
             var7 = false;

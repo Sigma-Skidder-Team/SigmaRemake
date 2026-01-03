@@ -114,7 +114,7 @@ public class JelloScreen extends Screen implements IMinecraft {
             this.configScreen = null;
         }
 
-        if (animationProgress.getDirection() == AnimationUtils.Direction.BACKWARDS && this.settingGroup != null && !this.settingGroup.field20671) {
+        if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && this.settingGroup != null && !this.settingGroup.field20671) {
             this.settingGroup.field20671 = true;
         }
 
@@ -127,7 +127,7 @@ public class JelloScreen extends Screen implements IMinecraft {
 
         if (animationCompleted) {
             AnimationUtils.Direction direction = animationProgress.getDirection();
-            animationProgress.changeDirection(!animationStarted ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+            animationProgress.changeDirection(!animationStarted ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
 
             if (animationProgress.calcPercent() <= 0.0F && animationStarted) {
                 animationStarted = false;
@@ -190,7 +190,7 @@ public class JelloScreen extends Screen implements IMinecraft {
     }
 
     public float method13317(float var1, float var2) {
-        return animationProgress.getDirection() != AnimationUtils.Direction.BACKWARDS
+        return animationProgress.getDirection() != AnimationUtils.Direction.FORWARDS
                 ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
                 : QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F);
     }
@@ -211,7 +211,7 @@ public class JelloScreen extends Screen implements IMinecraft {
         float fadeAmount = 1.0F;
         if (this.settingGroup != null) {
             float var8 = EasingFunctions.easeOutBack(this.settingGroup.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
-            if (this.settingGroup.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (this.settingGroup.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
                 var8 = AnimationUtils.calculateBackwardTransition(this.settingGroup.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 

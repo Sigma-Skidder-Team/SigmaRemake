@@ -30,7 +30,6 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 
 import io.github.sst.remake.gui.element.impl.Button;
-import net.minecraft.util.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -367,7 +366,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                         AccountUI accountUI = (AccountUI) var7;
                         if (var7.getY() <= client.getWindow().getHeight() && this.alts.getScrollOffset() == 0) {
                             if (var3 > 0.2F) {
-                                accountUI.field20805.changeDirection(AnimationUtils.Direction.FORWARDS);
+                                accountUI.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
                             }
 
                             float var9 = VecUtils.interpolate(accountUI.field20805.calcPercent(), 0.51, 0.82, 0.0, 0.99);
@@ -375,7 +374,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                             var3 = accountUI.field20805.calcPercent();
                         } else {
                             accountUI.setTranslateX(0);
-                            accountUI.field20805.changeDirection(AnimationUtils.Direction.FORWARDS);
+                            accountUI.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
                         }
                     }
                 }
