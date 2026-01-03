@@ -10,6 +10,7 @@ import io.github.sst.remake.gui.screen.options.CreditsScreen;
 import io.github.sst.remake.gui.screen.options.OptionsScreen;
 import io.github.sst.remake.gui.screen.options.InGameOptionsScreen;
 import io.github.sst.remake.gui.screen.mainmenu.MainMenuScreen;
+import io.github.sst.remake.gui.screen.snake.SnakeGameScreen;
 import io.github.sst.remake.gui.screen.spotlight.SpotlightScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -33,12 +34,14 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(SpotlightHolder.class, SpotlightScreen.class);
         replacementScreens.put(ClickGuiHolder.class, ClickGuiScreen.class);
         replacementScreens.put(MapsHolder.class, MapsScreen.class);
+        replacementScreens.put(SnakeGameHolder.class, SnakeGameScreen.class);
 
         // Sigma Screen -> Screen Name
         screenToScreenName.put(KeybindsHolder.class, "Keybind Manager");
         screenToScreenName.put(SpotlightHolder.class, "Spotlight");
         screenToScreenName.put(ClickGuiHolder.class, "Click GUI");
         screenToScreenName.put(MapsHolder.class, "Maps");
+        screenToScreenName.put(SnakeGameHolder.class, "Snake");
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
