@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
 import io.github.sst.remake.gui.panel.AnimatedIconPanel;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Alert extends Element {
+public class Alert extends InteractiveWidget {
     public CustomGuiScreen screen;
     public String alertName;
     public Texture field21281;
@@ -306,6 +306,6 @@ public class Alert extends Element {
     }
 
     public interface Class9448 {
-        void method36327(Element var1);
+        void method36327(InteractiveWidget var1);
     }
 }

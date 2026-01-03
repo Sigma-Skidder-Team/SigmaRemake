@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFrame extends Element implements IMinecraft {
+public class MapFrame extends InteractiveWidget implements IMinecraft {
     public Zoom zoom;
     public ChunkPos chunkPos;
     public int zoomLevel = 8;

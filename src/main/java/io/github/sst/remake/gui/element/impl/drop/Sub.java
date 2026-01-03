@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.drop;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class Sub extends Element {
+public class Sub extends InteractiveWidget {
     public static final ColorHelper color = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
     public int field21324 = 0;

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -12,7 +12,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 
 import java.util.Date;
 
-public class BindableActionEntry extends Element {
+public class BindableActionEntry extends InteractiveWidget {
     public BindableAction bindableAction;
     public Date animationStartDate;
     public int entryIndex;

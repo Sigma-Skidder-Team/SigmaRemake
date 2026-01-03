@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.EasingFunctions;
@@ -11,7 +11,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
-public class SettingGroup extends Element {
+public class SettingGroup extends InteractiveWidget {
     public AnimationUtils animation1;
     public AnimationUtils animation;
     public int settingY;

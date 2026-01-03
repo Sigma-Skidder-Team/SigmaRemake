@@ -1,12 +1,12 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.client.bind.Keys;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class Keyboard extends Element {
+public class Keyboard extends InteractiveWidget {
     public int field20696;
 
     public Keyboard(CustomGuiScreen var1, String var2, int var3, int var4) {
