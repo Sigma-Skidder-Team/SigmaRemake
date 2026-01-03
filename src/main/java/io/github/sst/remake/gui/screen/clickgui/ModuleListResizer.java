@@ -4,7 +4,7 @@ import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.layout.WidthSetter;
 import net.minecraft.client.MinecraftClient;
 
-public class ModListViewSize implements WidthSetter {
+public class ModuleListResizer implements WidthSetter {
     @Override
     public void setWidth(GuiComponent forScreen, GuiComponent fromWidthOfThisScreen) {
         forScreen.setX(0);

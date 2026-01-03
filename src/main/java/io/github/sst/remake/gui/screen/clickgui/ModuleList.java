@@ -16,13 +16,13 @@ import net.minecraft.client.MinecraftClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModListView extends ScrollablePanel {
+public class ModuleList extends ScrollablePanel {
     public final Category category;
     private final List<Button> field21215 = new ArrayList<>();
     private final boolean field21217;
     private float field21218 = 1.0F;
 
-    public ModListView(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Category var7) {
+    public ModuleList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Category var7) {
         super(var1, var2, var3, var4, var5, var6);
         this.category = var7;
         ((CategoryPanel) var1).field21195 = 1.0F;
@@ -76,7 +76,7 @@ public class ModListView extends ScrollablePanel {
                         }
                     }
             );
-            var13.addWidthSetter(new ModListViewSize());
+            var13.addWidthSetter(new ModuleListResizer());
             var3++;
         }
 

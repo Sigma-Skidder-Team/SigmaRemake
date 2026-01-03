@@ -11,18 +11,18 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
-public class SettingGroup extends InteractiveWidget {
+public class ModuleSettingsDialog extends InteractiveWidget {
     public AnimationUtils animation1;
     public AnimationUtils animation;
     public int settingY;
     public int settingX;
     public int settingWidth;
     public int settingHeight;
-    public SettingPanel field20668;
+    public ModuleSettingsList field20668;
     public final Module module;
     public boolean field20671 = false;
 
-    public SettingGroup(GuiComponent var1, String var2, int x, int y, int width, int height, Module var7) {
+    public ModuleSettingsDialog(GuiComponent var1, String var2, int x, int y, int width, int height, Module var7) {
         super(var1, var2, x, y, width, height, false);
         this.settingWidth = 500;
         this.settingHeight = (int) Math.min(600.0F, (float) height * 0.7F);
@@ -32,7 +32,7 @@ public class SettingGroup extends InteractiveWidget {
         int var10 = 10;
         int var11 = 59;
         this.addToList(
-                this.field20668 = new SettingPanel(
+                this.field20668 = new ModuleSettingsList(
                         this, "mods", this.settingX + var10, this.settingY + var11, this.settingWidth - var10 * 2, this.settingHeight - var11 - var10, var7
                 )
         );

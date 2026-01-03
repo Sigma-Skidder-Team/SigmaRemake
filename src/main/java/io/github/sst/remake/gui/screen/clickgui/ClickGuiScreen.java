@@ -26,7 +26,7 @@ import net.minecraft.client.MinecraftClient;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JelloClickGuiScreen extends Screen implements IMinecraft {
+public class ClickGuiScreen extends Screen implements IMinecraft {
     private static AnimationUtils animationProgress;
     private static boolean animationStarted;
     private static boolean animationCompleted;
@@ -34,10 +34,10 @@ public class JelloClickGuiScreen extends Screen implements IMinecraft {
     //public MusicPlayer musicPlayer;
     public ConfigScreen configScreen;
     public BrainFreezeOverlay brainFreeze;
-    public SettingGroup settingGroup;
+    public ModuleSettingsDialog moduleSettingsDialog;
     public CategoryPanel categoryPanel = null;
 
-    public JelloClickGuiScreen() {
+    public ClickGuiScreen() {
         super("JelloScreen");
         animationCompleted = animationCompleted | !animationStarted;
         int x = 30;
@@ -57,8 +57,8 @@ public class JelloClickGuiScreen extends Screen implements IMinecraft {
                 }
 
                 categoryPanel.method13507(var2 -> this.addRunnable(() -> {
-                    this.addToList(this.settingGroup = new SettingGroup(this, "settings", 0, 0, this.width, this.height, var2));
-                    this.settingGroup.setReAddChildren(true);
+                    this.addToList(this.moduleSettingsDialog = new ModuleSettingsDialog(this, "settings", 0, 0, this.width, this.height, var2));
+                    this.moduleSettingsDialog.setReAddChildren(true);
                 }));
             }
         }
@@ -112,14 +112,14 @@ public class JelloClickGuiScreen extends Screen implements IMinecraft {
             this.configScreen = null;
         }
 
-        if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && this.settingGroup != null && !this.settingGroup.field20671) {
-            this.settingGroup.field20671 = true;
+        if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && this.moduleSettingsDialog != null && !this.moduleSettingsDialog.field20671) {
+            this.moduleSettingsDialog.field20671 = true;
         }
 
-        if (this.settingGroup != null && this.settingGroup.field20671 && this.settingGroup.animation1.calcPercent() == 0.0F) {
+        if (this.moduleSettingsDialog != null && this.moduleSettingsDialog.field20671 && this.moduleSettingsDialog.animation1.calcPercent() == 0.0F) {
             this.addRunnable(() -> {
-                this.removeChildren(this.settingGroup);
-                this.settingGroup = null;
+                this.removeChildren(this.moduleSettingsDialog);
+                this.moduleSettingsDialog = null;
             });
         }
 
@@ -178,7 +178,7 @@ public class JelloClickGuiScreen extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
-        if (keyCode == 256 || keyCode == keyBindForClickGui && this.settingGroup == null && !this.hasFocusedTextField()) {
+        if (keyCode == 256 || keyCode == keyBindForClickGui && this.moduleSettingsDialog == null && !this.hasFocusedTextField()) {
             if (animationCompleted) {
                 animationStarted = !animationStarted;
             }
@@ -207,13 +207,13 @@ public class JelloClickGuiScreen extends Screen implements IMinecraft {
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), alpha)
         );
         float fadeAmount = 1.0F;
-        if (this.settingGroup != null) {
-            float var8 = EasingFunctions.easeOutBack(this.settingGroup.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
-            if (this.settingGroup.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                var8 = AnimationUtils.calculateBackwardTransition(this.settingGroup.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.moduleSettingsDialog != null) {
+            float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            if (this.moduleSettingsDialog.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                var8 = AnimationUtils.calculateBackwardTransition(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
-            fadeAmount -= this.settingGroup.animation.calcPercent() * 0.1F;
+            fadeAmount -= this.moduleSettingsDialog.animation.calcPercent() * 0.1F;
             alphaFactor *= 1.0F + var8 * 0.2F;
         }
 

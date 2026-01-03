@@ -17,7 +17,7 @@ import java.util.List;
 
 public class CategoryPanel extends Widget {
     public final Category category;
-    public ModListView modListView;
+    public ModuleList moduleList;
     public float field21195;
     public int field21197;
     public int field21198;
@@ -35,15 +35,15 @@ public class CategoryPanel extends Widget {
 
     public void method13504() {
         this.addRunnable(() -> {
-            this.removeChildren(this.modListView);
-            this.addToList(this.modListView = new ModListView(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
+            this.removeChildren(this.moduleList);
+            this.addToList(this.moduleList = new ModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
         });
     }
 
     private void method13505() {
-        this.addToList(this.modListView = new ModListView(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
-        this.modListView.addWidthSetter(new ModListViewSize());
-        this.modListView.addWidthSetter((var0, var1) -> {
+        this.addToList(this.moduleList = new ModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
+        this.moduleList.addWidthSetter(new ModuleListResizer());
+        this.moduleList.addWidthSetter((var0, var1) -> {
             var0.setY(60);
             var0.setHeight(var1.getHeight() - 60);
         });
@@ -137,7 +137,7 @@ public class CategoryPanel extends Widget {
         GL11.glPushMatrix();
         super.draw(partialTicks * partialTicks);
         GL11.glPopMatrix();
-        if (this.modListView.getScrollOffset() > 0) {
+        if (this.moduleList.getScrollOffset() > 0) {
             RenderUtils.drawImage(
                     (float) this.getX(),
                     (float) (this.getY() + 60),

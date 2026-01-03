@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.framework.widget.Checkbox;
 import io.github.sst.remake.gui.framework.widget.Dropdown;
 import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextField;
-import io.github.sst.remake.gui.screen.clickgui.block.Picker;
+import io.github.sst.remake.gui.screen.clickgui.block.BlockPicker;
 import io.github.sst.remake.gui.screen.clickgui.color.ColorPicker;
 import io.github.sst.remake.gui.screen.clickgui.slider.Slider;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class SettingPanel extends ScrollablePanel {
+public class ModuleSettingsList extends ScrollablePanel {
     private final Module module;
     public int field21222 = 200;
     private final HashMap<Text, Setting> field21223 = new HashMap<>();
@@ -32,7 +32,7 @@ public class SettingPanel extends ScrollablePanel {
     private String field21226 = "";
     private String field21227 = "";
 
-    public SettingPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Module module) {
+    public ModuleSettingsList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Module module) {
         super(var1, var2, var3, var4, var5, var6);
         this.module = module;
         this.setListening(false);
@@ -161,7 +161,7 @@ public class SettingPanel extends ScrollablePanel {
                 break;
             case BLOCKS:
                 Text var31 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 200, Text.defaultColorHelper, setting.name);
-                Picker var39 = new Picker(
+                BlockPicker var39 = new BlockPicker(
                         panel,
                         setting.name + "picker",
                         panel.getWidth() - var5,
