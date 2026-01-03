@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.element.impl.alert.LoadingIndicator;
@@ -18,7 +18,7 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class ConfigGroup extends Element {
+public class ConfigGroup extends Widget {
     public AnimationUtils expandAnimation = new AnimationUtils(300, 200, AnimationUtils.Direction.FORWARDS);
     private final int maxHeight;
     private final ScrollableContentPanel profileList;

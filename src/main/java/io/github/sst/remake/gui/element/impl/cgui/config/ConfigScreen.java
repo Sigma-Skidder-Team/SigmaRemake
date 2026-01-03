@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.cgui.config;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloScreen;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
@@ -20,7 +20,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigScreen extends Element {
+public class ConfigScreen extends Widget {
     public final AnimationUtils openAnimation;
     public ScrollableContentPanel profileScrollView;
     public ConfigGroup configGroup;

@@ -1,11 +1,11 @@
 package io.github.sst.remake.gui.element.impl.cgui.block;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.item.ItemStack;
 
-public class BlockButton extends Element {
+public class BlockButton extends Widget {
     public ItemStack stack;
     public boolean field21367;
 

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
 
-public class Checkbox extends Element {
+public class Checkbox extends Widget {
     public boolean value;
     public AnimationUtils field21370 = new AnimationUtils(70, 90);
 

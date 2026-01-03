@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui.block;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class Picker extends Element {
+public class Picker extends Widget {
     private final List<String> values = new ArrayList<>();
     private ScrollableContentPanel field20642;
     private final TextField textField;

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.element.impl.TextField;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WaypointPanel extends Element {
+public class WaypointPanel extends Widget {
     private final List<Button> field20723 = new ArrayList<Button>();
     private final Date field20724;
     private boolean field20725 = false;

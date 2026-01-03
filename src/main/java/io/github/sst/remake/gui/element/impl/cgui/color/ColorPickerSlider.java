@@ -1,14 +1,14 @@
 package io.github.sst.remake.gui.element.impl.cgui.color;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
 import java.awt.*;
 
-public class ColorPickerSlider extends Element {
+public class ColorPickerSlider extends Widget {
     private static String[] field20602;
     private float field20679;
     public boolean field20680 = false;

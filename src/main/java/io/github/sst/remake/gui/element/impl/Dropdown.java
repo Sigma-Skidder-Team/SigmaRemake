@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.element.impl.drop.Sub;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Dropdown extends Element {
+public class Dropdown extends Widget {
     public static final ColorHelper field21325 = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
     public int selectedIdx;

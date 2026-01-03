@@ -2,8 +2,7 @@ package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.element.Element;
-import io.github.sst.remake.gui.element.impl.maps.MapPanelClickListener;
+import io.github.sst.remake.gui.element.Widget;
 import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -18,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapPanel extends Element {
+public class MapPanel extends Widget {
     public MapFrame mapFrame;
     public WaypointList waypointList;
     public int waypointListWidth;

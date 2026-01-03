@@ -104,8 +104,8 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
         SoundUtils.play("clicksound");
     }
 
-    private void openMinecraftScreen(net.minecraft.client.gui.screen.Screen var1) {
-        MinecraftClient.getInstance().openScreen(var1);
+    private void openMinecraftScreen(net.minecraft.client.gui.screen.Screen screen) {
+        MinecraftClient.getInstance().openScreen(screen);
         this.playClickSound();
     }
 
