@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.alts;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.alt.AccountBan;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountElement extends AnimatedIconPanel {
+public class AccountElement extends Widget {
     private Account currentAccount = null;
     private final List<BanElement> bans = new ArrayList<>();
     private float field20815 = 0.0F;

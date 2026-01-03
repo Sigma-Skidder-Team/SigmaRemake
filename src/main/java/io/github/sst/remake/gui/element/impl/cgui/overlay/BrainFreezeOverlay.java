@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui.overlay;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.RandomIntGenerator;
 import io.github.sst.remake.util.math.anim.AnimationManager;
@@ -12,7 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrainFreezeOverlay extends AnimatedIconPanel implements IMinecraft {
+public class BrainFreezeOverlay extends Widget implements IMinecraft {
     private final List<ParticleEffect> particles = new ArrayList<>();
     private final AnimationManager animationManager = new AnimationManager();
     public RandomIntGenerator random = new RandomIntGenerator();

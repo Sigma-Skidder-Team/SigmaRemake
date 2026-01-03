@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.alert;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
 
-public class LoadingIndicator extends AnimatedIconPanel {
+public class LoadingIndicator extends Widget {
     private static String[] field20736;
     public TimerUtils field20769 = new TimerUtils();
     public float field20770 = 0.0F;

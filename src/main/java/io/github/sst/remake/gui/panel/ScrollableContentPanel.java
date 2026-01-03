@@ -8,7 +8,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.ScissorUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class ScrollableContentPanel extends AnimatedIconPanel {
+public class ScrollableContentPanel extends Widget {
     private boolean field21201;
     private boolean field21202;
     private boolean field21203 = false;

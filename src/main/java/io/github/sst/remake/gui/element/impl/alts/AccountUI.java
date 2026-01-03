@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.alts;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.alert.LoadingIndicator;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -13,7 +13,7 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class AccountUI extends AnimatedIconPanel {
+public class AccountUI extends Widget {
     public Account selectedAccount;
     private final LoadingIndicator loadingIndicator;
     private boolean refreshing = false;

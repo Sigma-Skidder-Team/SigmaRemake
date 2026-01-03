@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -170,7 +170,7 @@ public class Alert extends InteractiveWidget {
         HashMap var3 = new HashMap();
 
         for (CustomGuiScreen var5 : this.screen.getChildren()) {
-            AnimatedIconPanel var6 = (AnimatedIconPanel) var5;
+            Widget var6 = (Widget) var5;
             if (var6 instanceof TextField) {
                 TextField var7 = (TextField) var6;
                 var3.put(var7.getPlaceholder(), var7.getText());

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -10,7 +10,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class Text extends AnimatedIconPanel {
+public class Text extends Widget {
     public static ColorHelper defaultColorHelper = new ColorHelper(
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),

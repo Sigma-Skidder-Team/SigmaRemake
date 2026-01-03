@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.alts;
 
 import io.github.sst.remake.alt.AccountBan;
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.EasingFunctions;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -28,7 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Date;
 
-public class BanElement extends AnimatedIconPanel {
+public class BanElement extends Widget {
     public AccountBan ban = null;
     public ServerInfo info = null;
     public Texture servericon = null;

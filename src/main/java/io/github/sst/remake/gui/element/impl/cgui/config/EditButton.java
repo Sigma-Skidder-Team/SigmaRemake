@@ -1,13 +1,13 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class EditButton extends AnimatedIconPanel {
+public class EditButton extends Widget {
     public final int field20768;
 
     public EditButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {

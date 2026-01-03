@@ -2,14 +2,14 @@ package io.github.sst.remake.gui.element;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.interfaces.IHandler;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InteractiveWidget extends AnimatedIconPanel {
+public class InteractiveWidget extends Widget {
     private final List<IHandler> iHandlers = new ArrayList<IHandler>();
 
     public InteractiveWidget(CustomGuiScreen screen, String typeThingIdk, int x, int y, int width, int height, boolean var7) {

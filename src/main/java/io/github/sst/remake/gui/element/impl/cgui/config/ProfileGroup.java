@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.cgui.config;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.TextField;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -16,7 +16,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class ProfileGroup extends AnimatedIconPanel {
+public class ProfileGroup extends Widget {
     public CustomGuiScreen editButtons;
     public AnimationUtils hoverAnimation;
     public AnimationUtils slideAnimation;

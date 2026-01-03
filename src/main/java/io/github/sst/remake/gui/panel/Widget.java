@@ -11,7 +11,7 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEventHandler, IMinecraft {
+public class Widget extends CustomGuiScreen implements INestedGuiEventHandler, IMinecraft {
     public boolean field20876;
     public boolean field20877;
     public int mouseX;
@@ -28,22 +28,22 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
     public int field20889 = 2;
     private final List<IDragListener> dragListeners = new ArrayList<>();
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, boolean var7) {
+    public Widget(CustomGuiScreen screen, String name, int x, int y, int width, int height, boolean var7) {
         super(screen, name, x, y, width, height);
         this.field20876 = var7;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, boolean var8) {
+    public Widget(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, boolean var8) {
         super(screen, name, x, y, width, height, colorHelper);
         this.field20876 = var8;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String text, boolean var9) {
+    public Widget(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String text, boolean var9) {
         super(screen, name, x, y, width, height, colorHelper, text);
         this.field20876 = var9;
     }
 
-    public AnimatedIconPanel(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean var10) {
+    public Widget(CustomGuiScreen screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean var10) {
         super(screen, name, x, y, width, height, colorHelper, var8, font);
         this.field20876 = var10;
     }
@@ -176,7 +176,7 @@ public class AnimatedIconPanel extends CustomGuiScreen implements INestedGuiEven
         }
     }
 
-    public AnimatedIconPanel addDragListener(IDragListener listener) {
+    public Widget addDragListener(IDragListener listener) {
         this.dragListeners.add(listener);
         return this;
     }

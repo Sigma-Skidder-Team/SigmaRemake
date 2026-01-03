@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.gui.CustomGuiScreen;
 import io.github.sst.remake.gui.element.impl.scroll.VerticalScrollBarButton;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.gui.interfaces.IOffsetProvider;
 import io.github.sst.remake.util.io.GsonUtils;
@@ -13,7 +13,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class VerticalScrollBar extends AnimatedIconPanel implements IOffsetProvider {
+public class VerticalScrollBar extends Widget implements IOffsetProvider {
     public int offset;
     public float field20794;
     public final VerticalScrollBarButton field20796;

@@ -1,14 +1,14 @@
 package io.github.sst.remake.gui.element.impl.scroll;
 
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class VerticalScrollBarButton extends AnimatedIconPanel {
+public class VerticalScrollBarButton extends Widget {
     private final ScrollableContentPanel field20780;
     public final VerticalScrollBar field20781;
 

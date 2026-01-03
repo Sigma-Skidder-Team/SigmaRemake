@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
 import io.github.sst.remake.gui.CustomGuiScreen;
-import io.github.sst.remake.gui.panel.AnimatedIconPanel;
+import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryPanel extends AnimatedIconPanel {
+public class CategoryPanel extends Widget {
     public final Category category;
     public ModListView modListView;
     public float field21195;
