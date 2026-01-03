@@ -11,18 +11,18 @@ import java.awt.*;
 public class ColorPicker extends InteractiveWidget {
     public int field20618;
     public boolean field20619;
-    public ColorPickerBlock field20620;
-    public ColorPickerSlider field20621;
-    public ColorPickerBubble field20622;
+    public SaturationBrightnessPanel field20620;
+    public HueSlider field20621;
+    public ColorPreview field20622;
 
     public ColorPicker(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7, boolean var8) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field20618 = var7;
         Color var11 = new Color(var7);
         float[] var12 = Color.RGBtoHSB(var11.getRed(), var11.getGreen(), var11.getBlue(), null);
-        this.addToList(this.field20620 = new ColorPickerBlock(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
-        this.addToList(this.field20621 = new ColorPickerSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
-        this.addToList(this.field20622 = new ColorPickerBubble(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
+        this.addToList(this.field20620 = new SaturationBrightnessPanel(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
+        this.addToList(this.field20621 = new HueSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
+        this.addToList(this.field20622 = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
         this.field20620.onPress(var1x -> this.method13050());
         this.field20621.onPress(var1x -> this.method13050());
         this.field20622.onClick((var1x, var2x) -> this.method13045(!this.method13047()));

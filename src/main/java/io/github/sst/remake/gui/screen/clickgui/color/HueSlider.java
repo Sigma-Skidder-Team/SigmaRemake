@@ -8,12 +8,12 @@ import io.github.sst.remake.util.render.RenderUtils;
 
 import java.awt.*;
 
-public class ColorPickerSlider extends InteractiveWidget {
+public class HueSlider extends InteractiveWidget {
     private static String[] field20602;
     private float field20679;
     public boolean field20680 = false;
 
-    public ColorPickerSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, float var7) {
+    public HueSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, float var7) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field20679 = var7;
     }

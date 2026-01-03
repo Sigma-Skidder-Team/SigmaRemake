@@ -6,10 +6,10 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class ColorPickerBubble extends InteractiveWidget {
+public class ColorPreview extends InteractiveWidget {
     public int field21365;
 
-    public ColorPickerBubble(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7) {
+    public ColorPreview(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field21365 = var7;
     }
