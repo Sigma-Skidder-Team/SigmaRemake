@@ -5,12 +5,12 @@ import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.screen.holder.*;
 import io.github.sst.remake.gui.screen.keyboard.KeyboardScreen;
-import io.github.sst.remake.gui.screen.maps.JelloMapsScreen;
+import io.github.sst.remake.gui.screen.maps.MapsScreen;
 import io.github.sst.remake.gui.screen.options.CreditsScreen;
 import io.github.sst.remake.gui.screen.options.OptionsScreen;
-import io.github.sst.remake.gui.screen.options.OptionsButtonScreen;
+import io.github.sst.remake.gui.screen.options.InGameOptionsScreen;
 import io.github.sst.remake.gui.screen.mainmenu.MainMenuScreen;
-import io.github.sst.remake.gui.screen.spotlight.JelloSpotlightScreen;
+import io.github.sst.remake.gui.screen.spotlight.SpotlightScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -30,9 +30,9 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(KeybindsHolder.class, KeyboardScreen.class);
         replacementScreens.put(OptionsHolder.class, OptionsScreen.class);
         replacementScreens.put(CreditsHolder.class, CreditsScreen.class);
-        replacementScreens.put(SpotlightHolder.class, JelloSpotlightScreen.class);
+        replacementScreens.put(SpotlightHolder.class, SpotlightScreen.class);
         replacementScreens.put(ClickGuiHolder.class, ClickGuiScreen.class);
-        replacementScreens.put(MapsHolder.class, JelloMapsScreen.class);
+        replacementScreens.put(MapsHolder.class, MapsScreen.class);
 
         // Sigma Screen -> Screen Name
         screenToScreenName.put(KeybindsHolder.class, "Keybind Manager");
@@ -87,9 +87,9 @@ public class ScreenUtils implements IMinecraft {
     }
 
     public static boolean isValid(net.minecraft.client.gui.screen.Screen screen) {
-        if (screen instanceof GameMenuScreen && !(screen instanceof OptionsButtonScreen)) {
+        if (screen instanceof GameMenuScreen && !(screen instanceof InGameOptionsScreen)) {
             client.currentScreen = null;
-            client.openScreen(new OptionsButtonScreen());
+            client.openScreen(new InGameOptionsScreen());
             return true;
         } else {
             return false;

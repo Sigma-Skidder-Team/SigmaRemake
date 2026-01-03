@@ -8,7 +8,7 @@ import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.screen.clickgui.block.BlockPicker;
 import io.github.sst.remake.gui.screen.clickgui.color.ColorPicker;
-import io.github.sst.remake.gui.screen.clickgui.slider.Slider;
+import io.github.sst.remake.gui.screen.clickgui.slider.SettingSlider;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
@@ -61,24 +61,24 @@ public class ModuleSettingsList extends ScrollablePanel {
                 Text var36 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 24, Text.defaultColorHelper, setting.name);
                 this.field21223.put(var36, setting);
                 SliderSetting numbaSetting = (SliderSetting) setting;
-                Slider var47 = new Slider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, var4 + 6, 126, 24);
+                SettingSlider var47 = new SettingSlider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, var4 + 6, 126, 24);
                 var47.method13137().setFont(FontUtils.HELVETICA_LIGHT_14);
                 var47.setText(Float.toString((Float) setting.value));
-                var47.method13140(Slider.method13134(numbaSetting.min, numbaSetting.max, numbaSetting.value), false);
+                var47.method13140(SettingSlider.method13134(numbaSetting.min, numbaSetting.max, numbaSetting.value), false);
                 var47.method13143(-1.0F);
                 int var13 = numbaSetting.getPlaces();
                 numbaSetting.addListener(
                         var3x -> {
-                            if (Slider.method13135(var47.method13138(), numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13)
+                            if (SettingSlider.method13135(var47.method13138(), numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13)
                                     != (Float) var3x.value) {
                                 var47.setText(Float.toString((Float) var3x.value));
-                                var47.method13140(Slider.method13134(numbaSetting.min, numbaSetting.max, var3x.value), false);
+                                var47.method13140(SettingSlider.method13134(numbaSetting.min, numbaSetting.max, var3x.value), false);
                             }
                         }
                 );
                 var47.onPress(var4x -> {
-                    float var7 = ((Slider) var4x).method13138();
-                    float var8x = Slider.method13135(var7, numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13);
+                    float var7 = ((SettingSlider) var4x).method13138();
+                    float var8x = SettingSlider.method13135(var7, numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13);
                     if (var8x != (Float) setting.value) {
                         var47.setText(Float.toString(var8x));
                         setting.setValue(var8x);
