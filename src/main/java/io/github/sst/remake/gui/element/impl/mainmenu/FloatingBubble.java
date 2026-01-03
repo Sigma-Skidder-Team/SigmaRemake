@@ -1,13 +1,13 @@
 package io.github.sst.remake.gui.element.impl.mainmenu;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.impl.JelloMenu;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
+public class FloatingBubble extends GuiComponent implements IMinecraft {
     private final JelloMenu parent;
 
     public float velocityX;

@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.render;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -19,7 +19,7 @@ public class ScissorUtils {
         return Client.INSTANCE.screenManager.scaleFactor;
     }
 
-    public static void startScissor(CustomGuiScreen screen) {
+    public static void startScissor(GuiComponent screen) {
         startScissor(screen.getX(), screen.getY(), screen.getWidth() + screen.getX(), screen.getHeight() + screen.getY(), true);
     }
 

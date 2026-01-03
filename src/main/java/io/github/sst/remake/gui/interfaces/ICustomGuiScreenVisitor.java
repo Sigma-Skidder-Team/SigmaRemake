@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.interfaces;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 
 public interface ICustomGuiScreenVisitor {
-    void visit(CustomGuiScreen screen);
+    void visit(GuiComponent screen);
 }

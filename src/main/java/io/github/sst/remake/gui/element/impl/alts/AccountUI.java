@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.alts;
 
 import io.github.sst.remake.alt.Account;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.alert.LoadingIndicator;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
@@ -25,7 +25,7 @@ public class AccountUI extends Widget {
     private int lastErrorState = 0;
     private int color = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 20.0F);
 
-    public AccountUI(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Account var7) {
+    public AccountUI(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Account var7) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.selectedAccount = var7;
         this.addToList(this.loadingIndicator = new LoadingIndicator(this, "loading", var5 - 50, 35, 30, 30));

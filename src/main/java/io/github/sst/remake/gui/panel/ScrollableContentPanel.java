@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.panel;
 
 import io.github.sst.remake.gui.ContentSize;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
 import io.github.sst.remake.gui.interfaces.IWidthSetter;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -12,34 +12,34 @@ public class ScrollableContentPanel extends Widget {
     private boolean field21201;
     private boolean field21202;
     private boolean field21203 = false;
-    public CustomGuiScreen buttonList;
+    public GuiComponent buttonList;
     public VerticalScrollBar scrollBar;
     private boolean field21206 = true;
     public int field21207 = 35;
     public boolean field21208 = false;
 
-    public ScrollableContentPanel(CustomGuiScreen var1, String name, int var3, int var4, int var5, int var6) {
+    public ScrollableContentPanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6) {
         super(var1, name, var3, var4, var5, var6, false);
         this.method13511();
     }
 
-    public ScrollableContentPanel(CustomGuiScreen var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7) {
+    public ScrollableContentPanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7) {
         super(var1, name, var3, var4, var5, var6, var7, false);
         this.method13511();
     }
 
-    public ScrollableContentPanel(CustomGuiScreen var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
+    public ScrollableContentPanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
         super(var1, name, var3, var4, var5, var6, var7, var8, false);
         this.method13511();
     }
 
-    public ScrollableContentPanel(CustomGuiScreen var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
+    public ScrollableContentPanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
         super(var1, name, var3, var4, var5, var6, var7, var8, var9, false);
         this.method13511();
     }
 
     private void method13511() {
-        this.getChildren().add(this.buttonList = new CustomGuiScreen(this, "content", 0, 0, this.width, this.height));
+        this.getChildren().add(this.buttonList = new GuiComponent(this, "content", 0, 0, this.width, this.height));
         this.buttonList.addWidthSetter(new ContentSize());
         this.getChildren().add(this.scrollBar = new VerticalScrollBar(this, 11));
         this.scrollBar.setReAddChildren(true);
@@ -63,7 +63,7 @@ public class ScrollableContentPanel extends Widget {
             super.updatePanelDimensions(mouseX, mouseY);
             this.buttonList.setY(-1 * this.scrollBar.getOffset());
 
-            for (CustomGuiScreen var6 : this.getButton().getChildren()) {
+            for (GuiComponent var6 : this.getButton().getChildren()) {
                 for (IWidthSetter var8 : var6.getWidthSetters()) {
                     var8.setWidth(var6, this);
                 }
@@ -95,12 +95,12 @@ public class ScrollableContentPanel extends Widget {
     }
 
     @Override
-    public void addToList(CustomGuiScreen var1) {
+    public void addToList(GuiComponent var1) {
         this.buttonList.addToList(var1);
     }
 
     @Override
-    public boolean hasChild(CustomGuiScreen child) {
+    public boolean hasChild(GuiComponent child) {
         return this.buttonList.hasChild(child);
     }
 
@@ -109,7 +109,7 @@ public class ScrollableContentPanel extends Widget {
         return this.buttonList.hasChildWithName(var1);
     }
 
-    public CustomGuiScreen getButton() {
+    public GuiComponent getButton() {
         return this.buttonList;
     }
 

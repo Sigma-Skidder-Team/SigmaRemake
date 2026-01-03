@@ -4,11 +4,11 @@ import io.github.sst.remake.gui.interfaces.IWidthSetter;
 
 public class ContentSize implements IWidthSetter {
     @Override
-    public void setWidth(CustomGuiScreen of, CustomGuiScreen to) {
+    public void setWidth(GuiComponent of, GuiComponent to) {
         int width = 0;
         int height = 0;
 
-        for (CustomGuiScreen child : of.getChildren()) {
+        for (GuiComponent child : of.getChildren()) {
             if (child.getX() + child.getWidth() > width) {
                 width = child.getX() + child.getWidth();
             }

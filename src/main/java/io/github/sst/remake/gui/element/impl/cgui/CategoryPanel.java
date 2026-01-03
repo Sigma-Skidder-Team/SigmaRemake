@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
@@ -24,7 +24,7 @@ public class CategoryPanel extends Widget {
     private int field21199;
     private final List<Class9476> field21200 = new ArrayList<>();
 
-    public CategoryPanel(CustomGuiScreen var1, int var3, int var4, Category category) {
+    public CategoryPanel(GuiComponent var1, int var3, int var4, Category category) {
         super(var1, category.toString(), var3, var4, 200, 350, true);
         this.setWidth(200);
         this.setHeight(350);

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextField;
@@ -38,7 +38,7 @@ public class ModsPanel extends InteractiveWidget {
     public boolean field21311 = false;
     private final List<BindableActionSelectedListener> bindableActionSelectedListeners = new ArrayList<>();
 
-    public ModsPanel(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public ModsPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field21305 = 500;
         this.field21306 = 600;
@@ -124,9 +124,9 @@ public class ModsPanel extends InteractiveWidget {
         Map<String, Button> var7 = new TreeMap();
         List<Button> var8 = new ArrayList();
 
-        for (CustomGuiScreen var10 : this.field21308.getChildren()) {
+        for (GuiComponent var10 : this.field21308.getChildren()) {
             if (!(var10 instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen var12 : var10.getChildren()) {
+                for (GuiComponent var12 : var10.getChildren()) {
                     if (var12 instanceof Button) {
                         Button var13 = (Button) var12;
                         boolean var14 = var13.getHeight() != 40;

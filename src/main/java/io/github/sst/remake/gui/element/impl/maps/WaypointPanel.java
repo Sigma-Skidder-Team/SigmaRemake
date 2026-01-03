@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextButton;
@@ -32,7 +32,7 @@ public class WaypointPanel extends InteractiveWidget {
     public BadgeSelect field20730;
     private final List<Class9073> field20731 = new ArrayList<>();
 
-    public WaypointPanel(CustomGuiScreen var1, String var2, int var3, int var4, Vec3i var5) {
+    public WaypointPanel(GuiComponent var1, String var2, int var3, int var4, Vec3i var5) {
         super(var1, var2, var3 - 107, var4 + 10, 214, 170, ColorHelper.DEFAULT_COLOR, "", false);
         this.field20727 = var5;
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {

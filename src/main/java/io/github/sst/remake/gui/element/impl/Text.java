@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -21,15 +21,15 @@ public class Text extends Widget {
     );
     public boolean shadow = false;
 
-    public Text(CustomGuiScreen screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8) {
+    public Text(GuiComponent screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8) {
         super(screen, id, var3, var4, var5, var6, colorHelper, var8, false);
     }
 
-    public Text(CustomGuiScreen screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8, TrueTypeFont font) {
+    public Text(GuiComponent screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8, TrueTypeFont font) {
         super(screen, id, var3, var4, var5, var6, colorHelper, var8, font, false);
     }
 
-    public Text(CustomGuiScreen screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean shadow) {
+    public Text(GuiComponent screen, String id, int var3, int var4, int var5, int var6, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean shadow) {
         super(screen, id, var3, var4, var5, var6, colorHelper, var8, font, false);
         this.shadow = shadow;
     }

@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.slider;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -25,22 +25,22 @@ public class Slider extends InteractiveWidget {
         return (float) Math.round((double) var8 * Math.pow(10.0, var4)) / (float) Math.pow(10.0, var4);
     }
 
-    public Slider(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.method13136();
     }
 
-    public Slider(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
+    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
         super(var1, var2, var3, var4, var5, var6, var7, false);
         this.method13136();
     }
 
-    public Slider(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
+    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, false);
         this.method13136();
     }
 
-    public Slider(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
+    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9, false);
         this.method13136();
     }

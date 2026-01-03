@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.keyboard.BindableAction;
 import io.github.sst.remake.gui.element.impl.keyboard.Keyboard;
@@ -40,7 +40,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
                         var2 -> {
                             boolean popOver = false;
 
-                            for (CustomGuiScreen child : this.getChildren()) {
+                            for (GuiComponent child : this.getChildren()) {
                                 if (child instanceof PopOver) {
                                     popOver = true;
                                     break;
@@ -87,7 +87,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
 
     private void method13330() {
         this.addRunnable(() -> {
-            for (CustomGuiScreen child : this.getChildren()) {
+            for (GuiComponent child : this.getChildren()) {
                 if (child instanceof PopOver) {
                     PopOver pop = (PopOver) child;
                     pop.method13712();
@@ -112,7 +112,7 @@ public class JelloKeyboard extends Screen implements IMinecraft {
 
     public void method13332() {
         this.addRunnable(() -> {
-            for (CustomGuiScreen child : this.getChildren()) {
+            for (GuiComponent child : this.getChildren()) {
                 if (child instanceof PopOver) {
                     PopOver pop = (PopOver) child;
                     pop.method13712();

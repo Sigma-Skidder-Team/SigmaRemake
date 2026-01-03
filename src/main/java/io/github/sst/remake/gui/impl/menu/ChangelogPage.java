@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.changelog.Change;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.http.NetUtils;
@@ -24,12 +24,12 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class ChangelogPage extends CustomGuiScreen {
+public class ChangelogPage extends GuiComponent {
     public AnimationUtils animation = new AnimationUtils(380, 200, AnimationUtils.Direction.FORWARDS);
     public ScrollableContentPanel scrollPanel;
     private static JsonArray cachedChangelog;
 
-    public ChangelogPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public ChangelogPage(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
         this.scrollPanel = new ScrollableContentPanel(this, "scroll", 100, 200, var5 - 200, var6 - 200);
@@ -67,7 +67,7 @@ public class ChangelogPage extends CustomGuiScreen {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.scrollPanel != null) {
             if (this.isHovered() && this.isSelfVisible()) {
-                for (CustomGuiScreen var9 : this.scrollPanel.getButton().getChildren()) {
+                for (GuiComponent var9 : this.scrollPanel.getButton().getChildren()) {
                     Change var10 = (Change) var9;
                     var10.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
                     if ((double) var10.animation2.calcPercent() < 0.5) {
@@ -75,7 +75,7 @@ public class ChangelogPage extends CustomGuiScreen {
                     }
                 }
             } else {
-                for (CustomGuiScreen var6 : this.scrollPanel.getButton().getChildren()) {
+                for (GuiComponent var6 : this.scrollPanel.getButton().getChildren()) {
                     Change var7 = (Change) var6;
                     var7.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
                 }

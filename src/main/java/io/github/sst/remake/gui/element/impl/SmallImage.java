@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -14,22 +14,22 @@ public class SmallImage extends Button {
     public static final ColorHelper color = new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.1F));
     public Texture texture;
 
-    public SmallImage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
+    public SmallImage(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
         super(var1, var2, var3, var4, var5, var6, var8, var9, var10);
         this.texture = var7;
     }
 
-    public SmallImage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture texture, ColorHelper var8, String var9) {
+    public SmallImage(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture texture, ColorHelper var8, String var9) {
         super(var1, var2, var3, var4, var5, var6, var8, var9);
         this.texture = texture;
     }
 
-    public SmallImage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8) {
+    public SmallImage(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8) {
         super(var1, var2, var3, var4, var5, var6, var8);
         this.texture = var7;
     }
 
-    public SmallImage(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, Texture texture) {
+    public SmallImage(GuiComponent screen, String iconName, int x, int y, int width, int height, Texture texture) {
         super(screen, iconName, x, y, width, height, color);
         this.texture = texture;
     }

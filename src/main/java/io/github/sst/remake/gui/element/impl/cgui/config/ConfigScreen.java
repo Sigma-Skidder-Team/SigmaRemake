@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.cgui.config;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloScreen;
@@ -26,7 +26,7 @@ public class ConfigScreen extends InteractiveWidget {
     public ConfigGroup configGroup;
     private final List<ProfileGroup> profileGroups = new ArrayList<>();
 
-    public ConfigScreen(CustomGuiScreen parent, String name, int x, int y) {
+    public ConfigScreen(GuiComponent parent, String name, int x, int y) {
         super(parent, name, x - 250, y - 500, 250, 500, ColorHelper.DEFAULT_COLOR, false);
         this.openAnimation = new AnimationUtils(300, 100);
         this.setReAddChildren(true);

@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -19,7 +19,7 @@ public class BindableActionEntry extends InteractiveWidget {
     public Date anotherAnimationDate;
     public DeleteButton deleteButton;
 
-    public BindableActionEntry(CustomGuiScreen parent, String name, int x, int y, int width, int height, BindableAction bindableAction, int entryIndex) {
+    public BindableActionEntry(GuiComponent parent, String name, int x, int y, int width, int height, BindableAction bindableAction, int entryIndex) {
         super(parent, name, x, y, width, height, false);
         this.addToList(this.deleteButton = new DeleteButton(this, "delete", 200, 20, 20, 20));
         this.deleteButton.onClick((element, button) -> {

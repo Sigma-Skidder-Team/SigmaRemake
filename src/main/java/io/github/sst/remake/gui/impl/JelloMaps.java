@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.maps.MapPanel;
 import io.github.sst.remake.gui.element.impl.maps.WaypointPanel;
@@ -45,7 +45,7 @@ public class JelloMaps extends Screen implements IMinecraft {
     }
 
     private void closeWaypointPanel() {
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child instanceof WaypointPanel) {
                 this.addRunnable(() -> {
                     this.removeChildren(child);

@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.color;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -13,7 +13,7 @@ public class ColorPickerSlider extends InteractiveWidget {
     private float field20679;
     public boolean field20680 = false;
 
-    public ColorPickerSlider(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, float var7) {
+    public ColorPickerSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, float var7) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field20679 = var7;
     }

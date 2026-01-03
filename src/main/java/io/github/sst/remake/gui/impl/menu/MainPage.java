@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl.menu;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.Text;
@@ -24,7 +24,7 @@ import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 
-public class MainPage extends CustomGuiScreen implements IMinecraft {
+public class MainPage extends GuiComponent implements IMinecraft {
     private final Button singleplayerButton;
     private final Button multiplayerButton;
     private final Button realmsButton;
@@ -34,7 +34,7 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
     private final TextButton changelogButton;
     private final TextButton quitButton;
 
-    public MainPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public MainPage(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
 

@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.mainmenu.FloatingBubble;
 import io.github.sst.remake.gui.impl.menu.MainPage;
@@ -86,7 +86,7 @@ public class JelloMenu extends Screen implements IMinecraft {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        for (CustomGuiScreen var6 : this.bubbles) {
+        for (GuiComponent var6 : this.bubbles) {
             var6.updatePanelDimensions(mouseX, mouseY);
         }
 
@@ -151,7 +151,7 @@ public class JelloMenu extends Screen implements IMinecraft {
                     Resources.middlePNG
             );
 
-            for (CustomGuiScreen bubble : this.bubbles) {
+            for (GuiComponent bubble : this.bubbles) {
                 GL11.glPushMatrix();
                 bubble.draw(partialTicks);
                 GL11.glPopMatrix();
@@ -184,7 +184,7 @@ public class JelloMenu extends Screen implements IMinecraft {
             );
 
 
-            for (CustomGuiScreen object : this.getChildren()) {
+            for (GuiComponent object : this.getChildren()) {
                 if (object.isSelfVisible()) {
                     GL11.glPushMatrix();
                     if (object instanceof ChangelogPage) {

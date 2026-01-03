@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -12,19 +12,19 @@ public class Button extends InteractiveWidget {
     private int field20585 = 0;
     public int field20586 = 0;
 
-    public Button(CustomGuiScreen screen, String iconName, int x, int y, int width, int height) {
+    public Button(GuiComponent screen, String iconName, int x, int y, int width, int height) {
         super(screen, iconName, x, y, width, height, false);
     }
 
-    public Button(CustomGuiScreen screen, String iconName, int x, int y, int width, int var6, ColorHelper var7) {
+    public Button(GuiComponent screen, String iconName, int x, int y, int width, int var6, ColorHelper var7) {
         super(screen, iconName, x, y, width, var6, var7, false);
     }
 
-    public Button(CustomGuiScreen screen, String iconName, int x, int y, int width, int var6, ColorHelper var7, String text) {
+    public Button(GuiComponent screen, String iconName, int x, int y, int width, int var6, ColorHelper var7, String text) {
         super(screen, iconName, x, y, width, var6, var7, text, false);
     }
 
-    public Button(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, ColorHelper var7, String var8, TrueTypeFont font) {
+    public Button(GuiComponent screen, String iconName, int x, int y, int width, int height, ColorHelper var7, String var8, TrueTypeFont font) {
         super(screen, iconName, x, y, width, height, var7, var8, font, false);
     }
 

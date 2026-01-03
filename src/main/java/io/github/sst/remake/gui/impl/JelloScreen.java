@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.impl;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.SmallImage;
 import io.github.sst.remake.gui.element.impl.cgui.SettingGroup;
@@ -230,7 +230,7 @@ public class JelloScreen extends Screen implements IMinecraft {
             );
         }
 
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             float x = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2) * (1.0F - alphaFactor) * 0.5F;
             float y = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2) * (1.0F - alphaFactor) * 0.5F;
             child.setTranslate((int) x, (int) y);

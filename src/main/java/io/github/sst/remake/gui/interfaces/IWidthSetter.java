@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.interfaces;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 
 public interface IWidthSetter {
-    void setWidth(CustomGuiScreen forScreen, CustomGuiScreen fromWidthOfThisScreen);
+    void setWidth(GuiComponent forScreen, GuiComponent fromWidthOfThisScreen);
 }

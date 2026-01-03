@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.impl.menu;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloOptions;
@@ -16,8 +16,8 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.text.LiteralText;
 
-public class OptionPage extends CustomGuiScreen {
-    public OptionPage(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+public class OptionPage extends GuiComponent {
+    public OptionPage(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, height);
         this.setListening(false);
         ColorHelper color = ColorHelper.DEFAULT_COLOR.clone();

@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.element.impl.alts;
 
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.alt.AccountBan;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -20,7 +20,7 @@ public class AccountElement extends Widget {
     private final List<BanElement> bans = new ArrayList<>();
     private float field20815 = 0.0F;
 
-    public AccountElement(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public AccountElement(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
     }
 

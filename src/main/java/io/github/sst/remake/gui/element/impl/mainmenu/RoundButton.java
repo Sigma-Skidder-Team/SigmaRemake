@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.mainmenu;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.SmallImage;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.BufferUtils;
@@ -17,19 +17,19 @@ public class RoundButton extends SmallImage {
     public boolean field20577 = false;
     public AnimationUtils field20578 = new AnimationUtils(160, 140, AnimationUtils.Direction.FORWARDS);
 
-    public RoundButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
+    public RoundButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10);
     }
 
-    public RoundButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9) {
+    public RoundButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9);
     }
 
-    public RoundButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8) {
+    public RoundButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8) {
         super(var1, var2, var3, var4, var5, var6, var7, var8);
     }
 
-    public RoundButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Texture var7) {
+    public RoundButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7) {
         super(var1, var2, var3, var4, var5, var6, var7, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.LIGHT_GREYISH_BLUE.getColor()));
     }
 

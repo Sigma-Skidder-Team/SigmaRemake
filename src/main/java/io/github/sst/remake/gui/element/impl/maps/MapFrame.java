@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.WaypointUtils;
@@ -49,7 +49,7 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
     private volatile MapTextureData nextMapTextureData;
     private volatile boolean isGeneratingTexture = false;
 
-    public MapFrame(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public MapFrame(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         int var9 = 90;
         int var10 = 40;

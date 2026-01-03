@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
@@ -43,28 +43,28 @@ public class TextField extends Widget implements IMinecraft {
     private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
     private boolean roundedThingy = true;
 
-    public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, field20741, "", false);
         this.timer.start();
     }
 
-    public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
+    public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
         super(var1, var2, var3, var4, var5, var6, var7, "", false);
         this.timer.start();
     }
 
-    public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
+    public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, false);
         this.timer.start();
     }
 
-    public TextField(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, String placeholder) {
+    public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, String placeholder) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, FontUtils.HELVETICA_LIGHT_25, false);
         this.placeholder = placeholder;
         this.timer.start();
     }
 
-    public TextField(CustomGuiScreen screen, String id, int x, int y, int width, int height, ColorHelper color, String text, String placeholder, TrueTypeFont _font) {
+    public TextField(GuiComponent screen, String id, int x, int y, int width, int height, ColorHelper color, String text, String placeholder, TrueTypeFont _font) {
         super(screen, id, x, y, width, height, color, text, false);
         this.placeholder = placeholder;
         this.timer.start();

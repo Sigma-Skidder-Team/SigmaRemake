@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -22,7 +22,7 @@ public class SettingGroup extends InteractiveWidget {
     public final Module module;
     public boolean field20671 = false;
 
-    public SettingGroup(CustomGuiScreen var1, String var2, int x, int y, int width, int height, Module var7) {
+    public SettingGroup(GuiComponent var1, String var2, int x, int y, int width, int height, Module var7) {
         super(var1, var2, x, y, width, height, false);
         this.settingWidth = 500;
         this.settingHeight = (int) Math.min(600.0F, (float) height * 0.7F);

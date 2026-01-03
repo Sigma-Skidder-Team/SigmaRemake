@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.drop;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
 
 public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
@@ -16,10 +16,10 @@ public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
         this.verticalGap = verticalGap;
     }
 
-    private CustomGuiScreen findTallestChild(CustomGuiScreen[] children) {
-        CustomGuiScreen tallest = children[0];
+    private GuiComponent findTallestChild(GuiComponent[] children) {
+        GuiComponent tallest = children[0];
 
-        for (CustomGuiScreen child : children) {
+        for (GuiComponent child : children) {
             if (child.getHeight() > tallest.getHeight()) {
                 tallest = child;
             }
@@ -29,24 +29,24 @@ public class GridLayoutVisitor implements ICustomGuiScreenVisitor {
     }
 
     @Override
-    public void visit(CustomGuiScreen container) {
+    public void visit(GuiComponent container) {
         if (container.getChildren().size() > 0) {
             int i = 0;
 
             while (i < container.getChildren().size()) {
-                CustomGuiScreen current = container.getChildren().get(i);
+                GuiComponent current = container.getChildren().get(i);
                 if (i > 0 && i % this.columns == 0) {
-                    CustomGuiScreen[] previousRow = new CustomGuiScreen[this.columns];
+                    GuiComponent[] previousRow = new GuiComponent[this.columns];
 
                     for (int j = 0; j < this.columns; j++) {
                         previousRow[j] = container.getChildren().get(i - this.columns + j);
                     }
 
-                    CustomGuiScreen tallestInPreviousRow = this.findTallestChild(previousRow);
+                    GuiComponent tallestInPreviousRow = this.findTallestChild(previousRow);
                     current.addWidthSetter((child, parent) -> child.setY(tallestInPreviousRow.getY() + child.getHeight() + this.verticalGap));
                 }
 
-                CustomGuiScreen[] currentRow = new CustomGuiScreen[this.columns];
+                GuiComponent[] currentRow = new GuiComponent[this.columns];
                 currentRow[0] = current;
 
                 for (int j = 1; j < this.columns; j++) {

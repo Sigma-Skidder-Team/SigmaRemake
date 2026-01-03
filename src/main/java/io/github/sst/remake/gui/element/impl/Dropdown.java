@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.element.impl.drop.Sub;
@@ -27,7 +27,7 @@ public class Dropdown extends InteractiveWidget {
     private final AnimationUtils animation = new AnimationUtils(220, 220);
     private final Map<Integer, Sub> field21331 = new HashMap<Integer, Sub>();
 
-    public Dropdown(CustomGuiScreen var1, String typeThingIdk, int x, int y, int width, int height, List<String> values, int selectedIdx) {
+    public Dropdown(GuiComponent var1, String typeThingIdk, int x, int y, int width, int height, List<String> values, int selectedIdx) {
         super(var1, typeThingIdk, x, y, width, height, field21325, false);
         this.values = values;
         this.selectedIdx = selectedIdx;

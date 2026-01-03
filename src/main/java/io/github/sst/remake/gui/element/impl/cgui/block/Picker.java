@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.block;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.interfaces.ICustomGuiScreenVisitor;
@@ -25,7 +25,7 @@ public class Picker extends InteractiveWidget {
     private final TextField textField;
     private final boolean field20644;
 
-    public Picker(CustomGuiScreen parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
+    public Picker(GuiComponent parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
         super(parent, text, x, y, width, height, false);
         this.field20644 = var7;
         this.addToList(this.textField = new TextField(this, "textbox", 0, 0, width, 32, TextField.field20741, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
@@ -134,14 +134,14 @@ public class Picker extends InteractiveWidget {
         }
 
         @Override
-        public void visit(CustomGuiScreen screen) {
+        public void visit(GuiComponent screen) {
             if (!screen.getChildren().isEmpty()) {
                 int var4 = 0;
                 int var5 = 0;
                 int var6 = 0;
 
                 for (int var7 = 0; var7 < screen.getChildren().size(); var7++) {
-                    CustomGuiScreen var8 = screen.getChildren().get(var7);
+                    GuiComponent var8 = screen.getChildren().get(var7);
                     if (var4 + var8.getWidth() + this.field31149 > screen.getWidth()) {
                         var4 = 0;
                         var5 += var6;

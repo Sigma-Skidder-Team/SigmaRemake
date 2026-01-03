@@ -24,10 +24,10 @@ import java.util.List;
 
 @Setter
 @Getter
-public class CustomGuiScreen implements IGuiEventListener {
+public class GuiComponent implements IGuiEventListener {
     private final List<IWidthSetter> widthSetters = new ArrayList<>();
-    private final List<CustomGuiScreen> childrenToAdd = new ArrayList<>();
-    private final List<CustomGuiScreen> childrenToRemove = new ArrayList<>();
+    private final List<GuiComponent> childrenToAdd = new ArrayList<>();
+    private final List<GuiComponent> childrenToRemove = new ArrayList<>();
     private final List<MouseButtonCallback> mouseButtonCallbacks = new ArrayList<>();
 
     private final List<MouseListener> mouseButtonListeners = new ArrayList<>();
@@ -35,7 +35,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     private final List<CharTypedListener> charTypedListeners = new ArrayList<>();
 
     private final ArrayList<Runnable> runOnDimensionUpdate = new ArrayList<>();
-    private final List<CustomGuiScreen> children = new ArrayList<>();
+    private final List<GuiComponent> children = new ArrayList<>();
     private final List<IRunnable> clickHandlers = new ArrayList<>();
 
     public float scaleX = 1.0F;
@@ -48,7 +48,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public boolean isHoveredInHierarchy;
     public boolean isMouseDownOverComponent;
 
-    private CustomGuiScreen focusedChild;
+    private GuiComponent focusedChild;
     private boolean updatingPanelDimensions;
 
     public String name;
@@ -59,7 +59,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public String text;
     public TrueTypeFont font;
     public ColorHelper textColor;
-    public CustomGuiScreen parent;
+    public GuiComponent parent;
 
     private int mouseX;
     private int mouseY;
@@ -73,23 +73,23 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     public boolean reAddChildren;
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name) {
+    public GuiComponent(GuiComponent parent, String name) {
         this(parent, name, 0, 0, 0, 0);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+    public GuiComponent(GuiComponent parent, String name, int x, int y, int width, int height) {
         this(parent, name, x, y, width, height, ColorHelper.DEFAULT_COLOR);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor) {
+    public GuiComponent(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper textColor) {
         this(parent, name, x, y, width, height, textColor, null);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text) {
+    public GuiComponent(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text) {
         this(parent, name, x, y, width, height, textColor, text, FontUtils.HELVETICA_LIGHT_25);
     }
 
-    public CustomGuiScreen(CustomGuiScreen parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text, TrueTypeFont font) {
+    public GuiComponent(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper textColor, String text, TrueTypeFont font) {
         this.name = name;
         this.parent = parent;
         this.x = x;
@@ -106,7 +106,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     private void reorderChildren() {
-        for (CustomGuiScreen screen : new ArrayList<>(this.children)) {
+        for (GuiComponent screen : new ArrayList<>(this.children)) {
             if (screen.shouldReAddChildren()) {
                 this.children.remove(screen);
                 this.children.add(screen);
@@ -119,8 +119,8 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public CustomGuiScreen getChildByName(String childName) {
-        for (CustomGuiScreen child : this.children) {
+    public GuiComponent getChildByName(String childName) {
+        for (GuiComponent child : this.children) {
             if (child.getName().equals(childName)) {
                 return child;
             }
@@ -149,7 +149,7 @@ public class CustomGuiScreen implements IGuiEventListener {
      * It operates on the class's internal lists and fields.
      */
     private void processChildUpdates() {
-        for (CustomGuiScreen child : this.childrenToRemove) {
+        for (GuiComponent child : this.childrenToRemove) {
             this.children.remove(child);
             if (this.focusedChild == child) {
                 this.focusedChild = null;
@@ -186,7 +186,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         this.updatingPanelDimensions = true;
 
         try {
-            for (CustomGuiScreen iconPanel : this.children) {
+            for (GuiComponent iconPanel : this.children) {
                 iconPanel.updatePanelDimensions(mouseX, mouseY);
             }
         } catch (ConcurrentModificationException e) {
@@ -224,7 +224,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         GL11.glAlphaFunc(519, 0.0F);
         GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
 
-        for (CustomGuiScreen child : this.children) {
+        for (GuiComponent child : this.children) {
             if (child.isSelfVisible()) {
                 GL11.glPushMatrix();
                 child.draw(partialTicks);
@@ -234,7 +234,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public boolean hasFocusedTextField() {
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child instanceof TextField && child.focused) {
                 return true;
             }
@@ -248,7 +248,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public void modifierPressed(int var1) {
-        for (CustomGuiScreen var5 : this.children) {
+        for (GuiComponent var5 : this.children) {
             if (var5.isHovered() && var5.isSelfVisible()) {
                 var5.modifierPressed(var1);
             }
@@ -257,7 +257,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     @Override
     public void charTyped(char typed) {
-        for (CustomGuiScreen var5 : this.children) {
+        for (GuiComponent var5 : this.children) {
             if (var5.isHovered() && var5.isSelfVisible()) {
                 var5.charTyped(typed);
             }
@@ -268,7 +268,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     @Override
     public void keyPressed(int keyCode) {
-        for (CustomGuiScreen child : this.children) {
+        for (GuiComponent child : this.children) {
             if (child.isHovered() && child.isSelfVisible()) {
                 child.keyPressed(keyCode);
             }
@@ -282,7 +282,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         boolean var6 = false;
 
         for (int i = this.children.size() - 1; i >= 0; i--) {
-            CustomGuiScreen var8 = this.children.get(i);
+            GuiComponent var8 = this.children.get(i);
             boolean var9 = var8.getParent() != null
                     && var8.getParent() instanceof ScrollableContentPanel
                     && var8.getParent().isMouseOverComponent(mouseX, mouseY)
@@ -291,7 +291,7 @@ public class CustomGuiScreen implements IGuiEventListener {
             if (var6 || !var8.isHovered() || !var8.isSelfVisible() || !var8.isMouseOverComponent(mouseX, mouseY) && !var9) {
                 var8.setFocused(false);
                 if (var8 != null) {
-                    for (CustomGuiScreen child : var8.getChildren()) {
+                    for (GuiComponent child : var8.getChildren()) {
                         child.setFocused(false);
                     }
                 }
@@ -315,7 +315,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         this.isHoveredInHierarchy = this.isMouseOverComponent(mouseX, mouseY);
 
-        for (CustomGuiScreen child : this.children) {
+        for (GuiComponent child : this.children) {
             if (child.isHovered() && child.isSelfVisible()) {
                 child.onMouseRelease(mouseX, mouseY, mouseButton);
             }
@@ -336,7 +336,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     @Override
     public void onScroll(float scroll) {
-        for (CustomGuiScreen child : this.children) {
+        for (GuiComponent child : this.children) {
             if (child.isHovered() && child.isSelfVisible()) {
                 child.onScroll(scroll);
             }
@@ -353,18 +353,18 @@ public class CustomGuiScreen implements IGuiEventListener {
         boolean isMouseOver = this.isMouseOverComponent(mouseX, mouseY);
         if (isMouseOver && this.parent != null) {
             if (checkChildren) {
-                for (CustomGuiScreen child : this.getChildren()) {
+                for (GuiComponent child : this.getChildren()) {
                     if (child.isSelfVisible() && child.isMouseOverComponent(mouseX, mouseY)) {
                         return false;
                     }
                 }
             }
 
-            CustomGuiScreen current = this;
+            GuiComponent current = this;
 
-            for (CustomGuiScreen parent = this.getParent(); parent != null; parent = parent.getParent()) {
+            for (GuiComponent parent = this.getParent(); parent != null; parent = parent.getParent()) {
                 for (int i = parent.findChild(current) + 1; i < parent.getChildren().size(); i++) {
-                    CustomGuiScreen sibling = parent.getChildren().get(i);
+                    GuiComponent sibling = parent.getChildren().get(i);
                     if (sibling != current && sibling.isSelfVisible() && sibling.isMouseOverComponent(mouseX, mouseY)) {
                         return false;
                     }
@@ -381,9 +381,9 @@ public class CustomGuiScreen implements IGuiEventListener {
         return this.isMouseOverComponentConsideringZOrder(mouseX, mouseY, true);
     }
 
-    public void addToList(CustomGuiScreen child) {
+    public void addToList(GuiComponent child) {
         if (child != null) {
-            for (CustomGuiScreen var5 : this.getChildren()) {
+            for (GuiComponent var5 : this.getChildren()) {
                 if (var5.getName().equals(child.getName())) {
                     return;
                 }
@@ -403,7 +403,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public boolean hasChildWithName(String childName) {
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child.getName().equals(childName)) {
                 return true;
             }
@@ -412,9 +412,9 @@ public class CustomGuiScreen implements IGuiEventListener {
         return false;
     }
 
-    public void queueChildAddition(CustomGuiScreen child) {
+    public void queueChildAddition(GuiComponent child) {
         if (child != null) {
-            for (CustomGuiScreen var5 : this.getChildren()) {
+            for (GuiComponent var5 : this.getChildren()) {
                 if (var5.getName().equals(child.getName())) {
                     throw new RuntimeException("Children with duplicate IDs!");
                 }
@@ -425,9 +425,9 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public void showAlert(CustomGuiScreen alertScreen) {
+    public void showAlert(GuiComponent alertScreen) {
         if (alertScreen != null) {
-            for (CustomGuiScreen var5 : this.getChildren()) {
+            for (GuiComponent var5 : this.getChildren()) {
                 if (var5.getName().equals(alertScreen.getName())) {
                     throw new RuntimeException("Children with duplicate IDs!");
                 }
@@ -442,7 +442,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public void queueChildRemoval(CustomGuiScreen child) {
+    public void queueChildRemoval(GuiComponent child) {
         if (this.updatingPanelDimensions) {
             this.childrenToRemove.add(child);
         } else {
@@ -450,7 +450,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public void removeChildren(CustomGuiScreen child) {
+    public void removeChildren(GuiComponent child) {
         this.children.remove(child);
         if (this.focusedChild != null && this.focusedChild.equals(child)) {
             this.focusedChild = null;
@@ -460,7 +460,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public void removeChildByName(String childName) {
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child.name.equals(childName)) {
                 this.queueChildRemoval(child);
             }
@@ -471,11 +471,11 @@ public class CustomGuiScreen implements IGuiEventListener {
         this.children.clear();
     }
 
-    public boolean hasChild(CustomGuiScreen child) {
+    public boolean hasChild(GuiComponent child) {
         return this.children.contains(child);
     }
 
-    public int findChild(CustomGuiScreen child) {
+    public int findChild(GuiComponent child) {
         return this.children.indexOf(child);
     }
 
@@ -488,7 +488,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public void defocusSiblings() {
-        for (CustomGuiScreen child : this.parent.getChildren()) {
+        for (GuiComponent child : this.parent.getChildren()) {
             if (child == this) {
                 return;
             }
@@ -517,7 +517,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     public final JsonObject toConfig(JsonObject base) {
         JsonArray children = new JsonArray();
 
-        for (CustomGuiScreen child : this.children) {
+        for (GuiComponent child : this.children) {
             if (child.isListening()) {
                 JsonObject var7 = child.toConfigWithExtra(new JsonObject());
                 if (var7.size() != 0) {
@@ -541,7 +541,7 @@ public class CustomGuiScreen implements IGuiEventListener {
 
             JsonArray children = GsonUtils.getJSONArrayOrNull(config, "children");
             if (children != null) {
-                List<CustomGuiScreen> childrenArray = new ArrayList<>(this.children);
+                List<GuiComponent> childrenArray = new ArrayList<>(this.children);
 
                 for (int i = 0; i < children.size(); i++) {
                     JsonObject childJson;
@@ -555,7 +555,7 @@ public class CustomGuiScreen implements IGuiEventListener {
                     String id = GsonUtils.getStringOrDefault(childJson, "id", null);
                     int index = GsonUtils.getIntOrDefault(childJson, "index", -1);
 
-                    for (CustomGuiScreen child : childrenArray) {
+                    for (GuiComponent child : childrenArray) {
                         if (child.getName().equals(id)) {
                             child.loadConfig(childJson);
                             if (index >= 0) {
@@ -577,7 +577,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         visitor.visit(this);
     }
 
-    public final CustomGuiScreen addMouseButtonCallback(MouseButtonCallback callback) {
+    public final GuiComponent addMouseButtonCallback(MouseButtonCallback callback) {
         this.mouseButtonCallbacks.add(callback);
         return this;
     }
@@ -588,7 +588,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public CustomGuiScreen addMouseListener(MouseListener listener) {
+    public GuiComponent addMouseListener(MouseListener listener) {
         this.mouseButtonListeners.add(listener);
         return this;
     }
@@ -599,7 +599,7 @@ public class CustomGuiScreen implements IGuiEventListener {
         }
     }
 
-    public CustomGuiScreen onClick(IRunnable clickHandler) {
+    public GuiComponent onClick(IRunnable clickHandler) {
         this.clickHandlers.add(clickHandler);
         return this;
     }
@@ -686,8 +686,8 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     /**
      * @return If this screen is visible.
-     * doesn't account for the parent, but {@link CustomGuiScreen#isVisible()} does
-     * @see CustomGuiScreen#isVisible()
+     * doesn't account for the parent, but {@link GuiComponent#isVisible()} does
+     * @see GuiComponent#isVisible()
      */
     public boolean isSelfVisible() {
         return this.visible;
@@ -699,14 +699,14 @@ public class CustomGuiScreen implements IGuiEventListener {
 
     /**
      * @return If this screen and its parent (if it has one) are visible.
-     * @see CustomGuiScreen#isSelfVisible()
+     * @see GuiComponent#isSelfVisible()
      */
     public boolean isVisible() {
         return this.parent == null ? this.visible : this.visible && this.parent.isVisible();
     }
 
     /**
-     * used in {@link CustomGuiScreen#reorderChildren} to re-add a child (if this returns true)
+     * used in {@link GuiComponent#reorderChildren} to re-add a child (if this returns true)
      */
     public boolean shouldReAddChildren() {
         return this.reAddChildren;
@@ -733,7 +733,7 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public interface IRunnable {
-        void run(CustomGuiScreen parent, int mouseButton);
+        void run(GuiComponent parent, int mouseButton);
     }
 
     public interface CharTypedListener {
@@ -741,14 +741,14 @@ public class CustomGuiScreen implements IGuiEventListener {
     }
 
     public interface MouseListener {
-        void mouseButtonUsed(CustomGuiScreen screen, int mouseButton);
+        void mouseButtonUsed(GuiComponent screen, int mouseButton);
     }
 
     public interface KeyPressedListener {
-        void keyPressed(CustomGuiScreen screen, int key);
+        void keyPressed(GuiComponent screen, int key);
     }
 
     public interface MouseButtonCallback {
-        void onMouseButtonEvent(CustomGuiScreen screen, int mouseButton);
+        void onMouseButtonEvent(GuiComponent screen, int mouseButton);
     }
 }

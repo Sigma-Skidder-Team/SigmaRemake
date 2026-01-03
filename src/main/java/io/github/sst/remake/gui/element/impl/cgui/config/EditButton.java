@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -10,7 +10,7 @@ import io.github.sst.remake.util.render.image.Resources;
 public class EditButton extends Widget {
     public final int field20768;
 
-    public EditButton(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public EditButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field20768 = var5;
     }

@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.overlay;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.RandomIntGenerator;
@@ -17,7 +17,7 @@ public class BrainFreezeOverlay extends Widget implements IMinecraft {
     private final AnimationManager animationManager = new AnimationManager();
     public RandomIntGenerator random = new RandomIntGenerator();
 
-    public BrainFreezeOverlay(CustomGuiScreen parentScreen, String name) {
+    public BrainFreezeOverlay(GuiComponent parentScreen, String name) {
         super(parentScreen, name, 0, 0, client.getWindow().getWidth(), client.getWindow().getHeight(), false);
         this.setFocused(false);
         this.setHovered(false);

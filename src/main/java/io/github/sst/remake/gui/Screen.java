@@ -3,7 +3,7 @@ package io.github.sst.remake.gui;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.util.IMinecraft;
 
-public abstract class Screen extends CustomGuiScreen implements IMinecraft {
+public abstract class Screen extends GuiComponent implements IMinecraft {
     public Screen(String var1) {
         super(null, var1, 0, 0, client.getWindow().getWidth(), client.getWindow().getHeight());
     }

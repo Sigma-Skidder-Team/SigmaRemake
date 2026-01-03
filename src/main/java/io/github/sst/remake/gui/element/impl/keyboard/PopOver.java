@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.TextButton;
 import io.github.sst.remake.gui.impl.JelloKeyboard;
@@ -27,7 +27,7 @@ public class PopOver extends InteractiveWidget {
     private boolean field21378 = false;
     private final List<AddButtonListener> addButtonListeners = new ArrayList<AddButtonListener>();
 
-    public PopOver(CustomGuiScreen var1, String var2, int var3, int var4, int var5, String var6) {
+    public PopOver(GuiComponent var1, String var2, int var3, int var4, int var5, String var6) {
         super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.DEFAULT_COLOR, var6, false);
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
             this.y += 10;
@@ -62,7 +62,7 @@ public class PopOver extends InteractiveWidget {
         int var3 = 1;
         List<String> children = new ArrayList<>();
 
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child.getHeight() != 0) {
                 children.add(child.getName());
             }
@@ -92,7 +92,7 @@ public class PopOver extends InteractiveWidget {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         Map<Integer, BindableActionEntry> var5 = new HashMap<>();
 
-        for (CustomGuiScreen child : this.getChildren()) {
+        for (GuiComponent child : this.getChildren()) {
             if (child instanceof BindableActionEntry) {
                 var5.put(((BindableActionEntry) child).entryIndex, (BindableActionEntry) child);
             }

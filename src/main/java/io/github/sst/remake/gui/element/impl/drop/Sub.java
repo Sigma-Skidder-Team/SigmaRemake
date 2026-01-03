@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.drop;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -17,7 +17,7 @@ public class Sub extends InteractiveWidget {
     public List<String> values;
     public int field21324 = 0;
 
-    public Sub(CustomGuiScreen screen, String iconName, int x, int y, int width, int height, List<String> values, int var8) {
+    public Sub(GuiComponent screen, String iconName, int x, int y, int width, int height, List<String> values, int var8) {
         super(screen, iconName, x, y, width, height, color, false);
         this.values = values;
         this.field21324 = var8;

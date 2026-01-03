@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.block;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.item.ItemStack;
@@ -9,7 +9,7 @@ public class BlockButton extends InteractiveWidget {
     public ItemStack stack;
     public boolean field21367;
 
-    public BlockButton(CustomGuiScreen parent, String var2, int var3, int var4, int var5, int var6, ItemStack var7) {
+    public BlockButton(GuiComponent parent, String var2, int var3, int var4, int var5, int var6, ItemStack var7) {
         super(parent, var2, var3, var4, var5, var6, false);
         this.stack = var7;
     }

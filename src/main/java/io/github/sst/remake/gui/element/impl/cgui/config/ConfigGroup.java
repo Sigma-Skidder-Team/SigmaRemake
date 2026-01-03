@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.TextButton;
@@ -25,7 +25,7 @@ public class ConfigGroup extends InteractiveWidget {
     private final OnlineProfileManager onlineProfileManager;
     private final LoadingIndicator loadingIndicator;
 
-    public ConfigGroup(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+    public ConfigGroup(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, 0, ColorHelper.DEFAULT_COLOR, false);
         this.maxHeight = height;
 

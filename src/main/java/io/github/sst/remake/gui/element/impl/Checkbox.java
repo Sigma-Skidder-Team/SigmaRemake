@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -13,7 +13,7 @@ public class Checkbox extends InteractiveWidget {
     public boolean value;
     public AnimationUtils field21370 = new AnimationUtils(70, 90);
 
-    public Checkbox(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public Checkbox(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
     }
 

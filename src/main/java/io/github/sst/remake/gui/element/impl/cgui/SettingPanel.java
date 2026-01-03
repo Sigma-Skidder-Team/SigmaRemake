@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
 import io.github.sst.remake.gui.ContentSize;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.Checkbox;
 import io.github.sst.remake.gui.element.impl.Dropdown;
 import io.github.sst.remake.gui.element.impl.Text;
@@ -28,19 +28,19 @@ public class SettingPanel extends ScrollableContentPanel implements Animatable {
     private final Module module;
     public int field21222 = 200;
     private final HashMap<Text, Setting> field21223 = new HashMap<>();
-    public HashMap<Module, CustomGuiScreen> field21224 = new HashMap<>();
+    public HashMap<Module, GuiComponent> field21224 = new HashMap<>();
     public AnimationUtils field21225 = new AnimationUtils(114, 114);
     private String field21226 = "";
     private String field21227 = "";
 
-    public SettingPanel(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Module module) {
+    public SettingPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Module module) {
         super(var1, var2, var3, var4, var5, var6);
         this.module = module;
         this.setListening(false);
         this.addSettings();
     }
 
-    private int addSetting(CustomGuiScreen panel, Setting setting, int var3, int var4, int var5) {
+    private int addSetting(GuiComponent panel, Setting setting, int var3, int var4, int var5) {
         switch (setting.settingType) {
             case CHECKBOX:
                 Text var37 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 24, Text.defaultColorHelper, setting.name);
@@ -148,7 +148,7 @@ public class SettingPanel extends ScrollableContentPanel implements Animatable {
                 var4 += 27 + var5;
                 break;
             case GROUP:
-                CustomGuiScreen var17 = new CustomGuiScreen(panel, setting.name + "view", var3, var4, panel.getWidth(), 0);
+                GuiComponent var17 = new GuiComponent(panel, setting.name + "view", var3, var4, panel.getWidth(), 0);
                 int var25 = 0;
 
                 for (Setting<?> var41 : ((GroupSetting) setting).subSettings) {
@@ -246,7 +246,7 @@ public class SettingPanel extends ScrollableContentPanel implements Animatable {
 
          */
 
-        this.addToList(new CustomGuiScreen(this, "extentionhack", 0, yOffset, 0, 20));
+        this.addToList(new GuiComponent(this, "extentionhack", 0, yOffset, 0, 20));
     }
 
     @Override

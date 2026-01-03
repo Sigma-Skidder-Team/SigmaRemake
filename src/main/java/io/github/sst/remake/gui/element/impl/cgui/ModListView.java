@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.Button;
 import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
 import io.github.sst.remake.gui.interfaces.Animatable;
@@ -23,7 +23,7 @@ public class ModListView extends ScrollableContentPanel implements Animatable {
     private final boolean field21217;
     private float field21218 = 1.0F;
 
-    public ModListView(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, Category var7) {
+    public ModListView(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Category var7) {
         super(var1, var2, var3, var4, var5, var6);
         this.category = var7;
         ((CategoryPanel) var1).field21195 = 1.0F;

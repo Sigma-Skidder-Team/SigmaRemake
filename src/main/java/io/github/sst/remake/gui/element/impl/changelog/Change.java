@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.changelog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.Text;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -12,10 +12,10 @@ import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
-public class Change extends CustomGuiScreen {
+public class Change extends GuiComponent {
     public AnimationUtils animation2 = new AnimationUtils(370, 150, AnimationUtils.Direction.FORWARDS);
 
-    public Change(CustomGuiScreen var1, String var2, JsonObject var3) throws JsonParseException {
+    public Change(GuiComponent var1, String var2, JsonObject var3) throws JsonParseException {
         super(var1, var2);
         this.setWidth(this.getParent().getWidth());
         int height = 0;

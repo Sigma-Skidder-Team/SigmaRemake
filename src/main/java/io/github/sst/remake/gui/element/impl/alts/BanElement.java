@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.alts;
 
 import io.github.sst.remake.alt.AccountBan;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.EasingFunctions;
@@ -36,7 +36,7 @@ public class BanElement extends Widget {
     private BufferedImage field21247;
     private final AnimationUtils field21248;
 
-    public BanElement(CustomGuiScreen parent, String text, int x, int y, int width, int height, AccountBan ban) {
+    public BanElement(GuiComponent parent, String text, int x, int y, int width, int height, AccountBan ban) {
         super(parent, text, x, y, width, height, false);
         this.ban = ban;
         this.info = ban.getServer();

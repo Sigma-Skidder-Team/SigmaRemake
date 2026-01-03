@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -22,7 +22,7 @@ public class WaypointList extends ScrollableContentPanel {
     public boolean isMouseOverTrashcan;
     public Waypoint deletableWaypoint;
 
-    public WaypointList(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
+    public WaypointList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.field20883 = true;

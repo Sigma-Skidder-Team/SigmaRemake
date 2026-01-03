@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.maps;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -18,7 +18,7 @@ public class Waypoint extends InteractiveWidget {
     public Vec3i waypointPos;
     public int waypointColor;
 
-    public Waypoint(CustomGuiScreen var1, String var2, int x, int y, int width, int height, String var7, Vec3i var8, int var9) {
+    public Waypoint(GuiComponent var1, String var2, int x, int y, int width, int height, String var7, Vec3i var8, int var9) {
         super(var1, var2, x, y, width, height, true);
         this.targetY = y;
         this.dragAnimation = new AnimationUtils(114, 114);

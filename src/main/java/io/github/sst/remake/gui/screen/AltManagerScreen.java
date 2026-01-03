@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.alt.AccountCompareType;
 import io.github.sst.remake.alt.AccountSorter;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.Screen;
 import io.github.sst.remake.gui.element.impl.*;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
@@ -211,9 +211,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
                 this.accountElement.handleSelectedAccount(accountUI.selectedAccount);
 
-                for (CustomGuiScreen var7 : this.alts.getChildren()) {
+                for (GuiComponent var7 : this.alts.getChildren()) {
                     if (!(var7 instanceof VerticalScrollBar)) {
-                        for (CustomGuiScreen var9 : var7.getChildren()) {
+                        for (GuiComponent var9 : var7.getChildren()) {
                             ((AccountUI) var9).method13166(false);
                         }
                     }
@@ -359,9 +359,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private void method13367() {
         float var3 = 1.0F;
 
-        for (CustomGuiScreen var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen var7 : var5.getChildren()) {
+                for (GuiComponent var7 : var5.getChildren()) {
                     if (var7 instanceof AccountUI) {
                         AccountUI accountUI = (AccountUI) var7;
                         if (var7.getY() <= client.getWindow().getHeight() && this.alts.getScrollOffset() == 0) {
@@ -383,9 +383,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     }
 
     private void method13368() {
-        for (CustomGuiScreen screen : this.alts.getChildren()) {
+        for (GuiComponent screen : this.alts.getChildren()) {
             if (!(screen instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen child : screen.getChildren()) {
+                for (GuiComponent child : screen.getChildren()) {
                     AccountUI accountUI = (AccountUI) child;
                     accountUI.setAccountListRefreshing(false);
                 }
@@ -394,9 +394,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     }
 
     private boolean method13369() {
-        for (CustomGuiScreen var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen var7 : var5.getChildren()) {
+                for (GuiComponent var7 : var5.getChildren()) {
                     if (var7.getTranslateX() != 0 && var7.getX() > this.width) {
                         return false;
                     }
@@ -410,9 +410,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private int method13370() {
         int var3 = 0;
 
-        for (CustomGuiScreen var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen ignored : var5.getChildren()) {
+                for (GuiComponent ignored : var5.getChildren()) {
                     var3++;
                 }
             }
@@ -461,9 +461,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
     @Override
     public void loadConfig(JsonObject config) {
-        for (CustomGuiScreen var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
-                for (CustomGuiScreen var7 : var5.getChildren()) {
+                for (GuiComponent var7 : var5.getChildren()) {
                     this.alts.queueChildRemoval(var7);
                 }
             }
@@ -482,7 +482,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 this.removeChildren(alts);
             }
 
-            CustomGuiScreen var4 = this.getChildByName("alts");
+            GuiComponent var4 = this.getChildByName("alts");
             if (var4 != null) {
                 this.removeChildren(var4);
             }

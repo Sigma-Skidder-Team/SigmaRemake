@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 public class DeleteButton extends InteractiveWidget {
     public float hoverAnimationProgress;
 
-    public DeleteButton(CustomGuiScreen parent, String name, int x, int y, int width, int height) {
+    public DeleteButton(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, height, false);
     }
 

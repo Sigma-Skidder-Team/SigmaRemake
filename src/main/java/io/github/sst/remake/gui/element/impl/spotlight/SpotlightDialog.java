@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.spotlight;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.module.Module;
@@ -18,7 +18,7 @@ public class SpotlightDialog extends InteractiveWidget {
     public TextField query;
     public String field20640;
 
-    public SpotlightDialog(CustomGuiScreen screen, String iconName, int var3, int var4, int width, int height, boolean var7) {
+    public SpotlightDialog(GuiComponent screen, String iconName, int var3, int var4, int width, int height, boolean var7) {
         super(screen, iconName, var3, var4, width, height, var7);
         this.addToList(this.query = new TextField(this, "search", 50, 0, width - 60, height - 2, TextField.field20741, "", "Search..."));
         this.query.setRoundedThingy(false);

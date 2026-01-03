@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.gui.element.impl.alert.AlertComponent;
 import io.github.sst.remake.gui.element.impl.alert.ComponentType;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Alert extends InteractiveWidget {
-    public CustomGuiScreen screen;
+    public GuiComponent screen;
     public String alertName;
     public Texture field21281;
     private final AnimationUtils field21282 = new AnimationUtils(285, 100);
@@ -37,7 +37,7 @@ public class Alert extends InteractiveWidget {
 
     public List<Button> buttons = new ArrayList<>();
 
-    public Alert(CustomGuiScreen screen, String iconName, boolean var3, String name, AlertComponent... var5) {
+    public Alert(GuiComponent screen, String iconName, boolean var3, String name, AlertComponent... var5) {
         super(screen, iconName, 0, 0, MinecraftClient.getInstance().getWindow().getWidth(), MinecraftClient.getInstance().getWindow().getHeight(), false);
         this.field21283 = var3;
         this.alertName = name;
@@ -53,7 +53,7 @@ public class Alert extends InteractiveWidget {
 
         this.field21285 -= 10;
         this.addToList(
-                this.screen = new CustomGuiScreen(
+                this.screen = new GuiComponent(
                         this, "modalContent", (this.width - this.field21284) / 2, (this.height - this.field21285) / 2, this.field21284, this.field21285
                 )
         );
@@ -154,7 +154,7 @@ public class Alert extends InteractiveWidget {
     @Override
     public void setHovered(boolean hovered) {
         if (hovered) {
-            for (CustomGuiScreen var5 : this.screen.getChildren()) {
+            for (GuiComponent var5 : this.screen.getChildren()) {
                 if (var5 instanceof TextField) {
                     var5.setText("");
                     ((TextField) var5).method13146();
@@ -169,7 +169,7 @@ public class Alert extends InteractiveWidget {
     private Map<String, String> method13599() {
         HashMap var3 = new HashMap();
 
-        for (CustomGuiScreen var5 : this.screen.getChildren()) {
+        for (GuiComponent var5 : this.screen.getChildren()) {
             Widget var6 = (Widget) var5;
             if (var6 instanceof TextField) {
                 TextField var7 = (TextField) var6;

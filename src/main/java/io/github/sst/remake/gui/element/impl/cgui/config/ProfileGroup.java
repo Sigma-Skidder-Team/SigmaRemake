@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl.cgui.config;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.TextField;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.profile.Profile;
@@ -17,7 +17,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class ProfileGroup extends Widget {
-    public CustomGuiScreen editButtons;
+    public GuiComponent editButtons;
     public AnimationUtils hoverAnimation;
     public AnimationUtils slideAnimation;
     public AnimationUtils deleteAnimation;
@@ -26,7 +26,7 @@ public class ProfileGroup extends Widget {
     public final int editButtonsWidth;
     public final int initialHeight;
 
-    public ProfileGroup(CustomGuiScreen parent, String name, int x, int y, int width, int height, Profile profile) {
+    public ProfileGroup(GuiComponent parent, String name, int x, int y, int width, int height, Profile profile) {
         super(parent, name, x, y, width, height, false);
         this.editButtonsWidth = (int) ((float) width * 0.8F);
         this.initialHeight = height;

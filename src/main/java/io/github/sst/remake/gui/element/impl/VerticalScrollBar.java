@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.element.impl;
 
 import com.google.gson.JsonObject;
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.scroll.VerticalScrollBarButton;
 import io.github.sst.remake.gui.panel.Widget;
 import io.github.sst.remake.gui.panel.ScrollableContentPanel;
@@ -19,7 +19,7 @@ public class VerticalScrollBar extends Widget implements IOffsetProvider {
     public final VerticalScrollBarButton field20796;
     public TimerUtils field20797 = new TimerUtils();
 
-    public VerticalScrollBar(CustomGuiScreen var1, int var2) {
+    public VerticalScrollBar(GuiComponent var1, int var2) {
         super(var1, "verticalScrollBar", var1.getWidth() - var2 - 5, 5, var2, var1.getHeight() - 10, false);
         this.addWidthSetter((var1x, var2x) -> {
             var1x.setX(var2x.getWidth() - var2 - 5);

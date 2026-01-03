@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.element.impl.keyboard;
 
-import io.github.sst.remake.gui.CustomGuiScreen;
+import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
 import io.github.sst.remake.util.client.bind.Keys;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 public class Keyboard extends InteractiveWidget {
     public int field20696;
 
-    public Keyboard(CustomGuiScreen var1, String var2, int var3, int var4) {
+    public Keyboard(GuiComponent var1, String var2, int var3, int var4) {
         super(var1, var2, var3, var4, 1060, 357, false);
 
         for (Keys key : Keys.values()) {
@@ -61,7 +61,7 @@ public class Keyboard extends InteractiveWidget {
     }
 
     public void method13104() {
-        for (CustomGuiScreen var4 : this.getChildren()) {
+        for (GuiComponent var4 : this.getChildren()) {
             if (var4 instanceof Child) {
                 Child var5 = (Child) var4;
                 var5.method13102();
