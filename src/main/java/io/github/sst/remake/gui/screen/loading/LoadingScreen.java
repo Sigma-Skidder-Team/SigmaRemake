@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class JelloLoadingScreen extends Overlay implements IMinecraft {
+public class LoadingScreen extends Overlay implements IMinecraft {
 
     public static Texture sigmaLogo;
     public static Texture back;
@@ -29,7 +29,7 @@ public class JelloLoadingScreen extends Overlay implements IMinecraft {
     private final Consumer<Optional<Throwable>> exceptionHandler;
     private final boolean reloading;
 
-    public JelloLoadingScreen(ResourceReload monitor, Consumer<Optional<Throwable>> exceptionHandler, boolean reloading) {
+    public LoadingScreen(ResourceReload monitor, Consumer<Optional<Throwable>> exceptionHandler, boolean reloading) {
         this.reloadMonitor = monitor;
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;
