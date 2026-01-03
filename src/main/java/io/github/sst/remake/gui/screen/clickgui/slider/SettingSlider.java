@@ -9,10 +9,10 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class Slider extends InteractiveWidget {
+public class SettingSlider extends InteractiveWidget {
     private float field20732;
     private float field20733;
-    private SliderButton field20734;
+    private SliderHandle field20734;
     private AnimationUtils field20735;
 
     public static float method13134(float var0, float var1, float var2) {
@@ -25,28 +25,28 @@ public class Slider extends InteractiveWidget {
         return (float) Math.round((double) var8 * Math.pow(10.0, var4)) / (float) Math.pow(10.0, var4);
     }
 
-    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
+    public SettingSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.method13136();
     }
 
-    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
+    public SettingSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
         super(var1, var2, var3, var4, var5, var6, var7, false);
         this.method13136();
     }
 
-    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
+    public SettingSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, false);
         this.method13136();
     }
 
-    public Slider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
+    public SettingSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9, false);
         this.method13136();
     }
 
     private void method13136() {
-        this.addToList(this.field20734 = new SliderButton(this, this.getHeight()));
+        this.addToList(this.field20734 = new SliderHandle(this, this.getHeight()));
         this.field20732 = -1.0F;
         this.field20735 = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     }
@@ -104,7 +104,7 @@ public class Slider extends InteractiveWidget {
         }
     }
 
-    public SliderButton method13137() {
+    public SliderHandle method13137() {
         return this.field20734;
     }
 

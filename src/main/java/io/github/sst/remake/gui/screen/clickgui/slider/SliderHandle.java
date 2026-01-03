@@ -6,11 +6,11 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class SliderButton extends Button {
-    private final Slider field20600;
+public class SliderHandle extends Button {
+    private final SettingSlider field20600;
     private final AnimationUtils field20601 = new AnimationUtils(125, 125);
 
-    public SliderButton(Slider var1, int var2) {
+    public SliderHandle(SettingSlider var1, int var2) {
         super(var1, "sliderButton", 0, 0, var2, var2, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()));
         this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.setDraggable(true);
