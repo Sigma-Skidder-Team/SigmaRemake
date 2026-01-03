@@ -2,7 +2,7 @@ package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.Screen;
-import io.github.sst.remake.gui.screen.clickgui.JelloClickGuiScreen;
+import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.screen.holder.*;
 import io.github.sst.remake.gui.screen.keyboard.KeyboardScreen;
 import io.github.sst.remake.gui.screen.maps.JelloMapsScreen;
@@ -31,7 +31,7 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(OptionsHolder.class, OptionsScreen.class);
         replacementScreens.put(CreditsHolder.class, CreditsScreen.class);
         replacementScreens.put(SpotlightHolder.class, JelloSpotlightScreen.class);
-        replacementScreens.put(ClickGuiHolder.class, JelloClickGuiScreen.class);
+        replacementScreens.put(ClickGuiHolder.class, ClickGuiScreen.class);
         replacementScreens.put(MapsHolder.class, JelloMapsScreen.class);
 
         // Sigma Screen -> Screen Name
