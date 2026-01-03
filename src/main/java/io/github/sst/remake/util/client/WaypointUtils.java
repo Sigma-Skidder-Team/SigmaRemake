@@ -32,7 +32,7 @@ public class WaypointUtils implements IMinecraft {
     public static ByteBuffer defaultChunkBuffer = BufferUtils.createByteBuffer(10 * 16 * 10 * 16 * 3);
     public static List<RegionPos> missingRegionFiles = new ArrayList<>();
 
-    public static String getRegionFilePath(String baseDir, net.minecraft.world.chunk.Chunk chunk) {
+    public static String getRegionFilePath(String baseDir, WorldChunk chunk) {
         RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
         return baseDir + "/" + regionPos.x + "c" + regionPos.z + ConfigUtils.WAYPOINT_EXTENSION;
     }
@@ -57,14 +57,14 @@ public class WaypointUtils implements IMinecraft {
         return identifier;
     }
 
-    public static boolean areNeighborsLoaded(net.minecraft.world.chunk.Chunk var1) {
+    public static boolean areNeighborsLoaded(WorldChunk var1) {
         WorldChunk var4 = client.world.getChunk(var1.getPos().x, var1.getPos().z + 1);
         WorldChunk var5 = client.world.getChunk(var1.getPos().x, var1.getPos().z - 1);
         return var4 != null && !var4.isEmpty() && var5 != null && !var5.isEmpty();
     }
 
 
-    public static ByteBuffer generateChunkMap(net.minecraft.world.chunk.Chunk var1, boolean var2) {
+    public static ByteBuffer generateChunkMap(WorldChunk var1, boolean var2) {
         ByteBuffer var5 = BufferUtils.createByteBuffer(768);
         int var6 = var1.getPos().x * 16;
         int var7 = var1.getPos().z * 16;

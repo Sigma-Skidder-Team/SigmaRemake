@@ -1,7 +1,7 @@
 package io.github.sst.remake.module.impl.misc;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.element.impl.Notification;
+import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.*;

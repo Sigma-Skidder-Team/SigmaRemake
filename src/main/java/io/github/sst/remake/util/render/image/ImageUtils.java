@@ -216,64 +216,119 @@ public class ImageUtils {
         return result;
     }
 
-    public static BufferedImage method35039(int var0, int var1, int var2, int var3, int var4, int var5, boolean var6) {
-        return method35036(var0, var1, var2, var3, var4, var5, ClientColors.DEEP_TEAL.getColor(), var6);
+    public static BufferedImage captureRegionImage(
+            int x,
+            int y,
+            int width,
+            int height,
+            int downscaleFactor,
+            int blurRadius,
+            boolean padBeforeBlur
+    ) {
+        return captureAndProcessRegion(
+                x,
+                y,
+                width,
+                height,
+                downscaleFactor,
+                blurRadius,
+                ClientColors.DEEP_TEAL.getColor(),
+                padBeforeBlur
+        );
     }
 
-    private static BufferedImage method35036(int var0, int var1, int var2, int var3, int var4, int var5, int var6, boolean var7) {
-        int var10 = 4;
-        var1 = (int) ((float) var1 * getScaleFactor());
-        var0 = (int) ((float) var0 * getScaleFactor());
-        var2 = (int) ((float) var2 * getScaleFactor());
-        var3 = (int) ((float) var3 * getScaleFactor());
-        var4 = (int) ((float) var4 * getScaleFactor());
-        var1 = MinecraftClient.getInstance().getWindow().getFramebufferHeight() - var1 - var3;
-        if (var4 <= 0) {
-            var4 = 1;
+    private static BufferedImage captureAndProcessRegion(
+            int x,
+            int y,
+            int width,
+            int height,
+            int downscaleFactor,
+            int blurRadius,
+            int paddingColor,
+            boolean padBeforeBlur
+    ) {
+        int bytesPerPixel = 4;
+
+        y = (int) (y * getScaleFactor());
+        x = (int) (x * getScaleFactor());
+        width = (int) (width * getScaleFactor());
+        height = (int) (height * getScaleFactor());
+        downscaleFactor = (int) (downscaleFactor * getScaleFactor());
+
+        y = MinecraftClient.getInstance().getWindow().getFramebufferHeight() - y - height;
+
+        if (downscaleFactor <= 0) {
+            downscaleFactor = 1;
         }
 
-        ByteBuffer var11 = BufferUtils.createByteBuffer(var2 * var3 * var10);
-        GL11.glReadPixels(var0, var1, var2, var3, 6408, 5121, var11);
-        BufferedImage var12 = new BufferedImage(var2 / var4, var3 / var4, 1);
+        ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(width * height * bytesPerPixel);
+        GL11.glReadPixels(x, y, width, height, 6408, 5121, pixelBuffer);
 
-        for (int var13 = var4 / 2; var13 < var2; var13 += var4) {
-            for (int var14 = var4 / 2; var14 < var3; var14 += var4) {
-                if (var13 / var4 < var2 / var4 && var14 / var4 < var3 / var4) {
-                    int var15 = (var13 + var2 * var14) * var10;
-                    int var16 = var11.get(var15) & 255;
-                    int var17 = var11.get(var15 + 1) & 255;
-                    int var18 = var11.get(var15 + 2) & 255;
-                    var12.setRGB(var13 / var4, var3 / var4 - (var14 / var4 + 1), 0xFF000000 | var16 << 16 | var17 << 8 | var18);
+        BufferedImage image = new BufferedImage(
+                width / downscaleFactor,
+                height / downscaleFactor,
+                BufferedImage.TYPE_INT_ARGB
+        );
+
+        for (int px = downscaleFactor / 2; px < width; px += downscaleFactor) {
+            for (int py = downscaleFactor / 2; py < height; py += downscaleFactor) {
+                int imgX = px / downscaleFactor;
+                int imgY = py / downscaleFactor;
+
+                if (imgX < image.getWidth() && imgY < image.getHeight()) {
+                    int index = (px + width * py) * bytesPerPixel;
+                    int r = pixelBuffer.get(index) & 255;
+                    int g = pixelBuffer.get(index + 1) & 255;
+                    int b = pixelBuffer.get(index + 2) & 255;
+
+                    image.setRGB(
+                            imgX,
+                            image.getHeight() - (imgY + 1),
+                            0xFF000000 | (r << 16) | (g << 8) | b
+                    );
                 }
             }
         }
 
-        if (var5 <= 1) {
-            return var12;
-        } else {
-            return !var7 ? applyBlur(method35040(var12, var5, var6), var5) : applyBlur(addPadding(var12, var5), var5);
+        if (blurRadius <= 1) {
+            return image;
         }
+
+        if (padBeforeBlur) {
+            return applyBlur(addPadding(image, blurRadius), blurRadius);
+        }
+
+        return applyBlur(
+                addPaddingWithColor(image, blurRadius, paddingColor),
+                blurRadius
+        );
     }
 
-    private static BufferedImage method35040(BufferedImage var0, int var1, int var2) {
-        int var5 = var0.getWidth() + var1 * 2;
-        int var6 = var0.getHeight() + var1 * 2;
-        BufferedImage var7 = new BufferedImage(var5, var6, var0.getType());
-        if (var2 != ClientColors.DEEP_TEAL.getColor()) {
-            for (int var8 = 0; var8 < var5; var8++) {
-                for (int var9 = 0; var9 < var6; var9++) {
-                    var7.setRGB(var8, var9, var2);
+    private static BufferedImage addPaddingWithColor(
+            BufferedImage source,
+            int padding,
+            int color
+    ) {
+        int newWidth = source.getWidth() + padding * 2;
+        int newHeight = source.getHeight() + padding * 2;
+
+        BufferedImage padded = new BufferedImage(newWidth, newHeight, source.getType());
+
+        if (color != ClientColors.DEEP_TEAL.getColor()) {
+            for (int x = 0; x < newWidth; x++) {
+                for (int y = 0; y < newHeight; y++) {
+                    padded.setRGB(x, y, color);
                 }
             }
         }
 
-        for (int var10 = 0; var10 < var0.getWidth(); var10++) {
-            for (int var11 = 0; var11 < var0.getHeight(); var11++) {
-                var7.setRGB(var1 + var10, var1 + var11, var0.getRGB(var10, var11));
+        for (int x = 0; x < source.getWidth(); x++) {
+            for (int y = 0; y < source.getHeight(); y++) {
+                padded.setRGB(padding + x, padding + y, source.getRGB(x, y));
             }
         }
 
-        return var7;
+        return padded;
     }
 
 }

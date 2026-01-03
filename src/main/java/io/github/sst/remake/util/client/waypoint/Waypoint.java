@@ -55,4 +55,26 @@ public class Waypoint {
         this.identifier = identifier;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Waypoint waypoint = (Waypoint) o;
+        if (color != waypoint.color) return false;
+        if (x != waypoint.x) return false;
+        if (z != waypoint.z) return false;
+        if (!name.equals(waypoint.name)) return false;
+        return identifier.equals(waypoint.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + color;
+        result = 31 * result + x;
+        result = 31 * result + z;
+        result = 31 * result + identifier.hashCode();
+        return result;
+    }
+
 }

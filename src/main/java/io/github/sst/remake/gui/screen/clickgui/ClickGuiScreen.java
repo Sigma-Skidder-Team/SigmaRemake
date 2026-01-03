@@ -1,0 +1,243 @@
+package io.github.sst.remake.gui.screen.clickgui;
+
+import com.google.gson.JsonObject;
+import io.github.sst.remake.Client;
+import io.github.sst.remake.gui.framework.core.GuiComponent;
+import io.github.sst.remake.gui.framework.core.Screen;
+import io.github.sst.remake.gui.framework.widget.Image;
+import io.github.sst.remake.gui.screen.clickgui.config.ProfileScreen;
+import io.github.sst.remake.gui.screen.clickgui.overlay.BrainFreezeOverlay;
+import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
+import io.github.sst.remake.module.Category;
+import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
+import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
+import io.github.sst.remake.util.math.anim.EasingFunctions;
+import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.render.RenderUtils;
+import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.font.FontUtils;
+import io.github.sst.remake.util.render.image.Resources;
+import net.minecraft.client.MinecraftClient;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ClickGuiScreen extends Screen implements IMinecraft {
+    private static AnimationUtils animationProgress;
+    private static boolean animationStarted;
+    private static boolean animationCompleted;
+    private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
+    //public MusicPlayer musicPlayer;
+    public ProfileScreen profileScreen;
+    public BrainFreezeOverlay brainFreeze;
+    public ModuleSettingsDialog moduleSettingsDialog;
+    public CategoryPanel categoryPanel = null;
+
+    public ClickGuiScreen() {
+        super("JelloScreen");
+        animationCompleted = animationCompleted | !animationStarted;
+        int x = 30;
+        int y = 30;
+        this.addToList(this.brainFreeze = new BrainFreezeOverlay(this, "brainFreeze"));
+
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            if (!this.categoryPanels.containsKey(module.getCategory())) {
+                CategoryPanel categoryPanel = new CategoryPanel(this, x, y, module.getCategory());
+                this.categoryPanels.put(module.getCategory(), categoryPanel);
+                this.addToList(categoryPanel);
+
+                x += categoryPanel.getWidth() + 10;
+                if (this.categoryPanels.size() == 4) {
+                    x = 30;
+                    y += categoryPanel.getHeight() - 20;
+                }
+
+                categoryPanel.method13507(var2 -> this.addRunnable(() -> {
+                    this.addToList(this.moduleSettingsDialog = new ModuleSettingsDialog(this, "settings", 0, 0, this.width, this.height, var2));
+                    this.moduleSettingsDialog.setReAddChildren(true);
+                }));
+            }
+        }
+
+        //this.addToList(this.musicPlayer = new MusicPlayer(this, "musicPlayer"));
+        //this.musicPlayer.method13215(true);
+        //this.musicPlayer.setSelfVisible(true);
+        Image moreButton;
+        this.addToList(moreButton = new Image(this, "more", this.getWidth() - 69, this.getHeight() - 55, 55, 41, Resources.optionsPNG1));
+
+        moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
+        moreButton.setListening(false);
+        moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
+            if (this.profileScreen != null && this.hasChild(this.profileScreen)) {
+                this.queueChildRemoval(this.profileScreen);
+            } else {
+                this.addToList(this.profileScreen = new ProfileScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
+                this.profileScreen.setReAddChildren(true);
+            }
+        }));
+
+        animationProgress = new AnimationUtils(450, 125);
+        ShaderUtils.applyBlurShader();
+        ShaderUtils.setShaderRadiusRounded(animationProgress.calcPercent());
+    }
+
+    public void updateSideBar() {
+        for (CategoryPanel panel : this.categoryPanels.values()) {
+            panel.method13504();
+        }
+    }
+
+    @Override
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        //this.musicPlayer.setSelfVisible(this.musicPlayer.getWidth() < this.getWidth() && this.musicPlayer.getHeight() < this.getHeight());
+        super.updatePanelDimensions(mouseX, mouseY);
+        ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
+        this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule(BrainFreezeModule.class).enabled);
+
+        if (this.profileScreen != null) {
+            int xOver = mouseX - this.profileScreen.getAbsoluteX();
+            int yOver = mouseY - this.profileScreen.getAbsoluteY();
+            boolean conditionMet = xOver >= -10 && yOver >= -10;
+            if (!conditionMet) {
+                this.profileScreen.close();
+            }
+        }
+
+        if (this.profileScreen != null && this.profileScreen.isClosed()) {
+            this.removeChildren(this.profileScreen);
+            this.profileScreen = null;
+        }
+
+        if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && this.moduleSettingsDialog != null && !this.moduleSettingsDialog.field20671) {
+            this.moduleSettingsDialog.field20671 = true;
+        }
+
+        if (this.moduleSettingsDialog != null && this.moduleSettingsDialog.field20671 && this.moduleSettingsDialog.animation1.calcPercent() == 0.0F) {
+            this.addRunnable(() -> {
+                this.removeChildren(this.moduleSettingsDialog);
+                this.moduleSettingsDialog = null;
+            });
+        }
+
+        if (animationCompleted) {
+            AnimationUtils.Direction direction = animationProgress.getDirection();
+            animationProgress.changeDirection(!animationStarted ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+
+            if (animationProgress.calcPercent() <= 0.0F && animationStarted) {
+                animationStarted = false;
+                this.handleAnimationCompletion(animationStarted);
+            } else if (animationProgress.calcPercent() >= 1.0F && animationProgress.getDirection() == direction) {
+                animationStarted = true;
+                this.handleAnimationCompletion(animationStarted);
+            }
+        }
+
+        if (animationCompleted && animationStarted) {
+            ShaderUtils.resetShader();
+        }
+    }
+
+    @Override
+    public int getFPS() {
+        return MinecraftClient.currentFps;
+    }
+
+    @Override
+    public JsonObject toConfigWithExtra(JsonObject config) {
+        ShaderUtils.resetShader();
+        return super.toConfigWithExtra(config);
+    }
+
+    @Override
+    public void loadConfig(JsonObject config) {
+        super.loadConfig(config);
+    }
+
+    private void handleAnimationCompletion(boolean started) {
+        animationCompleted = false;
+        if (!started) {
+            client.openScreen(null);
+        }
+    }
+
+    @Override
+    public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton <= 1) {
+            return super.onMouseDown(mouseX, mouseY, mouseButton);
+        } else {
+            this.keyPressed(mouseButton);
+            return false;
+        }
+    }
+
+    @Override
+    public void keyPressed(int keyCode) {
+        super.keyPressed(keyCode);
+        int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
+        if (keyCode == 256 || keyCode == keyBindForClickGui && this.moduleSettingsDialog == null && !this.hasFocusedTextField()) {
+            if (animationCompleted) {
+                animationStarted = !animationStarted;
+            }
+
+            animationCompleted = true;
+        }
+    }
+
+    public float method13317(float var1, float var2) {
+        return animationProgress.getDirection() != AnimationUtils.Direction.FORWARDS
+                ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
+                : QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public void draw(float partialTicks) {
+        float alphaFactor = animationCompleted && !animationStarted
+                ? this.method13317(animationProgress.calcPercent(), 0.8F) * 0.5F + 0.5F
+                : (!animationCompleted ? 1.0F : this.method13317(animationProgress.calcPercent(), 1.0F));
+        float alpha = 0.2F * partialTicks * alphaFactor;
+        RenderUtils.drawRoundedRect(
+                (float) this.x,
+                (float) this.y,
+                (float) (this.x + this.width),
+                (float) (this.y + this.height),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), alpha)
+        );
+        float fadeAmount = 1.0F;
+        if (this.moduleSettingsDialog != null) {
+            float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            if (this.moduleSettingsDialog.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                var8 = AnimationUtils.calculateBackwardTransition(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            }
+
+            fadeAmount -= this.moduleSettingsDialog.animation.calcPercent() * 0.1F;
+            alphaFactor *= 1.0F + var8 * 0.2F;
+        }
+
+        if (Client.INSTANCE.configManager.currentProfile != null && !Client.INSTANCE.notificationManager.isRendering()) {
+            String configName = Client.INSTANCE.configManager.currentProfile.name;
+            RenderUtils.drawString(
+                    FontUtils.HELVETICA_LIGHT_20,
+                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(configName) - 80),
+                    (float) (this.height - 47),
+                    configName,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * Math.max(0.0F, Math.min(1.0F, alphaFactor)))
+            );
+        }
+
+        for (GuiComponent child : this.getChildren()) {
+            float x = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2) * (1.0F - alphaFactor) * 0.5F;
+            float y = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2) * (1.0F - alphaFactor) * 0.5F;
+            child.setTranslate((int) x, (int) y);
+            child.setScale(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
+        }
+
+        super.draw(partialTicks * Math.min(1.0F, alphaFactor) * fadeAmount);
+        if (this.categoryPanel != null) {
+            this.categoryPanel.setReAddChildren(false);
+        }
+    }
+}

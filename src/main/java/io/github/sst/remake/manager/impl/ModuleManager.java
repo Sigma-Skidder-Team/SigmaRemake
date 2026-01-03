@@ -6,8 +6,7 @@ import com.google.gson.JsonObject;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
-import io.github.sst.remake.module.impl.gui.CoordsModule;
+import io.github.sst.remake.module.impl.gui.*;
 import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
@@ -24,10 +23,14 @@ public class ModuleManager extends Manager {
 
     @Override
     public void init() {
-        modules.add(new TestModule());
+        modules.add(new ActiveModsModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());
         modules.add(new CoordsModule());
+        modules.add(new CompassModule());
+        modules.add(new MiniMapModule());
+        modules.add(new KeyStrokesModule());
+        modules.add(new TestModule());
         initModules();
         super.init();
     }
@@ -38,6 +41,15 @@ public class ModuleManager extends Manager {
 
     public Module getModule(String input) {
         return this.modules.stream().filter(m -> m.name.equalsIgnoreCase(input)).findFirst().orElse(null);
+    }
+
+    public <V extends Module> V getModule(final Class<V> clazz) {
+        final Module obj = modules.stream().filter(ob -> ob.getClass().equals(clazz)).findFirst().orElse(null);
+
+        if (obj == null)
+            return null;
+
+        return clazz.cast(obj);
     }
 
     public List<Module> getModulesByCategory(Category input) {

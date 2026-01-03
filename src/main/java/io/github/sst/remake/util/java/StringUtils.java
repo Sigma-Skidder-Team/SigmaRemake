@@ -6,8 +6,46 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class StringUtils {
+    private static final String[] goodbyeTitles = new String[]{
+            "Goodbye.",
+            "See you soon.",
+            "Bye!",
+            "Au revoir",
+            "See you!",
+            "Ciao!",
+            "Adios",
+            "Farewell",
+            "See you later!",
+            "Have a good day!",
+            "See you arround.",
+            "See you tomorrow!",
+            "Goodbye, friend.",
+            "Logging out.",
+            "Signing off!",
+            "Shutting down.",
+            "Was good to see you!"
+    };
+
+    private static final String[] goodbyeMessages = new String[]{
+            "The two hardest things to say in life are hello for the first time and goodbye for the last.",
+            "Don’t cry because it’s over, smile because it happened.",
+            "It’s time to say goodbye, but I think goodbyes are sad and I’d much rather say hello. Hello to a new adventure.",
+            "We’ll meet again, Don’t know where, don’t know when, But I know we’ll meet again, some sunny day.",
+            "This is not a goodbye but a 'see you soon'.",
+            "You are my hardest goodbye.",
+            "Goodbyes are not forever, are not the end; it simply means I’ll miss you until we meet again.",
+            "Good friends never say goodbye. They simply say \"See you soon\".",
+            "Every goodbye always makes the next hello closer.",
+            "Where's the good in goodbye?",
+            "And I'm sorry, so sorry. But, I have to say goodbye."
+    };
+
+    public static final String RANDOM_GOODBYE_TITLE = goodbyeTitles[new Random().nextInt(goodbyeTitles.length)];
+    public static final String RANDOM_GOODBYE_MESSAGE = goodbyeMessages[new Random().nextInt(goodbyeMessages.length)];
+
     public static boolean isPrintableCharacter(char character) {
         return character != '\u00A7'   // section sign (§)
                 && character >= ' '

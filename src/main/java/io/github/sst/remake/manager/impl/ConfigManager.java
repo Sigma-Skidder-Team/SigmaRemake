@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;

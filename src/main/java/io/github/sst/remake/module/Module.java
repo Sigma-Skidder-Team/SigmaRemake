@@ -1,8 +1,10 @@
 package io.github.sst.remake.module;
 
 import io.github.sst.remake.Client;
+import io.github.sst.remake.module.impl.gui.ActiveModsModule;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.io.audio.SoundUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -45,9 +47,15 @@ public abstract class Module implements IMinecraft {
 
         if (this.enabled) {
             Client.BUS.register(this);
+            if (Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
+                SoundUtils.play("activate");
+            }
             this.onEnable();
         } else {
             Client.BUS.unregister(this);
+            if (Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
+                SoundUtils.play("deactivate");
+            }
             this.onDisable();
         }
     }

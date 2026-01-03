@@ -1,10 +1,16 @@
 package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.Screen;
-import io.github.sst.remake.gui.impl.*;
+import io.github.sst.remake.gui.framework.core.Screen;
+import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.screen.holder.*;
-import io.github.sst.remake.gui.screen.OptionsScreen;
+import io.github.sst.remake.gui.screen.keyboard.KeyboardScreen;
+import io.github.sst.remake.gui.screen.maps.MapsScreen;
+import io.github.sst.remake.gui.screen.options.CreditsScreen;
+import io.github.sst.remake.gui.screen.options.OptionsScreen;
+import io.github.sst.remake.gui.screen.options.InGameOptionsScreen;
+import io.github.sst.remake.gui.screen.mainmenu.MainMenuScreen;
+import io.github.sst.remake.gui.screen.spotlight.SpotlightScreen;
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -20,13 +26,13 @@ public class ScreenUtils implements IMinecraft {
 
     static {
         // Minecraft Screen (Holder) -> Sigma Screen
-        replacementScreens.put(TitleScreen.class, JelloMenu.class);
-        replacementScreens.put(KeybindsHolder.class, JelloKeyboard.class);
-        replacementScreens.put(OptionsHolder.class, JelloOptions.class);
-        replacementScreens.put(CreditsHolder.class, JelloCredits.class);
-        replacementScreens.put(SpotlightHolder.class, JelloSpotlight.class);
-        replacementScreens.put(ClickGuiHolder.class, JelloScreen.class);
-        replacementScreens.put(MapsHolder.class, JelloMaps.class);
+        replacementScreens.put(TitleScreen.class, MainMenuScreen.class);
+        replacementScreens.put(KeybindsHolder.class, KeyboardScreen.class);
+        replacementScreens.put(OptionsHolder.class, OptionsScreen.class);
+        replacementScreens.put(CreditsHolder.class, CreditsScreen.class);
+        replacementScreens.put(SpotlightHolder.class, SpotlightScreen.class);
+        replacementScreens.put(ClickGuiHolder.class, ClickGuiScreen.class);
+        replacementScreens.put(MapsHolder.class, MapsScreen.class);
 
         // Sigma Screen -> Screen Name
         screenToScreenName.put(KeybindsHolder.class, "Keybind Manager");
@@ -81,9 +87,9 @@ public class ScreenUtils implements IMinecraft {
     }
 
     public static boolean isValid(net.minecraft.client.gui.screen.Screen screen) {
-        if (screen instanceof GameMenuScreen && !(screen instanceof OptionsScreen)) {
+        if (screen instanceof GameMenuScreen && !(screen instanceof InGameOptionsScreen)) {
             client.currentScreen = null;
-            client.openScreen(new OptionsScreen());
+            client.openScreen(new InGameOptionsScreen());
             return true;
         } else {
             return false;

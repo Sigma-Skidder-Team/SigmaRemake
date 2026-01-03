@@ -1,12 +1,11 @@
 package io.github.sst.remake.manager.impl;
 
-import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.window.*;
-import io.github.sst.remake.gui.Screen;
+import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ScreenUtils;

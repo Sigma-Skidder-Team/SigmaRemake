@@ -3,7 +3,7 @@ package io.github.sst.remake.manager.impl;
 import io.github.sst.remake.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
-import io.github.sst.remake.gui.element.impl.Notification;
+import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
@@ -83,7 +83,7 @@ public class NotificationManager extends Manager implements IMinecraft {
                 RenderUtils.drawRoundedRect(
                         (float) (var7 + field39923 - 1), (float) (var8 + 1), (float) (var7 + field39923), (float) (var8 + field39924 - 1), var11
                 );
-                ScissorUtils.startScissor(var7, var8, var7 + field39923 - field39927, var8 + field39924);
+                ScissorUtils.startScissorNoGL(var7, var8, var7 + field39923 - field39927, var8 + field39924);
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_LIGHT_20, (float) (var7 + field39924 + field39927 - 2), (float) (var8 + field39927), notif.title, var12
                 );
