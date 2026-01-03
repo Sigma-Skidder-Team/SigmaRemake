@@ -12,10 +12,10 @@ import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
-public class Change extends GuiComponent {
+public class ChangelogEntry extends GuiComponent {
     public AnimationUtils animation2 = new AnimationUtils(370, 150, AnimationUtils.Direction.FORWARDS);
 
-    public Change(GuiComponent var1, String var2, JsonObject var3) throws JsonParseException {
+    public ChangelogEntry(GuiComponent var1, String var2, JsonObject var3) throws JsonParseException {
         super(var1, var2);
         this.setWidth(this.getParent().getWidth());
         int height = 0;

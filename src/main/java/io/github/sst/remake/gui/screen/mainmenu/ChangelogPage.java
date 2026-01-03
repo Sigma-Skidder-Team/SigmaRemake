@@ -45,14 +45,14 @@ public class ChangelogPage extends GuiComponent {
                 try {
                     for (int i = 0; i < changelogJson.size(); i++) {
                         JsonObject entry = changelogJson.get(i).getAsJsonObject();
-                        Change change;
+                        ChangelogEntry changelogEntry;
                         if (entry.has("url")) {
                             Util.getOperatingSystem().open(entry.get("url").getAsString());
                         }
 
-                        this.scrollPanel.getButton().showAlert(change = new Change(this.scrollPanel, "changelog" + i, entry));
-                        change.setY(y);
-                        y += change.getHeight();
+                        this.scrollPanel.getButton().showAlert(changelogEntry = new ChangelogEntry(this.scrollPanel, "changelog" + i, entry));
+                        changelogEntry.setY(y);
+                        y += changelogEntry.getHeight();
                     }
                 } catch (JsonParseException e) {
                     throw new RuntimeException(e);
@@ -67,7 +67,7 @@ public class ChangelogPage extends GuiComponent {
         if (this.scrollPanel != null) {
             if (this.isHovered() && this.isSelfVisible()) {
                 for (GuiComponent var9 : this.scrollPanel.getButton().getChildren()) {
-                    Change var10 = (Change) var9;
+                    ChangelogEntry var10 = (ChangelogEntry) var9;
                     var10.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
                     if ((double) var10.animation2.calcPercent() < 0.5) {
                         break;
@@ -75,7 +75,7 @@ public class ChangelogPage extends GuiComponent {
                 }
             } else {
                 for (GuiComponent var6 : this.scrollPanel.getButton().getChildren()) {
-                    Change var7 = (Change) var6;
+                    ChangelogEntry var7 = (ChangelogEntry) var6;
                     var7.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
                 }
             }

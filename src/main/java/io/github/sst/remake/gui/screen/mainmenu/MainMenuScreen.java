@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.screen.mainmenu;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Screen;
-import io.github.sst.remake.gui.screen.loading.JelloLoadingScreen;
+import io.github.sst.remake.gui.screen.loading.LoadingScreen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -199,7 +199,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
 
             if (foregroundOpacity > 0.0F && !Client.INSTANCE.loaded) {
-                JelloLoadingScreen.renderFadeOut(backgroundOpacity, 1.0F);
+                LoadingScreen.renderFadeOut(backgroundOpacity, 1.0F);
                 Client.INSTANCE.loaded = true;
             }
 
