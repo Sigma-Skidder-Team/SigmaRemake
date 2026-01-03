@@ -7,6 +7,7 @@ import io.github.sst.remake.gui.element.impl.mainmenu.FloatingBubble;
 import io.github.sst.remake.gui.impl.menu.MainPage;
 import io.github.sst.remake.gui.impl.menu.ChangelogPage;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -22,97 +23,64 @@ import java.util.List;
 import java.util.Random;
 
 public class JelloMenu extends Screen implements IMinecraft {
-    public static long currentTime = 0L;
-    private int field20966 = 0;
-    private int field20967 = 0;
-    private boolean field20968 = true;
-    public MainPage mainMenuScreen;
-    public ChangelogPage changelogPage;
-    public AnimationUtils field20972 = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
-    public AnimationUtils animation = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
-    private final AnimationUtils field20974 = new AnimationUtils(325, 325);
-    private final AnimationUtils field20975 = new AnimationUtils(800, 800);
-    private static Texture background;
-    public List<FloatingBubble> bubbles = new ArrayList<>();
+    private final AnimationUtils changelogTransitionAnimation = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
+    private final AnimationUtils goodbyeAnimation = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
+    private final AnimationUtils backgroundFadeAnimation = new AnimationUtils(325, 325);
+    private final AnimationUtils foregroundFadeAnimation = new AnimationUtils(800, 800);
+    private final List<FloatingBubble> bubbles = new ArrayList<>();
 
-    public static String[] goodbyeTitles = new String[]{
-            "Goodbye.",
-            "See you soon.",
-            "Bye!",
-            "Au revoir",
-            "See you!",
-            "Ciao!",
-            "Adios",
-            "Farewell",
-            "See you later!",
-            "Have a good day!",
-            "See you arround.",
-            "See you tomorrow!",
-            "Goodbye, friend.",
-            "Logging out.",
-            "Signing off!",
-            "Shutting down.",
-            "Was good to see you!"
-    };
+    private static long currentTime = System.nanoTime();
+    private int backgroundParallaxY = 0;
+    private int backgroundParallaxX = 0;
+    private boolean firstParallaxUpdate = true;
 
-    public static String[] goodbyeMessages = new String[]{
-            "The two hardest things to say in life are hello for the first time and goodbye for the last.",
-            "Don’t cry because it’s over, smile because it happened.",
-            "It’s time to say goodbye, but I think goodbyes are sad and I’d much rather say hello. Hello to a new adventure.",
-            "We’ll meet again, Don’t know where, don’t know when, But I know we’ll meet again, some sunny day.",
-            "This is not a goodbye but a 'see you soon'.",
-            "You are my hardest goodbye.",
-            "Goodbyes are not forever, are not the end; it simply means I’ll miss you until we meet again.",
-            "Good friends never say goodbye. They simply say \"See you soon\".",
-            "Every goodbye always makes the next hello closer.",
-            "Where's the good in goodbye?",
-            "And I'm sorry, so sorry. But, I have to say goodbye."
-    };
+    private final MainPage mainMenuScreen;
+    private final ChangelogPage changelogPage;
+    private Texture background;
 
-    public static String currentTitle = goodbyeTitles[new Random().nextInt(goodbyeTitles.length)];
-    public static String currentMessage = goodbyeMessages[new Random().nextInt(goodbyeMessages.length)];
-    public static float field20982;
+    public float deltaTime;
 
     public JelloMenu() {
         super("Main Screen");
         this.setListening(false);
-        currentTime = System.nanoTime();
-        if (background == null) {
-            background = Resources.createPaddedBlurredTexture("background/panorama5.png", 0.075F, 8);
+
+        if (this.background == null) {
+            this.background = Resources.createPaddedBlurredTexture("background/panorama5.png", 0.075F, 8);
         }
 
-        this.field20974.changeDirection(AnimationUtils.Direction.FORWARDS);
-        this.field20975.changeDirection(AnimationUtils.Direction.FORWARDS);
-        int var3 = client.getWindow().getWidth() * client.getWindow().getHeight() / 14000;
-        Random var4 = new Random();
+        this.backgroundFadeAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.foregroundFadeAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
 
-        for (int var5 = 0; var5 < var3; var5++) {
-            int var6 = var4.nextInt(client.getWindow().getWidth());
-            int var7 = var4.nextInt(client.getWindow().getHeight());
-            int var8 = 7 + var4.nextInt(5);
-            int var9 = (1 + var4.nextInt(4)) * (!var4.nextBoolean() ? 1 : -1);
-            int var10 = 1 + var4.nextInt(2);
-            this.bubbles.add(new FloatingBubble(this, Integer.toString(var5), var6, var7, var8, var9, var10));
+        Random random = new Random();
+
+        for (int i = 0; i < client.getWindow().getWidth() * client.getWindow().getHeight() / 14000; i++) {
+            int x = random.nextInt(client.getWindow().getWidth());
+            int y = random.nextInt(client.getWindow().getHeight());
+            int radius = 7 + random.nextInt(5);
+            int velocityX = (1 + random.nextInt(4)) * (!random.nextBoolean() ? 1 : -1);
+            int velocityY = 1 + random.nextInt(2);
+            this.bubbles.add(new FloatingBubble(this, Integer.toString(i), x, y, radius, velocityX, velocityY));
         }
 
         this.addToList(this.mainMenuScreen = new MainPage(this, "main", 0, 0, this.width, this.height));
         this.addToList(this.changelogPage = new ChangelogPage(this, "changelog", 0, 0, this.width, this.height));
+
         this.changelogPage.setHovered(false);
         this.changelogPage.setBringToFront(true);
     }
 
-    public void goOut() {
-        this.field20972.changeDirection(AnimationUtils.Direction.FORWARDS);
+    public void hideChangelog() {
+        this.changelogTransitionAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.changelogPage.setHovered(false);
     }
 
-    public void method13341() {
-        this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+    public void startQuitAnimation() {
+        this.changelogTransitionAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        this.goodbyeAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
     }
 
-    public void animateIn() {
-        this.field20972.changeDirection(AnimationUtils.Direction.BACKWARDS);
+    public void showChangelog() {
+        this.changelogTransitionAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
         this.changelogPage.setHovered(true);
     }
 
@@ -127,41 +95,41 @@ public class JelloMenu extends Screen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        float transitionProgress = AnimationUtils.calculateTransition(this.field20972.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field20972.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            transitionProgress = AnimationUtils.calculateBackwardTransition(this.field20972.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float transitionProgress = AnimationUtils.calculateTransition(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.changelogTransitionAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            transitionProgress = AnimationUtils.calculateBackwardTransition(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         float scaleOffset = 0.07F * transitionProgress;
         this.mainMenuScreen.setScale(1.0F - scaleOffset, 1.0F - scaleOffset);
-        this.mainMenuScreen.setHovered(this.field20972.calcPercent() == 0.0F);
+        this.mainMenuScreen.setHovered(this.changelogTransitionAnimation.calcPercent() == 0.0F);
         long elapsedTime = System.nanoTime() - currentTime;
-        field20982 = Math.min(10.0F, Math.max(0.0F, (float) elapsedTime / 1.810361E7F / 2.0F));
+        deltaTime = Math.min(10.0F, Math.max(0.0F, (float) elapsedTime / 1.810361E7F / 2.0F));
         currentTime = System.nanoTime();
-        int offsetY = -this.getMouseX();
-        float offsetX = (float) this.getMouseY() / (float) this.getWidth() * -114.0F;
-        if (this.field20968) {
-            this.field20966 = (int) offsetX;
-            this.field20967 = offsetY;
-            this.field20968 = false;
+        int offsetX = -this.getMouseX();
+        float offsetY = (float) this.getMouseY() / (float) this.getWidth() * -114.0F;
+        if (this.firstParallaxUpdate) {
+            this.backgroundParallaxY = (int) offsetY;
+            this.backgroundParallaxX = offsetX;
+            this.firstParallaxUpdate = false;
         }
 
-        float deltaX = offsetX - (float) this.field20966;
-        float deltaY = (float) (offsetY - this.field20967);
+        float deltaX = offsetY - (float) this.backgroundParallaxY;
+        float deltaY = (float) (offsetX - this.backgroundParallaxX);
         if (client.overlay != null) {
-            if (offsetX != (float) this.field20966) {
-                this.field20966 = (int) ((float) this.field20966 + deltaX * field20982);
+            if (offsetY != (float) this.backgroundParallaxY) {
+                this.backgroundParallaxY = (int) ((float) this.backgroundParallaxY + deltaX * deltaTime);
             }
 
-            if (offsetY != this.field20967) {
-                this.field20967 = (int) ((float) this.field20967 + deltaY * field20982);
+            if (offsetX != this.backgroundParallaxX) {
+                this.backgroundParallaxX = (int) ((float) this.backgroundParallaxX + deltaY * deltaTime);
             }
         } else {
-            this.field20974.changeDirection(AnimationUtils.Direction.BACKWARDS);
-            this.field20975.changeDirection(AnimationUtils.Direction.BACKWARDS);
-            float parallaxFactor = 0.5F - (float) this.field20967 / (float) client.getWindow().getWidth() * -1.0F;
-            float backgroundOpacity = 1.0F - this.field20974.calcPercent();
-            float foregroundOpacity = 1.0F - this.field20975.calcPercent();
+            this.backgroundFadeAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.foregroundFadeAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            float parallaxFactor = 0.5F - (float) this.backgroundParallaxX / (float) client.getWindow().getWidth() * -1.0F;
+            float backgroundOpacity = 1.0F - this.backgroundFadeAnimation.calcPercent();
+            float foregroundOpacity = 1.0F - this.foregroundFadeAnimation.calcPercent();
 
             float screenScale = (float) this.getWidth() / 1920.0F;
             int backgroundWidth = (int) (600.0F * screenScale);
@@ -169,15 +137,15 @@ public class JelloMenu extends Screen implements IMinecraft {
             int foregroundWidth = 0;
 
             RenderUtils.drawImage(
-                    (float) this.field20967 - (float) backgroundWidth * parallaxFactor,
-                    (float) this.field20966,
+                    (float) this.backgroundParallaxX - (float) backgroundWidth * parallaxFactor,
+                    (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + backgroundWidth),
                     (float) (this.getHeight() + 114),
                     Resources.backgroundPNG
             );
             RenderUtils.drawImage(
-                    (float) this.field20967 - (float) middleWidth * parallaxFactor,
-                    (float) this.field20966,
+                    (float) this.backgroundParallaxX - (float) middleWidth * parallaxFactor,
+                    (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + middleWidth),
                     (float) (this.getHeight() + 114),
                     Resources.middlePNG
@@ -190,16 +158,16 @@ public class JelloMenu extends Screen implements IMinecraft {
             }
 
             RenderUtils.drawImage(
-                    (float) this.field20967 - (float) foregroundWidth * parallaxFactor,
-                    (float) this.field20966,
+                    (float) this.backgroundParallaxX - (float) foregroundWidth * parallaxFactor,
+                    (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + foregroundWidth),
                     (float) (this.getHeight() + 114),
                     Resources.foregroundPNG
             );
 
             RenderUtils.drawImage(
-                    (float) this.field20967,
-                    (float) (this.field20966 - 50),
+                    (float) this.backgroundParallaxX,
+                    (float) (this.backgroundParallaxY - 50),
                     (float) (this.getWidth() * 2),
                     (float) (this.getHeight() + 200),
                     background,
@@ -237,25 +205,25 @@ public class JelloMenu extends Screen implements IMinecraft {
                 Client.INSTANCE.loaded = true;
             }
 
-            field20982 *= 0.7F;
-            field20982 = Math.min(field20982, 1.0F);
-            if (!this.field20968 && (foregroundOpacity == 0.0F || this.field20966 != 0 || this.field20967 != 0)) {
-                if (offsetX != (float) this.field20966) {
-                    this.field20966 = (int) ((float) this.field20966 + deltaX * field20982);
+            deltaTime *= 0.7F;
+            deltaTime = Math.min(deltaTime, 1.0F);
+            if (!this.firstParallaxUpdate && (foregroundOpacity == 0.0F || this.backgroundParallaxY != 0 || this.backgroundParallaxX != 0)) {
+                if (offsetY != (float) this.backgroundParallaxY) {
+                    this.backgroundParallaxY = (int) ((float) this.backgroundParallaxY + deltaX * deltaTime);
                 }
 
-                if (offsetY != this.field20967) {
-                    this.field20967 = (int) ((float) this.field20967 + deltaY * field20982);
+                if (offsetX != this.backgroundParallaxX) {
+                    this.backgroundParallaxX = (int) ((float) this.backgroundParallaxX + deltaY * deltaTime);
                 }
             }
 
-            if (this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (this.goodbyeAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_50,
                         (float) (this.width / 2),
                         (float) (this.height / 2 - 30),
-                        currentTitle,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent()),
+                        StringUtils.RANDOM_GOODBYE_TITLE,
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.goodbyeAnimation.calcPercent()),
                         FontAlignment.CENTER,
                         FontAlignment.CENTER
                 );
@@ -263,8 +231,8 @@ public class JelloMenu extends Screen implements IMinecraft {
                         FontUtils.HELVETICA_LIGHT_18,
                         (float) (this.width / 2),
                         (float) (this.height / 2 + 30),
-                        "\"" + currentMessage + "\"",
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.animation.calcPercent() * 0.5F),
+                        "\"" + StringUtils.RANDOM_GOODBYE_MESSAGE + "\"",
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.goodbyeAnimation.calcPercent() * 0.5F),
                         FontAlignment.CENTER,
                         FontAlignment.CENTER
                 );
@@ -276,7 +244,7 @@ public class JelloMenu extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         if (keyCode == 256) { //escape key
-            this.goOut();
+            this.hideChangelog();
         }
     }
 }
