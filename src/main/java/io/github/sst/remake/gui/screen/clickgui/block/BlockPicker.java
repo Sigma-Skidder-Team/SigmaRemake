@@ -19,13 +19,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class Picker extends InteractiveWidget {
+public class BlockPicker extends InteractiveWidget {
     private final List<String> values = new ArrayList<>();
     private ScrollablePanel field20642;
     private final TextField textField;
     private final boolean field20644;
 
-    public Picker(GuiComponent parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
+    public BlockPicker(GuiComponent parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
         super(parent, text, x, y, width, height, false);
         this.field20644 = var7;
         this.addToList(this.textField = new TextField(this, "textbox", 0, 0, width, 32, TextField.field20741, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
@@ -61,8 +61,8 @@ public class Picker extends InteractiveWidget {
                         var9 = texture.toString();
                     }
 
-                    BlockButton var10;
-                    this.field20642.addToList(var10 = new BlockButton(this, "btn" + var9, 0, 0, 40, 40, item.getDefaultStack()));
+                    BlockItemButton var10;
+                    this.field20642.addToList(var10 = new BlockItemButton(this, "btn" + var9, 0, 0, 40, 40, item.getDefaultStack()));
                     var10.method13702(this.values.contains(var9), false);
                     var10.onPress(var3 -> {
                         int var6 = this.values.size();
