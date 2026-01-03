@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WaypointPanel extends InteractiveWidget {
+public class AddWaypointDialog extends InteractiveWidget {
     private final List<Button> field20723 = new ArrayList<Button>();
     private final Date field20724;
     private boolean field20725 = false;
@@ -29,10 +29,10 @@ public class WaypointPanel extends InteractiveWidget {
     public Vec3i field20727;
     public TextField field20728;
     public TextField field20729;
-    public BadgeSelect field20730;
+    public WaypointColorSelector field20730;
     private final List<Class9073> field20731 = new ArrayList<>();
 
-    public WaypointPanel(GuiComponent var1, String var2, int var3, int var4, Vec3i var5) {
+    public AddWaypointDialog(GuiComponent var1, String var2, int var3, int var4, Vec3i var5) {
         super(var1, var2, var3 - 107, var4 + 10, 214, 170, ColorHelper.DEFAULT_COLOR, "", false);
         this.field20727 = var5;
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
@@ -63,7 +63,7 @@ public class WaypointPanel extends InteractiveWidget {
         this.addToList(this.field20729 = new TextField(this, "Name", 20, 7, this.width - 40, 60, TextField.field20741, "My waypoint", "My waypoint"));
         this.field20729.startFocus();
         this.field20729.setRoundedThingy(false);
-        this.addToList(this.field20730 = new BadgeSelect(this, "badgeSelect", 0, 86));
+        this.addToList(this.field20730 = new WaypointColorSelector(this, "badgeSelect", 0, 86));
         this.addToList(
                 this.field20728 = new TextField(
                         this,
@@ -153,6 +153,6 @@ public class WaypointPanel extends InteractiveWidget {
     }
 
     public interface Class9073 {
-        void method33814(WaypointPanel var1, String var2, Vec3i var3, int var4);
+        void method33814(AddWaypointDialog var1, String var2, Vec3i var3, int var4);
     }
 }

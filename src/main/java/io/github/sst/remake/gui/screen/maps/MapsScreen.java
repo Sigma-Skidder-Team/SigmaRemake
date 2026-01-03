@@ -13,28 +13,28 @@ import io.github.sst.remake.util.client.waypoint.Waypoint;
 
 import java.util.Date;
 
-public class JelloMapsScreen extends Screen implements IMinecraft {
+public class MapsScreen extends Screen implements IMinecraft {
     public Date creationTime;
     public MapPanel mapPanel;
-    public WaypointPanel waypointPanel;
+    public AddWaypointDialog addWaypointDialog;
 
-    public JelloMapsScreen() {
+    public MapsScreen() {
         super("Maps");
         this.creationTime = new Date();
         int var3 = Math.max(300, Math.min(850, client.getWindow().getWidth() - 40));
         int var4 = Math.max(200, Math.min(550, client.getWindow().getHeight() - 80));
         this.addToList(this.mapPanel = new MapPanel(this, "mapView", (this.width - var3) / 2, (this.height - var4) / 2, var3, var4));
         this.mapPanel.mapFrame.addRightClickListener((frame, mouseX, mouseY, vec) -> this.addRunnable(() -> {
-            if (this.waypointPanel == null) {
-                this.addToList(this.waypointPanel = new WaypointPanel(this, "popover", mouseX, mouseY, vec));
-                setupWaypointPanelListener(this.waypointPanel);
+            if (this.addWaypointDialog == null) {
+                this.addToList(this.addWaypointDialog = new AddWaypointDialog(this, "popover", mouseX, mouseY, vec));
+                setupWaypointPanelListener(this.addWaypointDialog);
             }
         }));
         this.mapPanel.mapFrame.addUpdateListener(var1 -> this.closeWaypointPanel());
         ShaderUtils.applyBlurShader();
     }
 
-    private void setupWaypointPanelListener(WaypointPanel panel) {
+    private void setupWaypointPanelListener(AddWaypointDialog panel) {
         panel.method13131((var1x, var2, var3, var4) -> {
             this.mapPanel.waypointList.addWaypoint(var2, var3, var4);
             Client.INSTANCE.waypointManager.add(new Waypoint(var2, var3.getX(), var3.getZ(), var4));
@@ -44,10 +44,10 @@ public class JelloMapsScreen extends Screen implements IMinecraft {
 
     private void closeWaypointPanel() {
         for (GuiComponent child : this.getChildren()) {
-            if (child instanceof WaypointPanel) {
+            if (child instanceof AddWaypointDialog) {
                 this.addRunnable(() -> {
                     this.removeChildren(child);
-                    this.waypointPanel = null;
+                    this.addWaypointDialog = null;
                 });
             }
         }

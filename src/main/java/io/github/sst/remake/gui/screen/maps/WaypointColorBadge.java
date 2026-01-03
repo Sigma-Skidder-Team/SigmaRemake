@@ -10,12 +10,12 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.lwjgl.opengl.GL11;
 
-public class ActualWaypoint extends Button {
+public class WaypointColorBadge extends Button {
     public final WaypointColors color;
     public boolean field20598;
     public AnimationUtils field20599;
 
-    public ActualWaypoint(GuiComponent var1, String var2, int var3, int var4, WaypointColors color) {
+    public WaypointColorBadge(GuiComponent var1, String var2, int var3, int var4, WaypointColors color) {
         super(var1, var2, var3, var4, 18, 18);
         this.color = color;
         this.field20599 = new AnimationUtils(250, 250);
