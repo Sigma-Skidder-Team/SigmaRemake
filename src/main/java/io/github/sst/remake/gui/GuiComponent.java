@@ -4,11 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.gui.element.impl.TextField;
+import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.interfaces.GuiComponentVisitor;
-import io.github.sst.remake.gui.interfaces.InputEventListener;
-import io.github.sst.remake.gui.interfaces.WidthSetter;
-import io.github.sst.remake.gui.panel.ScrollableContentPanel;
+import io.github.sst.remake.gui.framework.event.InputListener;
+import io.github.sst.remake.gui.framework.layout.WidthSetter;
+import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -24,7 +24,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class GuiComponent implements InputEventListener {
+public class GuiComponent implements InputListener {
     private final List<WidthSetter> widthSetters = new ArrayList<>();
     private final List<GuiComponent> childrenToAdd = new ArrayList<>();
     private final List<GuiComponent> childrenToRemove = new ArrayList<>();
@@ -284,7 +284,7 @@ public class GuiComponent implements InputEventListener {
         for (int i = this.children.size() - 1; i >= 0; i--) {
             GuiComponent var8 = this.children.get(i);
             boolean var9 = var8.getParent() != null
-                    && var8.getParent() instanceof ScrollableContentPanel
+                    && var8.getParent() instanceof ScrollablePanel
                     && var8.getParent().isMouseOverComponent(mouseX, mouseY)
                     && var8.getParent().isSelfVisible()
                     && var8.getParent().isHovered();

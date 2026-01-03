@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.element.impl.spotlight;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
-import io.github.sst.remake.gui.element.impl.TextField;
+import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;

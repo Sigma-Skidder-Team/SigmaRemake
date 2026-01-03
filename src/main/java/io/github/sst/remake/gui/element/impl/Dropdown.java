@@ -2,8 +2,9 @@ package io.github.sst.remake.gui.element.impl;
 
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.InteractiveWidget;
-import io.github.sst.remake.gui.element.impl.drop.GridLayoutVisitor;
+import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
 import io.github.sst.remake.gui.element.impl.drop.Sub;
+import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;

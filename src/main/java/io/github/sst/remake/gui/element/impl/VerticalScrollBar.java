@@ -3,8 +3,8 @@ package io.github.sst.remake.gui.element.impl;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.gui.GuiComponent;
 import io.github.sst.remake.gui.element.impl.scroll.VerticalScrollBarButton;
+import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.gui.panel.Widget;
-import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.gui.interfaces.OffsetProvider;
 import io.github.sst.remake.util.io.GsonUtils;
 import io.github.sst.remake.util.math.TimerUtils;
@@ -33,8 +33,8 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
     @Override
     public void onScroll(float scroll) {
         super.onScroll(scroll);
-        if (this.parent != null && this.parent.isMouseOverComponentConsideringZOrder(this.getMouseX(), this.getMouseY(), false) || ((ScrollableContentPanel) this.parent).field21208) {
-            float var4 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeight();
+        if (this.parent != null && this.parent.isMouseOverComponentConsideringZOrder(this.getMouseX(), this.getMouseY(), false) || ((ScrollablePanel) this.parent).field21208) {
+            float var4 = (float) ((ScrollablePanel) this.getParent()).getButton().getHeight();
             float var5 = (float) this.getParent().getHeight();
             if (var4 == 0.0F) {
                 return;
@@ -46,7 +46,7 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
             }
 
             this.offset = this.offset
-                    - Math.round(!(scroll < 0.0F) ? (float) ((ScrollableContentPanel) this.parent).field21207 * scroll : 1.0F * (float) ((ScrollableContentPanel) this.parent).field21207 * scroll);
+                    - Math.round(!(scroll < 0.0F) ? (float) ((ScrollablePanel) this.parent).field21207 * scroll : 1.0F * (float) ((ScrollablePanel) this.parent).field21207 * scroll);
             this.field20797.reset();
             this.field20797.start();
         }
@@ -67,7 +67,7 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
                 )
         );
         this.field20794 = Math.min(Math.max(0.0F, this.field20794), 1.0F);
-        float var5 = (float) ((ScrollableContentPanel) this.getParent()).getButton().getHeight();
+        float var5 = (float) ((ScrollablePanel) this.getParent()).getButton().getHeight();
         float var6 = (float) this.getParent().getHeight();
         float var7 = (float) this.getHeight();
         float var8 = var6 / var5;
@@ -100,10 +100,10 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
                 int var6 = mouseY - this.getAbsoluteY();
                 if (var6 <= this.field20796.getY() + this.field20796.getHeight()) {
                     if (var6 < this.field20796.getY()) {
-                        this.offset = this.offset - (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeight() / 4.0F);
+                        this.offset = this.offset - (int) ((float) ((ScrollablePanel) this.parent).getButton().getHeight() / 4.0F);
                     }
                 } else {
-                    this.offset = this.offset + (int) ((float) ((ScrollableContentPanel) this.parent).getButton().getHeight() / 4.0F);
+                    this.offset = this.offset + (int) ((float) ((ScrollablePanel) this.parent).getButton().getHeight() / 4.0F);
                 }
             }
 

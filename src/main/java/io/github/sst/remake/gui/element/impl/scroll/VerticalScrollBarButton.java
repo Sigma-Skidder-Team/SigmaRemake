@@ -1,22 +1,22 @@
 package io.github.sst.remake.gui.element.impl.scroll;
 
 import io.github.sst.remake.gui.element.impl.VerticalScrollBar;
+import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.gui.panel.Widget;
-import io.github.sst.remake.gui.panel.ScrollableContentPanel;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class VerticalScrollBarButton extends Widget {
-    private final ScrollableContentPanel field20780;
+    private final ScrollablePanel field20780;
     public final VerticalScrollBar field20781;
 
     public VerticalScrollBarButton(VerticalScrollBar var1, VerticalScrollBar var2, int var3) {
         super(var2, "verticalScrollBarButton", 0, 0, var3, 10, true);
         this.field20781 = var1;
         this.field20886 = true;
-        this.field20780 = (ScrollableContentPanel) var2.getParent();
+        this.field20780 = (ScrollablePanel) var2.getParent();
         this.setListening(false);
     }
 
