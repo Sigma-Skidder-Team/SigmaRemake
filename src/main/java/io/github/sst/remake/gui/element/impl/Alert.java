@@ -89,7 +89,7 @@ public class Alert extends Element {
                         this.screen.addToList(button = new Button(this.screen, "Item" + var17, 0, var18, this.field21284, component.field44773, ColorHelper.DEFAULT_COLOR, component.text));
                         this.buttons.add(button);
                         button.field20586 = 4;
-                        button.onClick((var1x, var2x) -> this.onButtonClick(button));
+                        button.onClick((parent, mouseButton) -> this.onButtonClick(button));
                     }
                 } else {
                     TextField var22;

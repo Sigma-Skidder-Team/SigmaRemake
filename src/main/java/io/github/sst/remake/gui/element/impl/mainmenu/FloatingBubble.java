@@ -8,71 +8,80 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
 public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
-    public float field20928;
-    public float field20929;
-    public float field20930;
-    public float field20931;
-    public float field20932;
-    public float field20933;
-    public float field20934;
-    public int field20936;
-    public int field20937;
-    public int field20938 = 114;
+    private final JelloMenu parent;
 
-    public FloatingBubble(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6, int var7) {
-        super(var1, var2, var3, var4, var5, var5);
-        this.field20928 = this.field20930 = (float) var6;
-        this.field20929 = this.field20931 = (float) var7;
-        this.field20932 = (float) var3;
-        this.field20933 = (float) var4;
+    public float velocityX;
+    public float velocityY;
+
+    public float baseVelocityX;
+    public float baseVelocityY;
+
+    public float posX;
+    public float posY;
+
+    public float interactionStrength;
+
+    public int lastMouseX;
+    public int lastMouseY;
+
+    public int interactionRadius = 114;
+
+    public FloatingBubble(JelloMenu parent, String id, int x, int y, int radius, int velocityX, int velocityY) {
+        super(parent, id, x, y, radius, radius);
+        this.parent = parent;
+        this.velocityX = this.baseVelocityX = (float) velocityX;
+        this.velocityY = this.baseVelocityY = (float) velocityY;
+        this.posX = (float) x;
+        this.posY = (float) y;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.field20932 == -9999.0F || this.field20933 == -9999.0F) {
-            this.field20932 = (float) this.x;
-            this.field20933 = (float) this.y;
+        if (this.posX == -9999.0F || this.posY == -9999.0F) {
+            this.posX = (float) this.x;
+            this.posY = (float) this.y;
         }
 
-        this.field20932 = this.field20932 + this.field20928 * JelloMenu.field20982;
-        this.field20933 = this.field20933 + this.field20929 * JelloMenu.field20982;
-        this.x = Math.round(this.field20932);
-        this.y = Math.round(this.field20933);
-        if (!(this.field20932 + (float) this.width < 0.0F)) {
-            if (this.field20932 > (float) client.getWindow().getWidth()) {
-                this.field20932 = (float) (-this.width);
+        this.posX = this.posX + this.velocityX * parent.deltaTime;
+        this.posY = this.posY + this.velocityY * parent.deltaTime;
+        this.x = Math.round(this.posX);
+        this.y = Math.round(this.posY);
+
+        if (!(this.posX + (float) this.width < 0.0F)) {
+            if (this.posX > (float) client.getWindow().getWidth()) {
+                this.posX = (float) (-this.width);
             }
         } else {
-            this.field20932 = (float) client.getWindow().getWidth();
+            this.posX = (float) client.getWindow().getWidth();
         }
 
-        if (!(this.field20933 + (float) this.height < 0.0F)) {
-            if (this.field20933 > (float) client.getWindow().getHeight()) {
-                this.field20933 = (float) (-this.height);
+        if (!(this.posY + (float) this.height < 0.0F)) {
+            if (this.posY > (float) client.getWindow().getHeight()) {
+                this.posY = (float) (-this.height);
             }
         } else {
-            this.field20933 = (float) client.getWindow().getHeight();
+            this.posY = (float) client.getWindow().getHeight();
         }
 
-        float var5 = (float) (mouseX - this.getAbsoluteX());
-        float var6 = (float) (mouseY - this.getAbsoluteY());
-        this.field20934 = (float) (1.0 - Math.sqrt(var5 * var5 + var6 * var6) / (double) this.field20938);
-        if (!(Math.sqrt(var5 * var5 + var6 * var6) < (double) this.field20938)) {
-            this.field20928 = this.field20928 - (this.field20928 - this.field20930) * 0.05F * JelloMenu.field20982;
-            this.field20929 = this.field20929 - (this.field20929 - this.field20931) * 0.05F * JelloMenu.field20982;
+        float x = (float) (mouseX - this.getAbsoluteX());
+        float y = (float) (mouseY - this.getAbsoluteY());
+        this.interactionStrength = (float) (1.0 - Math.sqrt(x * x + y * y) / (double) this.interactionRadius);
+        if (!(Math.sqrt(x * x + y * y) < (double) this.interactionRadius)) {
+            this.velocityX = this.velocityX - (this.velocityX - this.baseVelocityX) * 0.05F * parent.deltaTime;
+            this.velocityY = this.velocityY - (this.velocityY - this.baseVelocityY) * 0.05F * parent.deltaTime;
         } else {
-            float var7 = this.field20932 - (float) mouseX;
-            float var8 = this.field20933 - (float) mouseY;
-            float var9 = (float) Math.sqrt(var7 * var7 + var8 * var8);
-            float var10 = var9 / 2.0F;
-            float var11 = var7 / var10;
-            float var12 = var8 / var10;
-            this.field20928 = this.field20928 + var11 / (1.0F + this.field20934) * JelloMenu.field20982;
-            this.field20929 = this.field20929 + var12 / (1.0F + this.field20934) * JelloMenu.field20982;
+            float deltaX = this.posX - (float) mouseX;
+            float deltaY = this.posY - (float) mouseY;
+            float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            float forceDivisor = distance / 2.0F;
+            float forceX = deltaX / forceDivisor;
+            float forceY = deltaY / forceDivisor;
+            this.velocityX = this.velocityX + forceX / (1.0F + this.interactionStrength) * parent.deltaTime;
+            this.velocityY = this.velocityY + forceY / (1.0F + this.interactionStrength) * parent.deltaTime;
         }
 
-        this.field20936 = mouseX;
-        this.field20937 = mouseY;
+        this.lastMouseX = mouseX;
+        this.lastMouseY = mouseY;
     }
 
     @Override
@@ -81,7 +90,7 @@ public class FloatingBubble extends CustomGuiScreen implements IMinecraft {
                 (float) this.x,
                 (float) this.y,
                 (float) this.getWidth(),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.07F + (!(this.field20934 > 0.0F) ? 0.0F : this.field20934 * 0.3F))
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.07F + (!(this.interactionStrength > 0.0F) ? 0.0F : this.interactionStrength * 0.3F))
         );
         super.draw(partialTicks);
     }

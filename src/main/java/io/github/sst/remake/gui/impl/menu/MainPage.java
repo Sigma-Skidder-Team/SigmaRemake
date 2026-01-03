@@ -20,6 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
+import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 
@@ -36,75 +37,27 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
     public MainPage(CustomGuiScreen var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
-        TrueTypeFont font = FontUtils.HELVETICA_LIGHT_20;
-        int var17 = 0;
+
+        TrueTypeFont textFont = FontUtils.HELVETICA_LIGHT_20;
 
         String prod = "© Sigma Prod";
-
         String version = "Jello for Fabric " + Client.VERSION;
 
-        this.addToList(
-                this.singleplayerButton = new RoundButton(
-                        this,
-                        "Singleplayer",
-                        this.method13447(var17++),
-                        this.method13448(),
-                        128,
-                        128,
-                        Resources.singleplayerPNG,
-                        new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
-                )
-        );
+        int xOffset = 0;
+        this.addToList(this.singleplayerButton = new RoundButton(this, "Singleplayer", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.singleplayerPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
+        this.addToList(this.multiplayerButton = new RoundButton(this, "Multiplayer", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.multiplayerPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
+        this.addToList(this.realmsButton = new RoundButton(this, "Realms", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.shopPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
+        this.addToList(this.optionsButton = new RoundButton(this, "Options", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.optionsPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
+        this.addToList(this.altManagerButton = new RoundButton(this, "Alt Manager", this.calculateButtonX(xOffset), this.calculateButtonY(), 128, 128, Resources.altPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
 
-        this.addToList(
-                this.multiplayerButton = new RoundButton(
-                        this,
-                        "Multiplayer",
-                        this.method13447(var17++),
-                        this.method13448(),
-                        128,
-                        128,
-                        Resources.multiplayerPNG,
-                        new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
-                )
-        );
-
-        this.addToList(
-                this.realmsButton = new RoundButton(
-                        this,
-                        "Realms",
-                        this.method13447(var17++),
-                        this.method13448(),
-                        128,
-                        128,
-                        Resources.shopPNG,
-                        new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
-                )
-        );
-
-        this.addToList(
-                this.optionsButton = new RoundButton(
-                        this,
-                        "Options",
-                        this.method13447(var17++),
-                        this.method13448(),
-                        128,
-                        128,
-                        Resources.optionsPNG,
-                        new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
-                )
-        );
-
-        this.addToList(this.altManagerButton = new RoundButton(this, "Alt Manager", this.method13447(var17++), this.method13448(), 128, 128, Resources.altPNG, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
-
-        this.addToList(new Text(this, "Copyright", 10, this.getHeight() - 31, font.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, font, true));
-        this.addToList(new Text(this, "Version", this.getWidth() - font.getWidth(version) - 9, this.getHeight() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, font, true));
+        this.addToList(new Text(this, "Copyright", 10, this.getHeight() - 31, textFont.getWidth(prod), 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), prod, textFont, true));
+        this.addToList(new Text(this, "Version", this.getWidth() - textFont.getWidth(version) - 9, this.getHeight() - 31, 128, 128, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), version, textFont, true));
 
         this.addToList(this.changelogButton = new TextButton(this, "changelog", 432, 24, 110, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)), "Changelog", FontUtils.HELVETICA_LIGHT_20));
         this.addToList(this.quitButton = new TextButton(this, "quit", 30, 24, 50, 50, new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)), "Exit", FontUtils.HELVETICA_LIGHT_20));
 
-        this.quitButton.onClick((var1x, var2x) -> {
-            ((JelloMenu) this.getParent()).method13341();
+        this.quitButton.onClick((parent, mouseButton) -> {
+            ((JelloMenu) this.getParent()).startQuitAnimation();
             new Thread(() -> {
                 try {
                     Thread.sleep(2000L);
@@ -115,17 +68,18 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
             }).start();
         });
 
-        this.changelogButton.onClick((var1x, var2x) -> ((JelloMenu) this.getParent()).animateIn());
-        this.singleplayerButton.onClick((var1x, var2x) -> this.displayGUI(new SelectWorldScreen(client.currentScreen)));
-        this.multiplayerButton.onClick((var1x, var2x) -> this.displayGUI(new MultiplayerScreen(client.currentScreen)));
-        this.optionsButton.onClick((var1x, var2x) -> this.displayGUI(new OptionsScreen(client.currentScreen, client.options)));
-        this.altManagerButton.onClick((var1x, var2x) -> this.displayScreen(new AltManagerScreen()));
-        this.realmsButton.onClick((var1x, var2x) -> this.playClickSound());
+        this.changelogButton.onClick((parent, mouseButton) -> ((JelloMenu) this.getParent()).showChangelog());
+        this.singleplayerButton.onClick((parent, mouseButton) -> this.openMinecraftScreen(new SelectWorldScreen(client.currentScreen)));
+        this.multiplayerButton.onClick((parent, mouseButton) -> this.openMinecraftScreen(new MultiplayerScreen(client.currentScreen)));
+        this.optionsButton.onClick((parent, mouseButton) -> this.openMinecraftScreen(new OptionsScreen(client.currentScreen, client.options)));
+        this.altManagerButton.onClick((parent, mouseButton) -> this.openClientScreen(new AltManagerScreen()));
+        this.realmsButton.onClick((parent, mouseButton) -> this.openMinecraftScreen(new RealmsMainScreen(client.currentScreen)));
     }
 
     @Override
     public void draw(float partialTicks) {
         this.applyScaleTransforms();
+
         Texture largeLogo = Resources.logoLargePNG;
         int imageWidth = largeLogo.getImageWidth();
         int imageHeight = largeLogo.getImageHeight();
@@ -134,14 +88,8 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
             largeLogo = Resources.logoLarge2xPNG;
         }
 
-        RenderUtils.drawImage(
-                (float) (this.getWidth() / 2 - imageWidth / 2),
-                (float) (this.getHeight() / 2 - imageHeight),
-                (float) imageWidth,
-                (float) imageHeight,
-                largeLogo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
-        );
+        RenderUtils.drawImage((float) (this.getWidth() / 2 - imageWidth / 2), (float) (this.getHeight() / 2 - imageHeight), (float) imageWidth, (float) imageHeight, largeLogo, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
+
         super.draw(partialTicks);
     }
 
@@ -152,25 +100,25 @@ public class MainPage extends CustomGuiScreen implements IMinecraft {
         super.updatePanelDimensions(mouseX, mouseY);
     }
 
-    public void playClickSound() {
+    private void playClickSound() {
         SoundUtils.play("clicksound");
     }
 
-    public void displayGUI(net.minecraft.client.gui.screen.Screen var1) {
+    private void openMinecraftScreen(net.minecraft.client.gui.screen.Screen var1) {
         MinecraftClient.getInstance().openScreen(var1);
         this.playClickSound();
     }
 
-    public void displayScreen(Screen screen) {
+    private void openClientScreen(Screen screen) {
         Client.INSTANCE.screenManager.handle(screen);
         this.playClickSound();
     }
 
-    private int method13447(int var1) {
-        return this.getWidth() / 2 - 305 + var1 * 128 + var1 * -6;
+    private int calculateButtonX(int index) {
+        return this.getWidth() / 2 - 305 + index * 128 + index * -6;
     }
 
-    private int method13448() {
+    private int calculateButtonY() {
         return this.getHeight() / 2 + 14;
     }
 }
