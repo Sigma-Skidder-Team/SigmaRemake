@@ -13,9 +13,9 @@ public class Keyboard extends InteractiveWidget {
         super(var1, var2, var3, var4, 1060, 357, false);
 
         for (Keys key : Keys.values()) {
-            Child var11;
+            KeyButton var11;
             this.addToList(
-                    var11 = new Child(
+                    var11 = new KeyButton(
                             this,
                             "KEY_" + key.keycode + this.getChildren().size(),
                             key.getX(),
@@ -62,8 +62,8 @@ public class Keyboard extends InteractiveWidget {
 
     public void method13104() {
         for (GuiComponent var4 : this.getChildren()) {
-            if (var4 instanceof Child) {
-                Child var5 = (Child) var4;
+            if (var4 instanceof KeyButton) {
+                KeyButton var5 = (KeyButton) var4;
                 var5.method13102();
             }
         }

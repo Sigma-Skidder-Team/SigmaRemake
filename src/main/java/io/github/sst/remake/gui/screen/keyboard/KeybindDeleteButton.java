@@ -6,10 +6,10 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
-public class DeleteButton extends InteractiveWidget {
+public class KeybindDeleteButton extends InteractiveWidget {
     public float hoverAnimationProgress;
 
-    public DeleteButton(GuiComponent parent, String name, int x, int y, int width, int height) {
+    public KeybindDeleteButton(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, height, false);
     }
 

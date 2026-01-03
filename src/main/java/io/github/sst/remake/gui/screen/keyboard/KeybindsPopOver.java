@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PopOver extends InteractiveWidget {
+public class KeybindsPopOver extends InteractiveWidget {
     private final int field21376;
     private final AnimationUtils field21377;
     private boolean field21378 = false;
     private final List<AddButtonListener> addButtonListeners = new ArrayList<AddButtonListener>();
 
-    public PopOver(GuiComponent var1, String var2, int var3, int var4, int var5, String var6) {
+    public KeybindsPopOver(GuiComponent var1, String var2, int var3, int var4, int var5, String var6) {
         super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.DEFAULT_COLOR, var6, false);
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
             this.y += 10;
@@ -172,6 +172,6 @@ public class PopOver extends InteractiveWidget {
     }
 
     public interface AddButtonListener {
-        void onAddButtonClicked(PopOver popover);
+        void onAddButtonClicked(KeybindsPopOver popover);
     }
 }

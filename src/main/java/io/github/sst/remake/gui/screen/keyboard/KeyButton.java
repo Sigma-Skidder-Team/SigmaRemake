@@ -8,13 +8,13 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
-public class Child extends InteractiveWidget {
+public class KeyButton extends InteractiveWidget {
     public final int field20690;
     private float field20691;
     private boolean field20692 = false;
     private boolean field20693 = false;
 
-    public Child(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, String var7, int var8) {
+    public KeyButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, String var7, int var8) {
         super(var1, var2, var3, var4, var5, var6, ColorHelper.DEFAULT_COLOR, var7, false);
         this.field20690 = var8;
         this.method13102();

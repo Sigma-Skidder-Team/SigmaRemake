@@ -21,9 +21,9 @@ import java.util.Map.Entry;
 
 public class KeyboardScreen extends Screen implements IMinecraft {
     public Date field20955;
-    public PopOver field20956;
+    public KeybindsPopOver field20956;
     public Keyboard field20957;
-    public ModsPanel field20960;
+    public ActionSelectionPanel field20960;
     public int field20961;
 
     public KeyboardScreen() {
@@ -37,7 +37,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                             boolean popOver = false;
 
                             for (GuiComponent child : this.getChildren()) {
-                                if (child instanceof PopOver) {
+                                if (child instanceof KeybindsPopOver) {
                                     popOver = true;
                                     break;
                                 }
@@ -48,7 +48,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                             } else {
                                 int[] var8 = this.field20957.method13105(this.field20957.field20696);
                                 String bind = BindUtils.getKeyName(this.field20957.field20696);
-                                this.field20956 = new PopOver(
+                                this.field20956 = new KeybindsPopOver(
                                         this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, bind
                                 );
                                 this.field20956.onPress(var1x -> this.method13329(this.field20957));
@@ -84,8 +84,8 @@ public class KeyboardScreen extends Screen implements IMinecraft {
     private void method13330() {
         this.addRunnable(() -> {
             for (GuiComponent child : this.getChildren()) {
-                if (child instanceof PopOver) {
-                    PopOver pop = (PopOver) child;
+                if (child instanceof KeybindsPopOver) {
+                    KeybindsPopOver pop = (KeybindsPopOver) child;
                     pop.method13712();
                 }
             }
@@ -94,7 +94,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
 
     private void method13331() {
         this.addRunnable(() -> {
-            this.addToList(this.field20960 = new ModsPanel(this, "mods", 0, 0, width, height));
+            this.addToList(this.field20960 = new ActionSelectionPanel(this, "mods", 0, 0, width, height));
             this.field20960.addBindableActionSelectedListener((panel, action) -> {
                 if (action != null) {
                     action.setBind(this.field20957.field20696);
@@ -109,8 +109,8 @@ public class KeyboardScreen extends Screen implements IMinecraft {
     public void method13332() {
         this.addRunnable(() -> {
             for (GuiComponent child : this.getChildren()) {
-                if (child instanceof PopOver) {
-                    PopOver pop = (PopOver) child;
+                if (child instanceof KeybindsPopOver) {
+                    KeybindsPopOver pop = (KeybindsPopOver) child;
                     pop.method13712();
                     this.field20957.method13104();
                     pop.setReAddChildren(true);

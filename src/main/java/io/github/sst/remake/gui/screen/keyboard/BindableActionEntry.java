@@ -17,12 +17,12 @@ public class BindableActionEntry extends InteractiveWidget {
     public Date animationStartDate;
     public int entryIndex;
     public Date anotherAnimationDate;
-    public DeleteButton deleteButton;
+    public KeybindDeleteButton keybindDeleteButton;
 
     public BindableActionEntry(GuiComponent parent, String name, int x, int y, int width, int height, BindableAction bindableAction, int entryIndex) {
         super(parent, name, x, y, width, height, false);
-        this.addToList(this.deleteButton = new DeleteButton(this, "delete", 200, 20, 20, 20));
-        this.deleteButton.onClick((element, button) -> {
+        this.addToList(this.keybindDeleteButton = new KeybindDeleteButton(this, "delete", 200, 20, 20, 20));
+        this.keybindDeleteButton.onClick((element, button) -> {
             this.animationStartDate = new Date();
             this.callUIHandlers();
         });
@@ -75,7 +75,7 @@ public class BindableActionEntry extends InteractiveWidget {
                 this.bindableAction.getType(),
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F * partialTicks)
         );
-        this.deleteButton.setY((int) ((float) this.height / 2.0F - 7.5F));
+        this.keybindDeleteButton.setY((int) ((float) this.height / 2.0F - 7.5F));
         super.draw(partialTicks);
         ScissorUtils.restoreScissor();
     }
