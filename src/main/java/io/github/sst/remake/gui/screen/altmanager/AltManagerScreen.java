@@ -43,7 +43,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private final float field21014 = 0.65F;
     private final float field21015 = 1.0F - this.field21014;
     private final int titleOffset = 30;
-    private final AccountElement accountElement;
+    private final AccountDetailPanel accountDetailPanel;
     private AccountCompareType accountSortType = AccountCompareType.ADDED;
     private String accountFilter = "";
     private final TextField searchBox;
@@ -99,7 +99,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.alts.method13515(false);
         this.altView
                 .addToList(
-                        this.accountElement = new AccountElement(
+                        this.accountDetailPanel = new AccountDetailPanel(
                                 this.altView,
                                 "info",
                                 (int) (
@@ -172,9 +172,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     }
 
     private void method13360(Account acc, boolean var2) {
-        AccountUI accountUI;
+        AccountListEntry accountListEntry;
         this.alts.addToList(
-                accountUI = new AccountUI(
+                accountListEntry = new AccountListEntry(
                         this.alts,
                         acc.name,
                         this.titleOffset,
@@ -185,46 +185,46 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 )
         );
         if (!var2) {
-            accountUI.field20805 = new AnimationUtils(0, 0);
+            accountListEntry.field20805 = new AnimationUtils(0, 0);
         }
 
         if (Client.INSTANCE.accountManager.currentAccount == acc) {
-            accountUI.setAccountListRefreshing(true);
+            accountListEntry.setAccountListRefreshing(true);
         }
 
-        accountUI.addMouseButtonCallback((var2x, var3) -> {
+        accountListEntry.addMouseButtonCallback((var2x, var3) -> {
             if (var3 != 0) {
                 this.deleteAlert.onPress(element -> {
-                    Client.INSTANCE.accountManager.remove(accountUI.selectedAccount);
-                    this.accountElement.handleSelectedAccount(null);
+                    Client.INSTANCE.accountManager.remove(accountListEntry.selectedAccount);
+                    this.accountDetailPanel.handleSelectedAccount(null);
                     this.updateAccountList(false);
                 });
                 this.deleteAlert.setFocused(true);
                 this.deleteAlert.method13603(true);
             } else {
-                this.loginToAccount(accountUI);
+                this.loginToAccount(accountListEntry);
 
-                this.accountElement.handleSelectedAccount(accountUI.selectedAccount);
+                this.accountDetailPanel.handleSelectedAccount(accountListEntry.selectedAccount);
 
                 for (GuiComponent var7 : this.alts.getChildren()) {
                     if (!(var7 instanceof VerticalScrollBar)) {
                         for (GuiComponent var9 : var7.getChildren()) {
-                            ((AccountUI) var9).method13166(false);
+                            ((AccountListEntry) var9).method13166(false);
                         }
                     }
                 }
 
-                accountUI.method13166(true);
+                accountListEntry.method13166(true);
             }
         });
 
         if (Client.INSTANCE.accountManager.currentAccount == acc) {
-            this.accountElement.handleSelectedAccount(accountUI.selectedAccount);
-            accountUI.method13167(true, true);
+            this.accountDetailPanel.handleSelectedAccount(accountListEntry.selectedAccount);
+            accountListEntry.method13167(true, true);
         }
     }
 
-    public void loginToAccount(AccountUI account) {
+    public void loginToAccount(AccountListEntry account) {
         account.setLoadingIndicator(true);
 
         new Thread(() -> {
@@ -357,19 +357,19 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         for (GuiComponent var5 : this.alts.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent var7 : var5.getChildren()) {
-                    if (var7 instanceof AccountUI) {
-                        AccountUI accountUI = (AccountUI) var7;
+                    if (var7 instanceof AccountListEntry) {
+                        AccountListEntry accountListEntry = (AccountListEntry) var7;
                         if (var7.getY() <= client.getWindow().getHeight() && this.alts.getScrollOffset() == 0) {
                             if (var3 > 0.2F) {
-                                accountUI.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                                accountListEntry.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
                             }
 
-                            float var9 = VecUtils.interpolate(accountUI.field20805.calcPercent(), 0.51, 0.82, 0.0, 0.99);
-                            accountUI.setTranslateX((int) (-((1.0F - var9) * (float) (var7.getWidth() + 30))));
-                            var3 = accountUI.field20805.calcPercent();
+                            float var9 = VecUtils.interpolate(accountListEntry.field20805.calcPercent(), 0.51, 0.82, 0.0, 0.99);
+                            accountListEntry.setTranslateX((int) (-((1.0F - var9) * (float) (var7.getWidth() + 30))));
+                            var3 = accountListEntry.field20805.calcPercent();
                         } else {
-                            accountUI.setTranslateX(0);
-                            accountUI.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                            accountListEntry.setTranslateX(0);
+                            accountListEntry.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
                         }
                     }
                 }
@@ -381,8 +381,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         for (GuiComponent screen : this.alts.getChildren()) {
             if (!(screen instanceof VerticalScrollBar)) {
                 for (GuiComponent child : screen.getChildren()) {
-                    AccountUI accountUI = (AccountUI) child;
-                    accountUI.setAccountListRefreshing(false);
+                    AccountListEntry accountListEntry = (AccountListEntry) child;
+                    accountListEntry.setAccountListRefreshing(false);
                 }
             }
         }

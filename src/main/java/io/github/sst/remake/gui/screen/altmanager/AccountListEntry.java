@@ -13,7 +13,7 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class AccountUI extends Widget {
+public class AccountListEntry extends Widget {
     public Account selectedAccount;
     private final LoadingIndicator loadingIndicator;
     private boolean refreshing = false;
@@ -25,7 +25,7 @@ public class AccountUI extends Widget {
     private int lastErrorState = 0;
     private int color = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 20.0F);
 
-    public AccountUI(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Account var7) {
+    public AccountListEntry(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Account var7) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.selectedAccount = var7;
         this.addToList(this.loadingIndicator = new LoadingIndicator(this, "loading", var5 - 50, 35, 30, 30));

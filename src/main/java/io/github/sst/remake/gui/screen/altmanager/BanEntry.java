@@ -28,7 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Date;
 
-public class BanElement extends Widget {
+public class BanEntry extends Widget {
     public AccountBan ban = null;
     public ServerInfo info = null;
     public Texture servericon = null;
@@ -36,7 +36,7 @@ public class BanElement extends Widget {
     private BufferedImage field21247;
     private final AnimationUtils field21248;
 
-    public BanElement(GuiComponent parent, String text, int x, int y, int width, int height, AccountBan ban) {
+    public BanEntry(GuiComponent parent, String text, int x, int y, int width, int height, AccountBan ban) {
         super(parent, text, x, y, width, height, false);
         this.ban = ban;
         this.info = ban.getServer();

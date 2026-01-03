@@ -15,19 +15,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountElement extends Widget {
+public class AccountDetailPanel extends Widget {
     private Account currentAccount = null;
-    private final List<BanElement> bans = new ArrayList<>();
+    private final List<BanEntry> bans = new ArrayList<>();
     private float field20815 = 0.0F;
 
-    public AccountElement(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
+    public AccountDetailPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
     }
 
     public void handleSelectedAccount(Account account) {
         this.currentAccount = account;
 
-        for (BanElement ban : this.bans) {
+        for (BanEntry ban : this.bans) {
             this.queueChildRemoval(ban);
         }
 
@@ -41,7 +41,7 @@ public class AccountElement extends Widget {
 
             for (AccountBan var9 : accountBans) {
                 if (var9.getServer() != null && var9.getServer().getIcon() != null) {
-                    BanElement var10 = new BanElement(
+                    BanEntry var10 = new BanEntry(
                             this, accountBans.get(index).address, 40, 100 + index * (var14 + var7), this.width - 90, var14, var9
                     );
                     this.addToList(var10);
