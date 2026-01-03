@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.framework.widget.Image;
-import io.github.sst.remake.gui.screen.clickgui.config.ConfigScreen;
+import io.github.sst.remake.gui.screen.clickgui.config.ProfileScreen;
 import io.github.sst.remake.gui.screen.clickgui.overlay.BrainFreezeOverlay;
 import io.github.sst.remake.gui.screen.holder.ClickGuiHolder;
 import io.github.sst.remake.module.Category;
@@ -32,7 +32,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     private static boolean animationCompleted;
     private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
     //public MusicPlayer musicPlayer;
-    public ConfigScreen configScreen;
+    public ProfileScreen profileScreen;
     public BrainFreezeOverlay brainFreeze;
     public ModuleSettingsDialog moduleSettingsDialog;
     public CategoryPanel categoryPanel = null;
@@ -72,11 +72,11 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
         moreButton.setListening(false);
         moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
-            if (this.configScreen != null && this.hasChild(this.configScreen)) {
-                this.queueChildRemoval(this.configScreen);
+            if (this.profileScreen != null && this.hasChild(this.profileScreen)) {
+                this.queueChildRemoval(this.profileScreen);
             } else {
-                this.addToList(this.configScreen = new ConfigScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
-                this.configScreen.setReAddChildren(true);
+                this.addToList(this.profileScreen = new ProfileScreen(this, "morepopover", this.getWidth() - 14, this.getHeight() - 14));
+                this.profileScreen.setReAddChildren(true);
             }
         }));
 
@@ -98,18 +98,18 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
         this.brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule(BrainFreezeModule.class).enabled);
 
-        if (this.configScreen != null) {
-            int xOver = mouseX - this.configScreen.getAbsoluteX();
-            int yOver = mouseY - this.configScreen.getAbsoluteY();
+        if (this.profileScreen != null) {
+            int xOver = mouseX - this.profileScreen.getAbsoluteX();
+            int yOver = mouseY - this.profileScreen.getAbsoluteY();
             boolean conditionMet = xOver >= -10 && yOver >= -10;
             if (!conditionMet) {
-                this.configScreen.close();
+                this.profileScreen.close();
             }
         }
 
-        if (this.configScreen != null && this.configScreen.isClosed()) {
-            this.removeChildren(this.configScreen);
-            this.configScreen = null;
+        if (this.profileScreen != null && this.profileScreen.isClosed()) {
+            this.removeChildren(this.profileScreen);
+            this.profileScreen = null;
         }
 
         if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && this.moduleSettingsDialog != null && !this.moduleSettingsDialog.field20671) {

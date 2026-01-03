@@ -18,29 +18,29 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class ConfigGroup extends InteractiveWidget {
+public class OnlineProfilePanel extends InteractiveWidget {
     public AnimationUtils expandAnimation = new AnimationUtils(300, 200, AnimationUtils.Direction.FORWARDS);
     private final int maxHeight;
     private final ScrollablePanel profileList;
     private final OnlineProfileManager onlineProfileManager;
     private final LoadingIndicator loadingIndicator;
 
-    public ConfigGroup(GuiComponent parent, String name, int x, int y, int width, int height) {
+    public OnlineProfilePanel(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, 0, ColorHelper.DEFAULT_COLOR, false);
         this.maxHeight = height;
 
         TextButton blankButton = new TextButton(this, "blankButton", 25, 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Blank"), 30, ColorHelper.DEFAULT_COLOR, "Blank", FontUtils.HELVETICA_LIGHT_20);
 
         blankButton.onClick((var1x, var2x) -> {
-            ConfigScreen configScreen = (ConfigScreen) this.getParent();
-            configScreen.createBlankProfile();
+            ProfileScreen profileScreen = (ProfileScreen) this.getParent();
+            profileScreen.createBlankProfile();
         });
 
         TextButton duplicateButton = new TextButton(this, "dupeButton", width - 25 - FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 30, ColorHelper.DEFAULT_COLOR, "Duplicate", FontUtils.HELVETICA_LIGHT_20);
 
         duplicateButton.onClick((var1x, var2x) -> {
-            ConfigScreen configScreen = (ConfigScreen) this.getParent();
-            configScreen.duplicateSelectedProfile();
+            ProfileScreen profileScreen = (ProfileScreen) this.getParent();
+            profileScreen.duplicateSelectedProfile();
         });
 
         this.loadingIndicator = new LoadingIndicator(this, "loading", (width - 30) / 2, 100, 30, 30);
@@ -53,7 +53,7 @@ public class ConfigGroup extends InteractiveWidget {
 
         this.onlineProfileManager = new OnlineProfileManager();
         this.onlineProfileManager.getOnlineProfileNames(profiles -> {
-            ConfigScreen screen = (ConfigScreen) this.getParent();
+            ProfileScreen screen = (ProfileScreen) this.getParent();
             this.loadingIndicator.setSelfVisible(false);
 
             for (String profile : profiles) {

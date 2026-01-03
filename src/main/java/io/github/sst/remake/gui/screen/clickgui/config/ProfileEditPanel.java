@@ -7,10 +7,10 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class EditButton extends Widget {
+public class ProfileEditPanel extends Widget {
     public final int field20768;
 
-    public EditButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
+    public ProfileEditPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
         this.field20768 = var5;
     }

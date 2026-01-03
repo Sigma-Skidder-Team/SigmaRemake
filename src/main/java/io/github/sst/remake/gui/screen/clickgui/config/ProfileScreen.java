@@ -5,7 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.widget.TextButton;
-import io.github.sst.remake.gui.screen.clickgui.JelloClickGuiScreen;
+import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.manager.impl.ConfigManager;
 import io.github.sst.remake.profile.Profile;
@@ -20,23 +20,23 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigScreen extends InteractiveWidget {
+public class ProfileScreen extends InteractiveWidget {
     public final AnimationUtils openAnimation;
     public ScrollablePanel profileScrollView;
-    public ConfigGroup configGroup;
-    private final List<ProfileGroup> profileGroups = new ArrayList<>();
+    public OnlineProfilePanel onlineProfilePanel;
+    private final List<ProfileListEntry> profileListEntries = new ArrayList<>();
 
-    public ConfigScreen(GuiComponent parent, String name, int x, int y) {
+    public ProfileScreen(GuiComponent parent, String name, int x, int y) {
         super(parent, name, x - 250, y - 500, 250, 500, ColorHelper.DEFAULT_COLOR, false);
         this.openAnimation = new AnimationUtils(300, 100);
         this.setReAddChildren(true);
         this.setListening(false);
         TextButton addButton = new TextButton(this, "addButton", this.width - 55, 0, FontUtils.HELVETICA_LIGHT_25.getWidth("Add"), 69, ColorHelper.DEFAULT_COLOR, "+", FontUtils.HELVETICA_LIGHT_25);
-        addButton.onClick((mouseX, mouseY) -> this.configGroup.setExpanded(true));
+        addButton.onClick((mouseX, mouseY) -> this.onlineProfilePanel.setExpanded(true));
         this.addToList(addButton);
-        this.configGroup = new ConfigGroup(this, "profile", 0, 69, this.width, 200);
-        this.configGroup.setReAddChildren(true);
-        this.addToList(configGroup);
+        this.onlineProfilePanel = new OnlineProfilePanel(this, "profile", 0, 69, this.width, 200);
+        this.onlineProfilePanel.setReAddChildren(true);
+        this.addToList(onlineProfilePanel);
         this.reload();
     }
 
@@ -51,7 +51,7 @@ public class ConfigScreen extends InteractiveWidget {
 
         configManager.saveProfile(currentProfile.clone(currentProfile.name + " Copy " + i), true);
         this.addRunnable(this::reload);
-        this.configGroup.setExpanded(false);
+        this.onlineProfilePanel.setExpanded(false);
     }
 
     public void importProfile(Profile profile) {
@@ -64,7 +64,7 @@ public class ConfigScreen extends InteractiveWidget {
 
         configManager.saveProfile(profile.clone(profile.name + " " + i), true);
         this.addRunnable(this::reload);
-        this.configGroup.setExpanded(false);
+        this.onlineProfilePanel.setExpanded(false);
     }
 
     public void createBlankProfile() {
@@ -77,11 +77,11 @@ public class ConfigScreen extends InteractiveWidget {
 
         configManager.saveProfile(new Profile("New Profile " + i, new JsonObject()), true);
         this.addRunnable(this::reload);
-        this.configGroup.setExpanded(false);
+        this.onlineProfilePanel.setExpanded(false);
     }
 
     public void close() {
-        this.configGroup.expandAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.onlineProfilePanel.expandAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         if (this.openAnimation.getDirection() != AnimationUtils.Direction.FORWARDS) {
             this.openAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
@@ -93,8 +93,8 @@ public class ConfigScreen extends InteractiveWidget {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (mouseY > this.configGroup.getAbsoluteY() + this.configGroup.getHeight()) {
-            this.configGroup.setExpanded(false);
+        if (mouseY > this.onlineProfilePanel.getAbsoluteY() + this.onlineProfilePanel.getHeight()) {
+            this.onlineProfilePanel.setExpanded(false);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -109,28 +109,28 @@ public class ConfigScreen extends InteractiveWidget {
 
         this.addToList(this.profileScrollView = new ScrollablePanel(this, "profileScrollView", 10, 80, this.width - 20, this.height - 80 - 10));
         this.profileScrollView.setScrollOffset(scrollOffset);
-        this.profileGroups.clear();
+        this.profileListEntries.clear();
 
         int i = 0;
         int height = 70;
 
         for (Profile profile : Client.INSTANCE.configManager.profiles) {
-            ProfileGroup profileGroup = new ProfileGroup(this, "profile" + i, 0, height * i, this.profileScrollView.getWidth(), height, profile);
-            this.profileScrollView.addToList(profileGroup);
-            this.profileGroups.add(profileGroup);
+            ProfileListEntry profileListEntry = new ProfileListEntry(this, "profile" + i, 0, height * i, this.profileScrollView.getWidth(), height, profile);
+            this.profileScrollView.addToList(profileListEntry);
+            this.profileListEntries.add(profileListEntry);
             i++;
         }
 
-        JelloClickGuiScreen jelloClickGuiScreen = (JelloClickGuiScreen) this.getParent();
-        jelloClickGuiScreen.updateSideBar();
+        ClickGuiScreen clickGuiScreen = (ClickGuiScreen) this.getParent();
+        clickGuiScreen.updateSideBar();
     }
 
     public void updatePositions() {
         int y = 0;
 
-        for (ProfileGroup profileGroup : this.profileGroups) {
-            profileGroup.setY(y);
-            y += profileGroup.getHeight();
+        for (ProfileListEntry profileListEntry : this.profileListEntries) {
+            profileListEntry.setY(y);
+            y += profileListEntry.getHeight();
         }
     }
 
@@ -166,9 +166,9 @@ public class ConfigScreen extends InteractiveWidget {
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.25F)
         );
         RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) padding, color);
-        float profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
-        if (this.configGroup.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.configGroup.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
+        float profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.onlineProfilePanel.expandAnimation.calcPercent(), 0.0, 0.96, 0.69, 0.99)) * 0.1F;
+        if (this.onlineProfilePanel.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            profileViewScale = 0.9F + (1.0F - VecUtils.interpolate(this.onlineProfilePanel.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 
         this.profileScrollView.setScale(profileViewScale, profileViewScale);

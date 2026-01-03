@@ -16,7 +16,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
-public class ProfileGroup extends Widget {
+public class ProfileListEntry extends Widget {
     public GuiComponent editButtons;
     public AnimationUtils hoverAnimation;
     public AnimationUtils slideAnimation;
@@ -26,7 +26,7 @@ public class ProfileGroup extends Widget {
     public final int editButtonsWidth;
     public final int initialHeight;
 
-    public ProfileGroup(GuiComponent parent, String name, int x, int y, int width, int height, Profile profile) {
+    public ProfileListEntry(GuiComponent parent, String name, int x, int y, int width, int height, Profile profile) {
         super(parent, name, x, y, width, height, false);
         this.editButtonsWidth = (int) ((float) width * 0.8F);
         this.initialHeight = height;
@@ -40,11 +40,11 @@ public class ProfileGroup extends Widget {
         deleteButtonColors.setPrimaryColor(-3254955);
         deleteButtonColors.setSecondaryColor(-4700859);
         deleteButtonColors.setTextColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
-        this.addToList(this.editButtons = new EditButton(this, "edit", width - this.editButtonsWidth, 0, this.editButtonsWidth, height));
-        ConfigButton renameButton;
-        this.editButtons.addToList(renameButton = new ConfigButton(this.editButtons, "rename", 0, 0, this.editButtonsWidth / 2, height, renameButtonColors, "Rename"));
-        ConfigButton deleteButton;
-        this.editButtons.addToList(deleteButton = new ConfigButton(this.editButtons, "remove", this.editButtonsWidth / 2, 0, this.editButtonsWidth / 2, height, deleteButtonColors, "Delete"));
+        this.addToList(this.editButtons = new ProfileEditPanel(this, "edit", width - this.editButtonsWidth, 0, this.editButtonsWidth, height));
+        ProfileActionButton renameButton;
+        this.editButtons.addToList(renameButton = new ProfileActionButton(this.editButtons, "rename", 0, 0, this.editButtonsWidth / 2, height, renameButtonColors, "Rename"));
+        ProfileActionButton deleteButton;
+        this.editButtons.addToList(deleteButton = new ProfileActionButton(this.editButtons, "remove", this.editButtonsWidth / 2, 0, this.editButtonsWidth / 2, height, deleteButtonColors, "Delete"));
         this.editButtons.setHovered(false);
         ColorHelper textFieldColor = new ColorHelper(-892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
         this.addToList(this.profileName = new TextField(this, "profileName", 16, 8, this.getWidth() - 60, 50, textFieldColor, profile.name));
@@ -66,8 +66,8 @@ public class ProfileGroup extends Widget {
         deleteButton.onClick((mouseX, mouseY) -> {
             this.deleteAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
             Client.INSTANCE.configManager.deleteProfile(this.profile);
-            ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
-            configScreen.addRunnable(configScreen::reload);
+            ProfileScreen profileScreen = (ProfileScreen) this.getParent().getParent().getParent();
+            profileScreen.addRunnable(profileScreen::reload);
         });
         renameButton.onClick((mouseX, mouseY) -> {
             this.slideAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
@@ -85,8 +85,8 @@ public class ProfileGroup extends Widget {
                 if (this.slideAnimation.calcPercent() == 0.0F) {
                     Client.INSTANCE.configManager.loadProfile(this.profile);
                     SoundUtils.play("switch");
-                    ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
-                    configScreen.addRunnable(configScreen::reload);
+                    ProfileScreen profileScreen = (ProfileScreen) this.getParent().getParent().getParent();
+                    profileScreen.addRunnable(profileScreen::reload);
                 }
             } else {
                 this.slideAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
@@ -98,8 +98,8 @@ public class ProfileGroup extends Widget {
         this.profileName.setSelfVisible(false);
         this.profileName.setFocused(false);
         Client.INSTANCE.configManager.renameProfile(this.profile, newName);
-        ConfigScreen configScreen = (ConfigScreen) this.getParent().getParent().getParent();
-        configScreen.addRunnable(configScreen::reload);
+        ProfileScreen profileScreen = (ProfileScreen) this.getParent().getParent().getParent();
+        profileScreen.addRunnable(profileScreen::reload);
     }
 
     @Override
