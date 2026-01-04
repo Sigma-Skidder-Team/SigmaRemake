@@ -38,7 +38,7 @@ public class VerticalScrollBarButton extends Widget {
         }
 
         this.setHeight((int) var9);
-        if (!this.field20877 && this.getHeight() != this.parent.getHeight()) {
+        if (!this.dragging && this.getHeight() != this.parent.getHeight()) {
             if (this.field20781.offset >= 0) {
                 if (this.field20781.offset + this.parent.getParent().getHeight() > this.field20780.getButton().getHeight()) {
                     this.field20781.offset = this.field20780.getButton().getHeight() - this.parent.getParent().getHeight();
@@ -71,7 +71,7 @@ public class VerticalScrollBarButton extends Widget {
     @Override
     public void draw(float partialTicks) {
         int var4 = 5;
-        partialTicks *= !this.field20877 ? (!this.isHoveredInHierarchy ? 0.3F : 0.7F) : 0.75F;
+        partialTicks *= !this.dragging ? (!this.isHoveredInHierarchy ? 0.3F : 0.7F) : 0.75F;
         int var5 = this.x;
         int var6 = this.width;
 

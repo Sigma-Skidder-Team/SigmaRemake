@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InteractiveWidget extends Widget {
-    private final List<InteractiveWidgetHandler> interactiveWidgetHandlers = new ArrayList<InteractiveWidgetHandler>();
+    private final List<InteractiveWidgetHandler> handlers = new ArrayList<>();
 
     public InteractiveWidget(GuiComponent screen, String typeThingIdk, int x, int y, int width, int height, boolean var7) {
         super(screen, typeThingIdk, x, y, width, height, var7);
@@ -26,12 +26,12 @@ public class InteractiveWidget extends Widget {
         super(screen, typeThingIdk, x, y, width, height, var7, var8, font, var10);
     }
 
-    public final void onPress(InteractiveWidgetHandler interactiveWidgetHandler) {
-        this.interactiveWidgetHandlers.add(interactiveWidgetHandler);
+    public void onPress(InteractiveWidgetHandler interactiveWidgetHandler) {
+        this.handlers.add(interactiveWidgetHandler);
     }
 
-    public final void callUIHandlers() {
-        for (InteractiveWidgetHandler handler : this.interactiveWidgetHandlers) {
+    public void callUIHandlers() {
+        for (InteractiveWidgetHandler handler : this.handlers) {
             handler.handle(this);
         }
     }
