@@ -9,10 +9,11 @@ Minecraft Sigma Client port for Fabric 1.16.4
 - [x] Waypoint System
 - [ ] Add all Jello GUIs
 - [ ] Fix animation bug
+- [ ] Encode alts.json tokens & whatnot
 
 ## GUIs Left
 - [x] Snake Game
-- [x] Flappy Game
+- [x] Flappy Bird
 - [ ] Music Player
 
 ## Screenshots
