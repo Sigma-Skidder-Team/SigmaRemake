@@ -2,6 +2,7 @@ package io.github.sst.remake.util.client;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.Screen;
+import io.github.sst.remake.gui.screen.bird.BirdGameScreen;
 import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.screen.holder.*;
 import io.github.sst.remake.gui.screen.keyboard.KeyboardScreen;
@@ -35,6 +36,7 @@ public class ScreenUtils implements IMinecraft {
         replacementScreens.put(ClickGuiHolder.class, ClickGuiScreen.class);
         replacementScreens.put(MapsHolder.class, MapsScreen.class);
         replacementScreens.put(SnakeGameHolder.class, SnakeGameScreen.class);
+        replacementScreens.put(BirdGameHolder.class, BirdGameScreen.class);
 
         // Sigma Screen -> Screen Name
         screenToScreenName.put(KeybindsHolder.class, "Keybind Manager");
@@ -42,6 +44,7 @@ public class ScreenUtils implements IMinecraft {
         screenToScreenName.put(ClickGuiHolder.class, "Click GUI");
         screenToScreenName.put(MapsHolder.class, "Maps");
         screenToScreenName.put(SnakeGameHolder.class, "Snake");
+        screenToScreenName.put(BirdGameHolder.class, "Flappy Bird");
     }
 
     public static Screen mcToSigma(net.minecraft.client.gui.screen.Screen screen) {
