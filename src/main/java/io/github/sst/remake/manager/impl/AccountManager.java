@@ -1,6 +1,5 @@
 package io.github.sst.remake.manager.impl;
 
-import io.github.sst.remake.Client;
 import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.manager.Manager;
 import net.minecraft.client.MinecraftClient;
@@ -12,16 +11,6 @@ public class AccountManager extends Manager {
 
     public final List<Account> accounts = new ArrayList<>();
     public Account currentAccount;
-
-    @Override
-    public void init() {
-        Client.INSTANCE.configManager.loadAlts();
-    }
-
-    @Override
-    public void shutdown() {
-        Client.INSTANCE.configManager.saveAlts();
-    }
 
     public boolean login(Account account) {
         this.currentAccount = account;

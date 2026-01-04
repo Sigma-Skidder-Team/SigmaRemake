@@ -41,15 +41,17 @@ public class ConfigManager extends Manager implements IMinecraft {
 
         profiles = ConfigUtils.listAllProfiles();
         loadClientConfig();
-        loadScreenConfig();
+        loadAlts();
         loadProfile("Default");
+        loadScreenConfig();
     }
 
     @Override
     public void shutdown() {
         saveClientConfig();
-        saveScreenConfig(true);
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
+        saveAlts();
+        saveScreenConfig(true);
     }
 
     public void renameProfile(Profile from, String to) {
