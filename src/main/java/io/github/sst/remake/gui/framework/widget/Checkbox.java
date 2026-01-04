@@ -64,7 +64,7 @@ public class Checkbox extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                Resources.checkPNG,
+                Resources.CHECKMARK,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5)
         );
         GL11.glPopMatrix();

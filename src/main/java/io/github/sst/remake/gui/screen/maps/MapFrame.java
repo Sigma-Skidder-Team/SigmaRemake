@@ -192,7 +192,7 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
                         (float) (this.y + Math.round(var20 * var21 / 16.0F) + this.height / 2 - 42),
                         32.0F,
                         46.0F,
-                        Resources.waypointPNG,
+                        Resources.WAYPOINT,
                         var16.color
                 );
             }

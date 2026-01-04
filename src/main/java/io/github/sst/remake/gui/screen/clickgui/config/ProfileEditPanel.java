@@ -25,7 +25,7 @@ public class ProfileEditPanel extends Widget {
             );
             super.draw(partialTicks * (1.0F - var4));
             RenderUtils.drawImage(
-                    0.0F, 0.0F, 20.0F, (float) this.height, Resources.shadowRightPNG, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks)
+                    0.0F, 0.0F, 20.0F, (float) this.height, Resources.SHADOW_RIGHT, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks)
             );
         }
     }

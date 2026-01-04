@@ -68,7 +68,7 @@ public class AccountDetailPanel extends Widget {
                     (float) ((MinecraftClient.getInstance().getWindow().getHeight() - var4 * 342 / 460) / 2 - 60),
                     (float) var4,
                     (float) (var4 * 342 / 460),
-                    Resources.imgPNG
+                    Resources.INFORMATION
             );
             return;
         }

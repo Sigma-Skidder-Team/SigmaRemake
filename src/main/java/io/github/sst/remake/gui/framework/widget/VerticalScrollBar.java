@@ -83,8 +83,8 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
         int var6 = this.x;
         int var7 = this.width;
 
-        RenderUtils.drawImage((float) var6, (float) this.y, (float) var7, 5.0F, Resources.verticalScrollBarTopPNG, 0.45F * partialTicks);
-        RenderUtils.drawImage((float) var6, (float) (this.y + this.height - var4), (float) var7, 5.0F, Resources.verticalScrollBarBottomPNG, 0.45F * partialTicks);
+        RenderUtils.drawImage((float) var6, (float) this.y, (float) var7, 5.0F, Resources.VERTICAL_SCROLL_BAR_TOP, 0.45F * partialTicks);
+        RenderUtils.drawImage((float) var6, (float) (this.y + this.height - var4), (float) var7, 5.0F, Resources.VERTICAL_SCROLL_BAR_BOTTOM, 0.45F * partialTicks);
         RenderUtils.drawRoundedRect((float) var6, (float) (this.y + var4), (float) (var6 + var7), (float) (this.y + this.height - var4), var5);
 
 

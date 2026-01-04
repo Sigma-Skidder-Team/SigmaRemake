@@ -143,7 +143,7 @@ public class CategoryPanel extends Widget {
                     (float) (this.getY() + 60),
                     (float) this.getWidth(),
                     18.0F,
-                    Resources.shadowBottomPNG,
+                    Resources.SHADOW_BOTTOM,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * this.field21195 * 0.5F)
             );
         }

@@ -75,8 +75,8 @@ public class VerticalScrollBarButton extends Widget {
         int var5 = this.x;
         int var6 = this.width;
 
-        RenderUtils.drawImage((float) var5, (float) this.y, (float) var6, (float) var4, Resources.verticalScrollBarTopPNG, partialTicks);
-        RenderUtils.drawImage((float) var5, (float) (this.y + this.height - var4), (float) var6, (float) var4, Resources.verticalScrollBarBottomPNG, partialTicks);
+        RenderUtils.drawImage((float) var5, (float) this.y, (float) var6, (float) var4, Resources.VERTICAL_SCROLL_BAR_TOP, partialTicks);
+        RenderUtils.drawImage((float) var5, (float) (this.y + this.height - var4), (float) var6, (float) var4, Resources.VERTICAL_SCROLL_BAR_BOTTOM, partialTicks);
         RenderUtils.drawRoundedRect(
                 (float) var5,
                 (float) (this.y + var4),

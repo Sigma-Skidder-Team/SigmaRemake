@@ -427,7 +427,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
         float var5 = var4 - this.field21006;
         float var6 = (float) (var3 - this.field21005);
-        RenderUtils.drawImage((float) this.field21005, this.field21006, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.panoramaPNG);
+        RenderUtils.drawImage((float) this.field21005, this.field21006, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.MENU_PANORAMA);
         float var7 = 0.5F;
         if (var4 != this.field21006) {
             this.field21006 += var5 * var7;

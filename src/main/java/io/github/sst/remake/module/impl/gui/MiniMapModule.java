@@ -145,7 +145,7 @@ public class MiniMapModule extends Module {
 
         ScissorUtils.startScissorNoGL(mapX, yOffset, mapX + mapSize, yOffset + mapSize);
 
-        RenderUtils.drawImage(0.0F, 0.0F, 0.0F, 0.0F, Resources.shoutIconPNG);
+        RenderUtils.drawImage(0.0F, 0.0F, 0.0F, 0.0F, Resources.SHOUT_ICON);
 
         float drawX = -scaledWidth / 2.0F + mapSize / 2.0F + offsetX;
         float drawY = -scaledHeight / 2.0F + mapSize / 2.0F + offsetY;

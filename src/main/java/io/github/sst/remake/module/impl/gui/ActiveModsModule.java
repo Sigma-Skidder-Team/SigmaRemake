@@ -134,7 +134,7 @@ public class ActiveModsModule extends Module {
                     (float) (screenHeight - 20),
                     (float) this.font.getWidth(moduleName) * 3.0F,
                     this.font.getHeight() + scale + 40,
-                    Resources.shadowPNG,
+                    Resources.SHADOW,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.36F * transparency * scaleFactor)
             );
             RenderUtils.drawString(

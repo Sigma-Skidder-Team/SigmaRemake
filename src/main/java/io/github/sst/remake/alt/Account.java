@@ -65,7 +65,7 @@ public class Account {
             this.head = SkinUtils.getHead(getFormattedUUID());
         }
 
-        return this.head != null ? this.head : Resources.head;
+        return this.head != null ? this.head : Resources.STEVE_HEAD;
     }
 
     public void updateSkin() {

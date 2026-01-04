@@ -78,7 +78,7 @@ public class AccountListEntry extends Widget {
                                 (float) var5 + (float) (26 * var6) / 100.0F,
                                 18.0F * this.field20803.calcPercent() * (float) var6 / 100.0F,
                                 (float) (47 * var6) / 100.0F,
-                                Resources.selectPNG,
+                                Resources.SELECTED_ICON,
                                 !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
                         );
                     }
@@ -100,7 +100,7 @@ public class AccountListEntry extends Widget {
                 (float) this.y,
                 100.0F,
                 100.0F,
-                Resources.cerclePNG,
+                Resources.OUTLINE,
                 !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.color
         );
     }
@@ -130,7 +130,7 @@ public class AccountListEntry extends Widget {
                 (float) (this.y + 42),
                 17.0F,
                 17.0F,
-                Resources.errorsPNG,
+                Resources.X_ICON,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5 * var1)
         );
         RenderUtils.drawImage(
@@ -138,7 +138,7 @@ public class AccountListEntry extends Widget {
                 (float) (this.y + 45),
                 17.0F,
                 13.0F,
-                Resources.activePNG,
+                Resources.CHECKMARK_ICON,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.loadingProgress * var1)
         );
     }

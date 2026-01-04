@@ -67,7 +67,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         //this.musicPlayer.method13215(true);
         //this.musicPlayer.setSelfVisible(true);
         Image moreButton;
-        this.addToList(moreButton = new Image(this, "more", this.getWidth() - 69, this.getHeight() - 55, 55, 41, Resources.optionsPNG1));
+        this.addToList(moreButton = new Image(this, "more", this.getWidth() - 69, this.getHeight() - 55, 55, 41, Resources.MORE_ICON));
 
         moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
         moreButton.setListening(false);

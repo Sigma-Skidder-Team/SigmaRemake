@@ -15,6 +15,7 @@ import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.blur.SigmaBlurShader;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderEffect;
@@ -61,9 +62,9 @@ public class HUDManager extends Manager implements IMinecraft {
             }
 
             if (!(Client.INSTANCE.screenManager.scaleFactor > 1.0F)) {
-                client.getTextureManager().bindTexture(new Identifier("sigma", "watermark/jello_watermark.png"));
+                client.getTextureManager().bindTexture(Resources.WATERMARK);
             } else {
-                client.getTextureManager().bindTexture(new Identifier("sigma", "watermark/jello_watermark2x.png"));
+                client.getTextureManager().bindTexture(Resources.WATERMARK_2X);
             }
 
             RenderSystem.enableBlend();

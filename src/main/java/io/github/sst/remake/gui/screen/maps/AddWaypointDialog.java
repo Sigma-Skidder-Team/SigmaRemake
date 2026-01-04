@@ -128,7 +128,7 @@ public class AddWaypointDialog extends InteractiveWidget {
                 (float) this.y + (float) ((this.width - 47) / 2) * (!this.field20725 ? 1.0F : -1.58F),
                 18.0F,
                 47.0F,
-                Resources.selectPNG,
+                Resources.SELECTED_ICON,
                 var6
         );
         GL11.glPopMatrix();

@@ -79,7 +79,7 @@ public class RoundButton extends Image {
                 (float) var9 + var10[1] - var11,
                 var10[2] + (var11 * 2),
                 var10[3] + (var11 * 2),
-                Resources.shadowPNG,
+                Resources.SHADOW,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.field20578.calcPercent() * 0.7F * partialTicks)
         );
         RenderUtils.drawImage(
@@ -117,7 +117,7 @@ public class RoundButton extends Image {
                     (float) font.getHeight(var14) / 3.0F,
                     (float) (font.getWidth(var14) * 2),
                     (float) font.getHeight(var14) * 3.0F,
-                    Resources.shadowPNG,
+                    Resources.SHADOW,
                     var5 * 0.6F * partialTicks
             );
             RenderUtils.drawString(

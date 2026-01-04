@@ -58,7 +58,7 @@ public class SearchDialog extends InteractiveWidget {
                 (float) (this.y + 20),
                 20.0F,
                 20.0F,
-                Resources.searchPNG,
+                Resources.SEARCH_ICON,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F)
         );
         List<Module> modules = this.getModules();

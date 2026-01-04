@@ -4,26 +4,24 @@ import io.github.sst.remake.util.math.TimerUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.texture.Texture;
 
-import java.awt.*;
+import java.util.Objects;
 
 public class Notification {
-    public static final int field43601 = 3;
-    public static final int DEFAULT_SHOW_TIME = 4000;
-    public String title;
+    private static final int DEFAULT_SHOW_TIME = 4000;
+    public final TimerUtils timer = new TimerUtils();
+
+    public final String title;
     public String desc;
     public Texture icon;
+
     public int showTime;
-    public TimerUtils time = new TimerUtils();
-    public Color[] field43608 = new Color[field43601];
-    public Color[] field43609 = new Color[field43601];
-    public int field43610 = 0;
 
     public Notification(String title, String desc, int showTime, Texture icon) {
         this.title = title;
         this.desc = desc;
         this.icon = icon;
         this.showTime = showTime;
-        this.time.start();
+        this.timer.start();
     }
 
     public Notification(String title, String desc, Texture icon) {
@@ -31,7 +29,7 @@ public class Notification {
     }
 
     public Notification(String title, String desc, int showTime) {
-        this(title, desc, showTime, Resources.infoIconPNG);
+        this(title, desc, showTime, Resources.INFO_ICON);
     }
 
     public Notification(String title, String desc) {
@@ -39,7 +37,14 @@ public class Notification {
     }
 
     @Override
-    public boolean equals(Object var1) {
-        return var1 instanceof Notification && ((Notification) var1).title.equals(this.title);
+    public boolean equals(Object o) {
+        if (!(o instanceof Notification)) return false;
+        Notification that = (Notification) o;
+        return Objects.equals(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(title);
     }
 }
