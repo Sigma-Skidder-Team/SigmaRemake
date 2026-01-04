@@ -11,9 +11,9 @@ Minecraft Sigma Client port for Fabric 1.16.4
 - [ ] Fix animation bug
 
 ## GUIs Left
+- [x] Snake Game
+- [x] Flappy Game
 - [ ] Music Player
-- [ ] Snake Game
-- [ ] Flappy Game
 
 ## Screenshots
 
