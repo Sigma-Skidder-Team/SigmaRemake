@@ -330,5 +330,9 @@ public class ImageUtils {
 
         return padded;
     }
+    
+    public static BufferedImage captureAndProcessRegion(int x, int y, int width, int height, int downscaleFactor, int blurRadius) {
+        return captureAndProcessRegion(x, y, width, height, downscaleFactor, blurRadius, ClientColors.DEEP_TEAL.getColor(), false);
+    }
 
 }
