@@ -1,9 +1,13 @@
 package io.github.sst.remake.util.java;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -119,6 +123,31 @@ public class StringUtils {
 
     public static byte[] parseBase64Binary(String base64String) {
         return Base64.decodeBase64(base64String);
+    }
+
+    public static String normalizeHtmlContent(String htmlContent) {
+        if (htmlContent.startsWith("[")) {
+            try {
+                JsonArray jsonArray = new JsonParser().parse(htmlContent).getAsJsonArray();
+                htmlContent = jsonArray.get(1).getAsJsonObject().getAsJsonObject("body").get("content").getAsString();
+            } catch (Exception exception) {
+                throw new RuntimeException(exception);
+            }
+        }
+        return htmlContent.replace("\n", "").replace("\r", "");
+    }
+
+
+    public static String decode(String url) {
+        if (url == null) {
+            return "";
+        }
+
+        try {
+            return StringEscapeUtils.unescapeHtml4(URLDecoder.decode(url, "UTF-8")).trim();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 encoding not supported", e);
+        }
     }
 
     public static String encode(String value) {

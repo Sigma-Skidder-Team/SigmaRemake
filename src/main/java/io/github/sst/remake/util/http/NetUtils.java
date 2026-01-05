@@ -1,8 +1,14 @@
 package io.github.sst.remake.util.http;
 
 import io.github.sst.remake.Client;
+import org.apache.http.HttpEntity;
+import org.apache.http.ParseException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -34,5 +40,20 @@ public class NetUtils {
 
         return new BufferedInputStream(connection.getInputStream());
     }
+
+    public static String getStringFromURL(String urlString) {
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        HttpGet httpGet = new HttpGet(urlString);
+        httpGet.addHeader("ChatCommandExecutor-Agent", "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+
+        try (CloseableHttpResponse response = client.execute(httpGet)) {
+            HttpEntity entity = response.getEntity();
+            return entity == null ? "" : EntityUtils.toString(entity);
+        } catch (IOException | ParseException e) {
+            return "";
+        }
+    }
+
 
 }
