@@ -38,7 +38,7 @@ public class ThumbnailButton extends Widget {
     public boolean field20774 = false;
     private Texture field20775;
     private Texture field20776;
-    private final AnimationUtils animation;
+    private final AnimationUtils animation = new AnimationUtils(125, 125);
 
     public ThumbnailButton(GuiComponent var1, int x, int y, int width, int height, SongData video) {
         super(var1, video.id, x, y, width, height, field20771, video.title, false);
@@ -49,7 +49,6 @@ public class ThumbnailButton extends Widget {
             Client.LOGGER.error("Failed to parse url", e);
         }
 
-        this.animation = new AnimationUtils(125, 125);
     }
 
     @Override

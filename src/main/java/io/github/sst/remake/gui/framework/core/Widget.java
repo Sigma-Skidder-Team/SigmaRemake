@@ -94,20 +94,20 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     }
 
     @Override
-    public void handleMovementAndCheckBoundaries(int newHeight, int newWidth) {
+    public void handleMovementAndCheckBoundaries(int mouseX, int mouseY) {
         boolean var5 = this.dragging;
         if (!this.isDragging() && this.isDraggable()) {
             boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
             boolean var7 = this.field20885
                     && this.isMouseDownOverComponent
-                    && (Math.abs(this.mouseX - newHeight) > this.field20889 || Math.abs(this.mouseY - newWidth) > this.field20889);
+                    && (Math.abs(this.mouseX - mouseX) > this.field20889 || Math.abs(this.mouseY - mouseY) > this.field20889);
             boolean var8 = this.field20886 && this.isMouseDownOverComponent;
             if (var6 || var7 || var8) {
                 this.setDragging(true);
             }
         } else if (this.isDragging()) {
-            this.setX(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
-            this.setY(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
+            this.setX(mouseX - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
+            this.setY(mouseY - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
             if (this.field20882) {
                 if (this.parent == null) {
                     if (this.getX() < 0) {

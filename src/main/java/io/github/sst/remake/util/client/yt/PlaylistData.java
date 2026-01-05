@@ -30,18 +30,18 @@ public class PlaylistData {
     public void refresh() {
         songs.clear();
 
-        SongData[] thumbnails = new SongData[0];
+        SongData[] songs = new SongData[0];
 
         if (type == DataType.CHANNEL) {
-            thumbnails = YoutubeUtils.getFromChannel(id);
+            songs = YoutubeUtils.getFromChannel(id);
         }
 
         if (type == DataType.PLAYLIST) {
-            thumbnails = YoutubeUtils.getFromPlaylist(id);
+            songs = YoutubeUtils.getFromPlaylist(id);
         }
 
-        for (SongData thumbnail : thumbnails) {
-            songs.add(new SongData(thumbnail.id, thumbnail.title, thumbnail.url));
+        for (SongData thumbnail : songs) {
+            this.songs.add(new SongData(thumbnail.id, thumbnail.title, thumbnail.url));
         }
     }
 
