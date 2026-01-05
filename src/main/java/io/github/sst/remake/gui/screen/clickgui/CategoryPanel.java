@@ -153,11 +153,11 @@ public class CategoryPanel extends Widget {
         return this.category;
     }
 
-    public final void method13507(Class9476 var1) {
+    public void method13507(Class9476 var1) {
         this.field21200.add(var1);
     }
 
-    public final void method13508(Module var1) {
+    public void method13508(Module var1) {
         for (Class9476 var5 : this.field21200) {
             var5.method36568(var1);
         }

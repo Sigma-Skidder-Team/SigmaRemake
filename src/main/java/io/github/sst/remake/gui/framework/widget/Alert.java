@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO: Remap & refactor
 public class Alert extends InteractiveWidget {
     public GuiComponent screen;
     public String alertName;
@@ -67,22 +68,22 @@ public class Alert extends InteractiveWidget {
                     if (component.componentType != ComponentType.BUTTON) {
                         if (component.componentType == ComponentType.HEADER) {
                             this.screen.addToList(new Text(
-                                                    this.screen,
-                                                    "Item" + var17,
-                                                    0,
-                                                    var18,
-                                                    this.field21284,
-                                                    component.field44773,
-                                                    new ColorHelper(
-                                                            ClientColors.DEEP_TEAL.getColor(),
-                                                            ClientColors.DEEP_TEAL.getColor(),
-                                                            ClientColors.DEEP_TEAL.getColor(),
-                                                            ClientColors.DEEP_TEAL.getColor()
-                                                    ),
-                                                    component.text,
-                                                    FontUtils.HELVETICA_LIGHT_36
-                                            )
-                                    );
+                                            this.screen,
+                                            "Item" + var17,
+                                            0,
+                                            var18,
+                                            this.field21284,
+                                            component.field44773,
+                                            new ColorHelper(
+                                                    ClientColors.DEEP_TEAL.getColor(),
+                                                    ClientColors.DEEP_TEAL.getColor(),
+                                                    ClientColors.DEEP_TEAL.getColor(),
+                                                    ClientColors.DEEP_TEAL.getColor()
+                                            ),
+                                            component.text,
+                                            FontUtils.HELVETICA_LIGHT_36
+                                    )
+                            );
                         }
                     } else {
                         Button button;
@@ -295,11 +296,11 @@ public class Alert extends InteractiveWidget {
         this.setReAddChildren(var1);
     }
 
-    public final void method13604(Class9448 var1) {
+    public void method13604(Class9448 var1) {
         this.field21287.add(var1);
     }
 
-    public final void method13605() {
+    public void method13605() {
         for (Class9448 var4 : this.field21287) {
             var4.method36327(this);
         }
