@@ -17,7 +17,6 @@ public class VersionUtils {
             Client.LOGGER.warn("Python is not installed on this system.");
             return false;
         } else if (isVersionAtLeast(version, 3, 11)) {
-            Client.LOGGER.info("Python version at least 3.11: {}", version);
             return true;
         } else {
             Client.LOGGER.warn("Python exists, but 3.11+ is required, found {}", version);
