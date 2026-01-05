@@ -5,6 +5,8 @@ import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.*;
+import io.github.sst.remake.util.client.yt.SongData;
+import io.github.sst.remake.util.render.image.Resources;
 
 public class TestModule extends Module {
     private final ModeSetting dropdown = new ModeSetting("Dropdown", "A test mode setting.", 0, "Mode1", "Mode2", "Mode3");
@@ -20,6 +22,6 @@ public class TestModule extends Module {
 
     @Override
     public void onEnable() {
-        Client.INSTANCE.notificationManager.send(new Notification(name, description));
+        Client.INSTANCE.notificationManager.send(new Notification("Title", "Description", Resources.DIRECTION_ICON));
     }
 }
