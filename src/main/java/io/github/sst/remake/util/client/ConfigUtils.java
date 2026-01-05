@@ -16,6 +16,7 @@ public class ConfigUtils {
 
     public static final File PROFILES_FOLDER = new File(CLIENT_FOLDER, "profiles");
     public static final File WAYPOINTS_FOLDER = new File(CLIENT_FOLDER, "waypoints");
+    public static final File MUSIC_FOLDER = new File(CLIENT_FOLDER, "music");
     public static final String EXTENSION = ".json";
     public static final String WAYPOINT_EXTENSION = ".jmap";
 

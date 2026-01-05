@@ -24,6 +24,7 @@ public class Client implements IMinecraft {
     public final AccountManager accountManager = new AccountManager();
     public final NotificationManager notificationManager = new NotificationManager();
     public final WaypointManager waypointManager = new WaypointManager();
+    public final MusicManager musicManager = new MusicManager();
 
     public boolean loaded = false;
 
@@ -39,6 +40,7 @@ public class Client implements IMinecraft {
         bindManager.init();
         waypointManager.init();
         notificationManager.init();
+        musicManager.init();
         configManager.init();
 
         LOGGER.info("Everything has been initialised.");
@@ -57,6 +59,7 @@ public class Client implements IMinecraft {
         screenManager.shutdown();
         notificationManager.shutdown();
         waypointManager.shutdown();
+        musicManager.shutdown();
 
         LOGGER.info("Everything saved.");
     }
