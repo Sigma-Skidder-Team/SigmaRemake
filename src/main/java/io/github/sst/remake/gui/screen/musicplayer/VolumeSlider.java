@@ -12,8 +12,8 @@ import java.util.List;
 
 public class VolumeSlider extends InteractiveWidget {
     private float volume = 1.0F;
-    private boolean field21373 = false;
-    private final List<Class6649> field21374 = new ArrayList<>();
+    private boolean isDragging = false;
+    private final List<Class6649> volumeChangeListeners = new ArrayList<>();
 
     public VolumeSlider(GuiComponent parent, String iconName, int xV, int yV, int width, int height) {
         super(parent, iconName, xV, yV, width, height, false);
@@ -41,37 +41,37 @@ public class VolumeSlider extends InteractiveWidget {
     @Override
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         if (!super.onMouseDown(this.x, this.y, mouseButton)) {
-            this.field21373 = true;
+            this.isDragging = true;
             return false;
         } else {
             return true;
         }
     }
 
-    public float method13706(int var1) {
+    public float calculateVolumeFromMouseY(int var1) {
         return (float) (var1 - this.getAbsoluteY()) / (float) this.height;
     }
 
     @Override
     public void updatePanelDimensions(int newHeight, int newWidth) {
         super.updatePanelDimensions(newHeight, newWidth);
-        if (this.field21373) {
-            this.setVolume(this.method13706(newWidth));
-            this.method13710();
+        if (this.isDragging) {
+            this.setVolume(this.calculateVolumeFromMouseY(newWidth));
+            this.fireVolumeChange();
         }
     }
 
     @Override
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         super.onMouseRelease(mouseX, mouseY, mouseButton);
-        this.field21373 = false;
+        this.isDragging = false;
     }
 
     @Override
     public void onScroll(float scroll) {
         if (this.isHoveredInHierarchy()) {
             this.setVolume(this.getVolume() - scroll / 2000.0F);
-            this.method13710();
+            this.fireVolumeChange();
         }
 
         super.onScroll(scroll);
@@ -85,18 +85,18 @@ public class VolumeSlider extends InteractiveWidget {
         this.volume = Math.min(Math.max(value, 0.0F), 1.0F);
     }
 
-    public Widget method13709(Class6649 var1) {
-        this.field21374.add(var1);
+    public Widget addVolumeChangeListener(VolumeChangeListener var1) {
+        this.volumeChangeListeners.add(var1);
         return this;
     }
 
-    public void method13710() {
-        for (Class6649 var4 : this.field21374) {
-            var4.method20301(this);
+    public void fireVolumeChange() {
+        for (VolumeChangeListener var4 : this.volumeChangeListeners) {
+            var4.onVolumeChanged(this);
         }
     }
 
-    public interface Class6649 {
-        void method20301(VolumeSlider var1);
+    public interface VolumeChangeListener{
+        void onVolumeChanged(VolumeSlider var1);
     }
 }
