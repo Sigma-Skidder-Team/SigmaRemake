@@ -13,7 +13,7 @@ import java.util.List;
 public class VolumeSlider extends InteractiveWidget {
     private float volume = 1.0F;
     private boolean isDragging = false;
-    private final List<Class6649> volumeChangeListeners = new ArrayList<>();
+    private final List<VolumeChangeListener> volumeChangeListeners = new ArrayList<>();
 
     public VolumeSlider(GuiComponent parent, String iconName, int xV, int yV, int width, int height) {
         super(parent, iconName, xV, yV, width, height, false);

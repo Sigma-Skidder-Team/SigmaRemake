@@ -29,11 +29,11 @@ import java.util.*;
 
 public class MusicPlayer extends Widget {
     private final int playerWidth = 250;
-    private final int field20847 = 64;
-    private final int field20848 = 94;
-    private String field20849 = "Music Player";
+    private final int headerHeight = 64;
+    private final int footerHeight = 94;
+    private String currentPlaylistName = "Music Player";
     private final ScrollablePanel musicTabs;
-    private ScrollablePanel field20852;
+    private ScrollablePanel activePlaylistPanel;
     private final GuiComponent musicControls;
     private final MusicManager musicManager = Client.INSTANCE.musicManager;
     public static Map<String, PlaylistData> videoMap = new LinkedHashMap<>();
@@ -42,16 +42,16 @@ public class MusicPlayer extends Widget {
     private final Button forwards;
     private final Button backwards;
     private final VolumeSlider volumeSlider;
-    private int field20863;
+    private int lastScrollOffset;
     private Texture texture;
     private final GuiComponent reShowView;
     public SearchBox searchBox;
-    public ProgressBar field20867;
-    public static long time = 0L;
-    public float field20871 = 0.0F;
-    public float field20872 = 0.0F;
-    private final AnimationUtils field20873 = new AnimationUtils(80, 150, AnimationUtils.Direction.FORWARDS);
-    public boolean field20874 = false;
+    public ProgressBar songProgressBar;
+    public static long lastFrameTime = 0L;
+    public float targetX = 0.0F;
+    public float targetY = 0.0F;
+    private final AnimationUtils visibilityAnimation = new AnimationUtils(80, 150, AnimationUtils.Direction.FORWARDS);
+    public boolean isAnimatingBack = false;
 
     public ClickGuiScreen parent;
 
@@ -59,15 +59,15 @@ public class MusicPlayer extends Widget {
         super(parent, var2, 875, 55, 800, 600, false);
         this.parent = parent;
 
-        time = System.nanoTime();
+        lastFrameTime = System.nanoTime();
         this.setWidth(800);
         this.setHeight(600);
         this.setX(Math.abs(this.getX()));
         this.setY(Math.abs(this.getY()));
-        this.addToList(this.musicTabs = new ScrollablePanel(this, "musictabs", 0, this.field20847 + 14, this.playerWidth, this.getHeight() - 64 - this.field20848));
+        this.addToList(this.musicTabs = new ScrollablePanel(this, "musictabs", 0, this.headerHeight + 14, this.playerWidth, this.getHeight() - 64 - this.footerHeight));
         this.addToList(
                 this.musicControls = new ScrollablePanel(
-                        this, "musiccontrols", this.playerWidth, this.getHeight() - this.field20848, this.getWidth() - this.playerWidth, this.field20848
+                        this, "musiccontrols", this.playerWidth, this.getHeight() - this.footerHeight, this.getWidth() - this.playerWidth, this.footerHeight
                 )
         );
         this.addToList(this.reShowView = new GuiComponent(this, "reShowView", 0, 0, 1, this.getHeight()));
@@ -128,14 +128,14 @@ public class MusicPlayer extends Widget {
         ChangingButton repeat;
         this.musicControls.addToList(repeat = new ChangingButton(this.musicControls, "repeat", 14, 34, 27, 20, this.musicManager.repeat));
         repeat.onPress(var2x -> this.musicManager.repeat = repeat.repeatMode);
-        this.addToList(this.field20867 = new ProgressBar(this, "progress", this.playerWidth, this.getHeight() - 5, this.getWidth() - this.playerWidth, 5));
-        this.field20867.setReAddChildren(true);
-        this.field20867.setListening(false);
+        this.addToList(this.songProgressBar = new ProgressBar(this, "progress", this.playerWidth, this.getHeight() - 5, this.getWidth() - this.playerWidth, 5));
+        this.songProgressBar.setReAddChildren(true);
+        this.songProgressBar.setListening(false);
         this.reShowView.setReAddChildren(true);
         this.reShowView.addMouseButtonCallback((var1x, var2x) -> {
-            this.field20874 = true;
-            this.field20871 = (float) this.getX();
-            this.field20872 = (float) this.getY();
+            isAnimatingBack = true;
+            this.targetX = (float) this.getX();
+            this.targetY = (float) this.getY();
         });
         this.pause.setSelfVisible(false);
         this.play.setSelfVisible(false);
@@ -143,82 +143,82 @@ public class MusicPlayer extends Widget {
         this.pause.onClick((var1x, var2x) -> this.musicManager.setPlaying(false));
         this.forwards.onClick((var1x, var2x) -> this.musicManager.playNext());
         this.backwards.onClick((var1x, var2x) -> this.musicManager.playPrevious());
-        this.volumeSlider.method13709(var1x -> this.musicManager.volume = (int) ((1.0F - this.volumeSlider.getVolume()) * 100.0F));
+        this.volumeSlider.addVolumeChangeListener(var1x -> this.musicManager.volume = (int) ((1.0F - this.volumeSlider.getVolume()) * 100.0F));
         this.volumeSlider.setVolume(1.0F - (float) this.musicManager.volume / 100.0F);
         this.addToList(
                 this.searchBox = new SearchBox(
-                        this, "search", this.playerWidth, 0, this.getWidth() - this.playerWidth, this.getHeight() - this.field20848, "Search..."
+                        this, "search", this.playerWidth, 0, this.getWidth() - this.playerWidth, this.getHeight() - this.footerHeight, "Search..."
                 )
         );
         this.searchBox.setSelfVisible(true);
         this.searchBox.setListening(false);
     }
 
-    private void method13189(ScrollablePanel var1) {
-        if (this.field20852 != null) {
-            this.field20852.setSelfVisible(false);
+    private void showPlaylistPanel(ScrollablePanel var1) {
+        if (this.activePlaylistPanel != null) {
+            this.activePlaylistPanel.setSelfVisible(false);
         }
 
         var1.setSelfVisible(true);
-        this.field20849 = var1.getText();
-        this.field20852 = var1;
+        this.currentPlaylistName = var1.getText();
+        this.activePlaylistPanel = var1;
         this.searchBox.setSelfVisible(false);
-        this.field20852.field21207 = 65;
+        this.activePlaylistPanel.field21207 = 65;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        long var5 = System.nanoTime() - time;
+        long var5 = System.nanoTime() - lastFrameTime;
         float var7 = Math.min(10.0F, Math.max(0.0F, (float) var5 / 1.810361E7F));
-        time = System.nanoTime();
+        lastFrameTime = System.nanoTime();
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.parent != null) {
             if (!this.isDragging()) {
-                if ((this.isMouseDownOverComponent || this.field20874) && !this.isDraggable()) {
-                    this.field20874 = true;
+                if ((this.isMouseDownOverComponent || isAnimatingBack) && !this.isDraggable()) {
+                    isAnimatingBack = true;
                     int var11 = this.parent.getWidth() - 20 - this.getWidth();
                     int var13 = (this.parent.getHeight() - this.getHeight()) / 2;
-                    this.field20871 = Math.max(this.field20871 - (this.field20871 - (float) var11) * 0.25F * var7, (float) var11);
+                    this.targetX = Math.max(this.targetX - (this.targetX - (float) var11) * 0.25F * var7, (float) var11);
 
-                    if (!(this.field20871 - (float) var11 < 0.0F)) {
-                        if (this.field20871 - (float) var11 - (float) this.getWidth() > 0.0F) {
-                            this.field20871 = (float) var11;
+                    if (!(this.targetX - (float) var11 < 0.0F)) {
+                        if (this.targetX - (float) var11 - (float) this.getWidth() > 0.0F) {
+                            this.targetX = (float) var11;
                         }
                     } else {
-                        this.field20871 = (float) var11;
+                        this.targetX = (float) var11;
                     }
 
-                    this.setX((int) this.field20871);
-                    this.setY((int) this.field20872);
-                    if (Math.abs(this.field20871 - (float) var11) < 2.0F && Math.abs(this.field20872 - (float) var13) < 2.0F) {
+                    this.setX((int) this.targetX);
+                    this.setY((int) this.targetY);
+                    if (Math.abs(this.targetX - (float) var11) < 2.0F && Math.abs(this.targetY - (float) var13) < 2.0F) {
                         this.setDraggable(true);
-                        this.field20874 = false;
+                        isAnimatingBack = false;
                     }
                 } else if (this.getX() + this.getWidth() > this.parent.getWidth() || this.getX() < 0 || this.getY() < 0) {
-                    if (this.field20871 == 0.0F || this.field20872 == 0.0F) {
-                        this.field20871 = (float) this.getX();
-                        this.field20872 = (float) this.getY();
+                    if (this.targetX == 0.0F || this.targetY == 0.0F) {
+                        this.targetX = (float) this.getX();
+                        this.targetY = (float) this.getY();
                     }
 
                     int var8 = this.parent.getWidth() - 40;
                     int var9 = (this.parent.getHeight() - this.getHeight()) / 2;
-                    this.field20871 = Math.min(this.field20871 - (this.field20871 - (float) var8) * 0.25F * var7, (float) var8);
+                    this.targetX = Math.min(this.targetX - (this.targetX - (float) var8) * 0.25F * var7, (float) var8);
 
-                    if (!(this.field20871 - (float) var8 > 0.0F)) {
-                        if (this.field20871 - (float) var8 + (float) this.getWidth() < 0.0F) {
-                            this.field20871 = (float) var8;
+                    if (!(this.targetX - (float) var8 > 0.0F)) {
+                        if (this.targetX - (float) var8 + (float) this.getWidth() < 0.0F) {
+                            this.targetX = (float) var8;
                         }
                     } else {
-                        this.field20871 = (float) var8;
+                        this.targetX = (float) var8;
                     }
 
-                    if (Math.abs(this.field20871 - (float) var8) < 2.0F && Math.abs(this.field20872 - (float) var9) < 2.0F) {
-                        this.field20871 = (float) this.getX();
-                        this.field20872 = (float) this.getY();
+                    if (Math.abs(this.targetX - (float) var8) < 2.0F && Math.abs(this.targetY - (float) var9) < 2.0F) {
+                        this.targetX = (float) this.getX();
+                        this.targetY = (float) this.getY();
                     }
 
-                    this.setX((int) this.field20871);
-                    this.setY((int) this.field20872);
+                    this.setX((int) this.targetX);
+                    this.setY((int) this.targetY);
                     this.setDraggable(false);
                     this.setDragging(false);
                 }
@@ -229,8 +229,8 @@ public class MusicPlayer extends Widget {
                 if (var12 + this.getWidth() > this.parent.getWidth() + var14 && mouseX - this.mouseX > 70) {
                     int var15 = var12 - this.getX() - var14;
                     this.setX((int) ((float) this.getX() + (float) var15 * 0.5F));
-                    this.field20871 = (float) this.getX();
-                    this.field20872 = (float) this.getY();
+                    this.targetX = (float) this.getX();
+                    this.targetY = (float) this.getY();
                 }
             }
         }
@@ -241,9 +241,9 @@ public class MusicPlayer extends Widget {
         super.applyScaleTransforms();
         super.applyTranslationTransforms();
         this.reShowView.setWidth(this.getX() + this.getWidth() <= this.parent.getWidth() ? 0 : 41);
-        this.field20873
-                .changeDirection(this.getX() + this.getWidth() > this.parent.getWidth() && !this.field20874 ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
-        partialTicks *= 0.5F + (1.0F - this.field20873.calcPercent()) * 0.5F;
+        this.visibilityAnimation
+                .changeDirection(this.getX() + this.getWidth() > this.parent.getWidth() && !isAnimatingBack ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        partialTicks *= 0.5F + (1.0F - this.visibilityAnimation.calcPercent()) * 0.5F;
         if (this.musicManager.isPlaying()) {
             this.play.setSelfVisible(false);
             this.pause.setSelfVisible(true);
@@ -256,14 +256,14 @@ public class MusicPlayer extends Widget {
                 (float) (this.getX() + this.playerWidth),
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
-                (float) (this.getY() + this.getHeight() - this.field20848),
+                (float) (this.getY() + this.getHeight() - this.footerHeight),
                 ColorHelper.applyAlpha(-14277082, partialTicks * 0.8F)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) (this.getX() + this.playerWidth),
-                (float) (this.getY() + this.getHeight() - this.field20848),
+                (float) (this.getY() + this.getHeight() - this.footerHeight),
                 ColorHelper.applyAlpha(-16777216, partialTicks * 0.95F)
         );
         this.drawThumbnail(partialTicks);
@@ -286,8 +286,8 @@ public class MusicPlayer extends Widget {
         );
         RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), 14.0F, partialTicks);
         super.draw(partialTicks);
-        if (this.field20852 != null) {
-            this.method13196(partialTicks);
+        if (this.activePlaylistPanel != null) {
+            this.drawHeaderAndBackground(partialTicks);
         }
     }
 
@@ -316,15 +316,15 @@ public class MusicPlayer extends Widget {
         if (var4 != null && var5 != null) {
             RenderUtils.drawImage(
                     (float) this.getX(),
-                    (float) (this.getY() + this.getHeight() - this.field20848),
+                    (float) (this.getY() + this.getHeight() - this.footerHeight),
                     (float) this.getWidth(),
-                    (float) this.field20848,
+                    (float) this.footerHeight,
                     var5,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
-                    (float) (this.getY() + this.getHeight() - this.field20848),
+                    (float) (this.getY() + this.getHeight() - this.footerHeight),
                     (float) (this.getX() + this.getWidth()),
                     (float) (this.getY() + this.getHeight() - 5),
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
@@ -350,15 +350,15 @@ public class MusicPlayer extends Widget {
         } else {
             RenderUtils.drawImage(
                     (float) this.getX(),
-                    (float) (this.getY() + this.getHeight() - this.field20848),
+                    (float) (this.getY() + this.getHeight() - this.footerHeight),
                     (float) this.getWidth(),
-                    (float) this.field20848,
+                    (float) this.footerHeight,
                     Resources.BACKGROUND,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
-                    (float) (this.getY() + this.getHeight() - this.field20848),
+                    (float) (this.getY() + this.getHeight() - this.footerHeight),
                     (float) (this.getX() + this.getWidth()),
                     (float) (this.getY() + this.getHeight() - 5),
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
@@ -444,9 +444,9 @@ public class MusicPlayer extends Widget {
         ScissorUtils.restoreScissor();
     }
 
-    private void method13196(float var1) {
-        this.field20852.setReAddChildren(false);
-        if (this.field20863 != this.field20852.getScrollOffset()) {
+    private void drawHeaderAndBackground(float var1) {
+        this.activePlaylistPanel.setReAddChildren(false);
+        if (this.lastScrollOffset != this.activePlaylistPanel.getScrollOffset()) {
             try {
                 if (this.texture != null) {
                     this.texture.release();
@@ -454,20 +454,20 @@ public class MusicPlayer extends Widget {
 
                 this.texture = BufferedImageUtil.getTexture(
                         "blur",
-                        ImageUtils.captureAndProcessRegion(this.getX() + this.playerWidth, this.getY(), this.getWidth() - this.playerWidth, this.field20847, 10, 10)
+                        ImageUtils.captureAndProcessRegion(this.getX() + this.playerWidth, this.getY(), this.getWidth() - this.playerWidth, this.headerHeight, 10, 10)
                 );
             } catch (IOException e) {
                 Client.LOGGER.error("Failed to blur image", e);
             }
         }
 
-        float var4 = this.field20863 < 50 ? (float) this.field20863 / 50.0F : 1.0F;
+        float var4 = this.lastScrollOffset < 50 ? (float) this.lastScrollOffset / 50.0F : 1.0F;
         if (this.texture != null) {
             RenderUtils.drawTexture(
                     (float) this.playerWidth,
                     0.0F,
                     (float) (this.getWidth() - this.playerWidth),
-                    (float) this.field20847,
+                    (float) this.headerHeight,
                     this.texture,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * var1)
             );
@@ -477,32 +477,32 @@ public class MusicPlayer extends Widget {
                 (float) this.playerWidth,
                 0.0F,
                 (float) this.getWidth(),
-                (float) this.field20847,
+                (float) this.headerHeight,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * var1 * 0.2F)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_25,
-                (float) ((this.getWidth() - FontUtils.HELVETICA_LIGHT_25.getWidth(this.field20849) + this.playerWidth) / 2),
+                (float) ((this.getWidth() - FontUtils.HELVETICA_LIGHT_25.getWidth(this.currentPlaylistName) + this.playerWidth) / 2),
                 16.0F + (1.0F - var4) * 14.0F,
-                this.field20849,
+                this.currentPlaylistName,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_25,
-                (float) ((this.getWidth() - FontUtils.HELVETICA_MEDIUM_25.getWidth(this.field20849) + this.playerWidth) / 2),
+                (float) ((this.getWidth() - FontUtils.HELVETICA_MEDIUM_25.getWidth(this.currentPlaylistName) + this.playerWidth) / 2),
                 16.0F + (1.0F - var4) * 14.0F,
-                this.field20849,
+                this.currentPlaylistName,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 1.0F - var4)
         );
         RenderUtils.drawImage(
                 (float) this.playerWidth,
-                (float) this.field20847,
+                (float) this.headerHeight,
                 (float) (this.getWidth() - this.playerWidth),
                 20.0F,
                 Resources.SHADOW_BOTTOM,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * var1 * 0.5F)
         );
-        this.field20863 = this.field20852.getScrollOffset();
+        this.lastScrollOffset = this.activePlaylistPanel.getScrollOffset();
     }
 
     private void initializeMusicPlayerContent(PlaylistData playlist, ColorHelper colorHelper) {
@@ -529,7 +529,7 @@ public class MusicPlayer extends Widget {
                                     this.playerWidth,
                                     0,
                                     this.getWidth() - this.playerWidth,
-                                    this.getHeight() - this.field20848,
+                                    this.getHeight() - this.footerHeight,
                                     ColorHelper.DEFAULT_COLOR,
                                     playlist.name
                             )
@@ -560,7 +560,7 @@ public class MusicPlayer extends Widget {
                 }
             }
 
-            playlistName.onClick((var2, var3x) -> this.method13189(queue));
+            playlistName.onClick((var2, var3x) -> this.showPlaylistPanel(queue));
         }
     }
 }

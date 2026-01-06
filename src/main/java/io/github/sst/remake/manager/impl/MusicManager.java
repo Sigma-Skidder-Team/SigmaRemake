@@ -103,6 +103,7 @@ public class MusicManager extends Manager implements IMinecraft {
 
         YtDlpUtils.prepareExecutable();
 
+        /*
         playlists.add(new PlaylistData("Country", "RDCLAK5uy_lRZyKy_XqMaPeU5v-pvA2PLUn8ZMVMGoE"));
         playlists.add(new PlaylistData("Mellow", "RDCLAK5uy_kzhe4thDu2Gh_HJX-PhiswAlcxHsqjvfo"));
         playlists.add(new PlaylistData("Hip-Hop", "RDCLAK5uy_mFEnPWt71C547zB84TE8T42ORbAQiGe1M"));
@@ -110,6 +111,16 @@ public class MusicManager extends Manager implements IMinecraft {
         playlists.add(new PlaylistData("Freestyle", "RDCLAK5uy_mGMqJUDr4XGV_mSXMwyRTHIJFtiaFSuj4"));
         playlists.add(new PlaylistData("Jazz", "RDCLAK5uy_nyRN5z0Kh9XP7r7qhm3ANS_3pCF_qco-o"));
         playlists.add(new PlaylistData("Blues", "RDCLAK5uy_k6B0CcfHO04oWPAyUVlO96Vvmg_pB62JM"));
+         */
+
+        playlists.add(new PlaylistData("Trap Nation", "PLC1og_v3eb4hrv4wsqG1G5dsNZh9bIscJ"));
+        playlists.add(new PlaylistData("Chill Nation", "PL3EfCK9aCbkptFjtgWYJ8wiXgJQw5k3M3"));
+        playlists.add(new PlaylistData("VEVO", "PL9tY0BWXOZFu8MzzbNVtUvHs0cQ_gZ03m"));
+        playlists.add(new PlaylistData("Rap Nation", "PLayVKgoNNljOZifkJNtvwfmrmh2OglYzx"));
+        playlists.add(new PlaylistData("MrSuicideSheep", "PLyqoPTKp-zlrI_PEqytQ7J9FgPhptcC64"));
+        playlists.add(new PlaylistData("Trap City", "PLU_bQfSFrM2PemIeyVUSjZjJhm6G7auOY"));
+        playlists.add(new PlaylistData("CloudKid", "PLejelFTZDTZM1yOroUyveJkjE7IY9Zj73"));
+        playlists.add(new PlaylistData("NCS", "PLRBp0Fe2Gpgm_u2w2a2isHw29SugZ34cD"));
 
         super.init();
     }
@@ -255,7 +266,7 @@ public class MusicManager extends Manager implements IMinecraft {
     private void initPlaybackLoop() {
         visualizer.clear();
         if (playlist != null) {
-            if (audioThread != null && audioThread.isAlive()) {
+            while (audioThread != null && audioThread.isAlive()) {
                 audioThread.interrupt();
             }
 
@@ -270,30 +281,32 @@ public class MusicManager extends Manager implements IMinecraft {
         }
 
         for (int i = startVideoIndex; i < playlist.songs.size(); i++) {
-            while (!this.playing) {
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException ignored) {
-                }
-
-                visualizer.clear();
-                if (Thread.interrupted()) {
-                    if (dataLine != null)
-                        dataLine.close();
-                    return;
-                }
-            }
-
             try {
                 currentlyPlayingVideoIndex = i;
-                playTrack(playlist.songs.get(i));
+                currentPlayingSongData = playlist.songs.get(i);
+                visualizer.clear();
+
+                while (!this.playing) {
+                    Thread.sleep(300);
+
+                    visualizer.clear();
+                    if (Thread.interrupted()) {
+                        if (dataLine != null)
+                            dataLine.close();
+
+                        return;
+                    }
+                }
+
+                playTrack(currentPlayingSongData);
 
                 switch (repeat) {
                     case 2:
                         i--;
                         break;
                     case 1:
-                        i = -1;
+                        if (i == playlist.songs.size() - 1)
+                            i = -1;
                         break;
                     case 0:
                         return;
@@ -309,11 +322,9 @@ public class MusicManager extends Manager implements IMinecraft {
     }
 
     private void playTrack(SongData data) throws IOException, LineUnavailableException, InterruptedException {
-        currentPlayingSongData = data;
         thumbnailProcessingSongData = data;
 
         URL videoStreamUrl = YoutubeUtils.buildYouTubeWatchUrl(data.id);
-        assert videoStreamUrl != null;
         URL audioStreamUrl = YtDlpUtils.resolveStream(videoStreamUrl.toString());
 
         if (audioStreamUrl == null) {
@@ -327,13 +338,8 @@ public class MusicManager extends Manager implements IMinecraft {
 
         Movie movie = container.getMovie();
         AudioTrack track = (AudioTrack) movie.getTracks().get(1);
-
-        if (track == null) {
-            Client.LOGGER.error("No audio track found in the stream.");
-            return;
-        }
-
         AudioFormat audioFormat = new AudioFormat((float) track.getSampleRate(), 16, track.getChannelCount(), true, true);
+
         dataLine = AudioSystem.getSourceDataLine(audioFormat);
         dataLine.open();
         dataLine.start();
@@ -412,14 +418,14 @@ public class MusicManager extends Manager implements IMinecraft {
 
     private void adjustVolume(SourceDataLine source, int volume) {
         try {
-            FloatControl gainControl = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl gain = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
             BooleanControl muteControl = (BooleanControl) source.getControl(javax.sound.sampled.BooleanControl.Type.MUTE);
 
             if (volume == 0) {
                 muteControl.setValue(true);
             } else {
                 muteControl.setValue(false);
-                gainControl.setValue((float) (Math.log((double) volume / 100.0) / Math.log(10.0) * 20.0));
+                gain.setValue((float) (Math.log((double) volume / 100.0) / Math.log(10.0) * 20.0));
             }
         } catch (Exception e) {
             Client.LOGGER.warn("Failed to adjust volume to {}", volume, e);
