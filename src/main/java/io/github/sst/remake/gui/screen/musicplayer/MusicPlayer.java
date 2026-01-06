@@ -88,8 +88,8 @@ public class MusicPlayer extends Widget {
         for (PlaylistData data : musicManager.playlists) {
             threads.add(new Thread(() -> {
                 if (!videoMap.containsKey(data.id) && !data.updated) {
-                    data.updated = true;
                     data.refresh();
+                    data.updated = true;
 
                     videoMap.put(data.id, data);
                 }
@@ -542,7 +542,7 @@ public class MusicPlayer extends Widget {
                 ThumbnailButton btnThumbnail;
                 int x = 65;
                 int y = 10;
-                if (!queue.hasChildWithName(playlist.id)) {
+                if (!queue.hasChildWithName(song.id)) {
                     queue.addToList(
                             btnThumbnail = new ThumbnailButton(
                                     queue,
