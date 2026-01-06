@@ -2,6 +2,7 @@ package io.github.sst.remake.manager.impl;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.render.RenderHudEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
@@ -13,19 +14,23 @@ import io.github.sst.remake.util.client.yt.SongData;
 import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import io.github.sst.remake.util.http.YoutubeUtils;
 import io.github.sst.remake.util.io.audio.stream.MusicStream;
+import io.github.sst.remake.util.math.JavaFFT;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
+import io.github.sst.remake.util.render.StencilUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.system.VersionUtils;
 import lombok.Getter;
+import net.minecraft.client.MinecraftClient;
 import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.aac.SampleBuffer;
 import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
 import net.sourceforge.jaad.mp4.api.Frame;
 import net.sourceforge.jaad.mp4.api.Movie;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.util.image.BufferedImageUtil;
 
@@ -35,12 +40,19 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MusicManager extends Manager implements IMinecraft {
 
     private static final int DEFAULT_THUMBNAIL_X = 70;
     private static final int DEFAULT_THUMBNAIL_Y = 0;
     private static final int DEFAULT_THUMBNAIL_SIZE = 180;
+
+    public final List<PlaylistData> playlists = new ArrayList<>();
+
+    private final List<double[]> visualizer = new ArrayList<>();
+    private final List<Double> amplitudes = new ArrayList<>();
 
     private long
             totalDuration = 0,
@@ -64,7 +76,12 @@ public class MusicManager extends Manager implements IMinecraft {
 
     private PlaylistData playlist;
     @Getter
-    private SongData songProcessed;
+    private SongData currentPlayingSongData;
+    private SongData thumbnailProcessingSongData;
+
+    public SongData getSongProcessed() {
+        return currentPlayingSongData;
+    }
 
     private int startVideoIndex;
     private int currentlyPlayingVideoIndex;
@@ -85,55 +102,93 @@ public class MusicManager extends Manager implements IMinecraft {
         }
 
         YtDlpUtils.prepareExecutable();
+
+        playlists.add(new PlaylistData("Country", "RDCLAK5uy_lRZyKy_XqMaPeU5v-pvA2PLUn8ZMVMGoE"));
+        playlists.add(new PlaylistData("Mellow", "RDCLAK5uy_kzhe4thDu2Gh_HJX-PhiswAlcxHsqjvfo"));
+        playlists.add(new PlaylistData("Hip-Hop", "RDCLAK5uy_mFEnPWt71C547zB84TE8T42ORbAQiGe1M"));
+        playlists.add(new PlaylistData("EDM", "RDCLAK5uy_md-KWXDxKwI1W3J1PjCERreBRd8hZLCLw"));
+        playlists.add(new PlaylistData("Freestyle", "RDCLAK5uy_mGMqJUDr4XGV_mSXMwyRTHIJFtiaFSuj4"));
+        playlists.add(new PlaylistData("Jazz", "RDCLAK5uy_nyRN5z0Kh9XP7r7qhm3ANS_3pCF_qco-o"));
+        playlists.add(new PlaylistData("Blues", "RDCLAK5uy_k6B0CcfHO04oWPAyUVlO96Vvmg_pB62JM"));
+
         super.init();
     }
 
     @Subscribe
-    public void onRender(RenderHudEvent event) {
+    public void onRender(RenderHudEvent ignoredEvent) {
         if (!playing || !spectrum || notification == null) return;
+        if (visualizer.isEmpty() || amplitudes.isEmpty()) return;
 
+        renderBars();
+        renderThumbnail();
         renderSongTitle();
     }
 
-    private void renderSongTitle() {
-        String[] titleParts = songProcessed.title.split(" - ");
-        if (titleParts.length <= 1) {
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
-        } else {
-            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.4F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
-            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F));
+    @Subscribe
+    public void onRender2D(RenderClient2DEvent ignoredEvent) {
+        if (!playing || visualizer.isEmpty()) return;
+
+        double[] visualize = visualizer.get(0);
+
+        if (amplitudes.isEmpty()) {
+            for (double v : visualize) {
+                if (amplitudes.size() < 1024) {
+                    amplitudes.add(v);
+                }
+            }
+        }
+
+        float fps = 60.0F / (float) MinecraftClient.currentFps;
+
+        for (int i = 0; i < visualize.length; i++) {
+            double var7 = amplitudes.get(i) - visualize[i];
+            boolean over = !(amplitudes.get(i) < Double.MAX_VALUE);
+            amplitudes.set(i, Math.min(2.256E7, Math.max(0.0, amplitudes.get(i) - var7 * (double) Math.min(0.335F * fps, 1.0F))));
+            if (over) {
+                amplitudes.set(i, 0.0);
+            }
         }
     }
 
     @Subscribe
-    public void onTick(ClientPlayerTickEvent event) throws IOException {
-        if (processing && thumbnailImage != null && scaledThumbnailImage != null && songProcessed == null && !client.isPaused()) {
-            if (songThumbnail != null) {
-                songThumbnail.release();
-            }
-
-            if (notification != null) {
-                notification.release();
-            }
-
-            songThumbnail = BufferedImageUtil.getTexture("picture", thumbnailImage);
-            notification = BufferedImageUtil.getTexture("picture", scaledThumbnailImage);
-            Client.INSTANCE.notificationManager.send(new Notification("Now Playing", songProcessed.title, 7000, notification));
-            processing = false;
+    public void onTick(ClientPlayerTickEvent ignoredEvent) throws IOException {
+        if (!playing) {
+            visualizer.clear();
+            amplitudes.clear();
         }
 
-        if (!processing) {
-            if (songProcessed != null) {
-                new Thread(() -> {
-                    try {
-                        processThumbnail(songProcessed);
-                    } catch (IOException ignored) {
-                    }
-                }).start();
+        if (processing) {
+            if (thumbnailImage != null && scaledThumbnailImage != null && currentPlayingSongData != null && !client.isPaused()) {
+                if (songThumbnail != null) {
+                    songThumbnail.release();
+                }
+
+                if (notification != null) {
+                    notification.release();
+                }
+
+                thumbnailImage = toCompatibleImageType(thumbnailImage);
+                scaledThumbnailImage = toCompatibleImageType(scaledThumbnailImage);
+
+                songThumbnail = BufferedImageUtil.getTexture("picture", thumbnailImage);
+                notification = BufferedImageUtil.getTexture("picture", scaledThumbnailImage);
+                Client.INSTANCE.notificationManager
+                        .send(new Notification("Now Playing", currentPlayingSongData.title, 7000, notification));
+                thumbnailProcessingSongData = null;
+                processing = false;
             }
+        }
+
+        if (thumbnailProcessingSongData != null) {
+            SongData songData = thumbnailProcessingSongData;
+            thumbnailProcessingSongData = null;
+            visualizer.clear();
+            new Thread(() -> {
+                try {
+                    processThumbnail(songData);
+                } catch (IOException ignored) {
+               }
+            }).start();
         }
     }
 
@@ -198,8 +253,8 @@ public class MusicManager extends Manager implements IMinecraft {
     }
 
     private void initPlaybackLoop() {
-        boolean bypass = true;
-        if (playlist != null || bypass) {
+        visualizer.clear();
+        if (playlist != null) {
             if (audioThread != null && audioThread.isAlive()) {
                 audioThread.interrupt();
             }
@@ -221,7 +276,10 @@ public class MusicManager extends Manager implements IMinecraft {
                 } catch (InterruptedException ignored) {
                 }
 
+                visualizer.clear();
                 if (Thread.interrupted()) {
+                    if (dataLine != null)
+                        dataLine.close();
                     return;
                 }
             }
@@ -229,6 +287,21 @@ public class MusicManager extends Manager implements IMinecraft {
             try {
                 currentlyPlayingVideoIndex = i;
                 playTrack(playlist.songs.get(i));
+
+                switch (repeat) {
+                    case 2:
+                        i--;
+                        break;
+                    case 1:
+                        i = -1;
+                        break;
+                    case 0:
+                        return;
+                }
+
+                if (i >= playlist.songs.size()) {
+                    i = 0;
+                }
             } catch (Exception e) {
                 Client.LOGGER.error("Failed to play track", e);
             }
@@ -236,6 +309,9 @@ public class MusicManager extends Manager implements IMinecraft {
     }
 
     private void playTrack(SongData data) throws IOException, LineUnavailableException, InterruptedException {
+        currentPlayingSongData = data;
+        thumbnailProcessingSongData = data;
+
         URL videoStreamUrl = YoutubeUtils.buildYouTubeWatchUrl(data.id);
         assert videoStreamUrl != null;
         URL audioStreamUrl = YtDlpUtils.resolveStream(videoStreamUrl.toString());
@@ -245,7 +321,7 @@ public class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        MusicStream mS = new MusicStream(getConnection(videoStreamUrl).getInputStream());
+        MusicStream mS = new MusicStream(getConnection(audioStreamUrl).getInputStream());
 
         MP4Container container = new MP4Container(mS);
 
@@ -257,7 +333,7 @@ public class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        AudioFormat audioFormat = new AudioFormat((float) track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
+        AudioFormat audioFormat = new AudioFormat((float) track.getSampleRate(), 16, track.getChannelCount(), true, true);
         dataLine = AudioSystem.getSourceDataLine(audioFormat);
         dataLine.open();
         dataLine.start();
@@ -268,18 +344,17 @@ public class MusicManager extends Manager implements IMinecraft {
             Client.INSTANCE.notificationManager.send(new Notification("Now Playing", "Music is too long."));
         }
 
-        songProcessed = data;
-        streamAudioData(track, mS);
+        streamAudioData(track, mS, audioFormat);
     }
 
-
-    private void streamAudioData(AudioTrack track, MusicStream mS) throws InterruptedException, IOException {
+    private void streamAudioData(AudioTrack track, MusicStream mS, AudioFormat audioFormat) throws InterruptedException, IOException {
         Decoder aacDecoder = new Decoder(track.getDecoderSpecificInfo());
         SampleBuffer sampleBuffer = new SampleBuffer();
 
         while (track.hasMoreFrames()) {
             while (!playing) {
                 Thread.sleep(300);
+                visualizer.clear();
                 if (Thread.interrupted()) {
                     dataLine.close();
                     return;
@@ -288,6 +363,21 @@ public class MusicManager extends Manager implements IMinecraft {
 
             Frame frame = track.readNextFrame();
             aacDecoder.decodeFrame(frame.getData(), sampleBuffer);
+
+            byte[] pcmBufferData = sampleBuffer.getData();
+            dataLine.write(pcmBufferData, 0, pcmBufferData.length);
+
+            float[] pcmSamples = JavaFFT.convertToPCMFloatArray(pcmBufferData, audioFormat);
+            JavaFFT fftProcessor = new JavaFFT(pcmSamples.length);
+
+            float[][] fftResult = fftProcessor.transform(pcmSamples);
+            float[] realSpectrum = fftResult[0];
+            float[] imaginarySpectrum = fftResult[1];
+
+            visualizer.add(JavaFFT.calculateAmplitudes(realSpectrum, imaginarySpectrum));
+            if (visualizer.size() > 18) {
+                visualizer.remove(0);
+            }
 
             adjustVolume(dataLine, volume);
 
@@ -303,7 +393,9 @@ public class MusicManager extends Manager implements IMinecraft {
 
             if (!track.hasMoreFrames()
                     && (repeat == 2
-                    || repeat == 1)) {
+                    || repeat == 1)
+                    && playlist.songs.size() == 1
+            ) {
                 track.seek(0);
                 totalDuration = 0;
             }
@@ -339,11 +431,21 @@ public class MusicManager extends Manager implements IMinecraft {
         connection.setConnectTimeout(14000);
         connection.setReadTimeout(14000);
         connection.setUseCaches(true);
-        connection.setDoOutput(true);
+
         connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
         return connection;
+    }
+
+    private BufferedImage toCompatibleImageType(BufferedImage image) {
+        if (image == null || image.getType() == BufferedImage.TYPE_INT_ARGB) {
+            return image;
+        }
+        BufferedImage compatibleImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        compatibleImage.getGraphics().drawImage(image, 0, 0, null);
+        compatibleImage.getGraphics().dispose();
+        return compatibleImage;
     }
 
     private void processThumbnail(SongData data) throws IOException {
@@ -357,8 +459,69 @@ public class MusicManager extends Manager implements IMinecraft {
         } else {
             scaledThumbnailImage = buffImage;
         }
+        thumbnailProcessingSongData = null;
+    }
 
-        songProcessed = null;
+    private void renderBars() {
+        float maxWidth = 114.0F;
+        float width = (float) Math.ceil((float) client.getWindow().getWidth() / maxWidth);
+
+        for (int i = 0; (float) i < maxWidth; i++) {
+            float alpha = 1.0F - (float) (i + 1) / maxWidth;
+            float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
+            float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
+            RenderUtils.drawRoundedRect2(
+                    (float) i * width,
+                    (float) client.getWindow().getHeight() - height,
+                    width,
+                    height,
+                    ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.2F * alpha)
+            );
+        }
+
+        StencilUtils.beginStencilWrite();
+        for (int i = 0; (float) i < maxWidth; i++) {
+            float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
+            float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
+            RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        }
+        StencilUtils.beginStencilRead();
+        if (notification != null && songThumbnail != null) {
+            RenderUtils.drawImage(0.0F, 0.0F, (float) client.getWindow().getWidth(), (float) client.getWindow().getHeight(), songThumbnail, 0.4F);
+        }
+        StencilUtils.endStencil();
+    }
+
+    private void renderThumbnail() {
+        double var9 = 0.0;
+        float var16 = 4750;
+
+        for (int i = 0; i < 3; i++) {
+            var9 = Math.max(var9, Math.sqrt(this.amplitudes.get(i)) - 1000.0);
+        }
+
+        float scale = 1.0F + (float) Math.round((float) (var9 / (double) (var16 - 1000)) * 0.14F * 75.0F) / 75.0F;
+        GL11.glPushMatrix();
+        GL11.glTranslated(60.0, client.getWindow().getHeight() - 55, 0.0);
+        GL11.glScalef(scale, scale, 0.0F);
+        GL11.glTranslated(-60.0, -(client.getWindow().getHeight() - 55), 0.0);
+        RenderUtils.drawImage(10.0F, (float) (client.getWindow().getHeight() - 110), 100.0F, 100.0F, notification);
+        RenderUtils.drawRoundedRect(10.0F, (float) (client.getWindow().getHeight() - 110), 100.0F, 100.0F, 14.0F, 0.3F);
+        GL11.glPopMatrix();
+    }
+
+    private void renderSongTitle() {
+        if (currentPlayingSongData == null) return;
+        String[] titleParts = currentPlayingSongData.title.split(" - ");
+        if (titleParts.length <= 1) {
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
+        } else {
+            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.4F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
+            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F));
+        }
     }
 
 }
