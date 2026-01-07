@@ -30,7 +30,7 @@ dependencies {
     modImplementation include('org.slf4j:slf4j-simple:2.0.17')
     modImplementation include('javazoom:jlayer:1.0.1')
     modImplementation include('tv.wunderbox:nativefiledialog:1.0.3')
-    modImplementation include('com.jfposton.ytdlp:yt-dlp-java:1.0')
+    modImplementation include('com.jfposton.ytdlp:yt-dlp-java:1.0.1')
     modImplementation include('net.sourceforge.jaad:jaad:1.0.2')
 
     compileOnly("org.projectlombok:lombok:1.18.42")
