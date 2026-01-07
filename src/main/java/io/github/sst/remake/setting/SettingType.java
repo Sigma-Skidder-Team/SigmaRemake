@@ -7,6 +7,6 @@ public enum SettingType {
     DROPDOWN,
     GROUP,
     BLOCKS,
-    COLOR
-
+    COLOR,
+    CURVE
 }
