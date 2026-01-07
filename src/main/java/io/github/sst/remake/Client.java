@@ -24,6 +24,7 @@ public class Client implements IMinecraft {
     public final AccountManager accountManager = new AccountManager();
     public final NotificationManager notificationManager = new NotificationManager();
     public final WaypointManager waypointManager = new WaypointManager();
+    public final MusicManager musicManager = new MusicManager();
 
     public boolean loaded = false;
 
@@ -31,19 +32,16 @@ public class Client implements IMinecraft {
         LOGGER.info("Starting Sigma Remake {}...", VERSION);
 
         rpcManager.init();
-
         textureManager.init();
         screenManager.init();
         hudManager.init();
-
         accountManager.init();
         moduleManager.init();
         bindManager.init();
-        configManager.init();
-
         waypointManager.init();
-
         notificationManager.init();
+        musicManager.init();
+        configManager.init();
 
         LOGGER.info("Everything has been initialised.");
     }
@@ -51,17 +49,17 @@ public class Client implements IMinecraft {
     public void shutdown() {
         LOGGER.info("Shutting down...");
 
-        waypointManager.shutdown();
-        moduleManager.shutdown();
-
-        bindManager.shutdown();
-        accountManager.shutdown();
         rpcManager.shutdown();
         configManager.shutdown();
-        screenManager.shutdown();
-        hudManager.shutdown();
-        notificationManager.shutdown();
+        accountManager.shutdown();
+        bindManager.shutdown();
+        moduleManager.shutdown();
         textureManager.shutdown();
+        hudManager.shutdown();
+        screenManager.shutdown();
+        notificationManager.shutdown();
+        waypointManager.shutdown();
+        musicManager.shutdown();
 
         LOGGER.info("Everything saved.");
     }

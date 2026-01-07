@@ -9,7 +9,6 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class CompassModule extends Module {
                     -40.0F,
                     (float) (halfMarkers * markerSpacing * 2) * 1.5F,
                     (float) (220 + debugOffset),
-                    Resources.shadowPNG,
+                    Resources.SHADOW,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.25F)
             );
 

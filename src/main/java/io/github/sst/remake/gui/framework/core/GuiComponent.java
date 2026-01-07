@@ -173,7 +173,7 @@ public class GuiComponent implements InputListener {
         this.isHoveredInHierarchy = this.isVisible() && this.isMouseOverExclusive(mouseX, mouseY);
 
         try {
-            for (Runnable runnable : this.runOnDimensionUpdate) {
+        for (Runnable runnable : new ArrayList<>(this.runOnDimensionUpdate)) {
                 if (runnable != null) {
                     runnable.run();
                 }
@@ -186,7 +186,7 @@ public class GuiComponent implements InputListener {
         this.updatingPanelDimensions = true;
 
         try {
-            for (GuiComponent iconPanel : this.children) {
+            for (GuiComponent iconPanel : new ArrayList<>(this.children)) {
                 iconPanel.updatePanelDimensions(mouseX, mouseY);
             }
         } catch (ConcurrentModificationException e) {

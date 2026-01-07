@@ -25,24 +25,24 @@ public class ColorPicker extends InteractiveWidget {
         this.addToList(this.field20622 = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
         this.field20620.onPress(var1x -> this.method13050());
         this.field20621.onPress(var1x -> this.method13050());
-        this.field20622.onClick((var1x, var2x) -> this.method13045(!this.method13047()));
+        this.field20622.onClick((var1x, var2x) -> this.method13045(!this.getRainbow()));
         this.field20619 = var8;
     }
 
     public void method13045(boolean var1) {
-        this.method13046(var1);
+        this.setRainbow(var1);
         this.callUIHandlers();
     }
 
-    public void method13046(boolean var1) {
+    public void setRainbow(boolean var1) {
         this.field20619 = var1;
     }
 
-    public boolean method13047() {
+    public boolean getRainbow() {
         return this.field20619;
     }
 
-    public void method13048(int var1) {
+    public void setValue(int var1) {
         if (var1 != this.field20618) {
             Color var4 = new Color(var1);
             float[] var5 = Color.RGBtoHSB(var4.getRed(), var4.getGreen(), var4.getBlue(), null);
@@ -54,7 +54,7 @@ public class ColorPicker extends InteractiveWidget {
         }
     }
 
-    public int method13049() {
+    public int getValue() {
         return this.field20618;
     }
 

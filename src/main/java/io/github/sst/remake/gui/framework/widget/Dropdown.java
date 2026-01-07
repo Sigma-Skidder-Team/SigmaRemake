@@ -39,7 +39,7 @@ public class Dropdown extends InteractiveWidget {
         this.field21331.put(var2, var5);
         var5.setSelfVisible(false);
         var5.onPress(var2x -> {
-            this.method13656(var2);
+            this.setIndex(var2);
             this.method13658(false);
             this.callUIHandlers();
         });
@@ -94,7 +94,7 @@ public class Dropdown extends InteractiveWidget {
             button.method13034(10);
             button.onClick((var2, var3x) -> {
                 int var6x = this.getIndex();
-                this.method13656(this.values.indexOf(mode));
+                this.setIndex(this.values.indexOf(mode));
                 this.method13658(false);
                 if (var6x != this.getIndex()) {
                     this.callUIHandlers();
@@ -247,7 +247,7 @@ public class Dropdown extends InteractiveWidget {
         return this.selectedIdx;
     }
 
-    public void method13656(int var1) {
+    public void setIndex(int var1) {
         this.selectedIdx = var1;
     }
 

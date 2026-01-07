@@ -15,11 +15,11 @@ public class SettingSlider extends InteractiveWidget {
     private SliderHandle field20734;
     private AnimationUtils field20735;
 
-    public static float method13134(float var0, float var1, float var2) {
+    public static float setValues(float var0, float var1, float var2) {
         return (var2 - var0) / (var1 - var0);
     }
 
-    public static float method13135(float var0, float var1, float var2, float var3, int var4) {
+    public static float getValues(float var0, float var1, float var2, float var3, int var4) {
         float var7 = Math.abs(var2 - var1) / var3;
         float var8 = var1 + var0 * var7 * var3;
         return (float) Math.round((double) var8 * Math.pow(10.0, var4)) / (float) Math.pow(10.0, var4);
@@ -104,7 +104,7 @@ public class SettingSlider extends InteractiveWidget {
         }
     }
 
-    public SliderHandle method13137() {
+    public SliderHandle getHandle() {
         return this.field20734;
     }
 
@@ -113,10 +113,10 @@ public class SettingSlider extends InteractiveWidget {
     }
 
     public void method13139(float var1) {
-        this.method13140(var1, true);
+        this.setValue(var1, true);
     }
 
-    public void method13140(float var1, boolean var2) {
+    public void setValue(float var1, boolean var2) {
         var1 = Math.min(Math.max(var1, 0.0F), 1.0F);
         float var5 = this.field20733;
         this.field20733 = var1;

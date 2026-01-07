@@ -9,8 +9,6 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class ScrollablePanel extends Widget {
-    private boolean field21201;
-    private boolean field21202;
     private boolean field21203 = false;
     public GuiComponent buttonList;
     public VerticalScrollBar scrollBar;

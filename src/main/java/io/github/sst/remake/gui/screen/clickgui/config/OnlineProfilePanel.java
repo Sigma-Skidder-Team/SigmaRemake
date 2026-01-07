@@ -108,7 +108,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                     (float) (this.y + this.height),
                     (float) this.width,
                     50.0F,
-                    Resources.shadowBottomPNG,
+                    Resources.SHADOW_BOTTOM,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.expandAnimation.calcPercent() * partialTicks * 0.3F)
             );
             ScissorUtils.startScissor(this);

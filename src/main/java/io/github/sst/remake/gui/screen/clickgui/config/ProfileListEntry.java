@@ -155,7 +155,7 @@ public class ProfileListEntry extends Widget {
                     (float) (this.getY() + 27),
                     17.0F,
                     13.0F,
-                    Resources.activePNG,
+                    Resources.CHECKMARK_ICON,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), (1.0F - this.slideAnimation.calcPercent()) * partialTicks)
             );
         }

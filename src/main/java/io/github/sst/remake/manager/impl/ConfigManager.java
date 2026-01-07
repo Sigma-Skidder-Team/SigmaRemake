@@ -1,9 +1,8 @@
 package io.github.sst.remake.manager.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.alt.Account;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.profile.Profile;
@@ -13,6 +12,7 @@ import io.github.sst.remake.util.io.FileUtils;
 import io.github.sst.remake.util.io.GsonUtils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,17 @@ public class ConfigManager extends Manager implements IMinecraft {
 
         profiles = ConfigUtils.listAllProfiles();
         loadClientConfig();
-        loadScreenConfig();
+        loadAlts();
         loadProfile("Default");
+        loadScreenConfig();
     }
 
     @Override
     public void shutdown() {
         saveClientConfig();
-        saveScreenConfig(true);
         saveProfile("Default", Client.INSTANCE.moduleManager.getJson(), false);
+        saveAlts();
+        saveScreenConfig(true);
     }
 
     public void renameProfile(Profile from, String to) {
@@ -203,6 +205,43 @@ public class ConfigManager extends Manager implements IMinecraft {
             }
 
             currentScreen.loadConfig(configForScreen != null ? configForScreen : new JsonObject());
+        }
+    }
+
+    public void saveAlts() {
+        JsonArray jsonArray = new JsonArray();
+
+        for (Account account : Client.INSTANCE.accountManager.accounts) {
+            jsonArray.add(new JsonParser().parse(account.toJson()).getAsJsonObject());
+        }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("alts", jsonArray);
+
+        try {
+            GsonUtils.save(jsonObject, new File(ConfigUtils.ALTS_FILE));
+        } catch (IOException | JsonParseException e) {
+            Client.LOGGER.error("Failed to save alts", e);
+        }
+    }
+
+    public void loadAlts() {
+        File altsFile = new File(ConfigUtils.ALTS_FILE);
+        if (altsFile.exists()) {
+            try (FileReader reader = new FileReader(altsFile)) {
+                JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+                if (json.has("alts") && json.get("alts").isJsonArray()) {
+                    JsonArray alts = json.getAsJsonArray("alts");
+                    for (JsonElement altElement : alts) {
+                        Account account = Account.fromJson(altElement.toString());
+                        if (account != null) {
+                            Client.INSTANCE.accountManager.accounts.add(account);
+                        }
+                    }
+                }
+            } catch (IOException | JsonParseException e) {
+                Client.LOGGER.error("Failed to load alts", e);
+            }
         }
     }
 

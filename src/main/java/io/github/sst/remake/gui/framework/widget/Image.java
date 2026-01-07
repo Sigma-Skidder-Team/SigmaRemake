@@ -44,7 +44,7 @@ public class Image extends Button {
 
     @Override
     public void draw(float partialTicks) {
-        if (this.texture.equals(Resources.optionsPNG1) && Client.INSTANCE.notificationManager.isRendering()) {
+        if (this.texture.equals(Resources.MORE_ICON) && Client.INSTANCE.notificationManager.isRendering()) {
              return;
         }
 

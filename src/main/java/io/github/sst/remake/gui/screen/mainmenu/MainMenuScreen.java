@@ -34,17 +34,12 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
     private final MainPage mainMenuScreen;
     private final ChangelogPage changelogPage;
-    private Texture background;
 
     public float deltaTime;
 
     public MainMenuScreen() {
         super("Main Screen");
         this.setListening(false);
-
-        if (this.background == null) {
-            this.background = Resources.createPaddedBlurredTexture("background/panorama5.png", 0.075F, 8);
-        }
 
         this.backgroundFadeAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.foregroundFadeAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
@@ -139,14 +134,14 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + backgroundWidth),
                     (float) (this.getHeight() + 114),
-                    Resources.backgroundPNG
+                    Resources.MENU_BACKGROUND
             );
             RenderUtils.drawImage(
                     (float) this.backgroundParallaxX - (float) middleWidth * parallaxFactor,
                     (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + middleWidth),
                     (float) (this.getHeight() + 114),
-                    Resources.middlePNG
+                    Resources.MENU_MIDDLEGROUND
             );
 
             for (GuiComponent bubble : this.bubbles) {
@@ -160,7 +155,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     (float) this.backgroundParallaxY,
                     (float) (this.getWidth() * 2 + foregroundWidth),
                     (float) (this.getHeight() + 114),
-                    Resources.foregroundPNG
+                    Resources.MENU_FOREGROUND
             );
 
             RenderUtils.drawImage(
@@ -168,7 +163,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     (float) (this.backgroundParallaxY - 50),
                     (float) (this.getWidth() * 2),
                     (float) (this.getHeight() + 200),
-                    background,
+                    Resources.MENU_PANORAMA_2,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), transitionProgress),
                     false
             );

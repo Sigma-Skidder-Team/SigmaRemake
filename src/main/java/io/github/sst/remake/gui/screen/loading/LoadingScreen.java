@@ -17,10 +17,6 @@ import java.util.function.Consumer;
 
 public class LoadingScreen extends Overlay implements IMinecraft {
 
-    public static Texture sigmaLogo;
-    public static Texture back;
-    public static Texture background;
-
     private float progress;
     private long applyCompleteTime = -1L;
     private long prepareCompleteTime = -1L;
@@ -33,10 +29,6 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         this.reloadMonitor = monitor;
         this.exceptionHandler = exceptionHandler;
         this.reloading = reloading;
-
-        sigmaLogo = Resources.loadTexture("user/logo.png");
-        back = Resources.loadTexture("loading/back.png");
-        background = Resources.createPaddedBlurredTexture("loading/back.png", 0.25F, 25);
     }
 
     @Override
@@ -83,7 +75,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
     public static void renderFadeOut(float bgOpacity, float var1) {
         GL11.glEnable(3008);
         GL11.glEnable(3042);
-        RenderUtils.drawImage(0.0F, 0.0F, (float) client.getWindow().getWidth(), (float) client.getWindow().getHeight(), background, bgOpacity);
+        RenderUtils.drawImage(0.0F, 0.0F, (float) client.getWindow().getWidth(), (float) client.getWindow().getHeight(), Resources.LOADING_SCREEN_BACKGROUND, bgOpacity);
         RenderUtils.drawRoundedRect2(0.0F, 0.0F, (float) client.getWindow().getWidth(), (float) client.getWindow().getHeight(), ColorHelper.applyAlpha(0, 0.75F));
 
         int var4 = 455;
@@ -96,7 +88,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         GL11.glTranslatef((float) (client.getWindow().getWidth() / 2), (float) (client.getWindow().getHeight() / 2), 0.0F);
         GL11.glScalef(var8, var8, 0.0F);
         GL11.glTranslatef((float) (-client.getWindow().getWidth() / 2), (float) (-client.getWindow().getHeight() / 2), 0.0F);
-        RenderUtils.drawImage((float) var6, (float) var7, (float) var4, (float) var5, sigmaLogo, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), bgOpacity));
+        RenderUtils.drawImage((float) var6, (float) var7, (float) var4, (float) var5, Resources.LOGO, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), bgOpacity));
         float var9 = Math.min(1.0F, var1 * 1.02F);
         float var11 = 80;
         if (bgOpacity == 1.0F) {

@@ -7,13 +7,10 @@ Minecraft Sigma Client port for Fabric 1.16.4
 - [x] Module System
 - [x] Config System
 - [x] Waypoint System
-- [ ] Add all Jello GUIs
+- [x] Add all Jello GUIs
 - [ ] Fix animation bug
-
-## GUIs Left
-- [ ] Music Player
-- [ ] Snake Game
-- [ ] Flappy Game
+- [ ] Encrypt/decrypt alts.json
+- [ ] Refresh token refresher
 
 ## Screenshots
 

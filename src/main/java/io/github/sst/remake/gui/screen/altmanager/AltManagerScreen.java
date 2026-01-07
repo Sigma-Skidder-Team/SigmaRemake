@@ -115,7 +115,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 );
         Dropdown filterDropdown = new Dropdown(this, "drop", (int) ((float) client.getWindow().getWidth() * this.field21014) - 220, 44, 200, 32, sortingOptions, 0);
         filterDropdown.method13643(servers, 1);
-        filterDropdown.method13656(2);
+        filterDropdown.setIndex(2);
         this.addToList(filterDropdown);
         filterDropdown.onPress(var2 -> {
             switch (filterDropdown.getIndex()) {
@@ -427,7 +427,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
         float var5 = var4 - this.field21006;
         float var6 = (float) (var3 - this.field21005);
-        RenderUtils.drawImage((float) this.field21005, this.field21006, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.panoramaPNG);
+        RenderUtils.drawImage((float) this.field21005, this.field21006, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.MENU_PANORAMA);
         float var7 = 0.5F;
         if (var4 != this.field21006) {
             this.field21006 += var5 * var7;

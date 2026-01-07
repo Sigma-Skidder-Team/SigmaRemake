@@ -97,14 +97,14 @@ public class RenderUtils implements IMinecraft {
         GL11.glAlphaFunc(519, 0.0F);
         int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
 
-        drawImage(x - radius, y - radius, radius, radius, Resources.shadowCorner1PNG, color);
-        drawImage(x + width, y - radius, radius, radius, Resources.shadowCorner2PNG, color);
-        drawImage(x - radius, y + height, radius, radius, Resources.shadowCorner3PNG, color);
-        drawImage(x + width, y + height, radius, radius, Resources.shadowCorner4PNG, color);
-        drawImage(x - radius, y, radius, height, Resources.shadowLeftPNG, color, false);
-        drawImage(x + width, y, radius, height, Resources.shadowRightPNG, color, false);
-        drawImage(x, y - radius, width, radius, Resources.shadowTopPNG, color, false);
-        drawImage(x, y + height, width, radius, Resources.shadowBottomPNG, color, false);
+        drawImage(x - radius, y - radius, radius, radius, Resources.SHADOW_CORNER_1, color);
+        drawImage(x + width, y - radius, radius, radius, Resources.SHADOW_CORNER_2, color);
+        drawImage(x - radius, y + height, radius, radius, Resources.SHADOW_CORNER_3, color);
+        drawImage(x + width, y + height, radius, radius, Resources.SHADOW_CORNER_4, color);
+        drawImage(x - radius, y, radius, height, Resources.SHADOW_LEFT, color, false);
+        drawImage(x + width, y, radius, height, Resources.SHADOW_RIGHT, color, false);
+        drawImage(x, y - radius, width, radius, Resources.SHADOW_TOP, color, false);
+        drawImage(x, y + height, width, radius, Resources.SHADOW_BOTTOM, color, false);
     }
 
     public static void drawImage(float x, float y, float width, float height, Texture tex, float alphaValue) {
@@ -525,7 +525,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y - innerOffset),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
 
@@ -538,7 +538,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y - innerOffset),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -552,7 +552,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y + padding + height),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -566,7 +566,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y + padding + height),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -584,7 +584,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y + padding + offsetY),
                     (float) tileSize,
                     (float) tileSize,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
         }
@@ -608,7 +608,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y - padding - offsetX),
                     (float) tileSize,
                     (float) tileSize,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -633,7 +633,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y - padding - offsetY),
                     (float) tileSize,
                     (float) tileSize,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -658,7 +658,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y + padding + offsetX),
                     (float) tileSize,
                     (float) tileSize,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -685,7 +685,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y - innerOffset),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
 
@@ -698,7 +698,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y - innerOffset),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -712,7 +712,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y + padding + height),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -726,7 +726,7 @@ public class RenderUtils implements IMinecraft {
                 (float) (y + padding + height),
                 (float) tileSize,
                 (float) tileSize,
-                Resources.floatingCornerPNG,
+                Resources.FLOATING_CORNER,
                 color
         );
         GL11.glPopMatrix();
@@ -745,7 +745,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y + padding + offsetY) - 0.4F,
                     (float) tileSize,
                     (float) tileSize + 0.4F,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
         }
@@ -770,7 +770,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y - padding - offsetX) - 0.4F,
                     (float) tileSize,
                     (float) tileSize + 0.4F,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -796,7 +796,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y - padding - offsetY) - 0.4F,
                     (float) tileSize,
                     (float) tileSize + 0.4F,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -822,7 +822,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (y + padding + offsetX) - 0.4F,
                     (float) tileSize,
                     (float) tileSize + 0.4F,
-                    Resources.floatingBorderPNG,
+                    Resources.FLOATING_BORDER,
                     color
             );
             GL11.glPopMatrix();
@@ -834,10 +834,10 @@ public class RenderUtils implements IMinecraft {
     public static void drawPanelShadow(float x, float y, float width, float height, float shadowSize, float alpha) {
         int shadowColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
 
-        drawImage(x, y, shadowSize, height, Resources.shadowRightPNG, shadowColor, false);
-        drawImage(x + width - shadowSize, y, shadowSize, height, Resources.shadowLeftPNG, shadowColor, false);
-        drawImage(x, y, width, shadowSize, Resources.shadowBottomPNG, shadowColor, false);
-        drawImage(x, y + height - shadowSize, width, shadowSize, Resources.shadowTopPNG, shadowColor, false);
+        drawImage(x, y, shadowSize, height, Resources.SHADOW_RIGHT, shadowColor, false);
+        drawImage(x + width - shadowSize, y, shadowSize, height, Resources.SHADOW_LEFT, shadowColor, false);
+        drawImage(x, y, width, shadowSize, Resources.SHADOW_BOTTOM, shadowColor, false);
+        drawImage(x, y + height - shadowSize, width, shadowSize, Resources.SHADOW_TOP, shadowColor, false);
     }
 
     public static void renderItemStack(ItemStack stack, int x, int y, int width, int height) {

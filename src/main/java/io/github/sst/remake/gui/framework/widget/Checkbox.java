@@ -22,10 +22,10 @@ public class Checkbox extends InteractiveWidget {
     }
 
     public void method13704(boolean var1) {
-        this.method13705(var1, true);
+        this.setValue(var1, true);
     }
 
-    public void method13705(boolean value, boolean var2) {
+    public void setValue(boolean value, boolean var2) {
         if (value != this.getValue()) {
             this.value = value;
             this.field21370.changeDirection(!this.value ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
@@ -64,7 +64,7 @@ public class Checkbox extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                Resources.checkPNG,
+                Resources.CHECKMARK,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var5)
         );
         GL11.glPopMatrix();
@@ -74,6 +74,6 @@ public class Checkbox extends InteractiveWidget {
 
     @Override
     public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
-        this.method13705(!this.value, true);
+        this.setValue(!this.value, true);
     }
 }

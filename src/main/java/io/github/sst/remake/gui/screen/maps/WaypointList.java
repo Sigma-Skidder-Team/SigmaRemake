@@ -117,7 +117,7 @@ public class WaypointList extends ScrollablePanel {
                 (float) (this.height - 46),
                 22.0F,
                 26.0F,
-                Resources.trashcanPNG,
+                Resources.TRASHCAN,
                 ColorHelper.applyAlpha(!this.isMouseOverTrashcan ? ClientColors.DEEP_TEAL.getColor() : ClientColors.PALE_YELLOW.getColor(), this.trashcanAnimation.calcPercent() * 0.5F),
                 false
         );

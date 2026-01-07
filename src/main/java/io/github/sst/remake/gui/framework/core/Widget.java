@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Widget extends GuiComponent implements DragHandler, IMinecraft {
-    public boolean field20876;
-    public boolean field20877;
+    public boolean draggable;
+    public boolean dragging;
     public int mouseX;
     public int mouseY;
     public int sizeWidthThingy;
@@ -29,22 +29,22 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, boolean var7) {
         super(screen, name, x, y, width, height);
-        this.field20876 = var7;
+        this.draggable = var7;
     }
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, boolean var8) {
         super(screen, name, x, y, width, height, colorHelper);
-        this.field20876 = var8;
+        this.draggable = var8;
     }
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String text, boolean var9) {
         super(screen, name, x, y, width, height, colorHelper, text);
-        this.field20876 = var9;
+        this.draggable = var9;
     }
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, ColorHelper colorHelper, String var8, TrueTypeFont font, boolean var10) {
         super(screen, name, x, y, width, height, colorHelper, var8, font);
-        this.field20876 = var10;
+        this.draggable = var10;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
-            if (!this.isMouseDownOverComponent && !this.field20877) {
+            if (!this.isMouseDownOverComponent && !this.dragging) {
                 this.sizeWidthThingy = this.getWidth() / 2;
                 this.sizeHeightThingy = this.getHeight() / 2;
             }
@@ -94,20 +94,20 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     }
 
     @Override
-    public void handleMovementAndCheckBoundaries(int newHeight, int newWidth) {
-        boolean var5 = this.field20877;
+    public void handleMovementAndCheckBoundaries(int mouseX, int mouseY) {
+        boolean var5 = this.dragging;
         if (!this.isDragging() && this.isDraggable()) {
             boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
             boolean var7 = this.field20885
                     && this.isMouseDownOverComponent
-                    && (Math.abs(this.mouseX - newHeight) > this.field20889 || Math.abs(this.mouseY - newWidth) > this.field20889);
+                    && (Math.abs(this.mouseX - mouseX) > this.field20889 || Math.abs(this.mouseY - mouseY) > this.field20889);
             boolean var8 = this.field20886 && this.isMouseDownOverComponent;
             if (var6 || var7 || var8) {
                 this.setDragging(true);
             }
         } else if (this.isDragging()) {
-            this.setX(newHeight - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
-            this.setY(newWidth - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
+            this.setX(mouseX - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
+            this.setY(mouseY - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
             if (this.field20882) {
                 if (this.parent == null) {
                     if (this.getX() < 0) {
@@ -153,23 +153,23 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
 
     @Override
     public boolean isDraggable() {
-        return this.field20876;
+        return this.draggable;
     }
 
     @Override
     public void setDraggable(boolean var1) {
-        this.field20876 = var1;
+        this.draggable = var1;
     }
 
     @Override
     public boolean isDragging() {
-        return this.field20877;
+        return this.dragging;
     }
 
     @Override
-    public void setDragging(boolean var1) {
-        this.field20877 = var1;
-        if (var1) {
+    public void setDragging(boolean dragging) {
+        this.dragging = dragging;
+        if (dragging) {
             this.setDraggable(true);
             this.notifyDragListeners();
         }

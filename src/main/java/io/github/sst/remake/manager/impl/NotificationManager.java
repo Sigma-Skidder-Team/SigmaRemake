@@ -23,9 +23,8 @@ public class NotificationManager extends Manager implements IMinecraft {
     public void send(Notification notification) {
         for (Notification notif : this.notifications) {
             if (notif.equals(notification)) {
-                notif.time.setElapsedTime(Math.min(notif.time.getElapsedTime(), this.field39922 + 1));
+                notif.timer.setElapsedTime(Math.min(notif.timer.getElapsedTime(), this.field39922 + 1));
                 notif.desc = notification.desc;
-                notif.field43610++;
                 notif.icon = notification.icon;
                 return;
             }
@@ -35,7 +34,7 @@ public class NotificationManager extends Manager implements IMinecraft {
     }
 
     public float getAnimation(Notification var1) {
-        float var4 = (float) Math.min(var1.time.getElapsedTime(), var1.showTime);
+        float var4 = (float) Math.min(var1.timer.getElapsedTime(), var1.showTime);
         if (!(var4 < (float) this.field39922 * 1.4F)) {
             return !(var4 > (float) var1.showTime - (float) this.field39922)
                     ? 1.0F
@@ -108,7 +107,7 @@ public class NotificationManager extends Manager implements IMinecraft {
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
-        this.notifications.removeIf(var5 -> var5.time.getElapsedTime() > (long) var5.showTime);
+        this.notifications.removeIf(var5 -> var5.timer.getElapsedTime() > (long) var5.showTime);
     }
 
     public boolean isRendering() {

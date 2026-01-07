@@ -8,30 +8,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InteractiveWidget extends Widget {
-    private final List<InteractiveWidgetHandler> interactiveWidgetHandlers = new ArrayList<InteractiveWidgetHandler>();
+    private final List<InteractiveWidgetHandler> handlers = new ArrayList<>();
 
-    public InteractiveWidget(GuiComponent screen, String typeThingIdk, int x, int y, int width, int height, boolean var7) {
-        super(screen, typeThingIdk, x, y, width, height, var7);
+    public InteractiveWidget(GuiComponent parent, String name, int x, int y, int width, int height, boolean var7) {
+        super(parent, name, x, y, width, height, var7);
     }
 
-    public InteractiveWidget(GuiComponent screen, String typeThingIdk, int x, int y, int width, int height, ColorHelper var7, boolean var8) {
-        super(screen, typeThingIdk, x, y, width, height, var7, var8);
+    public InteractiveWidget(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper color, boolean var8) {
+        super(parent, name, x, y, width, height, color, var8);
     }
 
-    public InteractiveWidget(GuiComponent screen, String typeThingIdk, int x, int y, int width, int height, ColorHelper var7, String text, boolean var9) {
-        super(screen, typeThingIdk, x, y, width, height, var7, text, var9);
+    public InteractiveWidget(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper color1, String text, boolean var9) {
+        super(parent, name, x, y, width, height, color1, text, var9);
     }
 
-    public InteractiveWidget(GuiComponent screen, String typeThingIdk, int x, int y, int width, int height, ColorHelper var7, String var8, TrueTypeFont font, boolean var10) {
-        super(screen, typeThingIdk, x, y, width, height, var7, var8, font, var10);
+    public InteractiveWidget(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper var7, String var8, TrueTypeFont font, boolean var10) {
+        super(parent, name, x, y, width, height, var7, var8, font, var10);
     }
 
-    public final void onPress(InteractiveWidgetHandler interactiveWidgetHandler) {
-        this.interactiveWidgetHandlers.add(interactiveWidgetHandler);
+    public void onPress(InteractiveWidgetHandler interactiveWidgetHandler) {
+        this.handlers.add(interactiveWidgetHandler);
     }
 
-    public final void callUIHandlers() {
-        for (InteractiveWidgetHandler handler : this.interactiveWidgetHandlers) {
+    public void callUIHandlers() {
+        for (InteractiveWidgetHandler handler : this.handlers) {
             handler.handle(this);
         }
     }
