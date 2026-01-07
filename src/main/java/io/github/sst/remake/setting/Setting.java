@@ -37,9 +37,13 @@ public abstract class Setting<T> {
         this.value = value;
 
         if (notify)
-            for (ChangeListener<T> listener : listeners) {
-                listener.onSettingChanged(this);
-            }
+            notifyListeners();
+    }
+
+    public void notifyListeners() {
+        for (ChangeListener<T> listener : listeners) {
+            listener.onSettingChanged(this);
+        }
     }
 
     @SuppressWarnings("unchecked")

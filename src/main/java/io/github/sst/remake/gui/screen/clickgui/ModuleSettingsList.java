@@ -8,6 +8,7 @@ import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.screen.clickgui.block.BlockPicker;
 import io.github.sst.remake.gui.screen.clickgui.color.ColorPicker;
+import io.github.sst.remake.gui.screen.clickgui.math.BezierCurve;
 import io.github.sst.remake.gui.screen.clickgui.slider.SettingSlider;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Module;
@@ -25,10 +26,10 @@ import java.util.Map.Entry;
 
 public class ModuleSettingsList extends ScrollablePanel {
     private final Module module;
-    public int field21222 = 200;
-    private final HashMap<Text, Setting> field21223 = new HashMap<>();
-    public HashMap<Module, GuiComponent> field21224 = new HashMap<>();
-    public AnimationUtils field21225 = new AnimationUtils(114, 114);
+    private int field21222 = 200;
+    private final HashMap<Text, Setting> settingNames = new HashMap<>();
+    //public HashMap<Module, GuiComponent> field21224 = new HashMap<>();
+    private final AnimationUtils field21225 = new AnimationUtils(114, 114);
     private String field21226 = "";
     private String field21227 = "";
 
@@ -39,167 +40,195 @@ public class ModuleSettingsList extends ScrollablePanel {
         this.addSettings();
     }
 
-    private int addSetting(GuiComponent panel, Setting setting, int var3, int var4, int var5) {
+    private int addSetting(GuiComponent panel, Setting setting, int var3, int yOffset, int var5) {
         switch (setting.settingType) {
             case CHECKBOX:
-                Text var37 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 24, Text.defaultColorHelper, setting.name);
-                Checkbox var45 = new Checkbox(panel, setting.name + "checkbox", panel.getWidth() - 24 - var5, var4 + 6, 24, 24);
-                this.field21223.put(var37, setting);
-                var45.method13705((Boolean) setting.value, false);
+                Text checkBoxText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                Checkbox checkBox = new Checkbox(panel, setting.name + "checkbox", panel.getWidth() - 24 - var5, yOffset + 6, 24, 24);
+                this.settingNames.put(checkBoxText, setting);
+                checkBox.setValue((Boolean) setting.value, false);
                 setting.addListener(var1x -> {
-                    if (var45.getValue() != (Boolean) var1x.value) {
-                        var45.method13705((Boolean) var1x.value, false);
+                    if (checkBox.getValue() != (Boolean) var1x.value) {
+                        checkBox.setValue((Boolean) var1x.value, false);
                     }
                 });
-                var45.onPress(element -> setting.setValue(((Checkbox) element).getValue()));
-                var45.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 24 - var5));
-                panel.addToList(var37);
-                panel.addToList(var45);
-                var4 += 24 + var5;
+                checkBox.onPress(element -> setting.setValue(((Checkbox) element).getValue()));
+                checkBox.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 24 - var5));
+                panel.addToList(checkBoxText);
+                panel.addToList(checkBox);
+                yOffset += 24 + var5;
                 break;
             case SLIDER:
-                Text var36 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 24, Text.defaultColorHelper, setting.name);
-                this.field21223.put(var36, setting);
-                SliderSetting numbaSetting = (SliderSetting) setting;
-                SettingSlider var47 = new SettingSlider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, var4 + 6, 126, 24);
-                var47.method13137().setFont(FontUtils.HELVETICA_LIGHT_14);
-                var47.setText(Float.toString((Float) setting.value));
-                var47.method13140(SettingSlider.method13134(numbaSetting.min, numbaSetting.max, numbaSetting.value), false);
-                var47.method13143(-1.0F);
-                int var13 = numbaSetting.getPlaces();
-                numbaSetting.addListener(
-                        var3x -> {
-                            if (SettingSlider.method13135(var47.method13138(), numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13)
-                                    != (Float) var3x.value) {
-                                var47.setText(Float.toString((Float) var3x.value));
-                                var47.method13140(SettingSlider.method13134(numbaSetting.min, numbaSetting.max, var3x.value), false);
+                Text sliderName = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                this.settingNames.put(sliderName, setting);
+                SliderSetting sliderSetting = (SliderSetting) setting;
+                SettingSlider slider = new SettingSlider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, yOffset + 6, 126, 24);
+                slider.getHandle().setFont(FontUtils.HELVETICA_LIGHT_14);
+                slider.setText(Float.toString((Float) setting.value));
+                slider.setValue(SettingSlider.setValues(sliderSetting.min, sliderSetting.max, sliderSetting.value), false);
+                slider.method13143(-1.0F);
+                int var13 = sliderSetting.getPlaces();
+                sliderSetting.addListener(
+                        lisSetting -> {
+                            if (SettingSlider.getValues(slider.method13138(), sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13)
+                                    != (Float) lisSetting.value) {
+                                slider.setText(Float.toString((Float) lisSetting.value));
+                                slider.setValue(SettingSlider.setValues(sliderSetting.min, sliderSetting.max, lisSetting.value), false);
                             }
                         }
                 );
-                var47.onPress(var4x -> {
-                    float var7 = ((SettingSlider) var4x).method13138();
-                    float var8x = SettingSlider.method13135(var7, numbaSetting.min, numbaSetting.max, numbaSetting.increment, var13);
+                slider.onPress(widget -> {
+                    float var7 = ((SettingSlider) widget).method13138();
+                    float var8x = SettingSlider.getValues(var7, sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13);
                     if (var8x != (Float) setting.value) {
-                        var47.setText(Float.toString(var8x));
+                        slider.setText(Float.toString(var8x));
                         setting.setValue(var8x);
                     }
                 });
-                var47.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 126 - var5));
-                panel.addToList(var36);
-                panel.addToList(var47);
-                var4 += 24 + var5;
+                slider.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 126 - var5));
+                panel.addToList(sliderName);
+                panel.addToList(slider);
+                yOffset += 24 + var5;
                 break;
             case TEXT_INPUT:
                 int var19 = 114;
                 int var27 = 27;
-                Text var43;
+                Text textInputText;
                 this.addToList(
-                        var43 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, var27, Text.defaultColorHelper, setting.name)
+                        textInputText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, var27, Text.defaultColorHelper, setting.name)
                 );
-                this.field21223.put(var43, setting);
-                TextField var35;
+                this.settingNames.put(textInputText, setting);
+                TextField input;
                 this.addToList(
-                        var35 = new TextField(
+                        input = new TextField(
                                 panel,
                                 setting.name + "txt",
                                 panel.getWidth() - var5 - var19,
-                                var4 + var27 / 4 - 1,
+                                yOffset + var27 / 4 - 1,
                                 var19,
                                 var27,
                                 TextField.field20741,
                                 (String) setting.value
                         )
                 );
-                var35.setFont(FontUtils.HELVETICA_LIGHT_18);
-                var35.addChangeListener(var1x -> setting.setValue(var1x.getText()));
-                setting.addListener(var2x -> {
-                    if (var35.getText() != setting.value) {
-                        var35.setText((String) setting.value);
+                input.setFont(FontUtils.HELVETICA_LIGHT_18);
+                input.addChangeListener(var1x -> setting.setValue(var1x.getText()));
+                setting.addListener(ignored -> {
+                    if (input.getText() != setting.value) {
+                        input.setText((String) setting.value);
                     }
                 });
-                var4 += var27 + var5;
+                yOffset += var27 + var5;
                 break;
             case DROPDOWN:
-                Text var34 = new Text(panel, setting.name + "lbl", var3, var4 + 2, this.field21222, 27, Text.defaultColorHelper, setting.name);
-                Dropdown var42 = new Dropdown(
+                Text dropdownText = new Text(panel, setting.name + "lbl", var3, yOffset + 2, this.field21222, 27, Text.defaultColorHelper, setting.name);
+                Dropdown dropdown = new Dropdown(
                         panel,
                         setting.name + "btn",
                         panel.getWidth() - var5,
-                        var4 + 6 - 1,
+                        yOffset + 6 - 1,
                         123,
                         27,
                         ((ModeSetting) setting).modes,
                         ((ModeSetting) setting).getModeIndex()
                 );
-                this.field21223.put(var34, setting);
-                setting.addListener(var2x -> {
-                    if (var42.getIndex() != ((ModeSetting) setting).getModeIndex()) {
-                        var42.method13656(((ModeSetting) setting).getModeIndex());
+                this.settingNames.put(dropdownText, setting);
+                setting.addListener(ignored -> {
+                    if (dropdown.getIndex() != ((ModeSetting) setting).getModeIndex()) {
+                        dropdown.setIndex(((ModeSetting) setting).getModeIndex());
                     }
                 });
-                var42.onPress(var2x -> {
-                    ((ModeSetting) setting).setModeByIndex(((Dropdown) var2x).getIndex());
-                    var42.method13656(((ModeSetting) setting).getModeIndex());
+                dropdown.onPress(widget -> {
+                    ((ModeSetting) setting).setModeByIndex(((Dropdown) widget).getIndex());
+                    dropdown.setIndex(((ModeSetting) setting).getModeIndex());
                 });
-                var42.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 123 - var5));
-                panel.addToList(var34);
-                panel.addToList(var42);
-                var4 += 27 + var5;
+                dropdown.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 123 - var5));
+                panel.addToList(dropdownText);
+                panel.addToList(dropdown);
+                yOffset += 27 + var5;
                 break;
             case GROUP:
-                GuiComponent var17 = new GuiComponent(panel, setting.name + "view", var3, var4, panel.getWidth(), 0);
-                int var25 = 0;
+                GuiComponent view = new GuiComponent(panel, setting.name + "view", var3, yOffset, panel.getWidth(), 0);
+                int yOffset2 = 0;
 
-                for (Setting<?> var41 : ((GroupSetting) setting).subSettings) {
-                    var25 = this.addSetting(var17, var41, 0, var25, var5);
+                for (Setting<?> settings : ((GroupSetting) setting).subSettings) {
+                    yOffset2 = this.addSetting(view, settings, 0, yOffset2, var5);
                 }
 
-                new ContentSize().setWidth(var17, panel);
-                var17.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth() - var5));
-                panel.addToList(var17);
-                var4 += var17.getHeight() + var5;
+                new ContentSize().setWidth(view, panel);
+                view.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth() - var5));
+                panel.addToList(view);
+                yOffset += view.getHeight() + var5;
                 break;
             case BLOCKS:
-                Text var31 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 200, Text.defaultColorHelper, setting.name);
-                BlockPicker var39 = new BlockPicker(
+                Text blocksText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 200, Text.defaultColorHelper, setting.name);
+                BlockPicker blockPicker = new BlockPicker(
                         panel,
                         setting.name + "picker",
                         panel.getWidth() - var5,
-                        var4 + 5,
+                        yOffset + 5,
                         175,
                         200,
                         ((BlockListSetting) setting).enabled,
                         ((BlockListSetting) setting).value.toArray(new String[0])
                 );
-                this.field21223.put(var31, setting);
-                var39.onPress(var2x -> setting.setValue(var39.method13072()));
-                var39.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
-                panel.addToList(var31);
-                panel.addToList(var39);
-                var4 += 200 + var5;
+                this.settingNames.put(blocksText, setting);
+                blockPicker.onPress(widget -> setting.setValue(blockPicker.method13072()));
+                blockPicker.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
+                panel.addToList(blocksText);
+                panel.addToList(blockPicker);
+                yOffset += 200 + var5;
                 break;
             case COLOR:
-                ColorSetting var30 = (ColorSetting) setting;
-                Text var38 = new Text(panel, setting.name + "lbl", var3, var4, this.field21222, 24, Text.defaultColorHelper, setting.name);
-                ColorPicker var46 = new ColorPicker(
-                        panel, setting.name + "color", panel.getWidth() - 160 - var5 + 10, var4, 160, 114, (Integer) setting.value, var30.rainbow
+                ColorSetting colorSetting = (ColorSetting) setting;
+                Text colorText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                ColorPicker picker = new ColorPicker(
+                        panel, setting.name + "color", panel.getWidth() - 160 - var5 + 10, yOffset, 160, 114, (Integer) setting.value, colorSetting.rainbow
                 );
-                this.field21223.put(var38, setting);
+                this.settingNames.put(colorText, setting);
                 setting.addListener(var3x -> {
-                    var46.method13048((Integer) setting.value);
-                    var46.method13046(var30.rainbow);
+                    picker.setValue((Integer) setting.value);
+                    picker.setRainbow(colorSetting.rainbow);
                 });
-                var46.onPress(var2x -> {
-                    setting.setValue(((ColorPicker) var2x).method13049(), false);
-                    var30.rainbow = ((ColorPicker) var2x).method13047();
+                picker.onPress(widget -> {
+                    setting.setValue(((ColorPicker) widget).getValue(), false);
+                    colorSetting.rainbow = ((ColorPicker) widget).getRainbow();
                 });
-                panel.addToList(var38);
-                panel.addToList(var46);
-                var4 += 114 + var5 - 10;
+                panel.addToList(colorText);
+                panel.addToList(picker);
+                yOffset += 114 + var5 - 10;
+                break;
+            case CURVE:
+                CurveSetting.Curve speedSetting = (CurveSetting.Curve) setting.value;
+                Text text = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                BezierCurve curve = new BezierCurve(
+                        panel,
+                        setting.name + "color",
+                        panel.getWidth() - 150 - var5 + 10,
+                        yOffset,
+                        150,
+                        150,
+                        20,
+                        speedSetting.initial,
+                        speedSetting.mid,
+                        speedSetting.finalStage,
+                        speedSetting.maximum
+                );
+                this.settingNames.put(text, setting);
+                setting.addListener(ignored -> {
+                    CurveSetting.Curve profile = (CurveSetting.Curve) setting.value;
+                    curve.setCurveValues(profile.initial, profile.mid, profile.finalStage, profile.maximum);
+                });
+                curve.onPress(
+                        widget -> ((CurveSetting) setting).setValue(curve.getCurveValues()[0], curve.getCurveValues()[1], curve.getCurveValues()[2], curve.getCurveValues()[3])
+                );
+                panel.addToList(text);
+                panel.addToList(curve);
+                yOffset += 150 + var5 - 10;
                 break;
         }
 
-        return var4 - (var5 - 10);
+        return yOffset - (var5 - 10);
     }
 
     private void addSettings() {
@@ -211,8 +240,8 @@ public class ModuleSettingsList extends ScrollablePanel {
             yOffset = this.addSetting(this, setting, 20, yOffset, 20);
         }
 
-        int var17 = yOffset;
         /*
+        int var17 = yOffset;
         if (this.module instanceof ModuleWithModuleSettings var18) {
 
             for (Module var10 : var18.moduleArray) {
@@ -242,22 +271,16 @@ public class ModuleSettingsList extends ScrollablePanel {
             var18.addModuleStateListener((parent, module, enabled) -> this.field21224.get(module).setSelfVisible(enabled));
             var18.calledOnEnable();
         }
-
          */
 
         this.addToList(new GuiComponent(this, "extentionhack", 0, yOffset, 0, 20));
     }
 
     @Override
-    public void updatePanelDimensions(int mouseX, int mouseY) {
-        super.updatePanelDimensions(mouseX, mouseY);
-    }
-
-    @Override
     public void draw(float partialTicks) {
         boolean var4 = false;
 
-        for (Entry var6 : this.field21223.entrySet()) {
+        for (Entry var6 : this.settingNames.entrySet()) {
             Text var7 = (Text) var6.getKey();
             Setting var8 = (Setting) var6.getValue();
             if (var7.isHoveredInHierarchy() && var7.isVisible()) {

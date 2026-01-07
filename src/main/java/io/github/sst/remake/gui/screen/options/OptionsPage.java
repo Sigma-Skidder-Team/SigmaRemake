@@ -32,11 +32,11 @@ public class OptionsPage extends GuiComponent {
         credits.onClick((screen, mouseButton) -> OptionsScreen.showGUI(new CreditsHolder(new LiteralText("Jello Credits"))));
         Checkbox blurCheckbox;
         this.addToList(blurCheckbox = new Checkbox(this, "guiBlurCheckBox", width / 2 - 70, height - 220, 25, 25));
-        blurCheckbox.method13705(Client.INSTANCE.configManager.guiBlur, false);
+        blurCheckbox.setValue(Client.INSTANCE.configManager.guiBlur, false);
         blurCheckbox.onPress(e -> Client.INSTANCE.configManager.guiBlur = blurCheckbox.getValue());
         Checkbox ingameBlurCheckbox;
         this.addToList(ingameBlurCheckbox = new Checkbox(this, "guiBlurIngameCheckBox", width / 2 + 130, height - 220, 25, 25));
-        ingameBlurCheckbox.method13705(Client.INSTANCE.configManager.hqBlur, false);
+        ingameBlurCheckbox.setValue(Client.INSTANCE.configManager.hqBlur, false);
         ingameBlurCheckbox.onPress(e -> Client.INSTANCE.configManager.hqBlur = ingameBlurCheckbox.getValue());
     }
 

@@ -89,7 +89,7 @@ public class VecUtils {
                 Vector2d p1 = controlPoints.get(1);
                 Vector2d p2 = controlPoints.get(2);
                 Vector2d p3 = controlPoints.size() != 4 ? null : controlPoints.get(3);
-                ArrayList<Vector2d> interpolatedPoints = new ArrayList<>();
+                List<Vector2d> interpolatedPoints = new ArrayList<>();
                 Vector2d currentPoint = p0;
                 double t = 0.0;
 

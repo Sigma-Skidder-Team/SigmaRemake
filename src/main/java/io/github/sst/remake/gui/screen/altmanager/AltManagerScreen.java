@@ -115,7 +115,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 );
         Dropdown filterDropdown = new Dropdown(this, "drop", (int) ((float) client.getWindow().getWidth() * this.field21014) - 220, 44, 200, 32, sortingOptions, 0);
         filterDropdown.method13643(servers, 1);
-        filterDropdown.method13656(2);
+        filterDropdown.setIndex(2);
         this.addToList(filterDropdown);
         filterDropdown.onPress(var2 -> {
             switch (filterDropdown.getIndex()) {
