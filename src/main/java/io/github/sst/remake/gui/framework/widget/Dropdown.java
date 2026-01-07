@@ -188,7 +188,10 @@ public class Dropdown extends InteractiveWidget {
 
             for (Entry var6 : this.field21331.entrySet()) {
                 if (this.selectedIdx == (Integer) var6.getKey()) {
-                    var4 = " (" + ((DropdownSub) var6.getValue()).values.get(((DropdownSub) var6.getValue()).field21324) + ")";
+                    DropdownSub sub = (DropdownSub) var6.getValue();
+                    if (!sub.values.isEmpty()) {
+                        var4 = " (" + sub.values.get(sub.field21324) + ")";
+                    }
                 }
             }
 
