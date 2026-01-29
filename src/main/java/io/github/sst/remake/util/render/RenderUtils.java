@@ -952,22 +952,15 @@ public class RenderUtils implements IMinecraft {
             boolean flipX,
             boolean flipY
     ) {
-        if (pixelBuffer == null) {
-            return;
-        }
-
-        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-
         x = (float) Math.round(x);
         y = (float) Math.round(y);
         width = (float) Math.round(width);
         height = (float) Math.round(height);
 
         float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
-        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
-        float blue  = (float) (color & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
@@ -985,17 +978,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexImage2D(
-                GL11.GL_TEXTURE_2D,
-                0,
-                GL11.GL_RGB,
-                (int) textureWidth,
-                (int) textureHeight,
-                0,
-                GL11.GL_RGB,
-                GL11.GL_UNSIGNED_BYTE,
-                pixelBuffer
-        );
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, (int) textureWidth, (int) textureHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
 
         float u = textureOffsetX / textureWidth;
         float v = textureOffsetY / textureHeight;
@@ -1050,9 +1033,9 @@ public class RenderUtils implements IMinecraft {
         }
 
         float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
-        float red   = (float) (color >> 16 & 0xFF) / 255.0F;
+        float red = (float) (color >> 16 & 0xFF) / 255.0F;
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
-        float blue  = (float) (color & 0xFF) / 255.0F;
+        float blue = (float) (color & 0xFF) / 255.0F;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();

@@ -49,10 +49,6 @@ public class MiniMapModule extends Module {
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent ignoredEvent) {
-        if (!isEnabled() || client.player == null || client.world == null) {
-            return;
-        }
-
         tickCounter++;
 
         if (smoothedPlayerY < client.player.getY() && client.player.isOnGround()) {
@@ -65,7 +61,6 @@ public class MiniMapModule extends Module {
             return;
         }
 
-        List<WorldChunk> nearbyChunks = collectNearbyChunks();
 
         Iterator<ChunkColorCache> iterator = trackedChunks.iterator();
         while (iterator.hasNext()) {
@@ -77,7 +72,7 @@ public class MiniMapModule extends Module {
             }
         }
 
-        for (WorldChunk chunk : nearbyChunks) {
+        for (WorldChunk chunk : collectNearbyChunks()) {
             if (chunk == null) {
                 return;
             }
@@ -123,8 +118,6 @@ public class MiniMapModule extends Module {
         int mapSize = 150;
         int mapX = 10;
 
-        TrueTypeFont font = FontUtils.HELVETICA_MEDIUM_20;
-        String arrow = "^";
         float scale = 1.5F;
 
         GL11.glAlphaFunc(519, 0.0F);
@@ -144,8 +137,6 @@ public class MiniMapModule extends Module {
         float scaledHeight = mapSize * scale;
 
         ScissorUtils.startScissorNoGL(mapX, yOffset, mapX + mapSize, yOffset + mapSize);
-
-        RenderUtils.drawImage(0.0F, 0.0F, 0.0F, 0.0F, Resources.SHOUT_ICON);
 
         float drawX = -scaledWidth / 2.0F + mapSize / 2.0F + offsetX;
         float drawY = -scaledHeight / 2.0F + mapSize / 2.0F + offsetY;
@@ -174,6 +165,9 @@ public class MiniMapModule extends Module {
         GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);
         GL11.glRotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
+
+        TrueTypeFont font = FontUtils.HELVETICA_MEDIUM_20;
+        String arrow = "^";
 
         RenderUtils.drawString(
                 font,
