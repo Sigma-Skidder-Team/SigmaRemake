@@ -173,7 +173,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                         ((BlockListSetting) setting).value.toArray(new String[0])
                 );
                 this.settingNames.put(blocksText, setting);
-                blockPicker.onPress(widget -> setting.setValue(blockPicker.method13072()));
+                blockPicker.onPress(widget -> setting.setValue(blockPicker.getSelectedValues()));
                 blockPicker.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
                 panel.addToList(blocksText);
                 panel.addToList(blockPicker);

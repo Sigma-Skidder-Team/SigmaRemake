@@ -20,28 +20,28 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BlockPicker extends InteractiveWidget {
-    private final List<String> values = new ArrayList<>();
-    private ScrollablePanel field20642;
-    private final TextField textField;
-    private final boolean field20644;
+    private final List<String> selectedValues = new ArrayList<>();
+    private ScrollablePanel scrollPanel;
+    private final TextField searchField;
+    private final boolean blocksOnly;
 
     public BlockPicker(GuiComponent parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
         super(parent, text, x, y, width, height, false);
-        this.field20644 = var7;
-        this.addToList(this.textField = new TextField(this, "textbox", 0, 0, width, 32, TextField.DEFAULT_COLORS, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
-        this.textField.setFont(FontUtils.HELVETICA_LIGHT_18);
-        this.textField.addChangeListener(var1x -> this.method13069(this.textField.getText()));
-        this.method13071(var8);
-        this.method13069("");
+        this.blocksOnly = var7;
+        this.addToList(this.searchField = new TextField(this, "textbox", 0, 0, width, 32, TextField.DEFAULT_COLORS, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
+        this.searchField.setFont(FontUtils.HELVETICA_LIGHT_18);
+        this.searchField.addChangeListener(var1x -> this.rebuildItemList(this.searchField.getText()));
+        this.setSelectedValues(var8);
+        this.rebuildItemList("");
     }
 
-    public void method13069(String var1) {
+    public void rebuildItemList(String searchTerm) {
         this.addRunnable(() -> {
-            if (this.field20642 != null) {
-                this.removeChildren(this.field20642);
+            if (this.scrollPanel != null) {
+                this.removeChildren(this.scrollPanel);
             }
 
-            this.addToList(this.field20642 = new ScrollablePanel(this, "scrollview", 0, 40, this.width, this.height - 40));
+            this.addToList(this.scrollPanel = new ScrollablePanel(this, "scrollview", 0, 40, this.width, this.height - 40));
             List<Item> items = new ArrayList<>();
 
             for (Item item : Registry.ITEM) {
@@ -51,8 +51,8 @@ public class BlockPicker extends InteractiveWidget {
             items.add(new BlockItem(Blocks.NETHER_PORTAL, new Item.Settings().group(ItemGroup.MISC)));
             items.add(new BlockItem(Blocks.END_PORTAL, new Item.Settings().group(ItemGroup.MISC)));
 
-            for (Item item : prioritizeItemsByName(items, var1)) {
-                if (item != Items.AIR && (!this.field20644 || item instanceof BlockItem)) {
+            for (Item item : prioritizeItemsByName(items, searchTerm)) {
+                if (item != Items.AIR && (!this.blocksOnly || item instanceof BlockItem)) {
                     Identifier texture = Registry.ITEM.getId(item);
                     String var9;
                     if (item instanceof BlockItem && texture.getPath().equals("air")) {
@@ -62,23 +62,23 @@ public class BlockPicker extends InteractiveWidget {
                     }
 
                     BlockItemButton var10;
-                    this.field20642.addToList(var10 = new BlockItemButton(this, "btn" + var9, 0, 0, 40, 40, item.getDefaultStack()));
-                    var10.method13702(this.values.contains(var9), false);
+                    this.scrollPanel.addToList(var10 = new BlockItemButton(this, "btn" + var9, 0, 0, 40, 40, item.getDefaultStack()));
+                    var10.setSelected(this.selectedValues.contains(var9), false);
                     var10.onPress(var3 -> {
-                        int var6 = this.values.size();
-                        this.values.remove(var9);
-                        if (var10.method13700()) {
-                            this.values.add(var9);
+                        int var6 = this.selectedValues.size();
+                        this.selectedValues.remove(var9);
+                        if (var10.isSelected()) {
+                            this.selectedValues.add(var9);
                         }
 
-                        if (var6 != this.values.size()) {
+                        if (var6 != this.selectedValues.size()) {
                             this.callUIHandlers();
                         }
                     });
                 }
             }
 
-            this.field20642.getContent().accept(new Class7260(0));
+            this.scrollPanel.getContent().accept(new WrapLayoutVisitor(0));
         });
     }
 
@@ -117,20 +117,20 @@ public class BlockPicker extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
-    public void method13071(String... var1) {
-        this.values.clear();
-        this.values.addAll(Arrays.asList(var1));
+    public void setSelectedValues(String... values) {
+        this.selectedValues.clear();
+        this.selectedValues.addAll(Arrays.asList(values));
     }
 
-    public List<String> method13072() {
-        return this.values;
+    public List<String> getSelectedValues() {
+        return this.selectedValues;
     }
 
-    public static class Class7260 implements GuiComponentVisitor {
-        public int field31149;
+    public static class WrapLayoutVisitor implements GuiComponentVisitor {
+        public int spacing;
 
-        public Class7260(int var1) {
-            this.field31149 = var1;
+        public WrapLayoutVisitor(int spacing) {
+            this.spacing = spacing;
         }
 
         @Override
@@ -142,14 +142,14 @@ public class BlockPicker extends InteractiveWidget {
 
                 for (int var7 = 0; var7 < screen.getChildren().size(); var7++) {
                     GuiComponent var8 = screen.getChildren().get(var7);
-                    if (var4 + var8.getWidth() + this.field31149 > screen.getWidth()) {
+                    if (var4 + var8.getWidth() + this.spacing > screen.getWidth()) {
                         var4 = 0;
                         var5 += var6;
                     }
 
                     var8.setY(var5);
                     var8.setX(var4);
-                    var4 += var8.getWidth() + this.field31149;
+                    var4 += var8.getWidth() + this.spacing;
                     var6 = Math.max(var8.getHeight(), var6);
                 }
             }

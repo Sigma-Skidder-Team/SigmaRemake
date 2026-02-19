@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class BlockItemButton extends InteractiveWidget {
     public ItemStack stack;
-    public boolean field21367;
+    public boolean selected;
 
     public BlockItemButton(GuiComponent parent, String var2, int var3, int var4, int var5, int var6, ItemStack var7) {
         super(parent, var2, var3, var4, var5, var6, false);
@@ -17,14 +17,14 @@ public class BlockItemButton extends InteractiveWidget {
     @Override
     public void draw(float partialTicks) {
         byte var4 = 5;
-        if (this.method13700() || this.isHoveredInHierarchy()) {
+        if (this.isSelected() || this.isHoveredInHierarchy()) {
             RenderUtils.drawPanelShadow(
                     (float) this.x,
                     (float) this.y,
                     (float) this.width,
                     (float) this.height,
                     14.0F,
-                    !this.method13700() ? 0.3F * partialTicks : 0.8F * partialTicks
+                    !this.isSelected() ? 0.3F * partialTicks : 0.8F * partialTicks
             );
         }
 
@@ -32,19 +32,19 @@ public class BlockItemButton extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
-    public boolean method13700() {
-        return this.field21367;
+    public boolean isSelected() {
+        return this.selected;
     }
 
-    public void method13702(boolean var1, boolean var2) {
-        if (var1 != this.method13700()) {
-            this.field21367 = var1;
+    public void setSelected(boolean selected, boolean notify) {
+        if (selected != this.isSelected()) {
+            this.selected = selected;
             this.callUIHandlers();
         }
     }
 
     @Override
     public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
-        this.method13702(!this.field21367, true);
+        this.setSelected(!this.selected, true);
     }
 }
