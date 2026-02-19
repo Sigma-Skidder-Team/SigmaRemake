@@ -7,11 +7,11 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
 public class ColorPreview extends InteractiveWidget {
-    public int field21365;
+    public int colorValue;
 
     public ColorPreview(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7) {
         super(var1, var2, var3, var4, var5, var6, false);
-        this.field21365 = var7;
+        this.colorValue = var7;
     }
 
     @Override
@@ -20,13 +20,13 @@ public class ColorPreview extends InteractiveWidget {
                 (float) this.x + (float) this.width / 2.0F,
                 (float) this.y + (float) this.width / 2.0F,
                 (float) this.width,
-                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(this.field21365, ClientColors.DEEP_TEAL.getColor(), 0.8F), partialTicks)
+                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(this.colorValue, ClientColors.DEEP_TEAL.getColor(), 0.8F), partialTicks)
         );
         RenderUtils.drawCircle(
                 (float) this.x + (float) this.width / 2.0F,
                 (float) this.y + (float) this.width / 2.0F,
                 (float) (this.width - 2),
-                ColorHelper.applyAlpha(this.field21365, partialTicks)
+                ColorHelper.applyAlpha(this.colorValue, partialTicks)
         );
         if (this.isMouseDownOverComponent()) {
             RenderUtils.drawCircle(

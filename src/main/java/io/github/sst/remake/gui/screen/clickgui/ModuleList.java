@@ -18,20 +18,20 @@ import java.util.List;
 
 public class ModuleList extends ScrollablePanel {
     public final Category category;
-    private final List<Button> field21215 = new ArrayList<>();
-    private final boolean field21217;
-    private float field21218 = 1.0F;
+    private final List<Button> moduleButtons = new ArrayList<>();
+    private final boolean animateBackward;
+    private float animationProgress = 1.0F;
 
     public ModuleList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Category var7) {
         super(var1, var2, var3, var4, var5, var6);
         this.category = var7;
-        ((CategoryPanel) var1).field21195 = 1.0F;
-        this.field21217 = true;
+        ((CategoryPanel) var1).expandProgress = 1.0F;
+        this.animateBackward = true;
         this.setListening(false);
-        this.method13511();
+        this.buildModuleButtons();
     }
 
-    public void method13511() {
+    public void buildModuleButtons() {
         int var3 = 0;
 
         for (Module var5 : Client.INSTANCE.moduleManager.getModulesByCategory(this.category)) {
@@ -52,14 +52,14 @@ public class ModuleList extends ScrollablePanel {
                 var13.setTextOffsetX(30);
             }
 
-            this.field21215.add(var13);
+            this.moduleButtons.add(var13);
             var13.onClick(
                     (var3x, var4) -> {
                         Button var7 = (Button) var3x;
                         if (var4 != 0) {
                             if (var4 == 1) {
                                 CategoryPanel var8 = (CategoryPanel) this.getParent();
-                                var8.method13508(var5);
+                                var8.notifyModuleClickListeners(var5);
                             }
                         } else {
                             var5.toggle();
@@ -83,11 +83,11 @@ public class ModuleList extends ScrollablePanel {
         this.getContent().accept(new GridLayoutVisitor(1));
     }
 
-    private float method13523() {
-        return this.field21218 * this.field21218 * (3.0F - 2.0F * this.field21218);
+    private float smoothStep() {
+        return this.animationProgress * this.animationProgress * (3.0F - 2.0F * this.animationProgress);
     }
 
-    private float method13524(float var1, float var2, float var3, float var4) {
+    private float easeInOutQuad(float var1, float var2, float var3, float var4) {
         var1 /= var4 / 2.0F;
         if (!(var1 < 1.0F)) {
             var1--;
@@ -102,25 +102,25 @@ public class ModuleList extends ScrollablePanel {
         super.updatePanelDimensions(mouseX, mouseY);
         CategoryPanel var5 = (CategoryPanel) this.parent;
         float var6 = (float) (0.07F * (60.0 / (double) MinecraftClient.currentFps));
-        this.field21218 = this.field21218 + (!this.shouldAnimate() ? 0.0F : (!this.field21217 ? var6 : -var6));
-        this.field21218 = Math.max(0.0F, Math.min(1.0F, this.field21218));
-        var5.field21195 = this.method13524(this.field21218, 0.0F, 1.0F, 1.0F);
+        this.animationProgress = this.animationProgress + (!this.shouldAnimate() ? 0.0F : (!this.animateBackward ? var6 : -var6));
+        this.animationProgress = Math.max(0.0F, Math.min(1.0F, this.animationProgress));
+        var5.expandProgress = this.easeInOutQuad(this.animationProgress, 0.0F, 1.0F, 1.0F);
     }
 
     @Override
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
-        super.draw(partialTicks * ((CategoryPanel) this.parent).field21195);
+        super.draw(partialTicks * ((CategoryPanel) this.parent).expandProgress);
     }
 
     public boolean shouldAnimate() {
         return false;
     }
 
-    public int method13529(Module var1) {
+    public int getButtonOffsetForModule(Module var1) {
         int var4 = 0;
 
-        for (Button var6 : this.field21215) {
+        for (Button var6 : this.moduleButtons) {
             var4++;
             if (var6.getName().equals(var1.getName() + "Button")) {
                 break;

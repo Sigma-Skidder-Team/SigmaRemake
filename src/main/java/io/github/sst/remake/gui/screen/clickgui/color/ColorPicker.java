@@ -9,65 +9,65 @@ import io.github.sst.remake.util.render.RenderUtils;
 import java.awt.*;
 
 public class ColorPicker extends InteractiveWidget {
-    public int field20618;
-    public boolean field20619;
-    public SaturationBrightnessPanel field20620;
-    public HueSlider field20621;
-    public ColorPreview field20622;
+    public int colorValue;
+    public boolean rainbowEnabled;
+    public SaturationBrightnessPanel saturationBrightnessPanel;
+    public HueSlider hueSlider;
+    public ColorPreview preview;
 
     public ColorPicker(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7, boolean var8) {
         super(var1, var2, var3, var4, var5, var6, false);
-        this.field20618 = var7;
+        this.colorValue = var7;
         Color var11 = new Color(var7);
         float[] var12 = Color.RGBtoHSB(var11.getRed(), var11.getGreen(), var11.getBlue(), null);
-        this.addToList(this.field20620 = new SaturationBrightnessPanel(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
-        this.addToList(this.field20621 = new HueSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
-        this.addToList(this.field20622 = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
-        this.field20620.onPress(var1x -> this.method13050());
-        this.field20621.onPress(var1x -> this.method13050());
-        this.field20622.onClick((var1x, var2x) -> this.method13045(!this.getRainbow()));
-        this.field20619 = var8;
+        this.addToList(this.saturationBrightnessPanel = new SaturationBrightnessPanel(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
+        this.addToList(this.hueSlider = new HueSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
+        this.addToList(this.preview = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
+        this.saturationBrightnessPanel.onPress(var1x -> this.updateColorAndNotify());
+        this.hueSlider.onPress(var1x -> this.updateColorAndNotify());
+        this.preview.onClick((var1x, var2x) -> this.toggleRainbow(!this.getRainbow()));
+        this.rainbowEnabled = var8;
     }
 
-    public void method13045(boolean var1) {
+    public void toggleRainbow(boolean var1) {
         this.setRainbow(var1);
         this.callUIHandlers();
     }
 
     public void setRainbow(boolean var1) {
-        this.field20619 = var1;
+        this.rainbowEnabled = var1;
     }
 
     public boolean getRainbow() {
-        return this.field20619;
+        return this.rainbowEnabled;
     }
 
     public void setValue(int var1) {
-        if (var1 != this.field20618) {
+        if (var1 != this.colorValue) {
             Color var4 = new Color(var1);
             float[] var5 = Color.RGBtoHSB(var4.getRed(), var4.getGreen(), var4.getBlue(), null);
-            this.field20620.method13678(var5[0]);
-            this.field20620.method13681(var5[1], false);
-            this.field20620.method13684(var5[2], false);
-            this.field20621.method13098(var5[0], false);
-            this.field20622.field21365 = var1;
+            this.saturationBrightnessPanel.setHue(var5[0]);
+            this.saturationBrightnessPanel.setSaturation(var5[1], false);
+            this.saturationBrightnessPanel.setBrightness(var5[2], false);
+            this.hueSlider.setHue(var5[0], false);
+            this.preview.colorValue = var1;
         }
     }
 
     public int getValue() {
-        return this.field20618;
+        return this.colorValue;
     }
 
-    private void method13050() {
-        this.method13051();
+    private void updateColorAndNotify() {
+        this.updateColorFromControls();
         this.callUIHandlers();
     }
 
-    private void method13051() {
-        float var3 = this.field20621.method13096();
-        this.field20620.method13678(var3);
-        this.field20618 = this.field20620.method13685();
-        this.field20622.field21365 = this.field20618;
+    private void updateColorFromControls() {
+        float var3 = this.hueSlider.getHue();
+        this.saturationBrightnessPanel.setHue(var3);
+        this.colorValue = this.saturationBrightnessPanel.getColorRGB();
+        this.preview.colorValue = this.colorValue;
     }
 
     public static void drawLayeredCircle(int var0, int var1, int var2, float var3) {
@@ -85,9 +85,9 @@ public class ColorPicker extends InteractiveWidget {
 
     @Override
     public void draw(float partialTicks) {
-        if (this.field20619) {
-            this.field20621.method13098((float) (System.currentTimeMillis() % 4000L) / 4000.0F, false);
-            this.method13051();
+        if (this.rainbowEnabled) {
+            this.hueSlider.setHue((float) (System.currentTimeMillis() % 4000L) / 4000.0F, false);
+            this.updateColorFromControls();
         }
 
         super.draw(partialTicks);

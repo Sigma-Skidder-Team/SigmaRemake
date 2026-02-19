@@ -16,48 +16,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BezierCurve extends InteractiveWidget {
-    private AnimationUtils animation = new AnimationUtils(300, 300);
-    private final BezierDot pos1;
-    private final BezierDot pos2;
-    public int field20610;
+    private AnimationUtils progressAnimation = new AnimationUtils(300, 300);
+    private final BezierDot controlPoint1;
+    private final BezierDot controlPoint2;
+    public int padding;
 
     public BezierCurve(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7, float var8, float var9, float var10, float var11) {
         super(var1, var2, var3, var4, var5, var6, false);
-        this.field20610 = var7;
-        this.addToList(this.pos1 = new BezierDot(this, 10, "pos1"));
-        this.addToList(this.pos2 = new BezierDot(this, 10, "pos2"));
+        this.padding = var7;
+        this.addToList(this.controlPoint1 = new BezierDot(this, 10, "pos1"));
+        this.addToList(this.controlPoint2 = new BezierDot(this, 10, "pos2"));
         this.addMouseListener((var1x, var2x) -> this.callUIHandlers());
         this.setCurveValues(var8, var9, var10, var11);
     }
 
     public float[] getCurveValues() {
-        int padding = this.field20610;
+        int padding = this.padding;
         float usableWidth = (float) (this.width - padding * 2);
         float usableHeight = (float) (this.height - padding * 2);
-        float x1 = (float) (this.pos1.getX() - padding + 5) / usableWidth;
-        float y1 = 1.0F - (float) (this.pos1.getY() - padding + 5) / usableHeight;
-        float x2 = (float) (this.pos2.getX() - padding + 5) / usableWidth;
-        float y2 = 1.0F - (float) (this.pos2.getY() - padding + 5) / usableHeight;
+        float x1 = (float) (this.controlPoint1.getX() - padding + 5) / usableWidth;
+        float y1 = 1.0F - (float) (this.controlPoint1.getY() - padding + 5) / usableHeight;
+        float x2 = (float) (this.controlPoint2.getX() - padding + 5) / usableWidth;
+        float y2 = 1.0F - (float) (this.controlPoint2.getY() - padding + 5) / usableHeight;
         return new float[]{x1, y1, x2, y2};
     }
 
     public void setCurveValues(float var1, float var2, float var3, float var4) {
-        int padding = this.field20610;
+        int padding = this.padding;
         float usableWidth = (float) (this.width - padding * 2);
         float usableHeight = (float) (this.height - padding * 2);
-        this.pos1.method13144(padding + usableWidth * var1 - 5, padding + usableHeight * (1.0F - var2) - 5);
-        this.pos2.method13144(padding + usableWidth * var3 - 5, padding + usableHeight * (1.0F - var4) - 5);
+        this.controlPoint1.setPosition(padding + usableWidth * var1 - 5, padding + usableHeight * (1.0F - var2) - 5);
+        this.controlPoint2.setPosition(padding + usableWidth * var3 - 5, padding + usableHeight * (1.0F - var4) - 5);
     }
 
     @Override
     public void draw(float partialTicks) {
-        this.animation.changeDirection(AnimationUtils.Direction.BACKWARDS);
-        if (this.animation.calcPercent() == 1.0F) {
-            this.animation = new AnimationUtils(1500, 0);
+        this.progressAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        if (this.progressAnimation.calcPercent() == 1.0F) {
+            this.progressAnimation = new AnimationUtils(1500, 0);
         }
 
         float[] values = this.getCurveValues();
-        int padding = this.field20610;
+        int padding = this.padding;
         float usableWidth = (float) (this.width - padding * 2);
         float usableHeight = (float) (this.height - padding * 2);
         float val1 = values[0];
@@ -78,7 +78,7 @@ public class BezierCurve extends InteractiveWidget {
         curvePoints.add(new Vector2d(val3, val4));
         curvePoints.add(new Vector2d(1.0, 1.0));
         VecUtils vecUtils = new VecUtils((1.0F / usableWidth * 2.0F) / 4.0F);
-        double interpolatedValue = vecUtils.calculateInterpolatedValue(curvePoints, Math.min(0.8F, this.animation.calcPercent()) * 1.25F);
+        double interpolatedValue = vecUtils.calculateInterpolatedValue(curvePoints, Math.min(0.8F, this.progressAnimation.calcPercent()) * 1.25F);
         RenderUtils.drawCircle(
                 (float) (this.x + usableWidth * interpolatedValue + padding),
                 (float) (this.y - padding / 2 + this.height),
@@ -108,11 +108,11 @@ public class BezierCurve extends InteractiveWidget {
         GL11.glColor4d(0.0, 0.2F, 0.4F, 0.2F);
         GL11.glBegin(3);
         GL11.glVertex2f(0.0F, usableHeight);
-        GL11.glVertex2f((float) (this.pos1.getX() - padding + 5), (float) (this.pos1.getY() - padding + 5));
+        GL11.glVertex2f((float) (this.controlPoint1.getX() - padding + 5), (float) (this.controlPoint1.getY() - padding + 5));
         GL11.glEnd();
         GL11.glBegin(3);
         GL11.glVertex2f(usableWidth, 0.0F);
-        GL11.glVertex2f((float) (this.pos2.getX() - padding + 5), (float) (this.pos2.getY() - padding + 5));
+        GL11.glVertex2f((float) (this.controlPoint2.getX() - padding + 5), (float) (this.controlPoint2.getY() - padding + 5));
         GL11.glEnd();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();

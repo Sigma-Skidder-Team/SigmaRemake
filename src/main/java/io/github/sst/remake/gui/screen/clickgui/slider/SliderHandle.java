@@ -7,15 +7,15 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
 public class SliderHandle extends Button {
-    private final SettingSlider field20600;
-    private final AnimationUtils field20601 = new AnimationUtils(125, 125);
+    private final SettingSlider slider;
+    private final AnimationUtils hoverAnimation = new AnimationUtils(125, 125);
 
     public SliderHandle(SettingSlider var1, int var2) {
         super(var1, "sliderButton", 0, 0, var2, var2, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()));
-        this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.hoverAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.setDraggable(true);
         this.enableImmediateDrag = true;
-        this.field20600 = var1;
+        this.slider = var1;
     }
 
     @Override
@@ -23,12 +23,12 @@ public class SliderHandle extends Button {
         super.updatePanelDimensions(mouseX, mouseY);
         float var6 = (float) this.getX() / (float) (this.parent.getWidth() - this.getWidth());
         if (!this.isMouseDownOverComponent() && !this.isHoveredInHierarchy() && !this.isDragging()) {
-            this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.hoverAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         } else {
-            this.field20601.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.hoverAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
-        this.field20600.method13139(var6);
+        this.slider.setValueFromHandle(var6);
     }
 
     @Override

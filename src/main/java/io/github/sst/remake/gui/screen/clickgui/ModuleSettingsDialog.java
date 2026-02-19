@@ -12,52 +12,52 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
 public class ModuleSettingsDialog extends InteractiveWidget {
-    public AnimationUtils animation1;
-    public AnimationUtils animation;
-    public int settingY;
-    public int settingX;
-    public int settingWidth;
-    public int settingHeight;
-    public ModuleSettingsList field20668;
+    public AnimationUtils openScaleAnimation;
+    public AnimationUtils fadeAnimation;
+    public int panelY;
+    public int panelX;
+    public int panelWidth;
+    public int panelHeight;
+    public ModuleSettingsList settingsList;
     public final Module module;
-    public boolean field20671 = false;
+    public boolean closing = false;
 
     public ModuleSettingsDialog(GuiComponent var1, String var2, int x, int y, int width, int height, Module var7) {
         super(var1, var2, x, y, width, height, false);
-        this.settingWidth = 500;
-        this.settingHeight = (int) Math.min(600.0F, (float) height * 0.7F);
-        this.settingX = (width - this.settingWidth) / 2;
-        this.settingY = (height - this.settingHeight) / 2 + 20;
+        this.panelWidth = 500;
+        this.panelHeight = (int) Math.min(600.0F, (float) height * 0.7F);
+        this.panelX = (width - this.panelWidth) / 2;
+        this.panelY = (height - this.panelHeight) / 2 + 20;
         this.module = var7;
         int var10 = 10;
         int var11 = 59;
         this.addToList(
-                this.field20668 = new ModuleSettingsList(
-                        this, "mods", this.settingX + var10, this.settingY + var11, this.settingWidth - var10 * 2, this.settingHeight - var11 - var10, var7
+                this.settingsList = new ModuleSettingsList(
+                        this, "mods", this.panelX + var10, this.panelY + var11, this.panelWidth - var10 * 2, this.panelHeight - var11 - var10, var7
                 )
         );
-        this.animation1 = new AnimationUtils(200, 120);
-        this.animation = new AnimationUtils(240, 200);
+        this.openScaleAnimation = new AnimationUtils(200, 120);
+        this.fadeAnimation = new AnimationUtils(240, 200);
         this.setListening(false);
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (this.isMouseDownOverComponent()
-                && (mouseX < this.settingX || mouseY < this.settingY || mouseX > this.settingX + this.settingWidth || mouseY > this.settingY + this.settingHeight)) {
-            this.field20671 = true;
+                && (mouseX < this.panelX || mouseY < this.panelY || mouseX > this.panelX + this.panelWidth || mouseY > this.panelY + this.panelHeight)) {
+            this.closing = true;
         }
 
-        this.animation1.changeDirection(this.field20671 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
-        this.animation.changeDirection(this.field20671 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.openScaleAnimation.changeDirection(this.closing ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.fadeAnimation.changeDirection(this.closing ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         super.updatePanelDimensions(mouseX, mouseY);
     }
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = this.animation1.calcPercent();
+        partialTicks = this.openScaleAnimation.calcPercent();
         float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        if (this.field20671) {
+        if (this.closing) {
             var4 = QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F);
         }
 
@@ -71,22 +71,22 @@ public class ModuleSettingsDialog extends InteractiveWidget {
         );
         super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
-                (float) this.settingX,
-                (float) this.settingY,
-                (float) this.settingWidth,
-                (float) this.settingHeight,
+                (float) this.panelX,
+                (float) this.panelY,
+                (float) this.panelWidth,
+                (float) this.panelHeight,
                 10.0F,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_40,
-                (float) this.settingX,
-                (float) (this.settingY - 60),
+                (float) this.panelX,
+                (float) (this.panelY - 60),
                 this.module.getName(),
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
         String description = this.module.getDescription();
-        int maxWidth = this.settingWidth - 60;
+        int maxWidth = this.panelWidth - 60;
 
         if (FontUtils.HELVETICA_LIGHT_20.getWidth(description) > maxWidth) {
             String ellipsis = "...";
@@ -106,8 +106,8 @@ public class ModuleSettingsDialog extends InteractiveWidget {
 
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_20,
-                (float) (30 + this.settingX),
-                (float) (30 + this.settingY),
+                (float) (30 + this.panelX),
+                (float) (30 + this.panelY),
                 description,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.7F)
         );

@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ClickGuiScreen extends Screen implements IMinecraft {
-    private static AnimationUtils animationProgress;
-    private static boolean animationStarted;
-    private static boolean animationCompleted;
+    private static AnimationUtils openCloseAnimation;
+    private static boolean openState;
+    private static boolean animationActive;
     private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
     public MusicPlayer musicPlayer;
     public ProfileScreen profileScreen;
@@ -48,7 +48,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
 
     public ClickGuiScreen() {
         super("JelloScreen");
-        animationCompleted = animationCompleted | !animationStarted;
+        animationActive = animationActive | !openState;
         int x = 30;
         int y = 30;
         this.addToList(this.brainFreeze = new BrainFreezeOverlay(this, "brainFreeze"));
@@ -65,7 +65,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                     y += categoryPanel.getHeight() - 20;
                 }
 
-                categoryPanel.method13507(var2 -> this.addRunnable(() -> {
+                categoryPanel.addModuleClickListener(var2 -> this.addRunnable(() -> {
                     this.addToList(this.moduleSettingsDialog = new ModuleSettingsDialog(this, "settings", 0, 0, this.width, this.height, var2));
                     this.moduleSettingsDialog.setReAddChildren(true);
                 }));
@@ -90,14 +90,14 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
             }
         }));
 
-        animationProgress = new AnimationUtils(450, 125);
+        openCloseAnimation = new AnimationUtils(450, 125);
         ShaderUtils.applyBlurShader();
-        ShaderUtils.setShaderRadiusRounded(animationProgress.calcPercent());
+        ShaderUtils.setShaderRadiusRounded(openCloseAnimation.calcPercent());
     }
 
     public void updateSideBar() {
         for (CategoryPanel panel : this.categoryPanels.values()) {
-            panel.method13504();
+            panel.rebuildModuleList();
         }
     }
 
@@ -143,7 +143,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         this.musicPlayer.setSelfVisible(this.musicPlayer.getWidth() < this.getWidth() && this.musicPlayer.getHeight() < this.getHeight());
         super.updatePanelDimensions(mouseX, mouseY);
-        ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, animationProgress.calcPercent() * 4.0F));
+        ShaderUtils.setShaderRadiusRounded(Math.min(1.0F, openCloseAnimation.calcPercent() * 4.0F));
         brainFreeze.setSelfVisible(Client.INSTANCE.moduleManager.getModule(BrainFreezeModule.class).enabled);
 
         if (profileScreen != null) {
@@ -160,31 +160,31 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
             profileScreen = null;
         }
 
-        if (animationProgress.getDirection() == AnimationUtils.Direction.FORWARDS && moduleSettingsDialog != null && !moduleSettingsDialog.field20671) {
-            moduleSettingsDialog.field20671 = true;
+        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS && moduleSettingsDialog != null && !moduleSettingsDialog.closing) {
+            moduleSettingsDialog.closing = true;
         }
 
-        if (moduleSettingsDialog != null && moduleSettingsDialog.field20671 && moduleSettingsDialog.animation1.calcPercent() == 0.0F) {
+        if (moduleSettingsDialog != null && moduleSettingsDialog.closing && moduleSettingsDialog.openScaleAnimation.calcPercent() == 0.0F) {
             addRunnable(() -> {
                 removeChildren(moduleSettingsDialog);
                 moduleSettingsDialog = null;
             });
         }
 
-        if (animationCompleted) {
-            AnimationUtils.Direction direction = animationProgress.getDirection();
-            animationProgress.changeDirection(!animationStarted ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
+        if (animationActive) {
+            AnimationUtils.Direction direction = openCloseAnimation.getDirection();
+            openCloseAnimation.changeDirection(!openState ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
 
-            if (animationProgress.calcPercent() <= 0.0F && animationStarted) {
-                animationStarted = false;
-                handleAnimationCompletion(animationStarted);
-            } else if (animationProgress.calcPercent() >= 1.0F && animationProgress.getDirection() == direction) {
-                animationStarted = true;
-                handleAnimationCompletion(animationStarted);
+            if (openCloseAnimation.calcPercent() <= 0.0F && openState) {
+                openState = false;
+                handleAnimationCompletion(openState);
+            } else if (openCloseAnimation.calcPercent() >= 1.0F && openCloseAnimation.getDirection() == direction) {
+                openState = true;
+                handleAnimationCompletion(openState);
             }
         }
 
-        if (animationCompleted && animationStarted) {
+        if (animationActive && openState) {
             ShaderUtils.resetShader();
         }
     }
@@ -201,7 +201,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     }
 
     private void handleAnimationCompletion(boolean started) {
-        animationCompleted = false;
+        animationActive = false;
         if (!started) {
             client.openScreen(null);
         }
@@ -222,25 +222,25 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
         if (keyCode == 256 || keyCode == keyBindForClickGui && this.moduleSettingsDialog == null && !this.hasFocusedTextField()) {
-            if (animationCompleted) {
-                animationStarted = !animationStarted;
+            if (animationActive) {
+                openState = !openState;
             }
 
-            animationCompleted = true;
+            animationActive = true;
         }
     }
 
-    public float method13317(float var1, float var2) {
-        return animationProgress.getDirection() != AnimationUtils.Direction.FORWARDS
+    public float calcOpenEasing(float var1, float var2) {
+        return openCloseAnimation.getDirection() != AnimationUtils.Direction.FORWARDS
                 ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
                 : QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float alphaFactor = animationCompleted && !animationStarted
-                ? this.method13317(animationProgress.calcPercent(), 0.8F) * 0.5F + 0.5F
-                : (!animationCompleted ? 1.0F : this.method13317(animationProgress.calcPercent(), 1.0F));
+        float alphaFactor = animationActive && !openState
+                ? this.calcOpenEasing(openCloseAnimation.calcPercent(), 0.8F) * 0.5F + 0.5F
+                : (!animationActive ? 1.0F : this.calcOpenEasing(openCloseAnimation.calcPercent(), 1.0F));
         float alpha = 0.2F * partialTicks * alphaFactor;
         RenderUtils.drawRoundedRect(
                 (float) this.x,
@@ -251,12 +251,12 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         );
         float fadeAmount = 1.0F;
         if (this.moduleSettingsDialog != null) {
-            float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
-            if (this.moduleSettingsDialog.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                var8 = AnimationUtils.calculateBackwardTransition(this.moduleSettingsDialog.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            if (this.moduleSettingsDialog.fadeAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                var8 = AnimationUtils.calculateBackwardTransition(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
-            fadeAmount -= this.moduleSettingsDialog.animation.calcPercent() * 0.1F;
+            fadeAmount -= this.moduleSettingsDialog.fadeAnimation.calcPercent() * 0.1F;
             alphaFactor *= 1.0F + var8 * 0.2F;
         }
 

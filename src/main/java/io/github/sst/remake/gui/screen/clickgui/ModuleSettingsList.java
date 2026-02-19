@@ -26,12 +26,12 @@ import java.util.Map.Entry;
 
 public class ModuleSettingsList extends ScrollablePanel {
     private final Module module;
-    private int field21222 = 200;
-    private final HashMap<Text, Setting> settingNames = new HashMap<>();
+    private int labelWidth = 200;
+    private final HashMap<Text, Setting> labelToSetting = new HashMap<>();
     //public HashMap<Module, GuiComponent> field21224 = new HashMap<>();
-    private final AnimationUtils field21225 = new AnimationUtils(114, 114);
-    private String field21226 = "";
-    private String field21227 = "";
+    private final AnimationUtils tooltipFade = new AnimationUtils(114, 114);
+    private String hoveredSettingDescription = "";
+    private String hoveredSettingName = "";
 
     public ModuleSettingsList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Module module) {
         super(var1, var2, var3, var4, var5, var6);
@@ -43,9 +43,9 @@ public class ModuleSettingsList extends ScrollablePanel {
     private int addSetting(GuiComponent panel, Setting setting, int var3, int yOffset, int var5) {
         switch (setting.settingType) {
             case CHECKBOX:
-                Text checkBoxText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                Text checkBoxText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
                 Checkbox checkBox = new Checkbox(panel, setting.name + "checkbox", panel.getWidth() - 24 - var5, yOffset + 6, 24, 24);
-                this.settingNames.put(checkBoxText, setting);
+                this.labelToSetting.put(checkBoxText, setting);
                 checkBox.setValue((Boolean) setting.value, false);
                 setting.addListener(var1x -> {
                     if (checkBox.getValue() != (Boolean) var1x.value) {
@@ -59,27 +59,27 @@ public class ModuleSettingsList extends ScrollablePanel {
                 yOffset += 24 + var5;
                 break;
             case SLIDER:
-                Text sliderName = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
-                this.settingNames.put(sliderName, setting);
+                Text sliderName = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
+                this.labelToSetting.put(sliderName, setting);
                 SliderSetting sliderSetting = (SliderSetting) setting;
                 SettingSlider slider = new SettingSlider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, yOffset + 6, 126, 24);
                 slider.getHandle().setFont(FontUtils.HELVETICA_LIGHT_14);
                 slider.setText(Float.toString((Float) setting.value));
-                slider.setValue(SettingSlider.setValues(sliderSetting.min, sliderSetting.max, sliderSetting.value), false);
-                slider.method13143(-1.0F);
+                slider.setValue(SettingSlider.normalizeValue(sliderSetting.min, sliderSetting.max, sliderSetting.value), false);
+                slider.setSnapValue(-1.0F);
                 int var13 = sliderSetting.getPlaces();
                 sliderSetting.addListener(
                         lisSetting -> {
-                            if (SettingSlider.getValues(slider.method13138(), sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13)
+                            if (SettingSlider.denormalizeValue(slider.getValue(), sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13)
                                     != (Float) lisSetting.value) {
                                 slider.setText(Float.toString((Float) lisSetting.value));
-                                slider.setValue(SettingSlider.setValues(sliderSetting.min, sliderSetting.max, lisSetting.value), false);
+                                slider.setValue(SettingSlider.normalizeValue(sliderSetting.min, sliderSetting.max, lisSetting.value), false);
                             }
                         }
                 );
                 slider.onPress(widget -> {
-                    float var7 = ((SettingSlider) widget).method13138();
-                    float var8x = SettingSlider.getValues(var7, sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13);
+                    float var7 = ((SettingSlider) widget).getValue();
+                    float var8x = SettingSlider.denormalizeValue(var7, sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13);
                     if (var8x != (Float) setting.value) {
                         slider.setText(Float.toString(var8x));
                         setting.setValue(var8x);
@@ -95,9 +95,9 @@ public class ModuleSettingsList extends ScrollablePanel {
                 int var27 = 27;
                 Text textInputText;
                 this.addToList(
-                        textInputText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, var27, Text.defaultColorHelper, setting.name)
+                        textInputText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, var27, Text.defaultColorHelper, setting.name)
                 );
-                this.settingNames.put(textInputText, setting);
+                this.labelToSetting.put(textInputText, setting);
                 TextField input;
                 this.addToList(
                         input = new TextField(
@@ -121,7 +121,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                 yOffset += var27 + var5;
                 break;
             case DROPDOWN:
-                Text dropdownText = new Text(panel, setting.name + "lbl", var3, yOffset + 2, this.field21222, 27, Text.defaultColorHelper, setting.name);
+                Text dropdownText = new Text(panel, setting.name + "lbl", var3, yOffset + 2, this.labelWidth, 27, Text.defaultColorHelper, setting.name);
                 Dropdown dropdown = new Dropdown(
                         panel,
                         setting.name + "btn",
@@ -132,7 +132,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                         ((ModeSetting) setting).modes,
                         ((ModeSetting) setting).getModeIndex()
                 );
-                this.settingNames.put(dropdownText, setting);
+                this.labelToSetting.put(dropdownText, setting);
                 setting.addListener(ignored -> {
                     if (dropdown.getIndex() != ((ModeSetting) setting).getModeIndex()) {
                         dropdown.setIndex(((ModeSetting) setting).getModeIndex());
@@ -161,7 +161,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                 yOffset += view.getHeight() + var5;
                 break;
             case BLOCKS:
-                Text blocksText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 200, Text.defaultColorHelper, setting.name);
+                Text blocksText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 200, Text.defaultColorHelper, setting.name);
                 BlockPicker blockPicker = new BlockPicker(
                         panel,
                         setting.name + "picker",
@@ -172,7 +172,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                         ((BlockListSetting) setting).enabled,
                         ((BlockListSetting) setting).value.toArray(new String[0])
                 );
-                this.settingNames.put(blocksText, setting);
+                this.labelToSetting.put(blocksText, setting);
                 blockPicker.onPress(widget -> setting.setValue(blockPicker.getSelectedValues()));
                 blockPicker.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
                 panel.addToList(blocksText);
@@ -181,11 +181,11 @@ public class ModuleSettingsList extends ScrollablePanel {
                 break;
             case COLOR:
                 ColorSetting colorSetting = (ColorSetting) setting;
-                Text colorText = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                Text colorText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
                 ColorPicker picker = new ColorPicker(
                         panel, setting.name + "color", panel.getWidth() - 160 - var5 + 10, yOffset, 160, 114, (Integer) setting.value, colorSetting.rainbow
                 );
-                this.settingNames.put(colorText, setting);
+                this.labelToSetting.put(colorText, setting);
                 setting.addListener(var3x -> {
                     picker.setValue((Integer) setting.value);
                     picker.setRainbow(colorSetting.rainbow);
@@ -200,7 +200,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                 break;
             case CURVE:
                 CurveSetting.Curve speedSetting = (CurveSetting.Curve) setting.value;
-                Text text = new Text(panel, setting.name + "lbl", var3, yOffset, this.field21222, 24, Text.defaultColorHelper, setting.name);
+                Text text = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
                 BezierCurve curve = new BezierCurve(
                         panel,
                         setting.name + "color",
@@ -214,7 +214,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                         speedSetting.finalStage,
                         speedSetting.maximum
                 );
-                this.settingNames.put(text, setting);
+                this.labelToSetting.put(text, setting);
                 setting.addListener(ignored -> {
                     CurveSetting.Curve profile = (CurveSetting.Curve) setting.value;
                     curve.setCurveValues(profile.initial, profile.mid, profile.finalStage, profile.maximum);
@@ -280,13 +280,13 @@ public class ModuleSettingsList extends ScrollablePanel {
     public void draw(float partialTicks) {
         boolean var4 = false;
 
-        for (Entry var6 : this.settingNames.entrySet()) {
+        for (Entry var6 : this.labelToSetting.entrySet()) {
             Text var7 = (Text) var6.getKey();
             Setting var8 = (Setting) var6.getValue();
             if (var7.isHoveredInHierarchy() && var7.isVisible()) {
                 var4 = true;
-                this.field21226 = var8.description;
-                this.field21227 = var8.name;
+                this.hoveredSettingDescription = var8.description;
+                this.hoveredSettingName = var8.name;
                 break;
             }
         }
@@ -294,27 +294,27 @@ public class ModuleSettingsList extends ScrollablePanel {
         GL11.glPushMatrix();
         super.draw(partialTicks);
         GL11.glPopMatrix();
-        this.field21225.changeDirection(!var4 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.tooltipFade.changeDirection(!var4 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 10),
                 (float) (this.getY() + this.getHeight() + 24),
-                this.field21227,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.field21225.calcPercent())
+                this.hoveredSettingName,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 11),
                 (float) (this.getY() + this.getHeight() + 24),
-                this.field21227,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.field21225.calcPercent())
+                this.hoveredSettingName,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
-                (float) (this.getX() + 14 + FontUtils.HELVETICA_LIGHT_14.getWidth(this.field21227) + 2),
+                (float) (this.getX() + 14 + FontUtils.HELVETICA_LIGHT_14.getWidth(this.hoveredSettingName) + 2),
                 (float) (this.getY() + this.getHeight() + 24),
-                this.field21226,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.field21225.calcPercent())
+                this.hoveredSettingDescription,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
         );
     }
 
