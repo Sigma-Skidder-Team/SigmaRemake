@@ -47,7 +47,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
         TextField var10;
         this.addToList(
                 var10 = new TextField(
-                        this, "search", this.field21304 + 30, this.field21303 + 30 + 50, this.field21305 - 30 * 2, 60, TextField.field20741, "", "Search..."
+                        this, "search", this.field21304 + 30, this.field21303 + 30 + 50, this.field21305 - 30 * 2, 60, TextField.DEFAULT_COLORS, "", "Search..."
                 )
         );
         var10.addChangeListener(var2x -> {
@@ -95,7 +95,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
                                     this.field21308, mod.getName(), 0, var11++ * 40, this.field21308.getWidth(), 40, var20, new BindableAction(mod).getName()
                             )
                     );
-            var21.method13034(10);
+            var21.setTextOffsetX(10);
             var21.onClick((var2x, var3x) -> {
                 for (Module mod2 : Client.INSTANCE.moduleManager.modules) {
                     if (mod2.getName().equals(var21.getText()) && !this.field21311) {

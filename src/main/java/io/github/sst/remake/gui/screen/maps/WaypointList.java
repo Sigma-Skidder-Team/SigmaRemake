@@ -25,13 +25,13 @@ public class WaypointList extends ScrollablePanel {
     public WaypointList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6);
         this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
-        this.field20883 = true;
+        this.allowBottomOverflow = true;
         this.setListening(false);
     }
 
     public void addWaypoint(String name, Vec3i pos, int color) {
         String waypointId = "waypoint x" + pos.getX() + " z" + pos.getZ();
-        if (this.buttonList.getChildByName(waypointId) == null) {
+        if (this.content.getChildByName(waypointId) == null) {
             Waypoint waypoint = new Waypoint(
                     this, waypointId, this.x, this.getChildren().get(0).getChildren().size() * WAYPOINT_HEIGHT, this.width, WAYPOINT_HEIGHT, name, pos, color
             );
@@ -46,7 +46,7 @@ public class WaypointList extends ScrollablePanel {
                     var3x -> {
                         Client.INSTANCE.waypointManager.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
                         Client.INSTANCE.waypointManager.save();
-                        this.buttonList.removeChildByName(waypoint.name);
+                        this.content.removeChildByName(waypoint.name);
                         this.waypoints.remove(var3x);
                     }
             );

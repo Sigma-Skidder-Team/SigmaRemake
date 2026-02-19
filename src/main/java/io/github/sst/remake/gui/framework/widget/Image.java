@@ -11,7 +11,7 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 
 public class Image extends Button {
-    public static final ColorHelper color = new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.1F));
+    public static final ColorHelper DEFAULT_COLORS = new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.1F));
     public Texture texture;
 
     public Image(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Texture var7, ColorHelper var8, String var9, TrueTypeFont var10) {
@@ -30,7 +30,7 @@ public class Image extends Button {
     }
 
     public Image(GuiComponent screen, String iconName, int x, int y, int width, int height, Texture texture) {
-        super(screen, iconName, x, y, width, height, color);
+        super(screen, iconName, x, y, width, height, DEFAULT_COLORS);
         this.texture = texture;
     }
 
@@ -48,7 +48,7 @@ public class Image extends Button {
              return;
         }
 
-        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
+        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.hoverFade, 0.0F) : 1.5F) : 0.0F);
         RenderUtils.drawImage(
                 (float) this.getX(),
                 (float) this.getY(),

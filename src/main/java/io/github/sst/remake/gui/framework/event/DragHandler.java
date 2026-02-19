@@ -1,13 +1,13 @@
 package io.github.sst.remake.gui.framework.event;
 
 public interface DragHandler {
-    void handleMovementAndCheckBoundaries(int var1, int var2);
+    void handleMovementAndCheckBoundaries(int mouseX, int mouseY);
 
     boolean isDraggable();
 
-    void setDraggable(boolean var1);
+    void setDraggable(boolean state);
 
     boolean isDragging();
 
-    void setDragging(boolean var1);
+    void setDragging(boolean dragging);
 }

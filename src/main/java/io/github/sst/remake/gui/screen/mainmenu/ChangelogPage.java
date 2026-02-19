@@ -32,7 +32,7 @@ public class ChangelogPage extends GuiComponent {
         super(var1, var2, var3, var4, var5, var6);
         this.setListening(false);
         this.scrollPanel = new ScrollablePanel(this, "scroll", 100, 200, var5 - 200, var6 - 200);
-        this.scrollPanel.method13518(true);
+        this.scrollPanel.setReserveScrollbarSpace(true);
         this.showAlert(this.scrollPanel);
         new Thread(() -> this.method13490(this.getChangelog())).start();
     }
@@ -50,7 +50,7 @@ public class ChangelogPage extends GuiComponent {
                             Util.getOperatingSystem().open(entry.get("url").getAsString());
                         }
 
-                        this.scrollPanel.getButton().showAlert(changelogEntry = new ChangelogEntry(this.scrollPanel, "changelog" + i, entry));
+                        this.scrollPanel.getContent().showAlert(changelogEntry = new ChangelogEntry(this.scrollPanel, "changelog" + i, entry));
                         changelogEntry.setY(y);
                         y += changelogEntry.getHeight();
                     }
@@ -66,7 +66,7 @@ public class ChangelogPage extends GuiComponent {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.scrollPanel != null) {
             if (this.isHovered() && this.isSelfVisible()) {
-                for (GuiComponent var9 : this.scrollPanel.getButton().getChildren()) {
+                for (GuiComponent var9 : this.scrollPanel.getContent().getChildren()) {
                     ChangelogEntry var10 = (ChangelogEntry) var9;
                     var10.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
                     if ((double) var10.animation2.calcPercent() < 0.5) {
@@ -74,7 +74,7 @@ public class ChangelogPage extends GuiComponent {
                     }
                 }
             } else {
-                for (GuiComponent var6 : this.scrollPanel.getButton().getChildren()) {
+                for (GuiComponent var6 : this.scrollPanel.getContent().getChildren()) {
                     ChangelogEntry var7 = (ChangelogEntry) var6;
                     var7.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
                 }

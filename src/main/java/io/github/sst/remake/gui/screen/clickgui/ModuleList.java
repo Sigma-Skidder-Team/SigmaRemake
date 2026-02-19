@@ -40,16 +40,16 @@ public class ModuleList extends ScrollablePanel {
                     .setTextColor(!var5.isEnabled() ? ClientColors.DEEP_TEAL.getColor() : ClientColors.LIGHT_GREYISH_BLUE.getColor());
             var12.setWidthAlignment(FontAlignment.LEFT);
             Button var13;
-            this.getButton()
+            this.getContent()
                     .addToList(
                             var13 = new Button(
-                                    this.getButton(), var5.getName() + "Button", 0, var3 * 30, this.getWidth(), 30, var12, var5.getName(), FontUtils.HELVETICA_LIGHT_20
+                                    this.getContent(), var5.getName() + "Button", 0, var3 * 30, this.getWidth(), 30, var12, var5.getName(), FontUtils.HELVETICA_LIGHT_20
                             )
                     );
             if (!var5.isEnabled()) {
-                var13.method13034(22);
+                var13.setTextOffsetX(22);
             } else {
-                var13.method13034(30);
+                var13.setTextOffsetX(30);
             }
 
             this.field21215.add(var13);
@@ -66,9 +66,9 @@ public class ModuleList extends ScrollablePanel {
                             ColorHelper var9x = new ColorHelper(!var5.isEnabled() ? 1895167477 : -14047489, !var5.isEnabled() ? var9 : -14042881)
                                     .setTextColor(!var5.isEnabled() ? ClientColors.DEEP_TEAL.getColor() : ClientColors.LIGHT_GREYISH_BLUE.getColor());
                             if (!var5.isEnabled()) {
-                                var7.method13034(22);
+                                var7.setTextOffsetX(22);
                             } else {
-                                var7.method13034(30);
+                                var7.setTextOffsetX(30);
                             }
 
                             var9x.setWidthAlignment(FontAlignment.LEFT);
@@ -80,7 +80,7 @@ public class ModuleList extends ScrollablePanel {
             var3++;
         }
 
-        this.getButton().accept(new GridLayoutVisitor(1));
+        this.getContent().accept(new GridLayoutVisitor(1));
     }
 
     private float method13523() {

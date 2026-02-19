@@ -13,18 +13,18 @@ import java.util.List;
 public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public boolean draggable;
     public boolean dragging;
-    public int mouseX;
-    public int mouseY;
-    public int sizeWidthThingy;
-    public int sizeHeightThingy;
-    public boolean field20882 = true;
-    public boolean field20883 = false;
-    public boolean field20884 = true;
-    public boolean field20885 = true;
-    public boolean field20886 = false;
+    public int dragStartMouseX;
+    public int dragStartMouseY;
+    public int dragOffsetX;
+    public int dragOffsetY;
+    public boolean clampToBounds = true;
+    public boolean allowBottomOverflow = false;
+    public boolean enableHoldToDrag = true;
+    public boolean enableMoveThresholdToDrag = true;
+    public boolean enableImmediateDrag = false;
     public final TimerUtils timerUtils = new TimerUtils();
-    public int field20888 = 300;
-    public int field20889 = 2;
+    public int dragStartDelayMs = 300;
+    public int dragStartMoveThresholdPx = 2;
     private final List<DragListener> dragListeners = new ArrayList<>();
 
     public Widget(GuiComponent screen, String name, int x, int y, int width, int height, boolean var7) {
@@ -57,8 +57,8 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
         super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDraggable()) {
             if (!this.isMouseDownOverComponent && !this.dragging) {
-                this.sizeWidthThingy = this.getWidth() / 2;
-                this.sizeHeightThingy = this.getHeight() / 2;
+                this.dragOffsetX = this.getWidth() / 2;
+                this.dragOffsetY = this.getHeight() / 2;
             }
 
             this.handleMovementAndCheckBoundaries(mouseX, mouseY);
@@ -70,10 +70,10 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
         if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
             if (this.isDraggable()) {
                 this.timerUtils.start();
-                this.mouseX = mouseX;
-                this.mouseY = mouseY;
-                this.sizeWidthThingy = this.mouseX - this.getAbsoluteX();
-                this.sizeHeightThingy = this.mouseY - this.getAbsoluteY();
+                this.dragStartMouseX = mouseX;
+                this.dragStartMouseY = mouseY;
+                this.dragOffsetX = this.dragStartMouseX - this.getAbsoluteX();
+                this.dragOffsetY = this.dragStartMouseY - this.getAbsoluteY();
             }
 
             return false;
@@ -97,18 +97,18 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public void handleMovementAndCheckBoundaries(int mouseX, int mouseY) {
         boolean var5 = this.dragging;
         if (!this.isDragging() && this.isDraggable()) {
-            boolean var6 = this.field20884 && this.timerUtils.getElapsedTime() >= (long) this.field20888;
-            boolean var7 = this.field20885
+            boolean var6 = this.enableHoldToDrag && this.timerUtils.getElapsedTime() >= (long) this.dragStartDelayMs;
+            boolean var7 = this.enableMoveThresholdToDrag
                     && this.isMouseDownOverComponent
-                    && (Math.abs(this.mouseX - mouseX) > this.field20889 || Math.abs(this.mouseY - mouseY) > this.field20889);
-            boolean var8 = this.field20886 && this.isMouseDownOverComponent;
+                    && (Math.abs(this.dragStartMouseX - mouseX) > this.dragStartMoveThresholdPx || Math.abs(this.dragStartMouseY - mouseY) > this.dragStartMoveThresholdPx);
+            boolean var8 = this.enableImmediateDrag && this.isMouseDownOverComponent;
             if (var6 || var7 || var8) {
                 this.setDragging(true);
             }
         } else if (this.isDragging()) {
-            this.setX(mouseX - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
-            this.setY(mouseY - this.sizeHeightThingy - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
-            if (this.field20882) {
+            this.setX(mouseX - this.dragOffsetX - (this.parent == null ? 0 : this.parent.getAbsoluteX()));
+            this.setY(mouseY - this.dragOffsetY - (this.parent == null ? 0 : this.parent.getAbsoluteY()));
+            if (this.clampToBounds) {
                 if (this.parent == null) {
                     if (this.getX() < 0) {
                         this.setX(0);
@@ -138,7 +138,7 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
                         this.setY(0);
                     }
 
-                    if (this.getY() + this.getHeight() > this.parent.getHeight() && !this.field20883) {
+                    if (this.getY() + this.getHeight() > this.parent.getHeight() && !this.allowBottomOverflow) {
                         this.setY(this.parent.getHeight() - this.getHeight());
                     }
                 }
@@ -157,8 +157,8 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     }
 
     @Override
-    public void setDraggable(boolean var1) {
-        this.draggable = var1;
+    public void setDraggable(boolean state) {
+        this.draggable = state;
     }
 
     @Override

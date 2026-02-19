@@ -178,11 +178,11 @@ public class KeyButton extends InteractiveWidget {
     }
 
     @Override
-    public void modifierPressed(int var1) {
-        if (var1 == this.field20690) {
+    public void modifierPressed(int modifier) {
+        if (modifier == this.field20690) {
             this.field20692 = false;
         }
 
-        super.modifierPressed(var1);
+        super.modifierPressed(modifier);
     }
 }

@@ -28,7 +28,7 @@ public class CategoryPanel extends Widget {
         super(var1, category.toString(), var3, var4, 200, 350, true);
         this.setWidth(200);
         this.setHeight(350);
-        this.field20886 = true;
+        this.enableImmediateDrag = true;
         this.category = category;
         this.method13505();
     }

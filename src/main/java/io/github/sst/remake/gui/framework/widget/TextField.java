@@ -22,52 +22,49 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT;
 
 public class TextField extends Widget implements IMinecraft {
-    public static final ColorHelper field20741 = new ColorHelper(
+    public static final ColorHelper DEFAULT_COLORS = new ColorHelper(
             -892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER
     );
-    public static final ColorHelper field20742 = new ColorHelper(-1, -1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
+    public static final ColorHelper INVERTED_COLORS = new ColorHelper(-1, -1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
     private String placeholder = "";
-    private float field20744;
-    private final float field20745 = 2.0F;
-    private float field20746;
-    private float field20747;
-    private final float field20748 = 2.0F;
-    private int maxLen;
-    private int startSelect;
-    private int endSelect;
-    private boolean field20752;
-    private boolean field20753;
+    private float focusFade;
+    private float textOffsetX;
+    private float targetTextOffsetX;
+    private int caretIndex;
+    private int selectionStart;
+    private int selectionEnd;
+    private boolean isSelectingWithMouse;
     private boolean censorText = false;
     private String censorChar = Character.toString('·');
-    private final TimerUtils timer = new TimerUtils();
+    private final TimerUtils cursorBlinkTimer = new TimerUtils();
     private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
-    private boolean roundedThingy = true;
+    private boolean underlineEnabled = true;
 
     public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, field20741, "", false);
-        this.timer.start();
+        super(var1, var2, var3, var4, var5, var6, DEFAULT_COLORS, "", false);
+        this.cursorBlinkTimer.start();
     }
 
     public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7) {
         super(var1, var2, var3, var4, var5, var6, var7, "", false);
-        this.timer.start();
+        this.cursorBlinkTimer.start();
     }
 
     public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, false);
-        this.timer.start();
+        this.cursorBlinkTimer.start();
     }
 
     public TextField(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, String placeholder) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, FontUtils.HELVETICA_LIGHT_25, false);
         this.placeholder = placeholder;
-        this.timer.start();
+        this.cursorBlinkTimer.start();
     }
 
     public TextField(GuiComponent screen, String id, int x, int y, int width, int height, ColorHelper color, String text, String placeholder, TrueTypeFont _font) {
         super(screen, id, x, y, width, height, color, text, false);
         this.placeholder = placeholder;
-        this.timer.start();
+        this.cursorBlinkTimer.start();
     }
 
     @Override
@@ -78,27 +75,23 @@ public class TextField extends Widget implements IMinecraft {
             text = this.text.replaceAll(".", this.censorChar);
         }
 
-        this.field20744 = this.field20744 + ((!this.focused ? 0.0F : 1.0F) - this.field20744) / 2.0F;
+        this.focusFade = this.focusFade + ((!this.focused ? 0.0F : 1.0F) - this.focusFade) / 2.0F;
         if (this.focused) {
-            if (this.field20752) {
-                this.maxLen = StringUtils.getFittingCharacterCount(text, this.font, (float) this.getAbsoluteX(), mouseX, this.field20746);
+            if (this.isSelectingWithMouse) {
+                this.caretIndex = StringUtils.getFittingCharacterCount(text, this.font, (float) this.getAbsoluteX(), mouseX, this.textOffsetX);
             }
         } else {
-            this.maxLen = 0;
-            this.startSelect = 0;
-            this.field20747 = 0.0F;
+            this.caretIndex = 0;
+            this.selectionStart = 0;
+            this.targetTextOffsetX = 0.0F;
         }
 
-        this.maxLen = Math.min(Math.max(0, this.maxLen), text.length());
-        this.endSelect = this.maxLen;
+        this.caretIndex = Math.min(Math.max(0, this.caretIndex), text.length());
+        this.selectionEnd = this.caretIndex;
     }
 
-    public void method13146() {
-        this.field20746 = 0.0F;
-    }
-
-    public void method13147(String var1) {
-        this.censorChar = var1;
+    public void resetTextOffset() {
+        this.textOffsetX = 0.0F;
     }
 
     @Override
@@ -109,11 +102,11 @@ public class TextField extends Widget implements IMinecraft {
                 var6 = this.text.replaceAll(".", this.censorChar);
             }
 
-            this.field20752 = true;
-            this.maxLen = StringUtils.getFittingCharacterCount(var6, this.font, (float) this.getAbsoluteX(), mouseX, this.field20746);
+            this.isSelectingWithMouse = true;
+            this.caretIndex = StringUtils.getFittingCharacterCount(var6, this.font, (float) this.getAbsoluteX(), mouseX, this.textOffsetX);
             if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), 340)
                     && !InputUtil.isKeyPressed(client.getWindow().getHandle(), 344)) {
-                this.startSelect = this.maxLen;
+                this.selectionStart = this.caretIndex;
             }
 
             return false;
@@ -124,15 +117,15 @@ public class TextField extends Widget implements IMinecraft {
 
     public void startFocus() {
         this.requestFocus();
-        this.maxLen = this.text.length();
-        this.startSelect = 0;
-        this.endSelect = this.maxLen;
+        this.caretIndex = this.text.length();
+        this.selectionStart = 0;
+        this.selectionEnd = this.caretIndex;
     }
 
     @Override
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         super.onMouseRelease(mouseX, mouseY, mouseButton);
-        this.field20752 = false;
+        this.isSelectingWithMouse = false;
     }
 
     @Override
@@ -142,16 +135,16 @@ public class TextField extends Widget implements IMinecraft {
             switch (keyCode) {
                 case GLFW.GLFW_KEY_A:
                     if (this.isModifierKeyPressed()) {
-                        this.maxLen = this.text.length();
-                        this.startSelect = 0;
-                        this.endSelect = this.maxLen;
+                        this.caretIndex = this.text.length();
+                        this.selectionStart = 0;
+                        this.selectionEnd = this.caretIndex;
                     }
                     break;
                 case GLFW.GLFW_KEY_C:
-                    if (this.isModifierKeyPressed() && this.startSelect != this.endSelect) {
+                    if (this.isModifierKeyPressed() && this.selectionStart != this.selectionEnd) {
                         GLFW.glfwSetClipboardString(
                                 client.getWindow().getHandle(),
-                                this.text.substring(Math.min(this.startSelect, this.endSelect), Math.max(this.startSelect, this.endSelect))
+                                this.text.substring(Math.min(this.selectionStart, this.selectionEnd), Math.max(this.selectionStart, this.selectionEnd))
                         );
                     }
                     break;
@@ -168,35 +161,35 @@ public class TextField extends Widget implements IMinecraft {
                     }
 
                     if (!clip.isEmpty()) {
-                        if (this.startSelect != this.endSelect) {
-                            this.text = StringUtils.cut(this.text, clip, this.startSelect, this.endSelect);
-                            if (this.maxLen > this.startSelect) {
-                                this.maxLen = this.maxLen - (Math.max(this.startSelect, this.endSelect) - Math.min(this.startSelect, this.endSelect));
+                        if (this.selectionStart != this.selectionEnd) {
+                            this.text = StringUtils.cut(this.text, clip, this.selectionStart, this.selectionEnd);
+                            if (this.caretIndex > this.selectionStart) {
+                                this.caretIndex = this.caretIndex - (Math.max(this.selectionStart, this.selectionEnd) - Math.min(this.selectionStart, this.selectionEnd));
                             }
 
                         } else {
-                            this.text = StringUtils.paste(this.text, clip, this.maxLen);
+                            this.text = StringUtils.paste(this.text, clip, this.caretIndex);
                         }
-                        this.maxLen = this.maxLen + clip.length();
-                        this.startSelect = this.maxLen;
+                        this.caretIndex = this.caretIndex + clip.length();
+                        this.selectionStart = this.caretIndex;
 
-                        this.callChangeListeners();
+                        this.notifyChangeListeners();
                     }
                     break;
                 case GLFW.GLFW_KEY_X:
-                    if (this.isModifierKeyPressed() && this.startSelect != this.endSelect) {
+                    if (this.isModifierKeyPressed() && this.selectionStart != this.selectionEnd) {
                         GLFW.glfwSetClipboardString(
                                 client.getWindow().getHandle(),
-                                this.text.substring(Math.min(this.startSelect, this.endSelect), Math.max(this.startSelect, this.endSelect))
+                                this.text.substring(Math.min(this.selectionStart, this.selectionEnd), Math.max(this.selectionStart, this.selectionEnd))
                         );
-                        this.text = StringUtils.cut(this.text, "", this.startSelect, this.endSelect);
-                        if (this.maxLen > this.startSelect) {
-                            this.maxLen = this.maxLen - (Math.max(this.startSelect, this.endSelect) - Math.min(this.startSelect, this.endSelect));
+                        this.text = StringUtils.cut(this.text, "", this.selectionStart, this.selectionEnd);
+                        if (this.caretIndex > this.selectionStart) {
+                            this.caretIndex = this.caretIndex - (Math.max(this.selectionStart, this.selectionEnd) - Math.min(this.selectionStart, this.selectionEnd));
                         }
 
-                        this.startSelect = this.maxLen;
-                        this.endSelect = this.maxLen;
-                        this.callChangeListeners();
+                        this.selectionStart = this.caretIndex;
+                        this.selectionEnd = this.caretIndex;
+                        this.notifyChangeListeners();
                     }
                     break;
                 case GLFW.GLFW_KEY_ESCAPE:
@@ -204,45 +197,45 @@ public class TextField extends Widget implements IMinecraft {
                     break;
                 case GLFW.GLFW_KEY_BACKSPACE:
                     if (!this.text.isEmpty()) {
-                        if (this.startSelect != this.endSelect) {
-                            this.text = StringUtils.cut(this.text, "", this.startSelect, this.endSelect);
-                            if (this.maxLen > this.startSelect) {
-                                this.maxLen = this.maxLen - (Math.max(this.startSelect, this.endSelect) - Math.min(this.startSelect, this.endSelect));
+                        if (this.selectionStart != this.selectionEnd) {
+                            this.text = StringUtils.cut(this.text, "", this.selectionStart, this.selectionEnd);
+                            if (this.caretIndex > this.selectionStart) {
+                                this.caretIndex = this.caretIndex - (Math.max(this.selectionStart, this.selectionEnd) - Math.min(this.selectionStart, this.selectionEnd));
                             }
                         } else if (this.isModifierKeyPressed()) {
                             int var11 = -1;
 
-                            for (int var14 = Math.max(this.maxLen - 1, 0); var14 >= 0; var14--) {
-                                if ((String.valueOf(this.text.charAt(var14)).equalsIgnoreCase(" ") || var14 == 0) && Math.abs(this.maxLen - var14) > 1) {
+                            for (int var14 = Math.max(this.caretIndex - 1, 0); var14 >= 0; var14--) {
+                                if ((String.valueOf(this.text.charAt(var14)).equalsIgnoreCase(" ") || var14 == 0) && Math.abs(this.caretIndex - var14) > 1) {
                                     var11 = var14 + (var14 == 0 ? 0 : 1);
                                     break;
                                 }
                             }
 
                             if (var11 != -1) {
-                                this.text = StringUtils.cut(this.text, "", var11, this.maxLen);
-                                this.maxLen = var11;
+                                this.text = StringUtils.cut(this.text, "", var11, this.caretIndex);
+                                this.caretIndex = var11;
                             }
                         } else {
-                            this.text = StringUtils.cut(this.text, "", this.maxLen - 1, this.maxLen);
-                            this.maxLen--;
+                            this.text = StringUtils.cut(this.text, "", this.caretIndex - 1, this.caretIndex);
+                            this.caretIndex--;
                         }
 
-                        this.callChangeListeners();
+                        this.notifyChangeListeners();
                     }
 
-                    this.startSelect = this.maxLen;
+                    this.selectionStart = this.caretIndex;
                     break;
                 case GLFW.GLFW_KEY_RIGHT:
                     if (!this.isModifierKeyPressed()) {
-                        this.maxLen++;
+                        this.caretIndex++;
                     } else {
                         int previousIdx = -1;
 
-                        for (int i = this.maxLen; i < this.text.length(); i++) {
+                        for (int i = this.caretIndex; i < this.text.length(); i++) {
                             try {
                                 if ((String.valueOf(this.text.charAt(i)).equalsIgnoreCase(" ") || i == this.text.length() - 1)
-                                        && (Math.abs(this.maxLen - i) > 1 || i == this.text.length() - 1)) {
+                                        && (Math.abs(this.caretIndex - i) > 1 || i == this.text.length() - 1)) {
                                     previousIdx = i + 1;
                                     break;
                                 }
@@ -252,24 +245,24 @@ public class TextField extends Widget implements IMinecraft {
                         }
 
                         if (previousIdx != -1) {
-                            this.maxLen = previousIdx;
+                            this.caretIndex = previousIdx;
                         }
                     }
 
                     if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), 340)
                             && !InputUtil.isKeyPressed(client.getWindow().getHandle(), 344)) {
-                        this.startSelect = this.maxLen;
+                        this.selectionStart = this.caretIndex;
                     }
                     break;
                 case GLFW.GLFW_KEY_LEFT:
                     if (!this.isModifierKeyPressed()) {
-                        this.maxLen--;
+                        this.caretIndex--;
                     } else {
                         int previousIdx = -1;
 
-                        for (int i = Math.max(this.maxLen - 1, 0); i >= 0; i--) {
+                        for (int i = Math.max(this.caretIndex - 1, 0); i >= 0; i--) {
                             try {
-                                if ((String.valueOf(this.text.charAt(i)).equalsIgnoreCase(" ") || i == 0) && Math.abs(this.maxLen - i) > 1) {
+                                if ((String.valueOf(this.text.charAt(i)).equalsIgnoreCase(" ") || i == 0) && Math.abs(this.caretIndex - i) > 1) {
                                     previousIdx = i;
                                     break;
                                 }
@@ -279,27 +272,27 @@ public class TextField extends Widget implements IMinecraft {
                         }
 
                         if (previousIdx != -1) {
-                            this.maxLen = previousIdx;
+                            this.caretIndex = previousIdx;
                         }
                     }
 
                     if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_LEFT_SHIFT)
                             && !InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_RIGHT_SHIFT)) {
-                        this.startSelect = this.maxLen;
+                        this.selectionStart = this.caretIndex;
                     }
                     break;
                 case GLFW.GLFW_KEY_HOME:
-                    this.maxLen = 0;
+                    this.caretIndex = 0;
                     if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_LEFT_SHIFT)
                             && !InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_RIGHT_SHIFT)) {
-                        this.startSelect = this.maxLen;
+                        this.selectionStart = this.caretIndex;
                     }
                     break;
                 case GLFW.GLFW_KEY_END:
-                    this.maxLen = this.text.length();
+                    this.caretIndex = this.text.length();
                     if (!InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_LEFT_SHIFT)
                             && !InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW_KEY_RIGHT_SHIFT)) {
-                        this.startSelect = this.maxLen;
+                        this.selectionStart = this.caretIndex;
                     }
             }
         }
@@ -313,18 +306,18 @@ public class TextField extends Widget implements IMinecraft {
     }
 
     @Override
-    public void charTyped(char typed) {
-        super.charTyped(typed);
-        if (this.isFocused() && StringUtils.isPrintableCharacter(typed)) {
-            if (this.startSelect == this.endSelect) {
-                this.text = StringUtils.paste(this.text, Character.toString(typed), this.maxLen);
+    public void charTyped(char ch) {
+        super.charTyped(ch);
+        if (this.isFocused() && StringUtils.isPrintableCharacter(ch)) {
+            if (this.selectionStart == this.selectionEnd) {
+                this.text = StringUtils.paste(this.text, Character.toString(ch), this.caretIndex);
             } else {
-                this.text = StringUtils.cut(this.text, Character.toString(typed), this.startSelect, this.endSelect);
+                this.text = StringUtils.cut(this.text, Character.toString(ch), this.selectionStart, this.selectionEnd);
             }
 
-            this.maxLen++;
-            this.startSelect = this.maxLen;
-            this.callChangeListeners();
+            this.caretIndex++;
+            this.selectionStart = this.caretIndex;
+            this.notifyChangeListeners();
         }
     }
 
@@ -332,9 +325,9 @@ public class TextField extends Widget implements IMinecraft {
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
         float var4 = 1000.0F;
-        boolean var5 = this.focused && (float) this.timer.getElapsedTime() > var4 / 2.0F;
-        if ((float) this.timer.getElapsedTime() > var4) {
-            this.timer.reset();
+        boolean var5 = this.focused && (float) this.cursorBlinkTimer.getElapsedTime() > var4 / 2.0F;
+        if ((float) this.cursorBlinkTimer.getElapsedTime() > var4) {
+            this.cursorBlinkTimer.reset();
         }
 
         String var6 = this.text;
@@ -345,7 +338,7 @@ public class TextField extends Widget implements IMinecraft {
         ScissorUtils.startScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, true);
         int var7 = this.x + 4;
         int var8 = this.width - 4;
-        float var9 = (float) var7 + this.field20746 + (float) this.font.getWidth(var6.substring(0, this.maxLen));
+        float var9 = (float) var7 + this.textOffsetX + (float) this.font.getWidth(var6.substring(0, this.caretIndex));
         if (this.isFocused()) {
             RenderUtils.drawRoundedRect(
                     var9 + (float) (var6.isEmpty() ? 0 : -1),
@@ -354,22 +347,22 @@ public class TextField extends Widget implements IMinecraft {
                     (float) (this.y + this.height / 2 + this.font.getHeight(var6) / 2 - 1),
                     ColorHelper.applyAlpha(this.textColor.getTextColor(), !var5 ? 0.1F * partialTicks : 0.8F)
             );
-            float var10 = (float) (var7 + this.font.getWidth(var6.substring(0, this.maxLen))) + this.field20747;
+            float var10 = (float) (var7 + this.font.getWidth(var6.substring(0, this.caretIndex))) + this.targetTextOffsetX;
             if (var10 < (float) var7) {
-                this.field20747 += (float) var7 - var10;
-                this.field20747 = this.field20747 - Math.min((float) var8, this.field20747);
+                this.targetTextOffsetX += (float) var7 - var10;
+                this.targetTextOffsetX = this.targetTextOffsetX - Math.min((float) var8, this.targetTextOffsetX);
             }
 
             if (var10 > (float) (var7 + var8)) {
-                this.field20747 += (float) (var7 + var8) - var10;
+                this.targetTextOffsetX += (float) (var7 + var8) - var10;
             }
         }
 
-        this.field20746 = this.field20746 + (this.field20747 - this.field20746) / 2.0F;
-        this.startSelect = Math.min(Math.max(0, this.startSelect), var6.length());
-        this.endSelect = Math.min(Math.max(0, this.endSelect), var6.length());
-        float var14 = (float) var7 + this.field20746 + (float) this.font.getWidth(var6.substring(0, this.startSelect));
-        float var11 = (float) var7 + this.field20746 + (float) this.font.getWidth(var6.substring(0, this.endSelect));
+        this.textOffsetX = this.textOffsetX + (this.targetTextOffsetX - this.textOffsetX) / 2.0F;
+        this.selectionStart = Math.min(Math.max(0, this.selectionStart), var6.length());
+        this.selectionEnd = Math.min(Math.max(0, this.selectionEnd), var6.length());
+        float var14 = (float) var7 + this.textOffsetX + (float) this.font.getWidth(var6.substring(0, this.selectionStart));
+        float var11 = (float) var7 + this.textOffsetX + (float) this.font.getWidth(var6.substring(0, this.selectionEnd));
         RenderUtils.drawRoundedRect(
                 var14,
                 (float) (this.y + this.height / 2 - this.font.getHeight(var6) / 2),
@@ -381,21 +374,21 @@ public class TextField extends Widget implements IMinecraft {
         FontAlignment heightAlignment = this.textColor.getHeightAlignment();
         RenderUtils.drawString(
                 this.font,
-                (float) var7 + this.field20746,
+                (float) var7 + this.textOffsetX,
                 (float) (this.y + this.height / 2),
                 var6.length() == 0 && (!this.focused || var6.length() <= 0) ? this.placeholder : var6,
-                ColorHelper.applyAlpha(this.textColor.getTextColor(), (this.field20744 / 2.0F + 0.4F) * partialTicks * (this.focused && var6.length() > 0 ? 1.0F : 0.5F)),
+                ColorHelper.applyAlpha(this.textColor.getTextColor(), (this.focusFade / 2.0F + 0.4F) * partialTicks * (this.focused && var6.length() > 0 ? 1.0F : 0.5F)),
                 widthAlignment,
                 heightAlignment
         );
         ScissorUtils.restoreScissor();
-        if (this.roundedThingy) {
+        if (this.underlineEnabled) {
             RenderUtils.drawRoundedRect(
                     (float) this.x,
                     (float) (this.y + this.height - 2),
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
-                    ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), (this.field20744 / 2.0F + 0.5F) * partialTicks)
+                    ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), (this.focusFade / 2.0F + 0.5F) * partialTicks)
             );
         }
 
@@ -406,9 +399,9 @@ public class TextField extends Widget implements IMinecraft {
         this.changeListeners.add(listener);
     }
 
-    public void callChangeListeners() {
+    public void notifyChangeListeners() {
         for (ChangeListener listener : this.changeListeners) {
-            listener.onUpdate(this);
+            listener.onChange(this);
         }
     }
 
@@ -424,11 +417,11 @@ public class TextField extends Widget implements IMinecraft {
         this.censorText = censorText;
     }
 
-    public void setRoundedThingy(boolean roundedThingy) {
-        this.roundedThingy = roundedThingy;
+    public void setUnderlineEnabled(boolean underlineEnabled) {
+        this.underlineEnabled = underlineEnabled;
     }
 
     public interface ChangeListener {
-        void onUpdate(TextField var1);
+        void onChange(TextField field);
     }
 }

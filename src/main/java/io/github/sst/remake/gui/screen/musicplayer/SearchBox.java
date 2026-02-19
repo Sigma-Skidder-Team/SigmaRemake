@@ -21,7 +21,7 @@ public class SearchBox extends Widget {
     public SearchBox(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, String var7) {
         super(var1, var2, var3, var4, var5, var6, ColorHelper.DEFAULT_COLOR, var7, false);
         this.addToList(this.albumView = new ScrollablePanel(this, "albumView", 0, 0, var5, var6, ColorHelper.DEFAULT_COLOR, "View"));
-        this.addToList(this.searchInput = new TextField(this, "searchInput", 30, 14, var5 - 60, 70, TextField.field20742, "", "Search..."));
+        this.addToList(this.searchInput = new TextField(this, "searchInput", 30, 14, var5 - 60, 70, TextField.INVERTED_COLORS, "", "Search..."));
         this.searchInput.setReAddChildren(true);
     }
 

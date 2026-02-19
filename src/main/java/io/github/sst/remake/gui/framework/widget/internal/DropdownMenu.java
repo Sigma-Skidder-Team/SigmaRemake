@@ -2,8 +2,8 @@ package io.github.sst.remake.gui.framework.widget.internal;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
-import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
+import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -13,19 +13,19 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class DropdownSub extends InteractiveWidget {
+public class DropdownMenu extends InteractiveWidget {
     public static final ColorHelper color = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
-    public int field21324 = 0;
+    public int selectedIndex;
 
-    public DropdownSub(GuiComponent screen, String iconName, int x, int y, int width, int height, List<String> values, int var8) {
+    public DropdownMenu(GuiComponent screen, String iconName, int x, int y, int width, int height, List<String> values, int selectedIndex) {
         super(screen, iconName, x, y, width, height, color, false);
         this.values = values;
-        this.field21324 = var8;
-        this.method13634();
+        this.selectedIndex = selectedIndex;
+        this.rebuildButtons();
     }
 
-    private void method13634() {
+    private void rebuildButtons() {
         this.getChildren().clear();
         this.font = FontUtils.HELVETICA_LIGHT_18;
 
@@ -51,9 +51,9 @@ public class DropdownSub extends InteractiveWidget {
                             this.getFont()
                     )
             );
-            button.method13034(10);
-            button.onClick((var2, var3) -> {
-                this.method13641(this.values.indexOf(value));
+            button.setTextOffsetX(10);
+            button.onClick((mouseX, mouseY) -> {
+                this.setSelectedIndex(this.values.indexOf(value));
                 this.callUIHandlers();
             });
         }
@@ -61,7 +61,7 @@ public class DropdownSub extends InteractiveWidget {
         this.accept(new GridLayoutVisitor(1));
     }
 
-    private int method13635() {
+    private int getExpandedHeight() {
         return this.getHeight() * (this.values.size() - 1);
     }
 
@@ -76,14 +76,14 @@ public class DropdownSub extends InteractiveWidget {
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
-                (float) (this.getY() + this.getHeight() + this.method13635()),
+                (float) (this.getY() + this.getHeight() + this.getExpandedHeight()),
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) this.getWidth(),
-                (float) (this.getHeight() + this.method13635() - 1),
+                (float) (this.getHeight() + this.getExpandedHeight() - 1),
                 6.0F,
                 partialTicks * 0.1F
         );
@@ -91,7 +91,7 @@ public class DropdownSub extends InteractiveWidget {
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) this.getWidth(),
-                (float) (this.getHeight() + this.method13635() - 1),
+                (float) (this.getHeight() + this.getExpandedHeight() - 1),
                 20.0F,
                 partialTicks * 0.2F
         );
@@ -100,45 +100,27 @@ public class DropdownSub extends InteractiveWidget {
         GL11.glPopMatrix();
     }
 
-    public List<String> method13636() {
+    public List<String> getValues() {
         return this.values;
     }
 
-    public void method13637(String var1, int var2) {
-        this.method13636().add(var2, var1);
-        this.method13634();
+    public int getSelectedIndex() {
+        return this.selectedIndex;
     }
 
-    public void method13638(String var1) {
-        this.method13637(var1, this.values.size());
-    }
-
-    public <E extends Enum<E>> void method13639(Class<E> var1) {
-        this.values.clear();
-
-        for (Enum var7 : var1.getEnumConstants()) {
-            String var8 = var7.toString().substring(0, 1).toUpperCase() + var7.toString().substring(1).toLowerCase();
-            this.method13637(var8, var7.ordinal());
-        }
-    }
-
-    public int method13640() {
-        return this.field21324;
-    }
-
-    public void method13641(int var1) {
-        this.field21324 = var1;
+    public void setSelectedIndex(int var1) {
+        this.selectedIndex = var1;
     }
 
     @Override
     public String getText() {
-        return this.method13636().size() <= 0 ? null : this.method13636().get(this.method13640());
+        return this.getValues().size() <= 0 ? null : this.getValues().get(this.getSelectedIndex());
     }
 
     @Override
     public boolean isMouseOverComponent(int mouseX, int mouseY) {
         mouseX -= this.getAbsoluteX();
         mouseY -= this.getAbsoluteY();
-        return mouseX >= -10 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.method13635();
+        return mouseX >= -10 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.getExpandedHeight();
     }
 }

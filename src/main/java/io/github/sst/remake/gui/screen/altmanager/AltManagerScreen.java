@@ -33,17 +33,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AltManagerScreen extends Screen implements IMinecraft {
-    private int field21005;
-    private float field21006;
-    private boolean field21008 = true;
-    private ScrollablePanel alts;
-    private final ScrollablePanel altView;
+    private int backgroundOffsetX;
+    private float backgroundOffsetY;
+    private boolean backgroundOffsetInit = true;
+    private ScrollablePanel accountListPanel;
+    private final ScrollablePanel accountDetailPanelContainer;
     private Alert loginDialog;
     private Alert deleteAlert;
-    private final float field21014 = 0.65F;
-    private final float field21015 = 1.0F - this.field21014;
+    private final float leftPaneRatio = 0.65F;
+    private final float rightPaneRatio = 1.0F - this.leftPaneRatio;
     private final int titleOffset = 30;
-    private final AccountDetailPanel accountDetailPanel;
+    private final AccountDetailPanel accountDetailsPanel;
     private AccountCompareType accountSortType = AccountCompareType.ADDED;
     private String accountFilter = "";
     private final TextField searchBox;
@@ -75,46 +75,46 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.getLoginDialog();
         this.deleteAltAlert();
         this.addToList(
-                this.alts = new ScrollablePanel(
+                this.accountListPanel = new ScrollablePanel(
                         this,
                         "alts",
                         0,
                         114,
-                        (int) ((float) client.getWindow().getWidth() * this.field21014) - 4,
+                        (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio) - 4,
                         client.getWindow().getHeight() - 119 - this.titleOffset
                 )
         );
         this.addToList(
-                this.altView = new ScrollablePanel(
+                this.accountDetailPanelContainer = new ScrollablePanel(
                         this,
                         "altView",
-                        (int) ((float) client.getWindow().getWidth() * this.field21014),
+                        (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio),
                         114,
-                        (int) ((float) client.getWindow().getWidth() * this.field21015) - this.titleOffset,
+                        (int) ((float) client.getWindow().getWidth() * this.rightPaneRatio) - this.titleOffset,
                         client.getWindow().getHeight() - 119 - this.titleOffset
                 )
         );
-        this.alts.setListening(false);
-        this.altView.setListening(false);
-        this.alts.method13515(false);
-        this.altView
+        this.accountListPanel.setListening(false);
+        this.accountDetailPanelContainer.setListening(false);
+        this.accountListPanel.setScissorEnabled(false);
+        this.accountDetailPanelContainer
                 .addToList(
-                        this.accountDetailPanel = new AccountDetailPanel(
-                                this.altView,
+                        this.accountDetailsPanel = new AccountDetailPanel(
+                                this.accountDetailPanelContainer,
                                 "info",
                                 (int) (
-                                        (float) client.getWindow().getWidth() * this.field21015
-                                                - (float) ((int) ((float) client.getWindow().getWidth() * this.field21015))
+                                        (float) client.getWindow().getWidth() * this.rightPaneRatio
+                                                - (float) ((int) ((float) client.getWindow().getWidth() * this.rightPaneRatio))
                                 )
                                         / 2
                                         - 10,
-                                this.method13374(),
-                                (int) ((float) client.getWindow().getWidth() * this.field21015),
+                                this.getDetailsPanelYOffset(),
+                                (int) ((float) client.getWindow().getWidth() * this.rightPaneRatio),
                                 500
                         )
                 );
-        Dropdown filterDropdown = new Dropdown(this, "drop", (int) ((float) client.getWindow().getWidth() * this.field21014) - 220, 44, 200, 32, sortingOptions, 0);
-        filterDropdown.method13643(servers, 1);
+        Dropdown filterDropdown = new Dropdown(this, "drop", (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio) - 220, 44, 200, 32, sortingOptions, 0);
+        filterDropdown.addSubMenu(servers, 1);
         filterDropdown.setIndex(2);
         this.addToList(filterDropdown);
         filterDropdown.onPress(var2 -> {
@@ -124,8 +124,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                     break;
                 case 1:
                     this.accountSortType = AccountCompareType.BANS;
-                    List<String> banList = filterDropdown.method13645(1).method13636();
-                    int index = filterDropdown.method13645(1).method13640();
+                    List<String> banList = filterDropdown.getSubMenu(1).getValues();
+                    int index = filterDropdown.getSubMenu(1).getSelectedIndex();
 
                     if (!banList.isEmpty() && index < banList.size()) {
                         this.accountFilter = banList.get(index);
@@ -149,11 +149,11 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 this.searchBox = new TextField(
                         this,
                         "textbox",
-                        (int) ((float) client.getWindow().getWidth() * this.field21014),
+                        (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio),
                         44,
                         150,
                         32,
-                        TextField.field20741,
+                        TextField.DEFAULT_COLORS,
                         "",
                         "Search...",
                         FontUtils.HELVETICA_LIGHT_18
@@ -163,32 +163,32 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.searchBox.addChangeListener(var1 -> this.updateAccountList(false));
         TextButton addButton;
         this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.HELVETICA_LIGHT_25));
-        this.alts.requestFocus();
+        this.accountListPanel.requestFocus();
         addButton.onClick((var1, var2) -> {
-            if (this.method13369()) {
-                this.loginDialog.method13603(!this.loginDialog.isHovered());
+            if (this.canOpenLoginDialog()) {
+                this.loginDialog.setOpen(!this.loginDialog.isHovered());
             }
         });
     }
 
-    private void method13360(Account acc, boolean var2) {
+    private void addAccountEntry(Account account, boolean animateIn) {
         AccountListEntry accountListEntry;
-        this.alts.addToList(
+        this.accountListPanel.addToList(
                 accountListEntry = new AccountListEntry(
-                        this.alts,
-                        acc.name,
+                        this.accountListPanel,
+                        account.name,
                         this.titleOffset,
-                        (100 + this.titleOffset / 2) * this.method13370(),
-                        this.alts.getWidth() - this.titleOffset * 2 + 4,
+                        (100 + this.titleOffset / 2) * this.getAccountEntryCount(),
+                        this.accountListPanel.getWidth() - this.titleOffset * 2 + 4,
                         100,
-                        acc
+                        account
                 )
         );
-        if (!var2) {
-            accountListEntry.field20805 = new AnimationUtils(0, 0);
+        if (!animateIn) {
+            accountListEntry.entrySlideAnim = new AnimationUtils(0, 0);
         }
 
-        if (Client.INSTANCE.accountManager.currentAccount == acc) {
+        if (Client.INSTANCE.accountManager.currentAccount == account) {
             accountListEntry.setAccountListRefreshing(true);
         }
 
@@ -196,31 +196,31 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             if (var3 != 0) {
                 this.deleteAlert.onPress(element -> {
                     Client.INSTANCE.accountManager.remove(accountListEntry.selectedAccount);
-                    this.accountDetailPanel.handleSelectedAccount(null);
+                    this.accountDetailsPanel.handleSelectedAccount(null);
                     this.updateAccountList(false);
                 });
                 this.deleteAlert.setFocused(true);
-                this.deleteAlert.method13603(true);
+                this.deleteAlert.setOpen(true);
             } else {
                 this.loginToAccount(accountListEntry);
 
-                this.accountDetailPanel.handleSelectedAccount(accountListEntry.selectedAccount);
+                this.accountDetailsPanel.handleSelectedAccount(accountListEntry.selectedAccount);
 
-                for (GuiComponent var7 : this.alts.getChildren()) {
+                for (GuiComponent var7 : this.accountListPanel.getChildren()) {
                     if (!(var7 instanceof VerticalScrollBar)) {
                         for (GuiComponent var9 : var7.getChildren()) {
-                            ((AccountListEntry) var9).method13166(false);
+                            ((AccountListEntry) var9).setSelected(false);
                         }
                     }
                 }
 
-                accountListEntry.method13166(true);
+                accountListEntry.setSelected(true);
             }
         });
 
-        if (Client.INSTANCE.accountManager.currentAccount == acc) {
-            this.accountDetailPanel.handleSelectedAccount(accountListEntry.selectedAccount);
-            accountListEntry.method13167(true, true);
+        if (Client.INSTANCE.accountManager.currentAccount == account) {
+            this.accountDetailsPanel.handleSelectedAccount(accountListEntry.selectedAccount);
+            accountListEntry.setSelected(true, true);
         }
     }
 
@@ -229,13 +229,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
         new Thread(() -> {
             if (!Client.INSTANCE.accountManager.login(account.selectedAccount)) {
-                account.setErrorState(114);
+                account.setErrorBlinkTicks(114);
                 SoundUtils.play("error");
                 account.setLoadingIndicator(false);
                 return;
             }
 
-            this.method13368();
+            this.clearRefreshingState();
             account.setAccountListRefreshing(true);
             SoundUtils.play("connect");
             this.updateAccountList(false);
@@ -330,20 +330,20 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        this.drawBackground();
+        this.drawParallaxBackground();
         RenderUtils.drawFloatingPanel(
-                (int) ((float) client.getWindow().getWidth() * this.field21014),
+                (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio),
                 114,
-                (int) ((float) client.getWindow().getWidth() * this.field21015) - this.titleOffset,
+                (int) ((float) client.getWindow().getWidth() * this.rightPaneRatio) - this.titleOffset,
                 client.getWindow().getHeight() - 119 - this.titleOffset,
                 ClientColors.LIGHT_GREYISH_BLUE.getColor()
         );
-        this.method13367();
-        this.drawTitle();
+        this.updateEntrySlideAnimations();
+        this.drawHeaderTitle();
         super.draw(partialTicks);
     }
 
-    private void drawTitle() {
+    private void drawHeaderTitle() {
         int xPos = this.x + this.titleOffset;
         int yPos = this.y + this.titleOffset;
         int color = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F);
@@ -351,25 +351,25 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
     }
 
-    private void method13367() {
+    private void updateEntrySlideAnimations() {
         float var3 = 1.0F;
 
-        for (GuiComponent var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.accountListPanel.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent var7 : var5.getChildren()) {
                     if (var7 instanceof AccountListEntry) {
                         AccountListEntry accountListEntry = (AccountListEntry) var7;
-                        if (var7.getY() <= client.getWindow().getHeight() && this.alts.getScrollOffset() == 0) {
+                        if (var7.getY() <= client.getWindow().getHeight() && this.accountListPanel.getScrollOffset() == 0) {
                             if (var3 > 0.2F) {
-                                accountListEntry.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                                accountListEntry.entrySlideAnim.changeDirection(AnimationUtils.Direction.BACKWARDS);
                             }
 
-                            float var9 = VecUtils.interpolate(accountListEntry.field20805.calcPercent(), 0.51, 0.82, 0.0, 0.99);
+                            float var9 = VecUtils.interpolate(accountListEntry.entrySlideAnim.calcPercent(), 0.51, 0.82, 0.0, 0.99);
                             accountListEntry.setTranslateX((int) (-((1.0F - var9) * (float) (var7.getWidth() + 30))));
-                            var3 = accountListEntry.field20805.calcPercent();
+                            var3 = accountListEntry.entrySlideAnim.calcPercent();
                         } else {
                             accountListEntry.setTranslateX(0);
-                            accountListEntry.field20805.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                            accountListEntry.entrySlideAnim.changeDirection(AnimationUtils.Direction.BACKWARDS);
                         }
                     }
                 }
@@ -377,8 +377,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         }
     }
 
-    private void method13368() {
-        for (GuiComponent screen : this.alts.getChildren()) {
+    private void clearRefreshingState() {
+        for (GuiComponent screen : this.accountListPanel.getChildren()) {
             if (!(screen instanceof VerticalScrollBar)) {
                 for (GuiComponent child : screen.getChildren()) {
                     AccountListEntry accountListEntry = (AccountListEntry) child;
@@ -388,8 +388,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         }
     }
 
-    private boolean method13369() {
-        for (GuiComponent var5 : this.alts.getChildren()) {
+    private boolean canOpenLoginDialog() {
+        for (GuiComponent var5 : this.accountListPanel.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent var7 : var5.getChildren()) {
                     if (var7.getTranslateX() != 0 && var7.getX() > this.width) {
@@ -402,10 +402,10 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         return true;
     }
 
-    private int method13370() {
+    private int getAccountEntryCount() {
         int var3 = 0;
 
-        for (GuiComponent var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.accountListPanel.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent ignored : var5.getChildren()) {
                     var3++;
@@ -416,25 +416,25 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         return var3;
     }
 
-    private void drawBackground() {
+    private void drawParallaxBackground() {
         int var3 = this.getMouseX() * -1;
         float var4 = (float) this.getMouseY() / (float) this.getWidth() * -114.0F;
-        if (this.field21008) {
-            this.field21006 = (float) ((int) var4);
-            this.field21005 = var3;
-            this.field21008 = false;
+        if (this.backgroundOffsetInit) {
+            this.backgroundOffsetY = (float) ((int) var4);
+            this.backgroundOffsetX = var3;
+            this.backgroundOffsetInit = false;
         }
 
-        float var5 = var4 - this.field21006;
-        float var6 = (float) (var3 - this.field21005);
-        RenderUtils.drawImage((float) this.field21005, this.field21006, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.MENU_PANORAMA);
+        float var5 = var4 - this.backgroundOffsetY;
+        float var6 = (float) (var3 - this.backgroundOffsetX);
+        RenderUtils.drawImage((float) this.backgroundOffsetX, this.backgroundOffsetY, (float) (this.getWidth() * 2), (float) (this.getHeight() + 114), Resources.MENU_PANORAMA);
         float var7 = 0.5F;
-        if (var4 != this.field21006) {
-            this.field21006 += var5 * var7;
+        if (var4 != this.backgroundOffsetY) {
+            this.backgroundOffsetY += var5 * var7;
         }
 
-        if (var3 != this.field21005) {
-            this.field21005 = (int) ((float) this.field21005 + var6 * var7);
+        if (var3 != this.backgroundOffsetX) {
+            this.backgroundOffsetX = (int) ((float) this.backgroundOffsetX + var6 * var7);
         }
 
         RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) this.getWidth(), (float) this.getHeight(), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.95F));
@@ -456,10 +456,10 @@ public class AltManagerScreen extends Screen implements IMinecraft {
 
     @Override
     public void loadConfig(JsonObject config) {
-        for (GuiComponent var5 : this.alts.getChildren()) {
+        for (GuiComponent var5 : this.accountListPanel.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent var7 : var5.getChildren()) {
-                    this.alts.queueChildRemoval(var7);
+                    this.accountListPanel.queueChildRemoval(var7);
                 }
             }
         }
@@ -472,9 +472,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.addRunnable(() -> {
 
             int var3 = 0;
-            if (alts != null) {
-                var3 = alts.getScrollOffset();
-                this.removeChildren(alts);
+            if (accountListPanel != null) {
+                var3 = accountListPanel.getScrollOffset();
+                this.removeChildren(accountListPanel);
             }
 
             GuiComponent var4 = this.getChildByName("alts");
@@ -482,26 +482,26 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 this.removeChildren(var4);
             }
 
-            this.showAlert(this.alts = new ScrollablePanel(
+            this.showAlert(this.accountListPanel = new ScrollablePanel(
                     this,
                     "alts",
                     0,
                     114,
-                    (int) ((float) client.getWindow().getWidth() * this.field21014) - 4,
+                    (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio) - 4,
                     client.getWindow().getHeight() - 119 - this.titleOffset
             ));
 
             for (Account var6 : accounts) {
-                this.method13360(var6, forceRefresh);
+                this.addAccountEntry(var6, forceRefresh);
             }
 
-            this.alts.setScrollOffset(var3);
-            this.alts.setListening(false);
-            this.alts.method13515(false);
+            this.accountListPanel.setScrollOffset(var3);
+            this.accountListPanel.setListening(false);
+            this.accountListPanel.setScissorEnabled(false);
         });
     }
 
-    public int method13374() {
+    public int getDetailsPanelYOffset() {
         return client.getWindow().getHeight() / 12 + 280 + client.getWindow().getHeight() / 12;
     }
 }

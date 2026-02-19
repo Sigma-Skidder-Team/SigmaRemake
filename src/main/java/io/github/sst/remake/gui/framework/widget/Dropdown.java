@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.framework.widget;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
-import io.github.sst.remake.gui.framework.widget.internal.DropdownSub;
+import io.github.sst.remake.gui.framework.widget.internal.DropdownMenu;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -20,36 +20,36 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Dropdown extends InteractiveWidget {
-    public static final ColorHelper field21325 = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
+    public static final ColorHelper DEFAULT_COLORS = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
-    public int selectedIdx;
-    public boolean field21328;
-    private final AnimationUtils animation = new AnimationUtils(220, 220);
-    private final Map<Integer, DropdownSub> field21331 = new HashMap<Integer, DropdownSub>();
+    public int selectedIndex;
+    public boolean expanded;
+    private final AnimationUtils expandAnimation = new AnimationUtils(220, 220);
+    private final Map<Integer, DropdownMenu> subMenusByIndex = new HashMap<>();
 
-    public Dropdown(GuiComponent var1, String typeThingIdk, int x, int y, int width, int height, List<String> values, int selectedIdx) {
-        super(var1, typeThingIdk, x, y, width, height, field21325, false);
+    public Dropdown(GuiComponent var1, String typeThingIdk, int x, int y, int width, int height, List<String> values, int selectedIndex) {
+        super(var1, typeThingIdk, x, y, width, height, DEFAULT_COLORS, false);
         this.values = values;
-        this.selectedIdx = selectedIdx;
+        this.selectedIndex = selectedIndex;
         this.addButtons();
     }
 
-    public void method13643(List<String> var1, int var2) {
-        DropdownSub var5 = new DropdownSub(this, "sub" + var2, this.width + 10, this.getHeight() * (var2 + 1), 200, this.getHeight(), var1, 0);
-        this.field21331.put(var2, var5);
+    public void addSubMenu(List<String> values, int parentIndex) {
+        DropdownMenu var5 = new DropdownMenu(this, "sub" + parentIndex, this.width + 10, this.getHeight() * (parentIndex + 1), 200, this.getHeight(), values, 0);
+        this.subMenusByIndex.put(parentIndex, var5);
         var5.setSelfVisible(false);
         var5.onPress(var2x -> {
-            this.setIndex(var2);
-            this.method13658(false);
+            this.setIndex(parentIndex);
+            this.setExpanded(false);
             this.callUIHandlers();
         });
         this.addToList(var5);
     }
 
-    public DropdownSub method13645(int var1) {
-        for (Entry var5 : this.field21331.entrySet()) {
-            if ((Integer) var5.getKey() == var1) {
-                return (DropdownSub) var5.getValue();
+    public DropdownMenu getSubMenu(int parentIndex) {
+        for (Entry<Integer, DropdownMenu> entry : this.subMenusByIndex.entrySet()) {
+            if (entry.getKey() == parentIndex) {
+                return entry.getValue();
             }
         }
 
@@ -67,7 +67,7 @@ public class Dropdown extends InteractiveWidget {
             var1.setWidth(this.getWidth());
             var1.setHeight(this.getHeight());
         });
-        dropdownButton.onClick((var1, var2) -> this.method13658(!this.method13657()));
+        dropdownButton.onClick((var1, var2) -> this.setExpanded(!this.isExpanded()));
 
         for (String mode : this.values) {
             Button button;
@@ -91,68 +91,64 @@ public class Dropdown extends InteractiveWidget {
                             this.getFont()
                     )
             );
-            button.method13034(10);
+            button.setTextOffsetX(10);
             button.onClick((var2, var3x) -> {
                 int var6x = this.getIndex();
                 this.setIndex(this.values.indexOf(mode));
-                this.method13658(false);
+                this.setExpanded(false);
                 if (var6x != this.getIndex()) {
                     this.callUIHandlers();
                 }
             });
         }
 
-        this.animation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        this.expandAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.accept(new GridLayoutVisitor(1));
     }
 
-    private int method13647() {
-        int var3 = this.method13648();
+    private int getExpandedContentHeight() {
+        int height = this.getAnimatedExpandHeight();
 
-        for (Entry var5 : this.field21331.entrySet()) {
-            if (((DropdownSub) var5.getValue()).isSelfVisible()) {
-                var3 = Math.max(
-                        var3,
-                        (((DropdownSub) var5.getValue()).values.size() - 1) * ((DropdownSub) var5.getValue()).getHeight() + ((DropdownSub) var5.getValue()).getY()
+        for (Entry<Integer, DropdownMenu> entry : this.subMenusByIndex.entrySet()) {
+            if (entry.getValue().isSelfVisible()) {
+                height = Math.max(
+                        height,
+                        (((DropdownMenu) entry.getValue()).values.size() - 1) * entry.getValue().getHeight() + entry.getValue().getY()
                 );
             }
         }
 
-        return var3;
+        return height;
     }
 
-    private int method13648() {
-        float var3 = AnimationUtils.calculateTransition(this.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.animation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
-            var3 = QuadraticEasing.easeInQuad(this.animation.calcPercent(), 0.0F, 1.0F, 1.0F);
+    private int getAnimatedExpandHeight() {
+        float var3 = AnimationUtils.calculateTransition(this.expandAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.expandAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
+            var3 = QuadraticEasing.easeInQuad(this.expandAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         return (int) ((float) (this.getHeight() * this.values.size() + 1) * var3);
     }
 
-    public int method13649() {
-        return (int) ((float) (this.getHeight() * this.values.size() + 1));
-    }
-
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        if (!this.isMouseOverComponent(mouseX, mouseY) && this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
-            this.method13658(false);
+        if (!this.isMouseOverComponent(mouseX, mouseY) && this.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            this.setExpanded(false);
         }
 
         int var5 = (mouseY - this.getAbsoluteY()) / this.getHeight() - 1;
         if (var5 >= 0
                 && var5 < this.values.size()
-                && this.animation.getDirection() == AnimationUtils.Direction.BACKWARDS
-                && this.animation.calcPercent() == 1.0F
+                && this.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS
+                && this.expandAnimation.calcPercent() == 1.0F
                 && mouseX - this.getAbsoluteX() < this.getWidth()) {
-            for (Entry var9 : this.field21331.entrySet()) {
-                ((DropdownSub) var9.getValue()).setSelfVisible((Integer) var9.getKey() == var5);
+            for (Entry<Integer, DropdownMenu> var9 : this.subMenusByIndex.entrySet()) {
+                var9.getValue().setSelfVisible(var9.getKey() == var5);
             }
-        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.animation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            for (Entry var7 : this.field21331.entrySet()) {
-                ((DropdownSub) var7.getValue()).setSelfVisible(false);
+        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            for (Entry<Integer, DropdownMenu> var7 : this.subMenusByIndex.entrySet()) {
+                var7.getValue().setSelfVisible(false);
             }
         }
     }
@@ -164,33 +160,33 @@ public class Dropdown extends InteractiveWidget {
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + this.getHeight()),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * this.animation.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * this.expandAnimation.calcPercent())
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) this.getWidth(),
-                (float) (this.getHeight() + this.method13648() - 1),
+                (float) (this.getHeight() + this.getAnimatedExpandHeight() - 1),
                 6.0F,
-                partialTicks * 0.1F * this.animation.calcPercent()
+                partialTicks * 0.1F * this.expandAnimation.calcPercent()
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),
                 (float) this.getY(),
                 (float) this.getWidth(),
-                (float) (this.getHeight() + this.method13648() - 1),
+                (float) (this.getHeight() + this.getAnimatedExpandHeight() - 1),
                 20.0F,
-                partialTicks * 0.2F * this.animation.calcPercent()
+                partialTicks * 0.2F * this.expandAnimation.calcPercent()
         );
         if (this.getText() != null) {
             ScissorUtils.startScissor(this);
             String var4 = "";
 
-            for (Entry var6 : this.field21331.entrySet()) {
-                if (this.selectedIdx == (Integer) var6.getKey()) {
-                    DropdownSub sub = (DropdownSub) var6.getValue();
+            for (Entry<Integer, DropdownMenu> var6 : this.subMenusByIndex.entrySet()) {
+                if (this.selectedIndex == var6.getKey()) {
+                    DropdownMenu sub = var6.getValue();
                     if (!sub.values.isEmpty()) {
-                        var4 = " (" + sub.values.get(sub.field21324) + ")";
+                        var4 = " (" + sub.values.get(sub.selectedIndex) + ")";
                     }
                 }
             }
@@ -205,15 +201,15 @@ public class Dropdown extends InteractiveWidget {
             ScissorUtils.restoreScissor();
         }
 
-        boolean var8 = this.animation.calcPercent() < 1.0F;
+        boolean var8 = this.expandAnimation.calcPercent() < 1.0F;
         if (var8) {
             ScissorUtils.startScissorNoGL(
-                    this.getAbsoluteX(), this.getAbsoluteY(), this.getAbsoluteX() + this.getWidth() + 140, this.getAbsoluteY() + this.getHeight() + this.method13647()
+                    this.getAbsoluteX(), this.getAbsoluteY(), this.getAbsoluteX() + this.getWidth() + 140, this.getAbsoluteY() + this.getHeight() + this.getExpandedContentHeight()
             );
         }
 
         GL11.glPushMatrix();
-        if (this.animation.calcPercent() > 0.0F) {
+        if (this.expandAnimation.calcPercent() > 0.0F) {
             super.draw(partialTicks);
         }
 
@@ -224,10 +220,11 @@ public class Dropdown extends InteractiveWidget {
 
         int var9 = this.getWidth() - (int) ((float) this.getHeight() / 2.0F + 0.5F);
         int var10 = (int) ((float) this.getHeight() / 2.0F + 0.5F) + 1;
-        int var7 = (int) ((float) this.getHeight() / 6.0F + 0.5F);
+
         GL11.glTranslatef((float) (this.getX() + var9), (float) (this.getY() + var10), 0.0F);
-        GL11.glRotatef(90.0F * this.animation.calcPercent(), 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(90.0F * this.expandAnimation.calcPercent(), 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef((float) (-this.getX() - var9), (float) (-this.getY() - var10), 0.0F);
+
         RenderUtils.drawString(
                 this.font,
                 (float) (this.getX() + var9 - 6),
@@ -237,47 +234,42 @@ public class Dropdown extends InteractiveWidget {
         );
     }
 
-    public List<String> method13651() {
+    public List<String> getValues() {
         return this.values;
     }
 
-    public void method13652(String var1, int var2) {
-        this.method13651().add(var2, var1);
-        this.addButtons();
-    }
-
     public int getIndex() {
-        return this.selectedIdx;
+        return this.selectedIndex;
     }
 
     public void setIndex(int var1) {
-        this.selectedIdx = var1;
+        this.selectedIndex = var1;
     }
 
-    public boolean method13657() {
-        return this.field21328;
+    public boolean isExpanded() {
+        return this.expanded;
     }
 
-    public void method13658(boolean var1) {
-        this.field21328 = var1;
-        this.animation.changeDirection(!this.method13657() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+        this.expandAnimation.changeDirection(!this.isExpanded() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
     }
 
     @Override
     public String getText() {
-        return this.method13651().size() <= 0 ? null : this.method13651().get(this.getIndex());
+        return this.getValues().size() <= 0 ? null : this.getValues().get(this.getIndex());
     }
 
     @Override
     public boolean isMouseOverComponent(int mouseX, int mouseY) {
-        for (Entry var6 : this.field21331.entrySet()) {
-            if (((DropdownSub) var6.getValue()).isSelfVisible() && ((DropdownSub) var6.getValue()).isMouseOverComponent(mouseX, mouseY)) {
+        for (Entry<Integer, DropdownMenu> var6 : this.subMenusByIndex.entrySet()) {
+            if (var6.getValue().isSelfVisible() && var6.getValue().isMouseOverComponent(mouseX, mouseY)) {
                 return true;
             }
         }
 
         mouseX -= this.getAbsoluteX();
         mouseY -= this.getAbsoluteY();
-        return mouseX >= 0 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.method13648();
+        return mouseX >= 0 && mouseX <= this.getWidth() && mouseY >= 0 && mouseY <= this.getHeight() + this.getAnimatedExpandHeight();
     }
 }

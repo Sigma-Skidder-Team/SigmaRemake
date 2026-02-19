@@ -10,8 +10,8 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
-import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import io.github.sst.remake.util.render.image.ImageUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Identifier;
@@ -29,43 +29,43 @@ import java.io.IOException;
 import java.util.Date;
 
 public class BanEntry extends Widget {
-    public AccountBan ban = null;
-    public ServerInfo info = null;
-    public Texture servericon = null;
+    public Texture serverIconTexture = null;
     public Texture serverBanner = null;
-    private BufferedImage field21247;
-    private final AnimationUtils field21248;
+
+    public AccountBan ban;
+    public ServerInfo info;
+
+    private final AnimationUtils hoverPulseAnim = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
 
     public BanEntry(GuiComponent parent, String text, int x, int y, int width, int height, AccountBan ban) {
         super(parent, text, x, y, width, height, false);
         this.ban = ban;
         this.info = ban.getServer();
-        this.field21248 = new AnimationUtils(200, 200, AnimationUtils.Direction.FORWARDS);
     }
 
     @Override
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
-        float var4 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        float var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var4 = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var5 = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.isHoveredInHierarchy()) {
-            this.field21248.changeDirection(AnimationUtils.Direction.BACKWARDS);
+            this.hoverPulseAnim.changeDirection(AnimationUtils.Direction.BACKWARDS);
         } else if ((double) Math.abs(var4 - var5) < 0.7) {
-            this.field21248.changeDirection(AnimationUtils.Direction.FORWARDS);
+            this.hoverPulseAnim.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
 
         if (this.getAbsoluteY() + this.getTranslateY() < MinecraftClient.getInstance().getWindow().getHeight() - 36 && this.getAbsoluteY() + this.getTranslateY() > 52) {
             if (this.info != null && this.serverBanner == null) {
                 try {
-                    BufferedImage var6 = method13578(this.info.getIcon());
+                    BufferedImage var6 = decodeBase64Image(this.info.getIcon());
                     if (var6 != null) {
-                        this.servericon = BufferedImageUtil.getTexture("servericon", var6);
+                        this.serverIconTexture = BufferedImageUtil.getTexture("servericon", var6);
                         this.serverBanner = BufferedImageUtil.getTexture(
-                                "servericon", ImageUtils.applyBlur(ImageUtils.adjustImageHSB(method13579(var6, 2.5, 2.5), 0.0F, 1.1F, 0.0F), 25)
+                                "servericon", ImageUtils.applyBlur(ImageUtils.adjustImageHSB(scaleImage(var6, 2.5, 2.5), 0.0F, 1.1F, 0.0F), 25)
                         );
                     }
-                } catch (IOException var8) {
-                    var8.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -81,8 +81,8 @@ public class BanEntry extends Widget {
             GL11.glPushMatrix();
             int var9 = this.width / 2;
             int var7 = this.height / 2;
-            if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                var4 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+            if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                var4 = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
             GL11.glTranslatef((float) (this.getX() + var9), (float) (this.getY() + var7), 0.0F);
@@ -106,44 +106,44 @@ public class BanEntry extends Widget {
                     (float) this.y,
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + 0.3F * this.field21248.calcPercent())
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + 0.3F * this.hoverPulseAnim.calcPercent())
             );
         }
 
         if (this.ban != null) {
             if (this.info != null) {
-                this.method13576();
-                this.method13577();
+                this.drawServerIcon();
+                this.drawBanInfo();
                 super.draw(partialTicks);
             }
         }
     }
 
-    public void method13576() {
+    public void drawServerIcon() {
         GL11.glPushMatrix();
-        float var5 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            var5 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var5 = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            var5 = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         GL11.glTranslatef((float) (this.getX() + 44), (float) (this.getY() + 44), 0.0F);
         GL11.glScaled(1.0 + 0.1 * (double) var5, 1.0 + 0.1 * (double) var5, 0.0);
         GL11.glTranslatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
-        if (this.servericon == null) {
+        if (this.serverIconTexture == null) {
             MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/misc/unknown_server.png"));
             RenderUtils.drawTexturedQuad(
                     (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.0F, 0.0F, 64.0F, 64.0F
             );
         } else {
             RenderUtils.drawImage(
-                    (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, this.servericon, ClientColors.LIGHT_GREYISH_BLUE.getColor(), true
+                    (float) (this.x + 12), (float) (this.y + 12), 64.0F, 64.0F, this.serverIconTexture, ClientColors.LIGHT_GREYISH_BLUE.getColor(), true
             );
         }
 
         GL11.glPopMatrix();
     }
 
-    public void method13577() {
+    public void drawBanInfo() {
         long var3 = this.ban.date.getTime() - new Date().getTime();
         int var5 = (int) (var3 / 1000L) % 60;
         int var6 = (int) (var3 / 60000L % 60L);
@@ -156,9 +156,9 @@ public class BanEntry extends Widget {
                 this.getAbsoluteY() + this.getTranslateY() + this.height
         );
         GL11.glPushMatrix();
-        float var11 = EasingFunctions.easeOutBack(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.field21248.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            var11 = QuadraticEasing.easeInQuad(this.field21248.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var11 = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
+        if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            var11 = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         GL11.glTranslatef((float) (this.getX() + 76), (float) (this.getY() + 44), 0.0F);
@@ -215,32 +215,32 @@ public class BanEntry extends Widget {
         ScissorUtils.restoreScissor();
     }
 
-    public static BufferedImage method13578(String var0) {
-        if (var0 == null) {
+    public static BufferedImage decodeBase64Image(String input) {
+        if (input == null) {
             return null;
-        } else if (!Base64.isBase64(var0)) {
+        } else if (!Base64.isBase64(input)) {
             return null;
         } else {
             try {
-                return ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(var0)));
+                return ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(input)));
             } catch (IOException var4) {
                 return null;
             }
         }
     }
 
-    private static BufferedImage method13579(BufferedImage var0, double var1, double var3) {
-        BufferedImage var7 = null;
-        if (var0 != null) {
-            int var8 = (int) ((double) var0.getHeight() * var3);
-            int var9 = (int) ((double) var0.getWidth() * var1);
-            var7 = new BufferedImage(var9, var8, var0.getType());
-            Graphics2D var10 = var7.createGraphics();
-            AffineTransform var11 = AffineTransform.getScaleInstance(var1, var3);
-            var10.drawRenderedImage(var0, var11);
+    private static BufferedImage scaleImage(BufferedImage img, double width, double height) {
+        BufferedImage out = null;
+        if (img != null) {
+            int var8 = (int) ((double) img.getHeight() * height);
+            int var9 = (int) ((double) img.getWidth() * width);
+            out = new BufferedImage(var9, var8, img.getType());
+            Graphics2D var10 = out.createGraphics();
+            AffineTransform var11 = AffineTransform.getScaleInstance(width, height);
+            var10.drawRenderedImage(img, var11);
         }
 
-        return var7;
+        return out;
     }
 
     @Override

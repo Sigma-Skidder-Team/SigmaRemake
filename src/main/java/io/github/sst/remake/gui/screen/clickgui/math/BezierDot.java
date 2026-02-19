@@ -11,7 +11,7 @@ public class BezierDot extends Widget {
     public BezierDot(BezierCurve var1, int var2, String var3) {
         super(var1, "bezierButton-" + var3, 0, 0, var2, var2, true);
         this.setDraggable(true);
-        this.field20886 = true;
+        this.enableImmediateDrag = true;
         this.field20737 = var1;
     }
 

@@ -76,7 +76,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                 });
             }
 
-            this.profileList.getButton().accept(new GridLayoutVisitor(1));
+            this.profileList.getContent().accept(new GridLayoutVisitor(1));
         });
     }
 

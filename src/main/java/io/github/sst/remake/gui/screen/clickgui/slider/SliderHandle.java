@@ -14,7 +14,7 @@ public class SliderHandle extends Button {
         super(var1, "sliderButton", 0, 0, var2, var2, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()));
         this.field20601.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.setDraggable(true);
-        this.field20886 = true;
+        this.enableImmediateDrag = true;
         this.field20600 = var1;
     }
 

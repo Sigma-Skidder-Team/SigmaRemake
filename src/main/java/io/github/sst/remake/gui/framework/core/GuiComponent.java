@@ -247,23 +247,23 @@ public class GuiComponent implements InputListener {
         return false;
     }
 
-    public void modifierPressed(int var1) {
-        for (GuiComponent var5 : this.children) {
-            if (var5.isHovered() && var5.isSelfVisible()) {
-                var5.modifierPressed(var1);
+    public void modifierPressed(int modifier) {
+        for (GuiComponent child : this.children) {
+            if (child.isHovered() && child.isSelfVisible()) {
+                child.modifierPressed(modifier);
             }
         }
     }
 
     @Override
-    public void charTyped(char typed) {
-        for (GuiComponent var5 : this.children) {
-            if (var5.isHovered() && var5.isSelfVisible()) {
-                var5.charTyped(typed);
+    public void charTyped(char ch) {
+        for (GuiComponent child : this.children) {
+            if (child.isHovered() && child.isSelfVisible()) {
+                child.charTyped(ch);
             }
         }
 
-        this.callCharTypedListeners(typed);
+        this.callCharTypedListeners(ch);
     }
 
     @Override
@@ -279,29 +279,29 @@ public class GuiComponent implements InputListener {
 
     @Override
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
-        boolean var6 = false;
+        boolean over = false;
 
         for (int i = this.children.size() - 1; i >= 0; i--) {
-            GuiComponent var8 = this.children.get(i);
-            boolean var9 = var8.getParent() != null
-                    && var8.getParent() instanceof ScrollablePanel
-                    && var8.getParent().isMouseOverComponent(mouseX, mouseY)
-                    && var8.getParent().isSelfVisible()
-                    && var8.getParent().isHovered();
-            if (var6 || !var8.isHovered() || !var8.isSelfVisible() || !var8.isMouseOverComponent(mouseX, mouseY) && !var9) {
-                var8.setFocused(false);
-                if (var8 != null) {
-                    for (GuiComponent child : var8.getChildren()) {
-                        child.setFocused(false);
+            GuiComponent child = this.children.get(i);
+            boolean isOver = child.getParent() != null
+                    && child.getParent() instanceof ScrollablePanel
+                    && child.getParent().isMouseOverComponent(mouseX, mouseY)
+                    && child.getParent().isSelfVisible()
+                    && child.getParent().isHovered();
+            if (over || !child.isHovered() || !child.isSelfVisible() || !child.isMouseOverComponent(mouseX, mouseY) && !isOver) {
+                child.setFocused(false);
+                if (child != null) {
+                    for (GuiComponent childsChild : child.getChildren()) {
+                        childsChild.setFocused(false);
                     }
                 }
             } else {
-                var8.onMouseDown(mouseX, mouseY, mouseButton);
-                var6 = !var9;
+                child.onMouseDown(mouseX, mouseY, mouseButton);
+                over = !isOver;
             }
         }
 
-        if (!var6) {
+        if (!over) {
             this.isMouseDownOverComponent = this.isHoveredInHierarchy = true;
             this.requestFocus();
             this.callMouseButtonCallbacks(mouseButton);
@@ -383,8 +383,8 @@ public class GuiComponent implements InputListener {
 
     public void addToList(GuiComponent child) {
         if (child != null) {
-            for (GuiComponent var5 : this.getChildren()) {
-                if (var5.getName().equals(child.getName())) {
+            for (GuiComponent thisChild : this.getChildren()) {
+                if (thisChild.getName().equals(child.getName())) {
                     return;
                 }
             }
@@ -412,23 +412,23 @@ public class GuiComponent implements InputListener {
         return false;
     }
 
-    public void queueChildAddition(GuiComponent child) {
-        if (child != null) {
-            for (GuiComponent var5 : this.getChildren()) {
-                if (var5.getName().equals(child.getName())) {
+    public void queueChildAddition(GuiComponent queuedChild) {
+        if (queuedChild != null) {
+            for (GuiComponent child : this.getChildren()) {
+                if (child.getName().equals(queuedChild.getName())) {
                     throw new RuntimeException("Children with duplicate IDs!");
                 }
             }
 
-            child.setParent(this);
-            this.childrenToAdd.add(child);
+            queuedChild.setParent(this);
+            this.childrenToAdd.add(queuedChild);
         }
     }
 
     public void showAlert(GuiComponent alertScreen) {
         if (alertScreen != null) {
-            for (GuiComponent var5 : this.getChildren()) {
-                if (var5.getName().equals(alertScreen.getName())) {
+            for (GuiComponent child : this.getChildren()) {
+                if (child.getName().equals(alertScreen.getName())) {
                     throw new RuntimeException("Children with duplicate IDs!");
                 }
             }
@@ -519,9 +519,9 @@ public class GuiComponent implements InputListener {
 
         for (GuiComponent child : this.children) {
             if (child.isListening()) {
-                JsonObject var7 = child.toConfigWithExtra(new JsonObject());
-                if (var7.size() != 0) {
-                    children.add(var7);
+                JsonObject json = child.toConfigWithExtra(new JsonObject());
+                if (json.size() != 0) {
+                    children.add(json);
                 }
             }
         }
@@ -737,7 +737,7 @@ public class GuiComponent implements InputListener {
     }
 
     public interface CharTypedListener {
-        void charTyped(char chr);
+        void charTyped(char ch);
     }
 
     public interface MouseListener {

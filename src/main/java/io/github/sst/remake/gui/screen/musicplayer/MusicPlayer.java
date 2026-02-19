@@ -163,7 +163,7 @@ public class MusicPlayer extends Widget {
         this.currentPlaylistName = var1.getText();
         this.activePlaylistPanel = var1;
         this.searchBox.setSelfVisible(false);
-        this.activePlaylistPanel.field21207 = 65;
+        this.activePlaylistPanel.scrollBarWidth = 65;
     }
 
     @Override
@@ -223,10 +223,10 @@ public class MusicPlayer extends Widget {
                     this.setDragging(false);
                 }
             } else {
-                int var12 = mouseX - this.sizeWidthThingy - (this.parent == null ? 0 : this.parent.getAbsoluteX());
+                int var12 = mouseX - this.dragOffsetX - (this.parent == null ? 0 : this.parent.getAbsoluteX());
                 int var14 = 200;
                 assert this.parent != null;
-                if (var12 + this.getWidth() > this.parent.getWidth() + var14 && mouseX - this.mouseX > 70) {
+                if (var12 + this.getWidth() > this.parent.getWidth() + var14 && mouseX - this.dragStartMouseX > 70) {
                     int var15 = var12 - this.getX() - var14;
                     this.setX((int) ((float) this.getX() + (float) var15 * 0.5F));
                     this.targetX = (float) this.getX();
@@ -513,7 +513,7 @@ public class MusicPlayer extends Widget {
                                     this.musicTabs,
                                     playlist.id,
                                     0,
-                                    this.musicTabs.getButton().getChildren().size() * 40,
+                                    this.musicTabs.getContent().getChildren().size() * 40,
                                     this.playerWidth,
                                     40,
                                     colorHelper,
@@ -534,7 +534,7 @@ public class MusicPlayer extends Widget {
                                     playlist.name
                             )
                     );
-            queue.method13514(true);
+            queue.setAllowUpdatesWhenHidden(true);
             queue.setSelfVisible(false);
             queue.setListening(false);
             for (int i = 0; i < playlist.songs.size(); i++) {

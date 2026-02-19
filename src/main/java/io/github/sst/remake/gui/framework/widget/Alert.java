@@ -3,16 +3,16 @@ package io.github.sst.remake.gui.framework.widget;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
+import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.gui.framework.widget.internal.AlertComponent;
 import io.github.sst.remake.gui.framework.widget.internal.ComponentType;
-import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import io.github.sst.remake.util.render.image.ImageUtils;
 import net.minecraft.client.MinecraftClient;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.util.image.BufferedImageUtil;
@@ -23,57 +23,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Remap & refactor
 public class Alert extends InteractiveWidget {
-    public GuiComponent screen;
-    public String alertName;
-    public Texture field21281;
-    private final AnimationUtils field21282 = new AnimationUtils(285, 100);
-    public boolean field21283;
-    public int field21284 = 240;
-    public int field21285 = 0;
-    private Map<String, String> inputMap;
+    private final AnimationUtils openCloseAnimation = new AnimationUtils(285, 100);
+    private final GuiComponent screen;
+    public Texture backgroundBlurTexture;
+    public int contentWidth = 240;
+    public int contentHeight = 0;
     private Button clickedButton;
-    private final List<Class9448> field21287 = new ArrayList<>();
 
-    public List<Button> buttons = new ArrayList<>();
+    private final List<AlertCloseListener> closeListeners = new ArrayList<>();
+    private Map<String, String> inputMap;
 
     public Alert(GuiComponent screen, String iconName, boolean var3, String name, AlertComponent... var5) {
         super(screen, iconName, 0, 0, MinecraftClient.getInstance().getWindow().getWidth(), MinecraftClient.getInstance().getWindow().getHeight(), false);
-        this.field21283 = var3;
-        this.alertName = name;
+
         this.setHovered(false);
         this.setReAddChildren(false);
         this.defocusSiblings();
-        TextField var8 = null;
-        TextField var9 = null;
+
+        TextField selectedField = null;
+        TextField selectedField2 = null;
 
         for (AlertComponent var13 : var5) {
-            this.field21285 = this.field21285 + var13.field44773 + 10;
+            this.contentHeight = this.contentHeight + var13.componentHeight + 10;
         }
 
-        this.field21285 -= 10;
+        this.contentHeight -= 10;
         this.addToList(
                 this.screen = new GuiComponent(
-                        this, "modalContent", (this.width - this.field21284) / 2, (this.height - this.field21285) / 2, this.field21284, this.field21285
+                        this, "modalContent", (this.width - this.contentWidth) / 2, (this.height - this.contentHeight) / 2, this.contentWidth, this.contentHeight
                 )
         );
-        int var17 = 0;
-        int var18 = 0;
+        int index = 0;
+        int offset = 0;
 
         for (AlertComponent component : var5) {
-            var17++;
+            index++;
             if (component.componentType != ComponentType.FIRST_LINE) {
                 if (component.componentType != ComponentType.SECOND_LINE) {
                     if (component.componentType != ComponentType.BUTTON) {
                         if (component.componentType == ComponentType.HEADER) {
                             this.screen.addToList(new Text(
                                             this.screen,
-                                            "Item" + var17,
+                                            "Item" + index,
                                             0,
-                                            var18,
-                                            this.field21284,
-                                            component.field44773,
+                                            offset,
+                                            this.contentWidth,
+                                            component.componentHeight,
                                             new ColorHelper(
                                                     ClientColors.DEEP_TEAL.getColor(),
                                                     ClientColors.DEEP_TEAL.getColor(),
@@ -87,26 +83,25 @@ public class Alert extends InteractiveWidget {
                         }
                     } else {
                         Button button;
-                        this.screen.addToList(button = new Button(this.screen, "Item" + var17, 0, var18, this.field21284, component.field44773, ColorHelper.DEFAULT_COLOR, component.text));
-                        this.buttons.add(button);
-                        button.field20586 = 4;
+                        this.screen.addToList(button = new Button(this.screen, "Item" + index, 0, offset, this.contentWidth, component.componentHeight, ColorHelper.DEFAULT_COLOR, component.text));
+                        button.cornerRadius = 4;
                         button.onClick((parent, mouseButton) -> this.onButtonClick(button));
                     }
                 } else {
-                    TextField var22;
+                    TextField text;
                     this.screen
                             .addToList(
-                                    var22 = new TextField(
-                                            this.screen, "Item" + var17, 0, var18, this.field21284, component.field44773, TextField.field20741, "", component.text
+                                    text = new TextField(
+                                            this.screen, "Item" + index, 0, offset, this.contentWidth, component.componentHeight, TextField.DEFAULT_COLORS, "", component.text
                                     )
                             );
                     if (!component.text.contains("Password")) {
                         if (component.text.contains("Email")) {
-                            var8 = var22;
+                            selectedField = text;
                         }
                     } else {
-                        var9 = var22;
-                        var22.setCensorText(true);
+                        selectedField2 = text;
+                        text.setCensorText(true);
                     }
                 }
             } else {
@@ -114,11 +109,11 @@ public class Alert extends InteractiveWidget {
                         .addToList(
                                 new Text(
                                         this.screen,
-                                        "Item" + var17,
+                                        "Item" + index,
                                         0,
-                                        var18,
-                                        this.field21284,
-                                        component.field44773,
+                                        offset,
+                                        this.contentWidth,
+                                        component.componentHeight,
                                         new ColorHelper(
                                                 ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor()
                                         ),
@@ -128,12 +123,12 @@ public class Alert extends InteractiveWidget {
                         );
             }
 
-            var18 += component.field44773 + 10;
+            offset += component.componentHeight + 10;
         }
 
-        if (var8 != null && var9 != null) {
-            TextField var20 = var9;
-            var8.addChangeListener(var2x -> {
+        if (selectedField != null && selectedField2 != null) {
+            TextField var20 = selectedField2;
+            selectedField.addChangeListener(var2x -> {
                 String var5x = var2x.getText();
                 if (var5x != null && var5x.contains(":")) {
                     String[] var6 = var5x.split(":");
@@ -158,17 +153,17 @@ public class Alert extends InteractiveWidget {
             for (GuiComponent var5 : this.screen.getChildren()) {
                 if (var5 instanceof TextField) {
                     var5.setText("");
-                    ((TextField) var5).method13146();
+                    ((TextField) var5).resetTextOffset();
                 }
             }
         }
 
-        this.field21282.changeDirection(!hovered ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.openCloseAnimation.changeDirection(!hovered ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         super.setHovered(hovered);
     }
 
-    private Map<String, String> method13599() {
-        HashMap var3 = new HashMap();
+    private Map<String, String> collectInputMap() {
+        Map<String, String> var3 = new HashMap<>();
 
         for (GuiComponent var5 : this.screen.getChildren()) {
             Widget var6 = (Widget) var5;
@@ -191,15 +186,15 @@ public class Alert extends InteractiveWidget {
 
     public void onButtonClick(Button button) {
         this.clickedButton = button;
-        this.inputMap = this.method13599();
-        this.method13603(false);
+        this.inputMap = this.collectInputMap();
+        this.setOpen(false);
         this.callUIHandlers();
     }
 
     public void onButtonClick() {
         this.clickedButton = null;
-        this.inputMap = this.method13599();
-        this.method13603(false);
+        this.inputMap = this.collectInputMap();
+        this.setOpen(false);
         this.callUIHandlers();
     }
 
@@ -208,19 +203,19 @@ public class Alert extends InteractiveWidget {
         super.onMouseClick(mouseX, mouseY, mouseButton);
     }
 
-    public float method13602(float var1, float var2) {
-        return this.field21282.getDirection() != AnimationUtils.Direction.FORWARDS
-                ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
-                : 0.5F + QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F) * 0.5F;
+    public float calcOpenScale(float progress, float period) {
+        return this.openCloseAnimation.getDirection() != AnimationUtils.Direction.FORWARDS
+                ? (float) (Math.pow(2.0, -10.0F * progress) * Math.sin((double) (progress - period / 4.0F) * (Math.PI * 2) / (double) period) + 1.0)
+                : 0.5F + QuadraticEasing.easeOutQuad(progress, 0.0F, 1.0F, 1.0F) * 0.5F;
     }
 
     @Override
     public void draw(float partialTicks) {
-        if (this.field21282.calcPercent() != 0.0F) {
-            int var4 = this.field21284 + 60;
-            int var5 = this.field21285 + 60;
-            float var7 = !this.isHovered() ? this.field21282.calcPercent() : Math.min(this.field21282.calcPercent() / 0.25F, 1.0F);
-            float var8 = this.method13602(this.field21282.calcPercent(), 1.0F);
+        if (this.openCloseAnimation.calcPercent() != 0.0F) {
+            int var4 = this.contentWidth + 60;
+            int var5 = this.contentHeight + 60;
+            float var7 = !this.isHovered() ? this.openCloseAnimation.calcPercent() : Math.min(this.openCloseAnimation.calcPercent() / 0.25F, 1.0F);
+            float var8 = this.calcOpenScale(this.openCloseAnimation.calcPercent(), 1.0F);
             var4 = (int) ((float) var4 * var8);
             var5 = (int) ((float) var5 * var8);
             RenderUtils.drawTexture(
@@ -228,7 +223,7 @@ public class Alert extends InteractiveWidget {
                     -5.0F,
                     (float) (this.getWidth() + 10),
                     (float) (this.getHeight() + 10),
-                    this.field21281,
+                    this.backgroundBlurTexture,
                     ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var7)
             );
             RenderUtils.drawRoundedRect(
@@ -255,13 +250,13 @@ public class Alert extends InteractiveWidget {
     @Override
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
-            int var6 = this.field21284 + 60;
-            int var7 = this.field21285 + 60;
+            int var6 = this.contentWidth + 60;
+            int var7 = this.contentHeight + 60;
             if (mouseX <= (this.width - var6) / 2
                     || mouseX >= (this.width - var6) / 2 + var6
                     || mouseY <= (this.height - var7) / 2
                     || mouseY >= (this.height - var7) / 2 + var7) {
-                this.method13603(false);
+                this.setOpen(false);
             }
             return false;
         } else {
@@ -269,14 +264,14 @@ public class Alert extends InteractiveWidget {
         }
     }
 
-    public void method13603(boolean var1) {
-        if (var1 && !this.isHovered()) {
+    public void setOpen(boolean open) {
+        if (open && !this.isHovered()) {
             try {
-                if (this.field21281 != null) {
-                    this.field21281.release();
+                if (this.backgroundBlurTexture != null) {
+                    this.backgroundBlurTexture.release();
                 }
 
-                this.field21281 = BufferedImageUtil.getTexture(
+                this.backgroundBlurTexture = BufferedImageUtil.getTexture(
                         "blur", ImageUtils.captureFramebufferRegion(0, 0, this.getWidth(), this.getHeight(), 5, 10, ClientColors.LIGHT_GREYISH_BLUE.getColor(), true)
                 );
             } catch (IOException e) {
@@ -284,29 +279,29 @@ public class Alert extends InteractiveWidget {
             }
         }
 
-        if (this.isHovered() != var1 && !var1) {
-            this.method13605();
+        if (this.isHovered() != open && !open) {
+            this.notifyCloseListeners();
         }
 
-        this.setHovered(var1);
-        if (var1) {
+        this.setHovered(open);
+        if (open) {
             this.setSelfVisible(true);
         }
 
-        this.setReAddChildren(var1);
+        this.setReAddChildren(open);
     }
 
-    public void method13604(Class9448 var1) {
-        this.field21287.add(var1);
+    public void addCloseListener(AlertCloseListener listener) {
+        this.closeListeners.add(listener);
     }
 
-    public void method13605() {
-        for (Class9448 var4 : this.field21287) {
-            var4.method36327(this);
+    public void notifyCloseListeners() {
+        for (AlertCloseListener listener : this.closeListeners) {
+            listener.onClose(this);
         }
     }
 
-    public interface Class9448 {
-        void method36327(InteractiveWidget var1);
+    public interface AlertCloseListener {
+        void onClose(InteractiveWidget widget);
     }
 }

@@ -48,7 +48,7 @@ public class ProfileListEntry extends Widget {
         this.editButtons.setHovered(false);
         ColorHelper textFieldColor = new ColorHelper(-892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
         this.addToList(this.profileName = new TextField(this, "profileName", 16, 8, this.getWidth() - 60, 50, textFieldColor, profile.name));
-        this.profileName.setRoundedThingy(false);
+        this.profileName.setUnderlineEnabled(false);
         this.profileName.setFont(FontUtils.HELVETICA_LIGHT_24);
         this.profileName.setSelfVisible(false);
         this.profileName.addKeyPressListener((character, key) -> {

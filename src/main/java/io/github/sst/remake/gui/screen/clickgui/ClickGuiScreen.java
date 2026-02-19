@@ -125,12 +125,12 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                         Util.getOperatingSystem().open("https://ffmpeg.org/download.html");
                 });
 
-                dependencyAlert.method13604(thread -> new Thread(() -> addRunnable(() -> {
+                dependencyAlert.addCloseListener(thread -> new Thread(() -> addRunnable(() -> {
                     removeChildren(dependencyAlert);
                     dependencyAlert = null;
                 })).start());
 
-                dependencyAlert.method13603(true);
+                dependencyAlert.setOpen(true);
             });
 
             return false;

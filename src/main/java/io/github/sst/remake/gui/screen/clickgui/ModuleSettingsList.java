@@ -107,7 +107,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                                 yOffset + var27 / 4 - 1,
                                 var19,
                                 var27,
-                                TextField.field20741,
+                                TextField.DEFAULT_COLORS,
                                 (String) setting.value
                         )
                 );

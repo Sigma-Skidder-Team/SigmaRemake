@@ -3,11 +3,11 @@ package io.github.sst.remake.gui.framework.widget.internal;
 public class AlertComponent {
     public ComponentType componentType;
     public String text;
-    public int field44773;
+    public int componentHeight;
 
-    public AlertComponent(ComponentType componentType, String title, int var3) {
+    public AlertComponent(ComponentType componentType, String title, int componentHeight) {
         this.componentType = componentType;
         this.text = title;
-        this.field44773 = var3;
+        this.componentHeight = componentHeight;
     }
 }

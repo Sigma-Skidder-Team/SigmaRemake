@@ -27,7 +27,7 @@ public class Waypoint extends InteractiveWidget {
         this.waypointName = var7;
         this.waypointPos = var8;
         this.waypointColor = var9;
-        this.field20883 = true;
+        this.allowBottomOverflow = true;
     }
 
     @Override

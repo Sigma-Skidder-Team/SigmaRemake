@@ -9,7 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class TextButton extends InteractiveWidget {
-    public AnimationUtils lineAnim;
+    private final AnimationUtils lineAnim;
 
     public TextButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
         super(var1, var2, var3, var4, var5, var6, var7, var8, var9, false);

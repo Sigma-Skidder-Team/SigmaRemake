@@ -8,9 +8,9 @@ import io.github.sst.remake.util.render.RenderUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class Button extends InteractiveWidget {
-    public float field20584;
-    private int field20585 = 0;
-    public int field20586 = 0;
+    public float hoverFade;
+    private int textOffsetX = 0;
+    public int cornerRadius = 0;
 
     public Button(GuiComponent screen, String iconName, int x, int y, int width, int height) {
         super(screen, iconName, x, y, width, height, false);
@@ -31,18 +31,18 @@ public class Button extends InteractiveWidget {
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20584 = this.field20584 + (!this.isHoveredInHierarchy() ? -0.1F : 0.1F);
-        this.field20584 = Math.min(Math.max(0.0F, this.field20584), 1.0F);
+        this.hoverFade = this.hoverFade + (!this.isHoveredInHierarchy() ? -0.1F : 0.1F);
+        this.hoverFade = Math.min(Math.max(0.0F, this.hoverFade), 1.0F);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.field20584, 0.0F) : 1.5F) : 0.0F);
+        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.hoverFade, 0.0F) : 1.5F) : 0.0F);
         int color = ColorHelper.applyAlpha(
                 ColorHelper.shiftTowardsOther(this.textColor.getPrimaryColor(), this.textColor.getSecondaryColor(), 1.0F - var4),
                 (float) (this.textColor.getPrimaryColor() >> 24 & 0xFF) / 255.0F * partialTicks
         );
-        if (this.field20586 <= 0) {
+        if (this.cornerRadius <= 0) {
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) this.getY(),
@@ -52,7 +52,7 @@ public class Button extends InteractiveWidget {
             );
         } else {
             RenderUtils.drawRoundedButton(
-                    (float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), (float) this.field20586, color
+                    (float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), (float) this.cornerRadius, color
             );
         }
 
@@ -71,7 +71,7 @@ public class Button extends InteractiveWidget {
         if (this.getText() != null) {
             RenderUtils.drawString(
                     this.getFont(),
-                    (float) (this.field20585 + var10),
+                    (float) (this.textOffsetX + var10),
                     (float) var11,
                     this.getText(),
                     ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
@@ -83,11 +83,11 @@ public class Button extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
-    public void method13034(int var1) {
-        this.field20585 = var1;
+    public void setTextOffsetX(int offset) {
+        this.textOffsetX = offset;
     }
 
-    public int method13035() {
-        return this.field20585;
+    public int getTextOffsetX() {
+        return this.textOffsetX;
     }
 }

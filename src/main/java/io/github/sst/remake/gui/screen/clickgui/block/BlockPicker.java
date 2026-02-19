@@ -28,7 +28,7 @@ public class BlockPicker extends InteractiveWidget {
     public BlockPicker(GuiComponent parent, String text, int x, int y, int width, int height, boolean var7, String... var8) {
         super(parent, text, x, y, width, height, false);
         this.field20644 = var7;
-        this.addToList(this.textField = new TextField(this, "textbox", 0, 0, width, 32, TextField.field20741, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
+        this.addToList(this.textField = new TextField(this, "textbox", 0, 0, width, 32, TextField.DEFAULT_COLORS, "", "Search...", FontUtils.HELVETICA_LIGHT_14));
         this.textField.setFont(FontUtils.HELVETICA_LIGHT_18);
         this.textField.addChangeListener(var1x -> this.method13069(this.textField.getText()));
         this.method13071(var8);
@@ -78,7 +78,7 @@ public class BlockPicker extends InteractiveWidget {
                 }
             }
 
-            this.field20642.getButton().accept(new Class7260(0));
+            this.field20642.getContent().accept(new Class7260(0));
         });
     }
 

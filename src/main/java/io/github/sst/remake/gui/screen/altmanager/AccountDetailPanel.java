@@ -17,8 +17,8 @@ import java.util.List;
 
 public class AccountDetailPanel extends Widget {
     private Account currentAccount = null;
-    private final List<BanEntry> bans = new ArrayList<>();
-    private float field20815 = 0.0F;
+    private final List<BanEntry> banEntries = new ArrayList<>();
+    private float visibilityFade = 0.0F;
 
     public AccountDetailPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -27,7 +27,7 @@ public class AccountDetailPanel extends Widget {
     public void handleSelectedAccount(Account account) {
         this.currentAccount = account;
 
-        for (BanEntry ban : this.bans) {
+        for (BanEntry ban : this.banEntries) {
             this.queueChildRemoval(ban);
         }
 
@@ -45,7 +45,7 @@ public class AccountDetailPanel extends Widget {
                             this, accountBans.get(index).address, 40, 100 + index * (var14 + var7), this.width - 90, var14, var9
                     );
                     this.addToList(var10);
-                    this.bans.add(var10);
+                    this.banEntries.add(var10);
                     index++;
                 }
             }
@@ -57,8 +57,8 @@ public class AccountDetailPanel extends Widget {
     @Override
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
-        this.field20815 = (float) ((double) this.field20815 + (this.isSelfVisible() ? 0.33 : -0.33));
-        this.field20815 = Math.min(1.0F, Math.max(0.0F, this.field20815));
+        this.visibilityFade = (float) ((double) this.visibilityFade + (this.isSelfVisible() ? 0.33 : -0.33));
+        this.visibilityFade = Math.min(1.0F, Math.max(0.0F, this.visibilityFade));
 
         if (this.currentAccount == null) {
             int var4 = this.width - 30;

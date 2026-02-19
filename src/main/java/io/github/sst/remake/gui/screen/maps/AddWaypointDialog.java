@@ -60,9 +60,9 @@ public class AddWaypointDialog extends InteractiveWidget {
                 )
         );
         var8.onClick((var1x, var2x) -> this.method13132(this.field20729.getText(), this.method13130(), this.field20730.field21296));
-        this.addToList(this.field20729 = new TextField(this, "Name", 20, 7, this.width - 40, 60, TextField.field20741, "My waypoint", "My waypoint"));
+        this.addToList(this.field20729 = new TextField(this, "Name", 20, 7, this.width - 40, 60, TextField.DEFAULT_COLORS, "My waypoint", "My waypoint"));
         this.field20729.startFocus();
-        this.field20729.setRoundedThingy(false);
+        this.field20729.setUnderlineEnabled(false);
         this.addToList(this.field20730 = new WaypointColorSelector(this, "badgeSelect", 0, 86));
         this.addToList(
                 this.field20728 = new TextField(
@@ -72,12 +72,12 @@ public class AddWaypointDialog extends InteractiveWidget {
                         this.height - 44,
                         this.width - 100,
                         20,
-                        TextField.field20741,
+                        TextField.DEFAULT_COLORS,
                         var5.getX() + " " + var5.getZ(),
                         var5.getX() + " " + var5.getZ()
                 )
         );
-        this.field20728.setRoundedThingy(false);
+        this.field20728.setUnderlineEnabled(false);
         this.field20728.setFont(FontUtils.HELVETICA_LIGHT_18);
     }
 
