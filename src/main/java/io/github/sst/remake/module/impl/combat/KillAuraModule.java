@@ -14,6 +14,7 @@ import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.math.BasicTimer;
+import io.github.sst.remake.util.math.ClickDelayCalculator;
 import io.github.sst.remake.util.viaversion.AttackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -23,24 +24,32 @@ import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-@SuppressWarnings({"DataFlowIssue"})
+@SuppressWarnings({"ALL"})
 public class KillAuraModule extends Rotatable {
 
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
-    private final ModeSetting sortMode = new ModeSetting("Sort Mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
-    private final ModeSetting attackMode = new ModeSetting("Attack Mode", "Attack mode", 0, "Mouse", "Packet");
-    private final ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Rotation mode", 0, "NCP", "AAC", "Smooth", "LockView", "None");
+    private final ModeSetting sortMode = new ModeSetting("Sort mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
+    private final ModeSetting attackMode = new ModeSetting("Attack mode", "Attack mode", 0, "Mouse", "Packet");
+    private final ModeSetting rotationMode = new ModeSetting("Rotation mode", "Rotation mode", 0, "NCP", "AAC", "Smooth", "LockView", "None");
+    private final ModeSetting clickMode = new ModeSetting("Click mode", "Click mode", 0, "CPS", "1.9");
 
-    private final SliderSetting range = new SliderSetting("Range", "Working range", 4, 2.8f, 8, 0.01f);
+    private final SliderSetting aimRange = new SliderSetting("Aim range", "Rotation range", 6, 1, 8, 0.01f);
+    private final SliderSetting attackRange = new SliderSetting("Attack range", "Working range", 3.0f, 1, 8, 0.01f);
+    private final SliderSetting searchRange = new SliderSetting("Search range", "Search range (heavy!) (radius)", 9, 1, 15, 0.01f);
 
     private final SliderSetting minCPS = new SliderSetting("Min CPS", "Minimal attack cps", 11, 0, 20, 1);
     private final SliderSetting maxCPS = new SliderSetting("Max CPS", "Maximal attack cps", 14, 1, 20, 1);
-    private final SliderSetting hitChance = new SliderSetting("Hit Chance", "Chance of attacks landing (%)", 100, 25, 100, 1);
+    private final SliderSetting hitChance = new SliderSetting("Hit chance", "Chance of attacks landing (%)", 100, 25, 100, 1);
+
+    private final BooleanSetting delayPatterns = new BooleanSetting("Delay patterns", "Use delay patterns", false).hide(() -> !clickMode.value.equals("CPS"));
+    private final SliderSetting pattern1 = new SliderSetting("1st pattern", "First delay pattern value", 90, 0, 700, 10).hide(() -> !clickMode.value.equals("CPS") || !delayPatterns.value);
+    private final SliderSetting pattern2 = new SliderSetting("2nd pattern", "Second delay pattern value", 110, 0, 700, 10).hide(() -> !clickMode.value.equals("CPS") || !delayPatterns.value);
+    private final SliderSetting pattern3 = new SliderSetting("3rd pattern", "Third delay pattern value", 130, 0, 700, 10).hide(() -> !clickMode.value.equals("CPS") || !delayPatterns.value);
 
     private final BooleanSetting players = new BooleanSetting("Players", "Target players", true);
     private final BooleanSetting animals = new BooleanSetting("Animals", "Target animals", false);
@@ -48,31 +57,39 @@ public class KillAuraModule extends Rotatable {
     private final BooleanSetting invisibles = new BooleanSetting("Invisibles", "Target invisible entities", true);
 
     private final BooleanSetting raytrace = new BooleanSetting("Raytrace", "Raytrace to target", true);
-    private final BooleanSetting throughWalls = new BooleanSetting("Through walls", "Hit entities through walls", false);
-    private final BooleanSetting cooldown = new BooleanSetting("Cooldown", "Use 1.9+ attack cooldown", false);
+    private final BooleanSetting throughWalls = new BooleanSetting("Through walls", "Target entities behind walls", false);
     private final BooleanSetting noSwing = new BooleanSetting("No swing", "Skip swinging animation", false).hide(() -> !attackMode.value.equals("Packet"));
 
     private final BooleanSetting deathToggle = new BooleanSetting("Disable on death", "Toggle Aura on death", true);
 
-    private Entity target;
+    private final ClickDelayCalculator cpsCalculator = new ClickDelayCalculator(minCPS.value, maxCPS.value);
     private final List<LivingEntity> targets = new ArrayList<>();
-
     private final BasicTimer attackTimer = new BasicTimer();
+    private Entity target;
 
     public KillAuraModule() {
         super("KillAura", "Attacks nearby entities.", Category.COMBAT, 100);
+
+        minCPS.addListener(setting -> cpsCalculator.setMinCPS(setting.value));
+        maxCPS.addListener(setting -> cpsCalculator.setMaxCPS(setting.value));
+        delayPatterns.addListener(setting -> cpsCalculator.setPatternEnabled(setting.value));
+        pattern1.addListener(setting -> cpsCalculator.setDelayPattern1(setting.value));
+        pattern2.addListener(setting -> cpsCalculator.setDelayPattern2(setting.value));
+        pattern3.addListener(setting -> cpsCalculator.setDelayPattern3(setting.value));
     }
 
     @Override
     public void onEnable() {
         target = null;
         targets.clear();
+        attackTimer.reset();
     }
 
     @Override
     public void onDisable() {
         target = null;
         targets.clear();
+        attackTimer.reset();
     }
 
     @Subscribe
@@ -91,8 +108,6 @@ public class KillAuraModule extends Rotatable {
             return;
         }
 
-        if (event.isPost()) return;
-
         updateTargets();
     }
 
@@ -100,22 +115,21 @@ public class KillAuraModule extends Rotatable {
     public void onAction(ActionEvent event) {
         if (target == null) return;
 
-        double distance = client.player.distanceTo(target);
-        if (distance > range.value) return;
+        double maxRange = attackRange.value;
+        if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
+            return;
+        }
 
         if (!throughWalls.value && !client.player.canSee(target)) return;
 
         if (Math.random() * 100 > hitChance.value) return;
 
-        if (cooldown.value && client.player.getAttackCooldownProgress(0) >= 1) {
+        if (clickMode.value.equals("1.9") && client.player.getAttackCooldownProgress(0) >= 1) {
             attack(target);
             return;
         }
 
-        int cps = (int) ((minCPS.value + maxCPS.value) / 2);
-        long delay = 1000 / cps;
-
-        if (attackTimer.hasElapsed(delay, true)) {
+        if (attackTimer.hasElapsed(cpsCalculator.getClickDelay(), true)) {
             attack(target);
         }
     }
@@ -131,51 +145,91 @@ public class KillAuraModule extends Rotatable {
     }
 
     private void updateTargets() {
-        for (Entity entity : client.world.getEntities()) {
-            if (!entity.isAlive() || !entity.isAttackable() || !(entity instanceof LivingEntity)) continue;
-            if (entity == client.player) continue;
+        targets.clear();
+        target = null;
 
-            LivingEntity livingEntity = (LivingEntity) entity;
+        if (client.player == null || client.world == null) return;
 
-            if (players.value && entity instanceof PlayerEntity) {
-                targets.add(livingEntity);
+        double range = searchRange.value;
+
+        Box box = new Box(
+                client.player.getX() - range,
+                client.player.getY() - range,
+                client.player.getZ() - range,
+                client.player.getX() + range,
+                client.player.getY() + range,
+                client.player.getZ() + range
+        );
+
+        List<LivingEntity> entities = client.world.getEntitiesByClass(
+                LivingEntity.class,
+                box,
+                entity -> entity != client.player
+                        && entity.isAlive()
+                        && entity.isAttackable()
+        );
+
+        LivingEntity best = null;
+        double bestMetric = Double.POSITIVE_INFINITY;
+
+        for (LivingEntity livingEntity : entities) {
+            boolean eligible = false;
+
+            if (players.value && livingEntity instanceof PlayerEntity) {
+                eligible = true;
+            } else if (animals.value && (livingEntity instanceof AnimalEntity
+                    || livingEntity instanceof WaterCreatureEntity)) {
+                eligible = true;
+            } else if (monsters.value && (livingEntity instanceof MobEntity
+                    || livingEntity instanceof MerchantEntity
+                    || livingEntity instanceof Monster)) {
+                eligible = true;
+            } else if (invisibles.value && livingEntity.isInvisible()) {
+                eligible = true;
             }
 
-            if (animals.value && (entity instanceof AnimalEntity || entity instanceof WaterCreatureEntity)) {
-                targets.add(livingEntity);
+            if (!eligible) continue;
+
+            targets.add(livingEntity);
+
+            double metric;
+
+            switch (sortMode.value) {
+                case "Health":
+                    metric = livingEntity.getHealth();
+                    break;
+                case "Armor":
+                    metric = livingEntity.getArmor();
+                    break;
+                case "Angle":
+                    metric = livingEntity.getArmor();
+                    break;
+                default:
+                    metric = livingEntity.squaredDistanceTo(client.player);
+                    break;
             }
 
-            if (monsters.value && (entity instanceof MobEntity || entity instanceof MerchantEntity || entity instanceof Monster)) {
-                targets.add(livingEntity);
-            }
-
-            if (invisibles.value && entity.isInvisible()) {
-                targets.add(livingEntity);
+            if (metric < bestMetric) {
+                bestMetric = metric;
+                best = livingEntity;
             }
         }
 
-        Comparator<LivingEntity> comparator;
-
-        switch (sortMode.value) {
-            case "Health":
-                comparator = Comparator.comparing(LivingEntity::getHealth);
-                break;
-            case "Armor":
-                comparator = Comparator.comparing(LivingEntity::getArmor);
-                break;
-            default:
-                comparator = Comparator.comparing(e -> e.squaredDistanceTo(client.player));
-                break;
-        }
-
-        targets.sort(comparator);
-
-        target = targets.get(0);
+        target = best;
     }
 
     @Override
     public Rotation getRotations() {
         if (target == null) return null;
+
+        double maxRange = aimRange.value;
+        if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
+            return null;
+        }
+
+        if (!throughWalls.value && !client.player.canSee(target)) {
+            return null;
+        }
 
         switch (rotationMode.value) {
             case "LockView":
