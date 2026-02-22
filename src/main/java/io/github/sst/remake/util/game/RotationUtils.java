@@ -16,17 +16,27 @@ public class RotationUtils implements IMinecraft {
 
         double dist = Math.hypot(dX, dZ);
 
-        float yaw = (float) Math.toDegrees(Math.atan2(dZ, dX)) - 90f;
+        float yaw = (float) Math.toDegrees(Math.atan2(dZ, dX)) - 90.0F;
         float pitch = (float) -Math.toDegrees(Math.atan2(dY, dist));
 
         return new Rotation(yaw, pitch);
     }
 
-    public static double gcd() {
-        double f = client.options.mouseSensitivity * (double)0.6f + (double)0.2f;
-        double g = f * f * f * 8.0;
+    public static Rotation applyGcdFix(float currentYaw, float currentPitch, float targetYaw, float targetPitch) {
+        float f = (float) (client.options.mouseSensitivity * 0.6f + 0.2f);
+        float gcd = f * f * f * 1.2f;
 
-        return g;
+        float deltaYaw = targetYaw - currentYaw;
+        float deltaPitch = targetPitch - currentPitch;
+
+        // Mimic how MC calculates mouse movement steps
+        int stepsYaw = Math.round(deltaYaw / gcd);
+        int stepsPitch = Math.round(deltaPitch / gcd);
+
+        float fixedYaw = currentYaw + (stepsYaw * gcd);
+        float fixedPitch = currentPitch + (stepsPitch * gcd);
+
+        return new Rotation(normalizeYaw(fixedYaw), normalizePitch(fixedPitch));
     }
 
     public static float normalizeYaw(float yaw) {
