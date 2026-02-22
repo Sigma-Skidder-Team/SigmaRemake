@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.sst.remake.util.http.SkinUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import org.newdawn.slick.opengl.texture.Texture;
 import java.awt.image.BufferedImage;
@@ -24,6 +25,7 @@ public class Account {
     public final ArrayList<AccountBan> bans = new ArrayList<>();
 
     private transient Thread updateThread;
+    private transient Thread headUpdateThread;
     public transient BufferedImage skin;
     public transient Texture head;
 
@@ -61,8 +63,22 @@ public class Account {
     }
 
     public Texture setHeadTexture() {
-        if (this.head == null) {
-            this.head = SkinUtils.getHead(getFormattedUUID());
+        if (this.head == null && this.headUpdateThread == null) {
+            this.headUpdateThread = new Thread(() -> {
+                byte[] data = SkinUtils.getHeadBytes(getFormattedUUID(), 75);
+                if (data == null) {
+                    this.headUpdateThread = null;
+                    return;
+                }
+                MinecraftClient.getInstance().execute(() -> {
+                    if (this.head == null) {
+                        this.head = SkinUtils.loadHeadTexture(data);
+                    }
+                    this.headUpdateThread = null;
+                });
+            }, "AltHeadLoader-" + this.name);
+            this.headUpdateThread.setDaemon(true);
+            this.headUpdateThread.start();
         }
 
         return this.head != null ? this.head : Resources.STEVE_HEAD;
