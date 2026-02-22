@@ -25,6 +25,7 @@ public class Client implements IMinecraft {
     public final NotificationManager notificationManager = new NotificationManager();
     public final WaypointManager waypointManager = new WaypointManager();
     public final MusicManager musicManager = new MusicManager();
+    public final RotationManager rotationManager = new RotationManager();
 
     public boolean loaded = false;
 
@@ -37,6 +38,7 @@ public class Client implements IMinecraft {
         hudManager.init();
         accountManager.init();
         moduleManager.init();
+        rotationManager.init();
         bindManager.init();
         waypointManager.init();
         notificationManager.init();
@@ -53,6 +55,7 @@ public class Client implements IMinecraft {
         configManager.shutdown();
         accountManager.shutdown();
         bindManager.shutdown();
+        rotationManager.shutdown();
         moduleManager.shutdown();
         textureManager.shutdown();
         hudManager.shutdown();

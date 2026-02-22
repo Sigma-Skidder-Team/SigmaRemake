@@ -3,7 +3,8 @@
   "package": "io.github.sst.remake.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinClientConnection"
+    "MixinClientConnection",
+    "MixinEntity"
   ],
   "injectors": {
     "defaultRequire": 1

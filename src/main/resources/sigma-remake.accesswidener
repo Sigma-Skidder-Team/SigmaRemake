@@ -40,3 +40,6 @@ accessible field net/minecraft/world/chunk/WorldChunk loadedToWorld Z
 
 accessible field net/minecraft/client/gui/hud/InGameHud debugHud Lnet/minecraft/client/gui/hud/DebugHud;
 accessible method net/minecraft/client/gui/hud/DebugHud getRightText ()Ljava/util/List;
+
+accessible method net/minecraft/client/MinecraftClient doAttack ()V
+accessible method net/minecraft/client/MinecraftClient doItemUse ()V
