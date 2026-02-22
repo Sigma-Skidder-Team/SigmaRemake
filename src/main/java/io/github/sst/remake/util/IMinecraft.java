@@ -9,11 +9,11 @@ public interface IMinecraft {
     MinecraftClient client = MinecraftClient.getInstance();
 
 
-    static void addChatMessage(String text) {
+    default void addChatMessage(String text) {
         client.inGameHud.getChatHud().addMessage(Text.of(text));
     }
 
-    static void sendChatMessage(String text) {
+    default void sendChatMessage(String text) {
         client.getNetworkHandler().sendPacket(new ChatMessageC2SPacket(text));
     }
 
