@@ -25,6 +25,9 @@ import org.newdawn.slick.opengl.texture.TextureImpl;
 import java.nio.ByteBuffer;
 
 public class RenderUtils implements IMinecraft {
+    private static int dynamicPixelTextureId = -1;
+    private static int dynamicPixelTextureWidth = -1;
+    private static int dynamicPixelTextureHeight = -1;
 
     private static float getScaleFactor() {
         return Client.INSTANCE.screenManager.scaleFactor;
@@ -970,6 +973,14 @@ public class RenderUtils implements IMinecraft {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
+        int previousTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        if (dynamicPixelTextureId == -1) {
+            dynamicPixelTextureId = GL11.glGenTextures();
+            dynamicPixelTextureWidth = -1;
+            dynamicPixelTextureHeight = -1;
+        }
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, dynamicPixelTextureId);
+
         GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
         GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
         GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
@@ -978,7 +989,14 @@ public class RenderUtils implements IMinecraft {
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, (int) textureWidth, (int) textureHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        if (dynamicPixelTextureWidth != (int) textureWidth || dynamicPixelTextureHeight != (int) textureHeight) {
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, (int) textureWidth, (int) textureHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+            dynamicPixelTextureWidth = (int) textureWidth;
+            dynamicPixelTextureHeight = (int) textureHeight;
+        } else {
+            GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, (int) textureWidth, (int) textureHeight, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+        }
 
         float u = textureOffsetX / textureWidth;
         float v = textureOffsetY / textureHeight;
@@ -1000,6 +1018,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glVertex2f(x + width, y);
         GL11.glEnd();
 
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, previousTexture);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
 
