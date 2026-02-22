@@ -3,6 +3,7 @@ package io.github.sst.remake.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.State;
+import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
@@ -117,6 +118,11 @@ public abstract class MixinMinecraftClient {
     @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))
     private int modifyFramerateLimit(int original) {
         return (original == 60) ? 120 : original;
+    }
+
+    @Inject(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", shift = At.Shift.BEFORE))
+    private void injectHandleInputs(CallbackInfo ci) {
+        new ActionEvent().call();
     }
 
 }
