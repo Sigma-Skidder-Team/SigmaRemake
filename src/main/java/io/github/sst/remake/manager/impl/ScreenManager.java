@@ -36,7 +36,7 @@ public class ScreenManager extends Manager implements IMinecraft {
 
     @Subscribe
     public void onRunLoop(RunLoopEvent event) {
-        if (!event.pre && this.currentScreen != null) {
+        if (event.isPost() && this.currentScreen != null) {
             this.mousePositions[0] = Math.max(0, Math.min(client.getWindow().getWidth(), (int) client.mouse.getX()));
             this.mousePositions[1] = Math.max(0, Math.min(client.getWindow().getHeight(), (int) client.mouse.getY()));
 

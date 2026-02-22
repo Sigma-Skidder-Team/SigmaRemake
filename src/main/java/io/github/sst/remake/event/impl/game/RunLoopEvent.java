@@ -1,11 +1,6 @@
 package io.github.sst.remake.event.impl.game;
 
-import io.github.sst.remake.event.Event;
+import io.github.sst.remake.event.Statable;
 
-public class RunLoopEvent extends Event {
-    public boolean pre = true;
-
-    public RunLoopEvent(boolean pre) {
-        this.pre = pre;
-    }
+public class RunLoopEvent extends Statable {
 }

@@ -2,6 +2,7 @@ package io.github.sst.remake.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.data.bus.State;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screen.SplashScreen;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -21,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
+
+    @Unique
+    private RunLoopEvent runLoopEvent;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerReloader(Lnet/minecraft/resource/ResourceReloader;)V", ordinal = 16))
     private void injectStart(CallbackInfo ci) {
@@ -39,12 +44,14 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
     private void injectRun(CallbackInfo ci) {
-        new RunLoopEvent(true).call();
+        runLoopEvent = new RunLoopEvent();
+        runLoopEvent.call();
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
     private void injectAfterRun(CallbackInfo ci) {
-        new RunLoopEvent(false).call();
+        runLoopEvent.state = State.POST;
+        runLoopEvent.call();
     }
 
     @Inject(method = "onResolutionChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;resize(Lnet/minecraft/client/MinecraftClient;II)V", shift = At.Shift.AFTER))
