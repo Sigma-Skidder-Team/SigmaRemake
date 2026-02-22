@@ -6,7 +6,7 @@ import io.github.sst.remake.gui.framework.widget.internal.VerticalScrollThumb;
 import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.gui.framework.layout.OffsetProvider;
 import io.github.sst.remake.util.io.GsonUtils;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -16,7 +16,7 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
     public int scrollOffset;
     public float fadeAlpha;
     private final VerticalScrollThumb thumb;
-    public TimerUtils scrollActivityTimer = new TimerUtils();
+    public TogglableTimer scrollActivityTimer = new TogglableTimer();
 
     public VerticalScrollBar(GuiComponent var1, int var2) {
         super(var1, "verticalScrollBar", var1.getWidth() - var2 - 5, 5, var2, var1.getHeight() - 10, false);

@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.framework.core;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.gui.framework.event.DragListener;
 import io.github.sst.remake.gui.framework.event.DragHandler;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
@@ -22,7 +22,7 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public boolean enableHoldToDrag = true;
     public boolean enableMoveThresholdToDrag = true;
     public boolean enableImmediateDrag = false;
-    public final TimerUtils timerUtils = new TimerUtils();
+    public final TogglableTimer togglableTimer = new TogglableTimer();
     public int dragStartDelayMs = 300;
     public int dragStartMoveThresholdPx = 2;
     private final List<DragListener> dragListeners = new ArrayList<>();
@@ -69,7 +69,7 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public boolean onMouseDown(int mouseX, int mouseY, int mouseButton) {
         if (!super.onMouseDown(mouseX, mouseY, mouseButton)) {
             if (this.isDraggable()) {
-                this.timerUtils.start();
+                this.togglableTimer.start();
                 this.dragStartMouseX = mouseX;
                 this.dragStartMouseY = mouseY;
                 this.dragOffsetX = this.dragStartMouseX - this.getAbsoluteX();
@@ -86,8 +86,8 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public void onMouseRelease(int mouseX, int mouseY, int mouseButton) {
         super.onMouseRelease(mouseX, mouseY, mouseButton);
         if (this.isDraggable()) {
-            this.timerUtils.stop();
-            this.timerUtils.reset();
+            this.togglableTimer.stop();
+            this.togglableTimer.reset();
         }
 
         this.setDragging(false);
@@ -97,7 +97,7 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
     public void handleMovementAndCheckBoundaries(int mouseX, int mouseY) {
         boolean var5 = this.dragging;
         if (!this.isDragging() && this.isDraggable()) {
-            boolean var6 = this.enableHoldToDrag && this.timerUtils.getElapsedTime() >= (long) this.dragStartDelayMs;
+            boolean var6 = this.enableHoldToDrag && this.togglableTimer.getElapsedTime() >= (long) this.dragStartDelayMs;
             boolean var7 = this.enableMoveThresholdToDrag
                     && this.isMouseDownOverComponent
                     && (Math.abs(this.dragStartMouseX - mouseX) > this.dragStartMoveThresholdPx || Math.abs(this.dragStartMouseY - mouseY) > this.dragStartMoveThresholdPx);
@@ -146,8 +146,8 @@ public class Widget extends GuiComponent implements DragHandler, IMinecraft {
         }
 
         if (this.isDragging() && !var5) {
-            this.timerUtils.stop();
-            this.timerUtils.reset();
+            this.togglableTimer.stop();
+            this.togglableTimer.reset();
         }
     }
 

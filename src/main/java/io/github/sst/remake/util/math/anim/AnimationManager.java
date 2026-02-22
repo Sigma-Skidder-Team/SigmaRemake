@@ -1,14 +1,14 @@
 package io.github.sst.remake.util.math.anim;
 
 import io.github.sst.remake.util.math.RandomIntGenerator;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import lombok.Getter;
 
 public class AnimationManager {
     @Getter
     private float currentValue;
     private final RandomIntGenerator random = new RandomIntGenerator();
-    private final TimerUtils timer = new TimerUtils();
+    private final TogglableTimer timer = new TogglableTimer();
     private long nextInterval;
     private boolean isAnimating = false;
     private float targetValue = -1.0F;

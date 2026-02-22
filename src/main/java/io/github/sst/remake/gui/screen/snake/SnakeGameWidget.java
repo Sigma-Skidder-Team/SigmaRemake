@@ -4,14 +4,14 @@ import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ScreenDimension;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.lwjgl.opengl.GL11;
 
 public class SnakeGameWidget extends Widget implements IMinecraft {
     public SnakeGameLogic gameLogic;
-    public TimerUtils timer = new TimerUtils();
+    public TogglableTimer timer = new TogglableTimer();
     public int cellSize;
 
     public SnakeGameWidget(GuiComponent parent, String name, int x, int y, int width, int height, int cellSize) {

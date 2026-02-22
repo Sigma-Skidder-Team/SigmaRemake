@@ -2,7 +2,7 @@ package io.github.sst.remake.gui.framework.widget.internal;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -10,7 +10,7 @@ import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
 
 public class LoadingIndicator extends Widget {
-    public TimerUtils rotationTimer = new TimerUtils();
+    public TogglableTimer rotationTimer = new TogglableTimer();
     public float hoverAlpha = 0.0F;
 
     public LoadingIndicator(GuiComponent parent, String text, int x, int y, int width, int height) {

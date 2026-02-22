@@ -2,7 +2,7 @@ package io.github.sst.remake.util.math;
 
 import lombok.Getter;
 
-public class TimerUtils {
+public class TogglableTimer {
     private long systemCurrentTime = 0L;
     private long currentTime = 0L;
 

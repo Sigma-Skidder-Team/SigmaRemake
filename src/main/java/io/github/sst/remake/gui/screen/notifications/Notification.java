@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.notifications;
 
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.texture.Texture;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Notification {
     private static final int DEFAULT_SHOW_TIME = 4000;
-    public final TimerUtils timer = new TimerUtils();
+    public final TogglableTimer timer = new TogglableTimer();
 
     public final String title;
     public String desc;

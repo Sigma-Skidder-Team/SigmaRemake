@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import io.github.sst.remake.util.math.TimerUtils;
+import io.github.sst.remake.util.math.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -36,7 +36,7 @@ public class TextField extends Widget implements IMinecraft {
     private boolean isSelectingWithMouse;
     private boolean censorText = false;
     private String censorChar = Character.toString('·');
-    private final TimerUtils cursorBlinkTimer = new TimerUtils();
+    private final TogglableTimer cursorBlinkTimer = new TogglableTimer();
     private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
     private boolean underlineEnabled = true;
 
