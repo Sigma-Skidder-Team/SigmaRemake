@@ -18,6 +18,7 @@
     "MixinGameRenderer",
     "MixinInGameHud",
     "MixinKeyboard",
+    "MixinLivingEntityRenderer",
     "MixinMinecraftClient",
     "MixinMouse",
     "MixinWindow"
