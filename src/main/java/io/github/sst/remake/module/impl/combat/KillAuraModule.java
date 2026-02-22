@@ -35,7 +35,7 @@ public class KillAuraModule extends Rotatable {
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
     private final ModeSetting sortMode = new ModeSetting("Sort mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
     private final ModeSetting attackMode = new ModeSetting("Attack mode", "Attack mode", 0, "Mouse", "Packet");
-    private final ModeSetting rotationMode = new ModeSetting("Rotation mode", "Rotation mode", 0, "NCP", "AAC", "Smooth", "LockView", "None");
+    private final ModeSetting rotationMode = new ModeSetting("Rotation mode", "Rotation mode", 0, "NCP", "Smooth", "LockView", "None");
     private final ModeSetting clickMode = new ModeSetting("Click mode", "Click mode", 0, "CPS", "1.9");
 
     private final SliderSetting aimRange = new SliderSetting("Aim range", "Rotation range", 6, 1, 8, 0.01f);
@@ -80,16 +80,12 @@ public class KillAuraModule extends Rotatable {
 
     @Override
     public void onEnable() {
-        target = null;
-        targets.clear();
-        attackTimer.reset();
+        reset();
     }
 
     @Override
     public void onDisable() {
-        target = null;
-        targets.clear();
-        attackTimer.reset();
+        reset();
     }
 
     @Subscribe
@@ -145,8 +141,7 @@ public class KillAuraModule extends Rotatable {
     }
 
     private void updateTargets() {
-        targets.clear();
-        target = null;
+        reset();
 
         if (client.player == null || client.world == null) return;
 
@@ -198,12 +193,24 @@ public class KillAuraModule extends Rotatable {
                 case "Health":
                     metric = livingEntity.getHealth();
                     break;
+
                 case "Armor":
                     metric = livingEntity.getArmor();
                     break;
+
                 case "Angle":
-                    metric = livingEntity.getArmor();
+                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.yaw);
+                    double distSq = livingEntity.squaredDistanceTo(client.player);
+                    metric = angle * 1_000_000.0 + distSq; // big weight to angle, distance breaks ties
                     break;
+
+                case "Prev Range":
+                    Entity anchor = target != null ? target : client.player;
+                    float dist = anchor.distanceTo(livingEntity);
+                    metric = dist;
+                    break;
+
+                case "Range":
                 default:
                     metric = livingEntity.squaredDistanceTo(client.player);
                     break;
@@ -231,15 +238,33 @@ public class KillAuraModule extends Rotatable {
             return null;
         }
 
-        switch (rotationMode.value) {
-            case "LockView":
-                Rotation basicRotations = RotationUtils.getBasicRotations(target);
-                client.player.pitch = basicRotations.pitch;
-                client.player.yaw = basicRotations.yaw;
-                return basicRotations;
+        Rotation rotations = RotationUtils.getRotationsSmart(target, raytrace.value);
 
+        switch (rotationMode.value) {
+            case "None":
+                return new Rotation(client.player.yaw, client.player.pitch);
+
+            case "LockView":
+                client.player.pitch = rotations.pitch;
+                client.player.yaw = rotations.yaw;
+                return rotations;
+
+            case "Smooth":
+                float deltaYaw = RotationUtils.wrapDegrees2(client.player.yaw, rotations.yaw);
+                float deltaPitch = rotations.pitch - client.player.pitch;
+
+                rotations.yaw = (float) ((double) rotations.yaw + (double) (deltaYaw * 2.0F) / 5.0);
+                rotations.pitch = (float) ((double) rotations.pitch + (double) (deltaPitch * 2.0F) / 5.0);
+                return rotations;
+
+            case "NCP":
             default:
-                return RotationUtils.getBasicRotations(target);
+                return rotations;
         }
+    }
+
+    private void reset() {
+        target = null;
+        targets.clear();
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.util.math.Color;
@@ -1208,5 +1209,97 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawRect(float x, float y, float width, float height, int color) {
         drawColoredRect(x, y, x + width, y + height, color);
+    }
+
+    public static void drawTargetIndicatorRing(java.awt.Color baseColor, Entity target, float progress) {
+        GL11.glPushMatrix();
+        GL11.glEnable(2848);
+        GL11.glDisable(3553);
+        GL11.glEnable(32925);
+        GL11.glEnable(2929);
+        GL11.glLineWidth(1.4F);
+
+        double tickDelta = client.getTickDelta();
+        if (!target.isAlive()) {
+            tickDelta = 0.0;
+        }
+
+        GL11.glTranslated(
+                target.prevX + (target.getX() - target.prevX) * tickDelta,
+                target.prevY + (target.getY() - target.prevY) * tickDelta,
+                target.prevZ + (target.getZ() - target.prevZ) * tickDelta);
+        GL11.glTranslated(
+                -client.gameRenderer.getCamera().getPos().getX(),
+                -client.gameRenderer.getCamera().getPos().getY(),
+                -client.gameRenderer.getCamera().getPos().getZ());
+        GL11.glEnable(32823);
+        GL11.glEnable(3008);
+        GL11.glEnable(3042);
+        GL11.glAlphaFunc(519, 0.0F);
+
+        long animationPeriodMs = 1800;
+        float phase = (float) (System.currentTimeMillis() % animationPeriodMs) / (float) animationPeriodMs;
+        boolean reverseGradient = phase > 0.5F;
+
+        phase = !reverseGradient ? phase * 2.0F : 1.0F - phase * 2.0F % 1.0F;
+
+        GL11.glTranslatef(0.0F, (target.getHeight() + 0.4F) * phase, 0.0F);
+        float pulse = (float) Math.sin((double) phase * Math.PI);
+        drawAnimatedRing(baseColor, reverseGradient, 0.45F * pulse, 0.6F, 0.35F * pulse, progress);
+        GL11.glPushMatrix();
+        GL11.glTranslated(
+                client.gameRenderer.getCamera().getPos().getX(),
+                client.gameRenderer.getCamera().getPos().getY(),
+                client.gameRenderer.getCamera().getPos().getZ());
+        GL11.glPopMatrix();
+        GL11.glEnable(3553);
+        GL11.glDisable(32925);
+        GL11.glDisable(2848);
+        GL11.glPopMatrix();
+    }
+
+    public static void drawAnimatedRing(java.awt.Color baseColor, boolean reverseGradient, float ringHeight, float ringRadius, float ringAlphaScale, float progressAlpha) {
+        RenderSystem.shadeModel(7425);
+        GL11.glDisable(32823);
+        GL11.glDisable(2929);
+        GL11.glBegin(5);
+        int angleStep = (int) (360.0F / (40.0F * ringRadius));
+        float red = (float) baseColor.getRed() / 255.0F;
+        float green = (float) baseColor.getGreen() / 255.0F;
+        float blue = (float) baseColor.getBlue() / 255.0F;
+
+        for (int angle = 0; angle <= 360 + angleStep; angle += angleStep) {
+            int clampedAngle = angle;
+            if (angle > 360) {
+                clampedAngle = 0;
+            }
+
+            double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
+            double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
+            GL11.glColor4f(red, green, blue, !reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
+            GL11.glVertex3d(x, 0.0, z);
+            GL11.glColor4f(red, green, blue, reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
+            GL11.glVertex3d(x, ringHeight, z);
+        }
+
+        GL11.glEnd();
+        GL11.glLineWidth(2.2F);
+        GL11.glBegin(3);
+
+        for (int angle = 0; angle <= 360 + angleStep; angle += angleStep) {
+            int clampedAngle = angle;
+            if (angle > 360) {
+                clampedAngle = 0;
+            }
+
+            double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
+            double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
+            GL11.glColor4f(red, green, blue, (0.5F + 0.5F * ringAlphaScale) * progressAlpha);
+            GL11.glVertex3d(x, !reverseGradient ? (double) ringHeight : 0.0, z);
+        }
+
+        GL11.glEnd();
+        GL11.glEnable(2929);
+        RenderSystem.shadeModel(7424);
     }
 }
