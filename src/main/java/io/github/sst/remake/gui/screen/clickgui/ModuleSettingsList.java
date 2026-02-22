@@ -1,18 +1,15 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
-import io.github.sst.remake.gui.framework.layout.ContentSize;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
-import io.github.sst.remake.gui.framework.widget.Checkbox;
-import io.github.sst.remake.gui.framework.widget.Dropdown;
-import io.github.sst.remake.gui.framework.widget.Text;
-import io.github.sst.remake.gui.framework.widget.TextField;
+import io.github.sst.remake.gui.framework.layout.ContentSize;
+import io.github.sst.remake.gui.framework.widget.*;
 import io.github.sst.remake.gui.screen.clickgui.block.BlockPicker;
 import io.github.sst.remake.gui.screen.clickgui.color.ColorPicker;
 import io.github.sst.remake.gui.screen.clickgui.math.BezierCurve;
 import io.github.sst.remake.gui.screen.clickgui.slider.SettingSlider;
-import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
+import io.github.sst.remake.setting.SettingType;
 import io.github.sst.remake.setting.impl.*;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -21,272 +18,284 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class ModuleSettingsList extends ScrollablePanel {
-    private final Module module;
-    private int labelWidth = 200;
-    private final HashMap<Text, Setting> labelToSetting = new HashMap<>();
-    //public HashMap<Module, GuiComponent> field21224 = new HashMap<>();
+    private static final int LABEL_WIDTH = 200;
+
     private final AnimationUtils tooltipFade = new AnimationUtils(114, 114);
     private String hoveredSettingDescription = "";
     private String hoveredSettingName = "";
 
-    public ModuleSettingsList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, Module module) {
-        super(var1, var2, var3, var4, var5, var6);
+    private final HashMap<Text, Setting<?>> labelToSetting = new HashMap<>();
+    private final List<SettingEntry> settingEntries = new ArrayList<>();
+    private GuiComponent bottomSpacer;
+    private final Module module;
+
+    public ModuleSettingsList(GuiComponent parent, String name, int x, int y, int width, int height, Module module) {
+        super(parent, name, x, y, width, height);
         this.module = module;
+
         this.setListening(false);
         this.addSettings();
     }
 
-    private int addSetting(GuiComponent panel, Setting setting, int var3, int yOffset, int var5) {
+    private int addSetting(GuiComponent panel, Setting<?> setting, int x, int yOffset, int offset) {
         switch (setting.settingType) {
             case CHECKBOX:
-                Text checkBoxText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
-                Checkbox checkBox = new Checkbox(panel, setting.name + "checkbox", panel.getWidth() - 24 - var5, yOffset + 6, 24, 24);
-                this.labelToSetting.put(checkBoxText, setting);
-                checkBox.setValue((Boolean) setting.value, false);
-                setting.addListener(var1x -> {
-                    if (checkBox.getValue() != (Boolean) var1x.value) {
-                        checkBox.setValue((Boolean) var1x.value, false);
+                BooleanSetting bS = (BooleanSetting) setting;
+
+                Text checkBoxText = new Text(panel, bS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, bS.name);
+                Checkbox checkBox = new Checkbox(panel, bS.name + "checkbox", panel.getWidth() - 24 - offset, yOffset + 6, 24, 24);
+
+                this.labelToSetting.put(checkBoxText, bS);
+
+                checkBox.setValue(bS.value, false);
+                bS.addListener(sett -> {
+                    BooleanSetting updated = (BooleanSetting) sett;
+                    if (checkBox.getValue() != updated.value) {
+                        checkBox.setValue(updated.value, false);
                     }
                 });
-                checkBox.onPress(element -> setting.setValue(((Checkbox) element).getValue()));
-                checkBox.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 24 - var5));
+
+                checkBox.onPress(widget -> bS.setValue(((Checkbox) widget).getValue()));
+                checkBox.addWidthSetter((comp1, comp2) -> comp1.setX(comp2.getWidth() - 24 - offset));
                 panel.addToList(checkBoxText);
                 panel.addToList(checkBox);
-                yOffset += 24 + var5;
+                yOffset += 24 + offset;
                 break;
+
             case SLIDER:
-                Text sliderName = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
-                this.labelToSetting.put(sliderName, setting);
-                SliderSetting sliderSetting = (SliderSetting) setting;
-                SettingSlider slider = new SettingSlider(panel, setting.name + "slider", panel.getWidth() - 126 - var5, yOffset + 6, 126, 24);
+                SliderSetting sS = (SliderSetting) setting;
+
+                Text sliderName = new Text(panel, sS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, sS.name);
+                this.labelToSetting.put(sliderName, sS);
+                SettingSlider slider = new SettingSlider(panel, sS.name + "slider", panel.getWidth() - 126 - offset, yOffset + 6, 126, 24);
                 slider.getHandle().setFont(FontUtils.HELVETICA_LIGHT_14);
-                slider.setText(Float.toString((Float) setting.value));
-                slider.setValue(SettingSlider.normalizeValue(sliderSetting.min, sliderSetting.max, sliderSetting.value), false);
+                slider.setText(Float.toString(sS.value));
+                slider.setValue(SettingSlider.normalizeValue(sS.min, sS.max, sS.value), false);
                 slider.setSnapValue(-1.0F);
-                int var13 = sliderSetting.getPlaces();
-                sliderSetting.addListener(
-                        lisSetting -> {
-                            if (SettingSlider.denormalizeValue(slider.getValue(), sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13)
-                                    != (Float) lisSetting.value) {
-                                slider.setText(Float.toString((Float) lisSetting.value));
-                                slider.setValue(SettingSlider.normalizeValue(sliderSetting.min, sliderSetting.max, lisSetting.value), false);
-                            }
-                        }
-                );
-                slider.onPress(widget -> {
-                    float var7 = ((SettingSlider) widget).getValue();
-                    float var8x = SettingSlider.denormalizeValue(var7, sliderSetting.min, sliderSetting.max, sliderSetting.increment, var13);
-                    if (var8x != (Float) setting.value) {
-                        slider.setText(Float.toString(var8x));
-                        setting.setValue(var8x);
+                sS.addListener(sett -> {
+                    SliderSetting updated = (SliderSetting) sett;
+                    float newValue = SettingSlider.denormalizeValue(
+                            slider.getValue(),
+                            updated.min,
+                            updated.max,
+                            updated.increment,
+                            updated.getPlaces()
+                    );
+                    if (newValue != updated.value) {
+                        slider.setText(Float.toString(updated.value));
+                        slider.setValue(SettingSlider.normalizeValue(updated.min, updated.max, updated.value), false);
                     }
                 });
-                slider.addWidthSetter((var1x, var2x) -> var1x.setX(var2x.getWidth() - 126 - var5));
+                slider.onPress(widget -> {
+                    float sliderValue = ((SettingSlider) widget).getValue();
+                    float newValue = SettingSlider.denormalizeValue(sliderValue, sS.min, sS.max, sS.increment, sS.getPlaces());
+                    if (newValue != sS.value) {
+                        slider.setText(Float.toString(newValue));
+                        sS.setValue(newValue);
+                    }
+                });
+                slider.addWidthSetter((comp1, comp2) -> comp1.setX(comp2.getWidth() - 126 - offset));
                 panel.addToList(sliderName);
                 panel.addToList(slider);
-                yOffset += 24 + var5;
+                yOffset += 24 + offset;
                 break;
+
             case TEXT_INPUT:
-                int var19 = 114;
-                int var27 = 27;
-                Text textInputText;
-                this.addToList(
-                        textInputText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, var27, Text.defaultColorHelper, setting.name)
-                );
-                this.labelToSetting.put(textInputText, setting);
-                TextField input;
-                this.addToList(
-                        input = new TextField(
-                                panel,
-                                setting.name + "txt",
-                                panel.getWidth() - var5 - var19,
-                                yOffset + var27 / 4 - 1,
-                                var19,
-                                var27,
-                                TextField.DEFAULT_COLORS,
-                                (String) setting.value
-                        )
-                );
+                TextInputSetting tIS = (TextInputSetting) setting;
+                Text textInputText = new Text(panel, tIS.name + "lbl", x, yOffset, LABEL_WIDTH, 27, Text.defaultColorHelper, tIS.name);
+                panel.addToList(textInputText);
+                this.labelToSetting.put(textInputText, tIS);
+                TextField input = new TextField(panel, tIS.name + "txt", panel.getWidth() - offset - 114, yOffset + 27 / 4 - 1, 114, 27, TextField.DEFAULT_COLORS, tIS.value);
+                panel.addToList(input);
                 input.setFont(FontUtils.HELVETICA_LIGHT_18);
-                input.addChangeListener(var1x -> setting.setValue(var1x.getText()));
-                setting.addListener(ignored -> {
-                    if (input.getText() != setting.value) {
-                        input.setText((String) setting.value);
+                input.addChangeListener(textField -> tIS.setValue(textField.getText()));
+
+                tIS.addListener(sett -> {
+                    TextInputSetting updated = (TextInputSetting) sett;
+                    if (!input.getText().equals(updated.value)) {
+                        input.setText(updated.value);
                     }
                 });
-                yOffset += var27 + var5;
+
+                yOffset += 27 + offset;
                 break;
+
             case DROPDOWN:
-                Text dropdownText = new Text(panel, setting.name + "lbl", var3, yOffset + 2, this.labelWidth, 27, Text.defaultColorHelper, setting.name);
-                Dropdown dropdown = new Dropdown(
-                        panel,
-                        setting.name + "btn",
-                        panel.getWidth() - var5,
-                        yOffset + 6 - 1,
-                        123,
-                        27,
-                        ((ModeSetting) setting).modes,
-                        ((ModeSetting) setting).getModeIndex()
-                );
-                this.labelToSetting.put(dropdownText, setting);
-                setting.addListener(ignored -> {
-                    if (dropdown.getIndex() != ((ModeSetting) setting).getModeIndex()) {
-                        dropdown.setIndex(((ModeSetting) setting).getModeIndex());
+                ModeSetting mS = (ModeSetting) setting;
+                Text dropdownText = new Text(panel, mS.name + "lbl", x, yOffset + 2, LABEL_WIDTH, 27, Text.defaultColorHelper, mS.name);
+                Dropdown dropdown = new Dropdown(panel, mS.name + "btn", panel.getWidth() - offset, yOffset + 6 - 1, 123, 27, mS.modes, mS.getModeIndex());
+                this.labelToSetting.put(dropdownText, mS);
+
+                mS.addListener(sett -> {
+                    ModeSetting updated = (ModeSetting) sett;
+                    if (dropdown.getIndex() != updated.getModeIndex()) {
+                        dropdown.setIndex(updated.getModeIndex());
                     }
                 });
                 dropdown.onPress(widget -> {
-                    ((ModeSetting) setting).setModeByIndex(((Dropdown) widget).getIndex());
-                    dropdown.setIndex(((ModeSetting) setting).getModeIndex());
+                    mS.setModeByIndex(((Dropdown) widget).getIndex());
+                    dropdown.setIndex(mS.getModeIndex());
                 });
-                dropdown.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 123 - var5));
+
+                dropdown.addWidthSetter((comp1, comp2) -> comp1.setX(panel.getWidth() - 123 - offset));
                 panel.addToList(dropdownText);
                 panel.addToList(dropdown);
-                yOffset += 27 + var5;
+                yOffset += 27 + offset;
                 break;
+
             case GROUP:
-                GuiComponent view = new GuiComponent(panel, setting.name + "view", var3, yOffset, panel.getWidth(), 0);
+                GuiComponent view = new GuiComponent(panel, setting.name + "view", x, yOffset, panel.getWidth(), 0);
                 int yOffset2 = 0;
 
                 for (Setting<?> settings : ((GroupSetting) setting).subSettings) {
-                    yOffset2 = this.addSetting(view, settings, 0, yOffset2, var5);
+                    yOffset2 = this.addSetting(view, settings, 0, yOffset2, offset);
                 }
 
                 new ContentSize().setWidth(view, panel);
-                view.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth() - var5));
+                view.addWidthSetter((comp1, comp2) -> comp1.setWidth(comp2.getWidth() - offset));
                 panel.addToList(view);
-                yOffset += view.getHeight() + var5;
+                yOffset += view.getHeight() + offset;
                 break;
+
             case BLOCKS:
-                Text blocksText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 200, Text.defaultColorHelper, setting.name);
-                BlockPicker blockPicker = new BlockPicker(
-                        panel,
-                        setting.name + "picker",
-                        panel.getWidth() - var5,
-                        yOffset + 5,
-                        175,
-                        200,
-                        ((BlockListSetting) setting).enabled,
-                        ((BlockListSetting) setting).value.toArray(new String[0])
-                );
-                this.labelToSetting.put(blocksText, setting);
-                blockPicker.onPress(widget -> setting.setValue(blockPicker.getSelectedValues()));
-                blockPicker.addWidthSetter((var2x, var3x) -> var2x.setX(panel.getWidth() - 175 - var5));
+                BlockListSetting bLS = (BlockListSetting) setting;
+                Text blocksText = new Text(panel, bLS.name + "lbl", x, yOffset, LABEL_WIDTH, 200, Text.defaultColorHelper, bLS.name);
+                BlockPicker blockPicker = new BlockPicker(panel, bLS.name + "picker", panel.getWidth() - offset, yOffset + 5, 175, 200, bLS.enabled, bLS.value.toArray(new String[0]));
+                this.labelToSetting.put(blocksText, bLS);
+                blockPicker.onPress(ignored -> bLS.setValue(blockPicker.getSelectedValues()));
+                blockPicker.addWidthSetter((comp1, comp2) -> comp1.setX(panel.getWidth() - 175 - offset));
                 panel.addToList(blocksText);
                 panel.addToList(blockPicker);
-                yOffset += 200 + var5;
+                yOffset += 200 + offset;
                 break;
+
             case COLOR:
-                ColorSetting colorSetting = (ColorSetting) setting;
-                Text colorText = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
+                ColorSetting cS = (ColorSetting) setting;
+                Text colorText = new Text(panel, setting.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, setting.name);
                 ColorPicker picker = new ColorPicker(
-                        panel, setting.name + "color", panel.getWidth() - 160 - var5 + 10, yOffset, 160, 114, (Integer) setting.value, colorSetting.rainbow
+                        panel, setting.name + "color", panel.getWidth() - 160 - offset + 10, yOffset, 160, 114, (Integer) setting.value, cS.rainbow
                 );
                 this.labelToSetting.put(colorText, setting);
-                setting.addListener(var3x -> {
-                    picker.setValue((Integer) setting.value);
-                    picker.setRainbow(colorSetting.rainbow);
+                cS.addListener(sett -> {
+                    ColorSetting settC = (ColorSetting) setting;
+                    picker.setValue(settC.value);
+                    picker.setRainbow(settC.rainbow);
                 });
                 picker.onPress(widget -> {
-                    setting.setValue(((ColorPicker) widget).getValue(), false);
-                    colorSetting.rainbow = ((ColorPicker) widget).getRainbow();
+                    cS.setValue(((ColorPicker) widget).getValue(), false);
+                    cS.rainbow = ((ColorPicker) widget).getRainbow();
                 });
                 panel.addToList(colorText);
                 panel.addToList(picker);
-                yOffset += 114 + var5 - 10;
+                yOffset += 114 + offset - 10;
                 break;
+
             case CURVE:
-                CurveSetting.Curve speedSetting = (CurveSetting.Curve) setting.value;
-                Text text = new Text(panel, setting.name + "lbl", var3, yOffset, this.labelWidth, 24, Text.defaultColorHelper, setting.name);
-                BezierCurve curve = new BezierCurve(
-                        panel,
-                        setting.name + "color",
-                        panel.getWidth() - 150 - var5 + 10,
-                        yOffset,
-                        150,
-                        150,
-                        20,
-                        speedSetting.initial,
-                        speedSetting.mid,
-                        speedSetting.finalStage,
-                        speedSetting.maximum
-                );
+                CurveSetting crvS = (CurveSetting) setting;
+                CurveSetting.Curve value = crvS.value;
+                Text text = new Text(panel, crvS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, crvS.name);
+                BezierCurve curve = new BezierCurve(panel, crvS.name + "color", panel.getWidth() - 150 - offset + 10, yOffset, 150, 150, 20, value.initial, value.mid, value.finalStage, value.maximum);
                 this.labelToSetting.put(text, setting);
-                setting.addListener(ignored -> {
-                    CurveSetting.Curve profile = (CurveSetting.Curve) setting.value;
+                crvS.addListener(sett -> {
+                    CurveSetting settC = (CurveSetting) sett;
+                    CurveSetting.Curve profile = settC.value;
                     curve.setCurveValues(profile.initial, profile.mid, profile.finalStage, profile.maximum);
                 });
-                curve.onPress(
-                        widget -> ((CurveSetting) setting).setValue(curve.getCurveValues()[0], curve.getCurveValues()[1], curve.getCurveValues()[2], curve.getCurveValues()[3])
+                curve.onPress(widget ->
+                        crvS.setValue(curve.getCurveValues()[0], curve.getCurveValues()[1], curve.getCurveValues()[2], curve.getCurveValues()[3])
                 );
                 panel.addToList(text);
                 panel.addToList(curve);
-                yOffset += 150 + var5 - 10;
+                yOffset += 150 + offset - 10;
                 break;
         }
 
-        return yOffset - (var5 - 10);
+        return yOffset - (offset - 10);
     }
 
     private void addSettings() {
         int yOffset = 20;
 
         for (Setting<?> setting : this.module.settings) {
-            if (setting.isHidden()) continue;
+            GuiComponent container = new SettingRow(this, setting.name + "row", 0, yOffset, this.getWidth(), 0);
+            int height = this.addSetting(container, setting, 20, 0, 20);
 
-            yOffset = this.addSetting(this, setting, 20, yOffset, 20);
+            container.setHeight(height);
+            container.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth()));
+
+            this.addToList(container);
+
+            Dropdown dropdown = null;
+
+            if (setting.settingType == SettingType.DROPDOWN) {
+                GuiComponent child = container.getChildByName(setting.name + "btn");
+                if (child instanceof Dropdown) {
+                    dropdown = (Dropdown) child;
+                }
+            }
+            this.settingEntries.add(new SettingEntry(setting, container, height, dropdown));
+
+            yOffset += height;
         }
 
-        /*
-        int var17 = yOffset;
-        if (this.module instanceof ModuleWithModuleSettings var18) {
+        this.bottomSpacer = new GuiComponent(this, "extentionhack", 0, yOffset, 0, 20);
+        this.addToList(this.bottomSpacer);
+        this.updateSettingVisibilityAndLayout();
+    }
 
-            for (Module var10 : var18.moduleArray) {
-                int var11 = 0;
-                CustomGuiScreen var12 = new CustomGuiScreen(this, var10.getName() + "SubView", 0, var17, this.width, this.height - yOffset);
-                var12.setSize((var0, var1) -> var0.setWidth(var1.getWidth()));
+    private void updateSettingVisibilityAndLayout() {
+        int yOffset = 20;
 
-                for (Setting<?> var14 : var10.settings) {
-                    var11 = this.method13531(var12, var14, 20, var11, 20);
-                }
+        for (SettingEntry entry : this.settingEntries) {
+            boolean hidden = entry.setting.isHidden();
 
-                yOffset = Math.max(yOffset + var11, yOffset);
+            entry.container.setSelfVisible(!hidden);
+            entry.container.setY(yOffset);
 
-                for (CustomGuiScreen var20 : var12.getChildren()) {
-                    if (var20 instanceof Dropdown) {
-                        Dropdown var15 = (Dropdown) var20;
-                        int var16 = var15.method13649() + var15.getY() + var15.getHeight() + 14;
-                        var11 = Math.max(var11, var16);
-                    }
-                }
-
-                var12.setHeight(var11);
-                this.addToList(var12);
-                this.field21224.put(var10, var12);
+            if (entry.dropdown != null) {
+                entry.container.setReAddChildren(entry.dropdown.isExpanded());
+            } else {
+                entry.container.setReAddChildren(false);
             }
 
-            var18.addModuleStateListener((parent, module, enabled) -> this.field21224.get(module).setSelfVisible(enabled));
-            var18.calledOnEnable();
+            if (hidden) {
+                entry.container.setHeight(0);
+            } else {
+                entry.container.setHeight(entry.height);
+                yOffset += entry.height;
+            }
         }
-         */
 
-        this.addToList(new GuiComponent(this, "extentionhack", 0, yOffset, 0, 20));
+        if (this.bottomSpacer != null) {
+            this.bottomSpacer.setY(yOffset);
+            this.bottomSpacer.setHeight(20);
+        }
+    }
+
+    @Override
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        this.updateSettingVisibilityAndLayout();
+        super.updatePanelDimensions(mouseX, mouseY);
     }
 
     @Override
     public void draw(float partialTicks) {
-        boolean var4 = false;
+        boolean visible = false;
 
-        for (Entry var6 : this.labelToSetting.entrySet()) {
-            Text var7 = (Text) var6.getKey();
-            Setting var8 = (Setting) var6.getValue();
-            if (var7.isHoveredInHierarchy() && var7.isVisible()) {
-                var4 = true;
-                this.hoveredSettingDescription = var8.description;
-                this.hoveredSettingName = var8.name;
+        for (Entry<Text, Setting<?>> entry : this.labelToSetting.entrySet()) {
+            Text text = entry.getKey();
+            Setting<?> setting = entry.getValue();
+
+            if (text.isHoveredInHierarchy() && text.isVisible()) {
+                visible = true;
+                this.hoveredSettingDescription = setting.description;
+                this.hoveredSettingName = setting.name;
                 break;
             }
         }
@@ -294,7 +303,7 @@ public class ModuleSettingsList extends ScrollablePanel {
         GL11.glPushMatrix();
         super.draw(partialTicks);
         GL11.glPopMatrix();
-        this.tooltipFade.changeDirection(!var4 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        this.tooltipFade.changeDirection(!visible ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 10),
@@ -316,6 +325,41 @@ public class ModuleSettingsList extends ScrollablePanel {
                 this.hoveredSettingDescription,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
         );
+    }
+
+    private static final class SettingEntry {
+        private final Setting<?> setting;
+        private final GuiComponent container;
+        private final int height;
+        private final Dropdown dropdown;
+
+        private SettingEntry(Setting<?> setting, GuiComponent container, int height, Dropdown dropdown) {
+            this.setting = setting;
+            this.container = container;
+            this.height = height;
+            this.dropdown = dropdown;
+        }
+    }
+
+    private static final class SettingRow extends GuiComponent {
+        private SettingRow(GuiComponent parent, String name, int x, int y, int width, int height) {
+            super(parent, name, x, y, width, height);
+        }
+
+        @Override
+        public boolean isMouseOverComponent(int mouseX, int mouseY) {
+            if (super.isMouseOverComponent(mouseX, mouseY)) {
+                return true;
+            }
+
+            for (GuiComponent child : this.getChildren()) {
+                if (child.isSelfVisible() && child.isMouseOverComponent(mouseX, mouseY)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
 }
