@@ -47,13 +47,15 @@ public abstract class Module implements IMinecraft {
 
         if (this.enabled) {
             Client.BUS.register(this);
-            if (Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
+            if (!Client.INSTANCE.moduleManager.isToggleSoundSuppressed()
+                    && Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
                 SoundUtils.play("activate");
             }
             this.onEnable();
         } else {
             Client.BUS.unregister(this);
-            if (Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
+            if (!Client.INSTANCE.moduleManager.isToggleSoundSuppressed()
+                    && Client.INSTANCE.moduleManager.getModule(ActiveModsModule.class).toggleSound.value) {
                 SoundUtils.play("deactivate");
             }
             this.onDisable();

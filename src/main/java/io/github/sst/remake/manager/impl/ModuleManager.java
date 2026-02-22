@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.combat.KillAuraModule;
 import io.github.sst.remake.module.impl.gui.*;
 import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
@@ -20,6 +21,7 @@ public class ModuleManager extends Manager {
     public final List<Module> modules = new ArrayList<>();
 
     public Module currentModule = null;
+    private int toggleSoundSuppressDepth = 0;
 
     @Override
     public void init() {
@@ -31,6 +33,7 @@ public class ModuleManager extends Manager {
         modules.add(new MiniMapModule());
         modules.add(new KeyStrokesModule());
         modules.add(new TestModule());
+        modules.add(new KillAuraModule());
         initModules();
         super.init();
     }
@@ -87,53 +90,62 @@ public class ModuleManager extends Manager {
             return;
         }
 
-        JsonArray modsArray = profileObject.getAsJsonArray("mods");
+        toggleSoundSuppressDepth++;
+        try {
+            JsonArray modsArray = profileObject.getAsJsonArray("mods");
 
-        for (JsonElement modElement : modsArray) {
-            JsonObject modObject = modElement.getAsJsonObject();
-            String modName = modObject.get("name").getAsString();
+            for (JsonElement modElement : modsArray) {
+                JsonObject modObject = modElement.getAsJsonObject();
+                String modName = modObject.get("name").getAsString();
 
-            Module mod = null;
-            for (Module m : modules) {
-                if (m.name.equalsIgnoreCase(modName)) {
-                    mod = m;
-                    break;
-                }
-            }
-
-            if (mod == null) {
-                continue;
-            }
-
-            mod.setEnabled(false);
-
-            if (!modObject.has("options")) {
-                continue;
-            }
-
-            JsonArray optionsArray = modObject.getAsJsonArray("options");
-
-            for (JsonElement optionElement : optionsArray) {
-                JsonObject optionObject = optionElement.getAsJsonObject();
-                String settingName = optionObject.get("name").getAsString();
-
-                for (Setting<?> setting : mod.settings) {
-                    if (!setting.name.equalsIgnoreCase(settingName)) {
-                        continue;
-                    }
-
-                    if (!optionObject.has("value")) {
+                Module mod = null;
+                for (Module m : modules) {
+                    if (m.name.equalsIgnoreCase(modName)) {
+                        mod = m;
                         break;
                     }
+                }
 
-                    setting.loadFromJson(optionObject.get("value"));
-                    break;
+                if (mod == null) {
+                    continue;
+                }
+
+                mod.setEnabled(false);
+
+                if (!modObject.has("options")) {
+                    continue;
+                }
+
+                JsonArray optionsArray = modObject.getAsJsonArray("options");
+
+                for (JsonElement optionElement : optionsArray) {
+                    JsonObject optionObject = optionElement.getAsJsonObject();
+                    String settingName = optionObject.get("name").getAsString();
+
+                    for (Setting<?> setting : mod.settings) {
+                        if (!setting.name.equalsIgnoreCase(settingName)) {
+                            continue;
+                        }
+
+                        if (!optionObject.has("value")) {
+                            break;
+                        }
+
+                        setting.loadFromJson(optionObject.get("value"));
+                        break;
+                    }
+                }
+
+                if (modObject.has("enabled")) {
+                    mod.setEnabled(modObject.get("enabled").getAsBoolean());
                 }
             }
-
-            if (modObject.has("enabled")) {
-                mod.setEnabled(modObject.get("enabled").getAsBoolean());
-            }
+        } finally {
+            toggleSoundSuppressDepth = Math.max(0, toggleSoundSuppressDepth - 1);
         }
+    }
+
+    public boolean isToggleSoundSuppressed() {
+        return toggleSoundSuppressDepth > 0;
     }
 }
