@@ -4,7 +4,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
-import io.github.sst.remake.event.impl.game.RunLoopEvent;
+import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
@@ -14,7 +14,7 @@ import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.math.BasicTimer;
-import io.github.sst.remake.util.math.TogglableTimer;
+import io.github.sst.remake.util.viaversion.AttackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@SuppressWarnings({"unused", "DataFlowIssue"})
+@SuppressWarnings({"DataFlowIssue"})
 public class KillAuraModule extends Rotatable {
 
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
     private final ModeSetting sortMode = new ModeSetting("Sort Mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
-    private final ModeSetting attackMode = new ModeSetting("Attack Mode", "Attack mode", 0, "Pre", "Post");
+    private final ModeSetting attackMode = new ModeSetting("Attack Mode", "Attack mode", 0, "Mouse", "Packet");
     private final ModeSetting rotationMode = new ModeSetting("Rotation Mode", "Rotation mode", 0, "NCP", "AAC", "Smooth", "LockView", "None");
 
     private final SliderSetting range = new SliderSetting("Range", "Working range", 4, 2.8f, 8, 0.01f);
@@ -50,7 +50,7 @@ public class KillAuraModule extends Rotatable {
     private final BooleanSetting raytrace = new BooleanSetting("Raytrace", "Raytrace to target", true);
     private final BooleanSetting throughWalls = new BooleanSetting("Through walls", "Hit entities through walls", false);
     private final BooleanSetting cooldown = new BooleanSetting("Cooldown", "Use 1.9+ attack cooldown", false);
-    private final BooleanSetting noSwing = new BooleanSetting("No swing", "Skip swinging animation", false);
+    private final BooleanSetting noSwing = new BooleanSetting("No swing", "Skip swinging animation", false).hide(() -> !attackMode.value.equals("Packet"));
 
     private final BooleanSetting deathToggle = new BooleanSetting("Disable on death", "Toggle Aura on death", true);
 
@@ -97,11 +97,18 @@ public class KillAuraModule extends Rotatable {
     }
 
     @Subscribe
-    public void onRunLoop(RunLoopEvent event) {
-        if (!event.isPre() || target == null) return;
+    public void onAction(ActionEvent event) {
+        if (target == null) return;
+
+        double distance = client.player.distanceTo(target);
+        if (distance > range.value) return;
+
+        if (!throughWalls.value && !client.player.canSee(target)) return;
+
+        if (Math.random() * 100 > hitChance.value) return;
 
         if (cooldown.value && client.player.getAttackCooldownProgress(0) >= 1) {
-            client.doAttack();
+            attack(target);
             return;
         }
 
@@ -109,7 +116,17 @@ public class KillAuraModule extends Rotatable {
         long delay = 1000 / cps;
 
         if (attackTimer.hasElapsed(delay, true)) {
-            client.doAttack();
+            attack(target);
+        }
+    }
+
+    private void attack(Entity target) {
+        switch (attackMode.value) {
+            case "Packet":
+                AttackUtils.attackEntity(target, !noSwing.value);
+                break;
+            default:
+                client.doAttack();
         }
     }
 
