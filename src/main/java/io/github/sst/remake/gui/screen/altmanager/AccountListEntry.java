@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.altmanager;
 
-import io.github.sst.remake.alt.Account;
+import io.github.sst.remake.data.alt.Account;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.internal.LoadingIndicator;
 import io.github.sst.remake.gui.framework.core.Widget;

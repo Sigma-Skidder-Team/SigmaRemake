@@ -1,6 +1,6 @@
 package io.github.sst.remake.module.impl.gui;
 
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;

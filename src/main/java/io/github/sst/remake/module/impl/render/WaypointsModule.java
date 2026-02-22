@@ -2,7 +2,7 @@ package io.github.sst.remake.module.impl.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.net.ReceivePacketEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;

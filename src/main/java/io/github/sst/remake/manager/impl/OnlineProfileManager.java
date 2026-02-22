@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.profile.Profile;
+import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.http.NetUtils;
 import io.github.sst.remake.util.java.StringUtils;
 import org.apache.commons.io.IOUtils;

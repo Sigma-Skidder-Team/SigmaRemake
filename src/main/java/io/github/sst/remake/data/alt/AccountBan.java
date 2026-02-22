@@ -1,4 +1,4 @@
-package io.github.sst.remake.alt;
+package io.github.sst.remake.data.alt;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;

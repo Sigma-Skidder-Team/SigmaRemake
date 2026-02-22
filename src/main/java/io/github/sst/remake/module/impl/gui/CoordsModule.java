@@ -1,8 +1,8 @@
 package io.github.sst.remake.module.impl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.sst.remake.bus.Priority;
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Priority;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.module.Category;

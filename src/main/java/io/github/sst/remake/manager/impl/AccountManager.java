@@ -1,6 +1,6 @@
 package io.github.sst.remake.manager.impl;
 
-import io.github.sst.remake.alt.Account;
+import io.github.sst.remake.data.alt.Account;
 import io.github.sst.remake.manager.Manager;
 import net.minecraft.client.MinecraftClient;
 

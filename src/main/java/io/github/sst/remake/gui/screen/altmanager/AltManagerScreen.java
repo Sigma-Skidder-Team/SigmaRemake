@@ -2,9 +2,9 @@ package io.github.sst.remake.gui.screen.altmanager;
 
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.alt.Account;
-import io.github.sst.remake.alt.AccountCompareType;
-import io.github.sst.remake.alt.AccountSorter;
+import io.github.sst.remake.data.alt.Account;
+import io.github.sst.remake.data.alt.AccountCompareType;
+import io.github.sst.remake.data.alt.AccountSorter;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.gui.framework.widget.internal.AlertComponent;

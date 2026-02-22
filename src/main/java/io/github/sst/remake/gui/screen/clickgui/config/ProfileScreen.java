@@ -8,7 +8,7 @@ import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.screen.clickgui.ClickGuiScreen;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
 import io.github.sst.remake.manager.impl.ConfigManager;
-import io.github.sst.remake.profile.Profile;
+import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;

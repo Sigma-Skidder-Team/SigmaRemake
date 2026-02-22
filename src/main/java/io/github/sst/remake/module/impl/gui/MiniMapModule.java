@@ -1,7 +1,7 @@
 package io.github.sst.remake.module.impl.gui;
 
-import io.github.sst.remake.bus.Priority;
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Priority;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
@@ -13,7 +13,6 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
-import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.WorldChunk;
 import org.lwjgl.BufferUtils;

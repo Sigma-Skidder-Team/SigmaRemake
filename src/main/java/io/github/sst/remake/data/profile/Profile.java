@@ -1,4 +1,4 @@
-package io.github.sst.remake.profile;
+package io.github.sst.remake.data.profile;
 
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;

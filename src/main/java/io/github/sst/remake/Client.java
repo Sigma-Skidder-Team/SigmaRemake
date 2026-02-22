@@ -1,6 +1,6 @@
 package io.github.sst.remake;
 
-import io.github.sst.remake.bus.EventBus;
+import io.github.sst.remake.data.bus.EventBus;
 import io.github.sst.remake.manager.impl.*;
 import io.github.sst.remake.util.IMinecraft;
 import org.apache.logging.log4j.LogManager;

@@ -2,10 +2,10 @@ package io.github.sst.remake.manager.impl;
 
 import com.google.gson.*;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.alt.Account;
+import io.github.sst.remake.data.alt.Account;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.manager.Manager;
-import io.github.sst.remake.profile.Profile;
+import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.io.FileUtils;

@@ -4,7 +4,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.framework.core.Widget;
-import io.github.sst.remake.profile.Profile;
+import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;

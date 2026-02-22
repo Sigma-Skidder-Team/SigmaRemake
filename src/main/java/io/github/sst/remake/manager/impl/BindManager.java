@@ -3,7 +3,7 @@ package io.github.sst.remake.manager.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.KeyPressEvent;
 import io.github.sst.remake.event.impl.client.MouseHoverEvent;
 import io.github.sst.remake.event.impl.window.KeyEvent;

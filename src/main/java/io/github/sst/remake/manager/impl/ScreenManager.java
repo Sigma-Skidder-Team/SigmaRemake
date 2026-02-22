@@ -1,7 +1,7 @@
 package io.github.sst.remake.manager.impl;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.bus.Subscribe;
+import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.window.*;

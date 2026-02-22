@@ -2,8 +2,6 @@ package io.github.sst.remake.util.http;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpServer;
-import io.github.sst.remake.Client;
-import io.github.sst.remake.alt.Account;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;

@@ -1,4 +1,4 @@
-package io.github.sst.remake.bus;
+package io.github.sst.remake.data.bus;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package io.github.sst.remake.alt;
+package io.github.sst.remake.data.alt;
 import io.github.sst.remake.Client;
 
 import java.util.*;
