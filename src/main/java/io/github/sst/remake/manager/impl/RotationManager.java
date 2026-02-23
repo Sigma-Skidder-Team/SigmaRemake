@@ -23,9 +23,9 @@ public class RotationManager extends Manager implements IMinecraft {
     public final List<Rotatable> rotatables = new ArrayList<>();
 
     private float lastSentYaw, lastSentPitch;
-    private Rotation rotations;
+    public Rotation rotations;
     private Rotation lastRotations;
-    private boolean active;
+    public boolean active;
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onMotion(MotionEvent event) {
