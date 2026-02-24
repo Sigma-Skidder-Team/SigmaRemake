@@ -2,10 +2,9 @@ package io.github.sst.remake.util.viaversion;
 
 import io.github.sst.remake.Client;
 
-public class ClassUtils {
+public class ViaInstance {
 
-    public static boolean VIA_FABRIC_EXISTS = viaFabricExists();
-    public static boolean VIA_VERSION_EXISTS = viaVersionExists();
+    public static boolean VIAVERSION_EXISTS = viaFabricExists() && viaVersionExists();
 
     private static boolean viaFabricExists() {
         try {

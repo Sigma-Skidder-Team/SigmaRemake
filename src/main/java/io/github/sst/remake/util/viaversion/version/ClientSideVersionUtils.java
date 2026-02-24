@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.viaversion.version;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.viaversion.ClassUtils;
+import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.ViaProtocols;
 
 import java.lang.reflect.Field;
@@ -21,7 +21,7 @@ public class ClientSideVersionUtils {
     public static void init() {}
 
     static {
-        if (ClassUtils.VIA_FABRIC_EXISTS) {
+        if (ViaInstance.VIAVERSION_EXISTS) {
             try {
                 ensureConfigLoaded();
 
@@ -45,7 +45,7 @@ public class ClientSideVersionUtils {
     }
 
     public static int getClientSideVersion() {
-        if (!ClassUtils.VIA_FABRIC_EXISTS) return -1;
+        if (!ViaInstance.VIAVERSION_EXISTS) return -1;
 
         try {
             ensureConfigLoaded();
@@ -60,7 +60,7 @@ public class ClientSideVersionUtils {
     }
 
     public static void setClientSideVersion(int version) {
-        if (!ClassUtils.VIA_FABRIC_EXISTS) return;
+        if (!ViaInstance.VIAVERSION_EXISTS) return;
 
         try {
             ensureConfigLoaded();

@@ -23,6 +23,7 @@
     "MixinLivingEntityRenderer",
     "MixinMinecraftClient",
     "MixinMouse",
+    "MixinMultiplayerScreen",
     "MixinWindow"
   ]
 }
