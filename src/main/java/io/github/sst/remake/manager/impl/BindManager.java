@@ -22,8 +22,7 @@ import net.minecraft.text.Text;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class BindManager extends Manager implements IMinecraft {
-
+public final class BindManager extends Manager implements IMinecraft {
     public void save(JsonObject object) {
         JsonObject moduleBinds = new JsonObject();
         for (Module module : Client.INSTANCE.moduleManager.modules) {

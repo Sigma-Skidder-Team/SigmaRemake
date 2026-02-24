@@ -29,9 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class WaypointManager extends Manager implements IMinecraft {
-
-    private final List<Waypoint> waypoints = new ArrayList<>();
+public final class WaypointManager extends Manager implements IMinecraft {
+    private List<Waypoint> waypoints;
     public String mapRegionIdentifier;
     private String logicalIdentifier;
     public int pendingChunkSaveCount = 0;
@@ -39,6 +38,8 @@ public class WaypointManager extends Manager implements IMinecraft {
 
     @Override
     public void init() {
+        waypoints = new ArrayList<>();
+
         if (!ConfigUtils.WAYPOINTS_FOLDER.exists()) {
             ConfigUtils.WAYPOINTS_FOLDER.mkdirs();
         }
@@ -261,6 +262,4 @@ public class WaypointManager extends Manager implements IMinecraft {
     private String getFormattedIdentifier() {
         return new File(ConfigUtils.WAYPOINTS_FOLDER, WaypointUtils.getWorldIdentifier()).getAbsolutePath();
     }
-
 }
-

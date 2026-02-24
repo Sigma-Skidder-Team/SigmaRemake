@@ -12,8 +12,6 @@ import io.github.sst.remake.manager.Manager;
 import static io.github.sst.remake.Client.LOGGER;
 
 public class RPCManager extends Manager {
-
-    // Constants
     private static final long TIMESTAMP = System.currentTimeMillis() / 1000L;
     private static final String STATE = "Playing Minecraft";
     private static final String DETAILS = "Jello for Fabric";
@@ -64,5 +62,4 @@ public class RPCManager extends Manager {
             this.rpc = null;
         }
     }
-
 }

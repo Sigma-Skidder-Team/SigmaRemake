@@ -15,15 +15,20 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationManager extends Manager implements IMinecraft {
+public final class NotificationManager extends Manager implements IMinecraft {
+    private final static int SOME_OFFSET = 200;
+    private List<Notification> notifications;
 
-    private final List<Notification> notifications = new ArrayList<>();
-    private final int field39922 = 200;
+    @Override
+    public void init() {
+        notifications = new ArrayList<>();
+        super.init();
+    }
 
     public void send(Notification notification) {
         for (Notification notif : this.notifications) {
             if (notif.equals(notification)) {
-                notif.timer.setElapsedTime(Math.min(notif.timer.getElapsedTime(), this.field39922 + 1));
+                notif.timer.setElapsedTime(Math.min(notif.timer.getElapsedTime(), SOME_OFFSET + 1));
                 notif.desc = notification.desc;
                 notif.icon = notification.icon;
                 return;
@@ -35,12 +40,12 @@ public class NotificationManager extends Manager implements IMinecraft {
 
     public float getAnimation(Notification var1) {
         float var4 = (float) Math.min(var1.timer.getElapsedTime(), var1.showTime);
-        if (!(var4 < (float) this.field39922 * 1.4F)) {
-            return !(var4 > (float) var1.showTime - (float) this.field39922)
+        if (!(var4 < (float) SOME_OFFSET * 1.4F)) {
+            return !(var4 > (float) var1.showTime - (float) SOME_OFFSET)
                     ? 1.0F
-                    : QuadraticEasing.easeInQuad(((float) var1.showTime - var4) / (float) this.field39922, 0.0F, 1.0F, 1.0F);
+                    : QuadraticEasing.easeInQuad(((float) var1.showTime - var4) / (float) SOME_OFFSET, 0.0F, 1.0F, 1.0F);
         } else {
-            return QuadraticEasing.easeOutQuad(var4 / ((float) this.field39922 * 1.4F), 0.0F, 1.0F, 1.0F);
+            return QuadraticEasing.easeOutQuad(var4 / ((float) SOME_OFFSET * 1.4F), 0.0F, 1.0F, 1.0F);
         }
     }
 
@@ -118,5 +123,4 @@ public class NotificationManager extends Manager implements IMinecraft {
         }
         return false;
     }
-
 }

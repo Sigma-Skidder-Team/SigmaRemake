@@ -43,16 +43,10 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MusicManager extends Manager implements IMinecraft {
-
+public final class MusicManager extends Manager implements IMinecraft {
     private static final int DEFAULT_THUMBNAIL_X = 70;
     private static final int DEFAULT_THUMBNAIL_Y = 0;
     private static final int DEFAULT_THUMBNAIL_SIZE = 180;
-
-    public final List<PlaylistData> playlists = new ArrayList<>();
-
-    private final List<double[]> visualizer = new ArrayList<>();
-    private final List<Double> amplitudes = new ArrayList<>();
 
     private long
             totalDuration = 0,
@@ -90,8 +84,17 @@ public class MusicManager extends Manager implements IMinecraft {
     private Texture notification, songThumbnail;
     private BufferedImage thumbnailImage, scaledThumbnailImage;
 
+    public List<PlaylistData> playlists;
+
+    private List<double[]> visualizer;
+    private List<Double> amplitudes;
+
     @Override
     public void init() {
+        playlists = new ArrayList<>();
+        visualizer = new ArrayList<>();
+        amplitudes = new ArrayList<>();
+
         if (!ConfigUtils.MUSIC_FOLDER.exists()) {
             ConfigUtils.MUSIC_FOLDER.mkdirs();
         }
@@ -549,5 +552,4 @@ public class MusicManager extends Manager implements IMinecraft {
             RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F));
         }
     }
-
 }

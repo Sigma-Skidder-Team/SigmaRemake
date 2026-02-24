@@ -7,10 +7,14 @@ import net.minecraft.client.MinecraftClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountManager extends Manager {
-
-    public final List<Account> accounts = new ArrayList<>();
+public final class AccountManager extends Manager {
+    public List<Account> accounts;
     public Account currentAccount;
+
+    @Override
+    public void init() {
+        accounts = new ArrayList<>();
+    }
 
     public boolean login(Account account) {
         this.currentAccount = account;

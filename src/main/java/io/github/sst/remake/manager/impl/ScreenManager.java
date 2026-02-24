@@ -14,21 +14,27 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScreenManager extends Manager implements IMinecraft {
+public final class ScreenManager extends Manager implements IMinecraft {
     public int[] mousePositions = new int[2];
     public float scaleFactor = 1.0F;
     public double mouseScroll;
 
     public Screen currentScreen;
 
-    private final List<Integer> keysPressed = new ArrayList<>();
-    private final List<Integer> modifiersPressed = new ArrayList<>();
-    private final List<Integer> mouseButtonsPressed = new ArrayList<>();
-    private final List<Integer> mouseButtonsReleased = new ArrayList<>();
-    private final List<Integer> charsTyped = new ArrayList<>();
+    private List<Integer> keysPressed;
+    private List<Integer> modifiersPressed;
+    private List<Integer> mouseButtonsPressed;
+    private List<Integer> mouseButtonsReleased;
+    private List<Integer> charsTyped;
 
     @Override
     public void init() {
+        keysPressed = new ArrayList<>();
+        modifiersPressed = new ArrayList<>();
+        mouseButtonsPressed = new ArrayList<>();
+        mouseButtonsReleased = new ArrayList<>();
+        charsTyped = new ArrayList<>();
+
         GLFW.glfwSetCursor(client.getWindow().getHandle(), GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR));
         scaleFactor = (float) (client.getWindow().getFramebufferHeight() / client.getWindow().getHeight());
         super.init();

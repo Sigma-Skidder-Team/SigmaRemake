@@ -18,14 +18,19 @@ import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class RotationManager extends Manager implements IMinecraft {
-
-    public final List<Rotatable> rotatables = new ArrayList<>();
+public final class RotationManager extends Manager implements IMinecraft {
+    public List<Rotatable> rotatables;
 
     private float lastSentYaw, lastSentPitch;
     private Rotation rotations;
     private Rotation lastRotations;
     private boolean active;
+
+    @Override
+    public void init() {
+        super.init();
+        rotatables = new ArrayList<>();
+    }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onMotion(MotionEvent event) {
@@ -102,5 +107,4 @@ public class RotationManager extends Manager implements IMinecraft {
             event.result = MathHelper.lerp(event.tickDelta, lastRotations.pitch, rotations.pitch);
         }
     }
-
 }

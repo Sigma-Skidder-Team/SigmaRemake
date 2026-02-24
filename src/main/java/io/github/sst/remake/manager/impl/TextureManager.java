@@ -11,9 +11,14 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class TextureManager extends Manager {
+public final class TextureManager extends Manager {
+    public List<Texture> textures;
 
-    public final List<Texture> textures = new ArrayList<>();
+    @Override
+    public void init() {
+        textures = new ArrayList<>();
+        super.init();
+    }
 
     public void add(Texture texture) {
         textures.add(texture);
@@ -33,5 +38,4 @@ public class TextureManager extends Manager {
             }
         }
     }
-
 }

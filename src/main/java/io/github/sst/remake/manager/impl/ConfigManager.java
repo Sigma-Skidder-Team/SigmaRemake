@@ -14,23 +14,23 @@ import io.github.sst.remake.util.io.GsonUtils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ConfigManager extends Manager implements IMinecraft {
-
-    public List<Profile> profiles = new ArrayList<>();
+public final class ConfigManager extends Manager implements IMinecraft {
+    public List<Profile> profiles;
     public Profile currentProfile;
 
     public boolean guiBlur = true;
     public boolean hqBlur = true;
 
-    public JsonObject screenConfig = new JsonObject();
+    public JsonObject screenConfig;
     private boolean hasLoadedScreens = false;
 
     @Override
     public void init() {
+        screenConfig = new JsonObject();
+
         if (!ConfigUtils.CLIENT_FOLDER.exists()) {
             ConfigUtils.CLIENT_FOLDER.mkdirs();
         }
@@ -273,5 +273,4 @@ public class ConfigManager extends Manager implements IMinecraft {
                 .map(prof -> prof.name)
                 .collect(Collectors.toList());
     }
-
 }

@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ModuleManager extends Manager {
-
-    public final List<Module> modules = new ArrayList<>();
+public final class ModuleManager extends Manager {
+    public List<Module> modules;
 
     public Module currentModule = null;
     private int toggleSoundSuppressDepth = 0;
 
     @Override
     public void init() {
+        modules = new ArrayList<>();
         modules.add(new ActiveModsModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());

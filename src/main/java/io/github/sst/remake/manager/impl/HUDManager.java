@@ -27,8 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 
-public class HUDManager extends Manager implements IMinecraft {
-
+public final class HUDManager extends Manager implements IMinecraft {
     private static ShaderEffect blurShaderGroup;
 
     private static Framebuffer blurFramebuffer;

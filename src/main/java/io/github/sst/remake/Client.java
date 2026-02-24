@@ -7,13 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Client implements IMinecraft {
-    // Constants
 	public static final Logger LOGGER = LogManager.getLogger("Sigma");
     public static final String VERSION = "1.0.0";
     public static final Client INSTANCE = new Client();
     public static final EventBus BUS = new EventBus();
 
-    // Managers
     public final ScreenManager screenManager = new ScreenManager();
     public final TextureManager textureManager = new TextureManager();
     public final HUDManager hudManager = new HUDManager();
@@ -26,24 +24,31 @@ public class Client implements IMinecraft {
     public final WaypointManager waypointManager = new WaypointManager();
     public final MusicManager musicManager = new MusicManager();
     public final RotationManager rotationManager = new RotationManager();
+    public final ViaManager viaManager = new ViaManager();
 
     public boolean loaded = false;
 
     public void start() {
         LOGGER.info("Starting Sigma Remake {}...", VERSION);
 
+        viaManager.init();
         rpcManager.init();
+
+        configManager.init();
+        accountManager.init();
+
+        moduleManager.init();
+        bindManager.init();
+        rotationManager.init();
+
+        waypointManager.init();
+        notificationManager.init();
+
         textureManager.init();
         screenManager.init();
         hudManager.init();
-        accountManager.init();
-        moduleManager.init();
-        rotationManager.init();
-        bindManager.init();
-        waypointManager.init();
-        notificationManager.init();
+
         musicManager.init();
-        configManager.init();
 
         LOGGER.info("Everything has been initialised.");
     }
@@ -51,18 +56,23 @@ public class Client implements IMinecraft {
     public void shutdown() {
         LOGGER.info("Shutting down...");
 
-        rpcManager.shutdown();
-        configManager.shutdown();
-        accountManager.shutdown();
-        bindManager.shutdown();
-        rotationManager.shutdown();
-        moduleManager.shutdown();
-        textureManager.shutdown();
         hudManager.shutdown();
         screenManager.shutdown();
-        notificationManager.shutdown();
-        waypointManager.shutdown();
+        textureManager.shutdown();
+
         musicManager.shutdown();
+        notificationManager.shutdown();
+
+        waypointManager.shutdown();
+        rotationManager.shutdown();
+        bindManager.shutdown();
+        moduleManager.shutdown();
+
+        configManager.shutdown();
+        accountManager.shutdown();
+
+        rpcManager.shutdown();
+        viaManager.shutdown();
 
         LOGGER.info("Everything saved.");
     }
