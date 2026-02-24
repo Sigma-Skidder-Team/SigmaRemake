@@ -13,14 +13,15 @@ import io.github.sst.remake.util.client.yt.PlaylistData;
 import io.github.sst.remake.util.client.yt.SongData;
 import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import io.github.sst.remake.util.http.YoutubeUtils;
-import io.github.sst.remake.util.io.audio.stream.MusicStream;
-import io.github.sst.remake.util.math.JavaFFT;
+import io.github.sst.remake.util.system.io.audio.stream.MusicStream;
+import io.github.sst.remake.util.math.fft.JavaFFT;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.StencilUtils;
+import io.github.sst.remake.util.render.shader.StencilUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
+import io.github.sst.remake.util.render.image.Resources;
 import io.github.sst.remake.util.system.VersionUtils;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
@@ -42,6 +43,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class MusicManager extends Manager implements IMinecraft {
     private static final int DEFAULT_THUMBNAIL_X = 70;
@@ -67,6 +69,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     private SourceDataLine dataLine;
     private transient volatile Thread audioThread;
+    private final AtomicInteger playbackSession = new AtomicInteger(0);
 
     private PlaylistData playlist;
     @Getter
@@ -83,6 +86,7 @@ public final class MusicManager extends Manager implements IMinecraft {
     @Getter
     private Texture notification, songThumbnail;
     private BufferedImage thumbnailImage, scaledThumbnailImage;
+    private volatile boolean thumbnailFailed = false;
 
     public List<PlaylistData> playlists;
 
@@ -130,14 +134,19 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     @Override
     public void shutdown() {
-        if (notification != null) {
-            notification.release();
+        playbackSession.incrementAndGet();
+        Thread thread = audioThread;
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
         }
-        if (songThumbnail != null) {
-            songThumbnail.release();
-        }
+        audioThread = null;
         if (dataLine != null) {
-            dataLine.close();
+            try {
+                dataLine.stop();
+                dataLine.flush();
+                dataLine.close();
+            } catch (Exception ignored) {
+            }
         }
 
         notification = null;
@@ -146,6 +155,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         thumbnailImage = null;
         scaledThumbnailImage = null;
+        thumbnailFailed = false;
 
         playing = false;
         playlist = null;
@@ -205,11 +215,11 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         if (processing) {
             if (thumbnailImage != null && scaledThumbnailImage != null && currentPlayingSongData != null && !client.isPaused()) {
-                if (songThumbnail != null) {
+                if (songThumbnail != null && songThumbnail != Resources.ARTWORK) {
                     songThumbnail.release();
                 }
 
-                if (notification != null) {
+                if (notification != null && notification != Resources.ARTWORK) {
                     notification.release();
                 }
 
@@ -218,8 +228,20 @@ public final class MusicManager extends Manager implements IMinecraft {
 
                 songThumbnail = BufferedImageUtil.getTexture("picture", thumbnailImage);
                 notification = BufferedImageUtil.getTexture("picture", scaledThumbnailImage);
+                thumbnailFailed = false;
                 Client.INSTANCE.notificationManager
                         .send(new Notification("Now Playing", currentPlayingSongData.title, 7000, notification));
+                thumbnailProcessingSongData = null;
+                processing = false;
+            } else if (thumbnailFailed && currentPlayingSongData != null && !client.isPaused()) {
+                if (songThumbnail != null && songThumbnail != Resources.ARTWORK) {
+                    songThumbnail.release();
+                }
+                if (notification != null && notification != Resources.ARTWORK) {
+                    notification.release();
+                }
+                songThumbnail = Resources.ARTWORK;
+                notification = Resources.ARTWORK;
                 thumbnailProcessingSongData = null;
                 processing = false;
             }
@@ -232,8 +254,11 @@ public final class MusicManager extends Manager implements IMinecraft {
             new Thread(() -> {
                 try {
                     processThumbnail(songData);
-                } catch (IOException ignored) {
-               }
+                } catch (Exception ignored) {
+                    thumbnailFailed = true;
+                    processing = false;
+                    thumbnailProcessingSongData = null;
+                }
             }).start();
         }
     }
@@ -301,39 +326,58 @@ public final class MusicManager extends Manager implements IMinecraft {
     private void initPlaybackLoop() {
         visualizer.clear();
         if (playlist != null) {
-            while (audioThread != null && audioThread.isAlive()) {
-                audioThread.interrupt();
+            int sessionId = playbackSession.incrementAndGet();
+            Thread previous = audioThread;
+            if (previous != null && previous.isAlive()) {
+                previous.interrupt();
             }
-
-            audioThread = new Thread(this::playbackLoop);
+            if (dataLine != null) {
+                dataLine.stop();
+                dataLine.flush();
+                dataLine.close();
+                dataLine = null;
+            }
+            audioThread = new Thread(() -> playbackLoop(sessionId), "Sigma-Music-" + sessionId);
+            audioThread.setDaemon(true);
             audioThread.start();
         }
     }
 
-    private void playbackLoop() {
+    private boolean shouldStopPlayback(int sessionId) {
+        return Thread.currentThread().isInterrupted() || sessionId != playbackSession.get();
+    }
+
+    private void playbackLoop(int sessionId) {
         if (startVideoIndex < 0 || startVideoIndex >= playlist.songs.size()) {
             startVideoIndex = 0;
         }
 
         for (int i = startVideoIndex; i < playlist.songs.size(); i++) {
             try {
+                if (shouldStopPlayback(sessionId)) {
+                    return;
+                }
                 currentlyPlayingVideoIndex = i;
                 currentPlayingSongData = playlist.songs.get(i);
                 visualizer.clear();
 
                 while (!this.playing) {
+                    if (shouldStopPlayback(sessionId)) {
+                        if (dataLine != null) {
+                            dataLine.close();
+                        }
+                        return;
+                    }
                     Thread.sleep(300);
 
                     visualizer.clear();
-                    if (Thread.interrupted()) {
-                        if (dataLine != null)
-                            dataLine.close();
-
-                        return;
-                    }
                 }
 
-                playTrack(currentPlayingSongData);
+                playTrack(currentPlayingSongData, sessionId);
+
+                if (shouldStopPlayback(sessionId)) {
+                    return;
+                }
 
                 switch (repeat) {
                     case 2:
@@ -350,20 +394,29 @@ public final class MusicManager extends Manager implements IMinecraft {
                 if (i >= playlist.songs.size()) {
                     i = 0;
                 }
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+                return;
             } catch (Exception e) {
                 Client.LOGGER.error("Failed to play track", e);
             }
         }
     }
 
-    private void playTrack(SongData data) throws IOException, LineUnavailableException, InterruptedException {
+    private void playTrack(SongData data, int sessionId) throws IOException, LineUnavailableException, InterruptedException {
+        if (shouldStopPlayback(sessionId)) {
+            return;
+        }
         thumbnailProcessingSongData = data;
+        thumbnailFailed = false;
 
         URL videoStreamUrl = YoutubeUtils.buildYouTubeWatchUrl(data.id);
         URL audioStreamUrl = YtDlpUtils.resolveStream(videoStreamUrl.toString());
 
         if (audioStreamUrl == null) {
-            Thread.sleep(1000);
+            if (!shouldStopPlayback(sessionId)) {
+                Thread.sleep(1000);
+            }
             return;
         }
 
@@ -385,21 +438,30 @@ public final class MusicManager extends Manager implements IMinecraft {
             Client.INSTANCE.notificationManager.send(new Notification("Now Playing", "Music is too long."));
         }
 
-        streamAudioData(track, mS, audioFormat);
+        streamAudioData(track, mS, audioFormat, sessionId);
     }
 
-    private void streamAudioData(AudioTrack track, MusicStream mS, AudioFormat audioFormat) throws InterruptedException, IOException {
+    private void streamAudioData(AudioTrack track, MusicStream mS, AudioFormat audioFormat, int sessionId) throws InterruptedException, IOException {
         Decoder aacDecoder = new Decoder(track.getDecoderSpecificInfo());
         SampleBuffer sampleBuffer = new SampleBuffer();
 
         while (track.hasMoreFrames()) {
             while (!playing) {
-                Thread.sleep(300);
-                visualizer.clear();
-                if (Thread.interrupted()) {
-                    dataLine.close();
+                if (shouldStopPlayback(sessionId)) {
+                    if (dataLine != null) {
+                        dataLine.close();
+                    }
                     return;
                 }
+                Thread.sleep(300);
+                visualizer.clear();
+            }
+
+            if (shouldStopPlayback(sessionId)) {
+                if (dataLine != null) {
+                    dataLine.close();
+                }
+                return;
             }
 
             Frame frame = track.readNextFrame();
@@ -441,7 +503,7 @@ public final class MusicManager extends Manager implements IMinecraft {
                 totalDuration = 0;
             }
 
-            if (Thread.interrupted()) {
+            if (shouldStopPlayback(sessionId)) {
                 dataLine.close();
                 return;
             }
@@ -489,18 +551,89 @@ public final class MusicManager extends Manager implements IMinecraft {
         return compatibleImage;
     }
 
+    private BufferedImage copyImage(BufferedImage image) {
+        if (image == null) {
+            return null;
+        }
+        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        copy.getGraphics().drawImage(image, 0, 0, null);
+        copy.getGraphics().dispose();
+        return copy;
+    }
+
+    private BufferedImage copySubImageSafe(BufferedImage source, int x, int y, int width, int height) {
+        if (source == null || width <= 0 || height <= 0) {
+            return null;
+        }
+        int safeX = Math.max(0, Math.min(x, source.getWidth() - 1));
+        int safeY = Math.max(0, Math.min(y, source.getHeight() - 1));
+        int safeWidth = Math.max(1, Math.min(width, source.getWidth() - safeX));
+        int safeHeight = Math.max(1, Math.min(height, source.getHeight() - safeY));
+        return copyImage(source.getSubimage(safeX, safeY, safeWidth, safeHeight));
+    }
+
     private void processThumbnail(SongData data) throws IOException {
         processing = true;
+        thumbnailFailed = false;
+        thumbnailImage = null;
+        scaledThumbnailImage = null;
         BufferedImage buffImage = ImageIO.read(new URL(data.url));
-        thumbnailImage = ImageUtils.applyBlur(buffImage, 15);
-        thumbnailImage = thumbnailImage.getSubimage(0, (int) ((float) thumbnailImage.getHeight() * 0.75F), thumbnailImage.getWidth(), (int) ((float) thumbnailImage.getHeight() * 0.2F));
-
-        if (buffImage.getHeight() != buffImage.getWidth()) {
-            scaledThumbnailImage = buffImage.getSubimage(DEFAULT_THUMBNAIL_X, DEFAULT_THUMBNAIL_Y, DEFAULT_THUMBNAIL_SIZE, DEFAULT_THUMBNAIL_SIZE);
-        } else {
-            scaledThumbnailImage = buffImage;
+        if (buffImage == null) {
+            thumbnailFailed = true;
+            processing = false;
+            return;
         }
+
+        BufferedImage source = toCompatibleImageType(buffImage);
+        BufferedImage blurred = ImageUtils.applyBlur(source, 15);
+        if (blurred == null) {
+            thumbnailFailed = true;
+            processing = false;
+            return;
+        }
+
+        int startY = (int) (blurred.getHeight() * 0.75F);
+        int cropHeight = Math.max(1, (int) (blurred.getHeight() * 0.2F));
+        BufferedImage blurredStrip = copySubImageSafe(blurred, 0, startY, blurred.getWidth(), cropHeight);
+        if (blurredStrip == null) {
+            thumbnailFailed = true;
+            processing = false;
+            return;
+        }
+
+        BufferedImage squareThumbnail = createSquareThumbnail(source, DEFAULT_THUMBNAIL_SIZE);
+        if (squareThumbnail == null) {
+            thumbnailFailed = true;
+            processing = false;
+            return;
+        }
+
+        thumbnailImage = blurredStrip;
+        scaledThumbnailImage = squareThumbnail;
         thumbnailProcessingSongData = null;
+    }
+
+    private BufferedImage createSquareThumbnail(BufferedImage source, int size) {
+        if (source == null || size <= 0) {
+            return source;
+        }
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int side = Math.min(width, height);
+        if (side <= 0) {
+            return source;
+        }
+        int x = (width - side) / 2;
+        int y = (height - side) / 2;
+        BufferedImage square = copySubImageSafe(source, x, y, side, side);
+        if (square == null) {
+            return null;
+        }
+        if (side == size) {
+            return square;
+        }
+        double scale = (double) size / (double) side;
+        return toCompatibleImageType(ImageUtils.scaleImage(square, scale, scale));
     }
 
     private void renderBars() {
