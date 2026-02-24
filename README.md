@@ -1,16 +1,12 @@
 # Sigma Jello for Fabric
 
-Minecraft Sigma Client port for Fabric 1.16.4
+Minecraft Sigma Client UI port & base remake for Fabric 1.16.5.
 
 ## TODO List
-- [x] GUI System
-- [x] Module System
-- [x] Config System
-- [x] Waypoint System
-- [x] Add all Jello GUIs
-- [ ] Fix animation bug
-- [ ] Encrypt/decrypt alts.json
-- [ ] Refresh token refresher
+- [ ] Fix changelog in-out animation;
+- [ ] Add encryption/decryption for alt tokens when saving/loading alts list;
+- [ ] Add MS alt token refresher;
+- [ ] Separate managers into trackers, processors, storages...
 
 ## Screenshots
 
