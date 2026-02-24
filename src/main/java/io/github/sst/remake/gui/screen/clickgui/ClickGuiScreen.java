@@ -221,7 +221,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         int keyBindForClickGui = Client.INSTANCE.bindManager.getKeybindFor(ClickGuiHolder.class);
-        if (keyCode == keyBindForClickGui && animationActive && !openState) {
+        if (keyCode == keyBindForClickGui && animationActive) {
             return;
         }
         if (keyCode == 256 || keyCode == keyBindForClickGui && this.moduleSettingsDialog == null && !this.hasFocusedTextField()) {
