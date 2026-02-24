@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity {
-
     @Shadow
     protected abstract Vec3d getRotationVector(float pitch, float yaw);
 
@@ -40,5 +39,4 @@ public abstract class MixinEntity {
 
         return movementInputToVelocity(event.movementInput, event.speed, event.yaw);
     }
-
 }

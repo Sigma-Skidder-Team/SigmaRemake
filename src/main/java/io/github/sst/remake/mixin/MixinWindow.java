@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Window.class)
 public class MixinWindow {
-
     @Inject(method = "onWindowSizeChanged", at = @At("RETURN"))
     private void injectWindowSizeChange(CallbackInfo ci) {
         new WindowResizeEvent().call();
     }
-
 }

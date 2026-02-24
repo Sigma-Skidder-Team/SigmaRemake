@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Keyboard.class)
 public class MixinKeyboard {
-
     @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Keyboard;debugCrashStartTime:J", ordinal = 0, shift = At.Shift.BEFORE), cancellable = true)
     private void injectOnKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
         KeyEvent event = new KeyEvent(window, key, scancode, action, modifiers);
@@ -31,5 +30,4 @@ public class MixinKeyboard {
             ci.cancel();
         }
     }
-
 }

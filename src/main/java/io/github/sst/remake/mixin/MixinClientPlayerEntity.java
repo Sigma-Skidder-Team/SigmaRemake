@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
-
     @Shadow
     private boolean lastSprinting;
     @Shadow
@@ -139,5 +138,4 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         motionEvent.state = State.POST;
         motionEvent.call();
     }
-
 }

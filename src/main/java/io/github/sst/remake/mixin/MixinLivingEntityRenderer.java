@@ -16,16 +16,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LivingEntityRenderer.class)
-public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>>
-        extends EntityRenderer<T>
-        implements FeatureRendererContext<T, M> {
-
+public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> extends EntityRenderer<T> implements FeatureRendererContext<T, M> {
     protected MixinLivingEntityRenderer(EntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
-    @Redirect(
-            method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/util/math/MathHelper;lerpAngleDegrees(FFF)F",
@@ -43,8 +39,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         return MathHelper.lerpAngleDegrees(g, start, end);
     }
 
-    @Redirect(
-            method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F",
@@ -61,5 +56,4 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
         return MathHelper.lerp(g, start, end);
     }
-
 }

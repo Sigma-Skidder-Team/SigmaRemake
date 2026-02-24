@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-
     @Shadow
     @Final
     private MinecraftClient client;
@@ -65,5 +64,4 @@ public class MixinInGameHud {
         RenderScoreboardEvent event = new RenderScoreboardEvent(true);
         event.call();
     }
-
 }

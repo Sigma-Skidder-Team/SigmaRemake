@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
-
     @Redirect(method = "jump", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/LivingEntity;yaw:F"))
     private float redirectJump(LivingEntity self) {
         JumpEvent event = new JumpEvent(self, self.yaw);
@@ -16,5 +15,4 @@ public class MixinLivingEntity {
 
         return event.yaw;
     }
-
 }

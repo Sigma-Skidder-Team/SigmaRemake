@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(KeyboardInput.class)
 public abstract class MixinKeyboardInput extends Input {
-
     @Inject(method = "tick", at = @At("TAIL"))
     private void onTickTail(boolean slowDown, CallbackInfo ci) {
         InputEvent event = new InputEvent(this.movementForward, this.movementSideways, this.jumping, this.sneaking, 0.3F);
@@ -26,5 +25,4 @@ public abstract class MixinKeyboardInput extends Input {
             this.movementForward *= event.sneakFactor;
         }
     }
-    
 }

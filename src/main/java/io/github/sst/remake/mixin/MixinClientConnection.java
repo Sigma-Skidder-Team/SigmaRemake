@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientConnection.class)
 public class MixinClientConnection {
-
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;)V", shift = At.Shift.BEFORE), cancellable = true)
     private void injectBeforeHandle(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
         ReceivePacketEvent event = new ReceivePacketEvent(packet);
@@ -33,5 +32,4 @@ public class MixinClientConnection {
         if (event.cancelled)
             ci.cancel();
     }
-
 }

@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-
     @Shadow
     @Final
     private MinecraftClient client;
@@ -64,5 +63,4 @@ public class MixinGameRenderer {
             return null;
         }
     }
-
 }
