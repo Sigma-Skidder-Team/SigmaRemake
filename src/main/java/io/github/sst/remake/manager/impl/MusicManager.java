@@ -351,7 +351,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     private void resetPlaybackTimers() {
         totalDuration = 0;
-        duration = 0;
+        duration = -1;
         playbackProgress = 0;
     }
 
