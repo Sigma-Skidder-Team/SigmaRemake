@@ -7,6 +7,10 @@
   "authors": [
     "Drake"
   ],
+  "recommends": {
+    "viafabric": ">=0.4.19",
+    "viaversion": ">=5.4.0"
+  },
   "icon": "assets/sigma/icon.png",
   "environment": "client",
   "accessWidener": "sigma-remake.accesswidener",

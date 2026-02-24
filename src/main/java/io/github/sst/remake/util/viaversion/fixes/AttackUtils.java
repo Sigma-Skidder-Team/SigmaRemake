@@ -1,6 +1,8 @@
-package io.github.sst.remake.util.viaversion;
+package io.github.sst.remake.util.viaversion.fixes;
 
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.viaversion.ViaProtocols;
+import io.github.sst.remake.util.viaversion.version.ClientSideVersionUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Hand;
 
@@ -8,7 +10,7 @@ import net.minecraft.util.Hand;
 public class AttackUtils implements IMinecraft {
 
     public static void attackEntity(Entity target, boolean swing) {
-        if (FieldUtils.getProtocol().equals(ViaProtocols.R1_8_X)) {
+        if (ClientSideVersionUtils.getProtocol().equals(ViaProtocols.R1_8_X)) {
             if (swing)
                 client.player.swingHand(Hand.MAIN_HAND);
             client.interactionManager.attackEntity(client.player, target);

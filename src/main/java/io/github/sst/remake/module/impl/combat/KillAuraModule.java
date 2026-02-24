@@ -15,7 +15,7 @@ import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.math.BasicTimer;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
-import io.github.sst.remake.util.viaversion.AttackUtils;
+import io.github.sst.remake.util.viaversion.fixes.AttackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
