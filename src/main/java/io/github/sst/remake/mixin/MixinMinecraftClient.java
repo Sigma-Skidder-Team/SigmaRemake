@@ -9,9 +9,16 @@ import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.loading.LoadingScreen;
+import io.github.sst.remake.util.viaversion.ViaInstance;
+import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,6 +41,14 @@ public abstract class MixinMinecraftClient {
 
     @Shadow
     private volatile boolean running;
+
+    @Shadow
+    @Nullable
+    public HitResult crosshairTarget;
+
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
     @Inject(method = "scheduleStop", at = @At("HEAD"))
     private void injectShutdown(CallbackInfo ci) {
@@ -122,5 +137,21 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", shift = At.Shift.BEFORE))
     private void injectHandleInputs(CallbackInfo ci) {
         new ActionEvent().call();
+    }
+
+    @Inject(method = "doAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;attackEntity(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;)V", shift = At.Shift.BEFORE), cancellable = true)
+    private void injectDoAttackAttackEntity(CallbackInfo ci) {
+        if (!ViaInstance.VIAVERSION_EXISTS) return;
+        ci.cancel();
+
+        AttackOrderUtils.sendFixedAttack(this.player, ((EntityHitResult) this.crosshairTarget).getEntity(), Hand.MAIN_HAND);
+    }
+
+    @Inject(method = "doAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V", shift = At.Shift.BEFORE), cancellable = true)
+    private void injectDoAttackSwing(CallbackInfo ci) {
+        if (!ViaInstance.VIAVERSION_EXISTS) return;
+        ci.cancel();
+
+        AttackOrderUtils.sendConditionalSwing(this.crosshairTarget, Hand.MAIN_HAND);
     }
 }
