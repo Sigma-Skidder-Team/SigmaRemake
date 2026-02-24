@@ -134,7 +134,7 @@ public class KillAuraModule extends Rotatable {
     private void attack(Entity target) {
         switch (attackMode.value) {
             case "Packet":
-                AttackOrderUtils.sendFixedAttack(target, Hand.MAIN_HAND);
+                AttackOrderUtils.sendFixedAttack(client.player, target, Hand.MAIN_HAND);
                 break;
             default:
                 client.doAttack();
