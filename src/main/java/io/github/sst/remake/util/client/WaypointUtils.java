@@ -23,13 +23,17 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WaypointUtils implements IMinecraft {
-    public static HashMap<Long, MapRegion> regionCache = new HashMap<>();
-    public static final List<ChunkPos> processedChunks = new ArrayList<ChunkPos>();
-    public static final List<ChunkPos> borderChunks = new ArrayList<ChunkPos>();
+    public static final ConcurrentHashMap<Long, MapRegion> regionCache = new ConcurrentHashMap<>();
+
+    public static final List<ChunkPos> processedChunks = new CopyOnWriteArrayList<>();
+    public static final List<ChunkPos> borderChunks = new CopyOnWriteArrayList<>();
+    public static final List<RegionPos> missingRegionFiles = new CopyOnWriteArrayList<>();
+
     public static ByteBuffer defaultChunkBuffer = BufferUtils.createByteBuffer(10 * 16 * 10 * 16 * 3);
-    public static List<RegionPos> missingRegionFiles = new ArrayList<>();
 
     public static String getRegionFilePath(String baseDir, WorldChunk chunk) {
         RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
@@ -157,24 +161,44 @@ public class WaypointUtils implements IMinecraft {
         return new Chunk(buffer, 16 * size, 16 * size);
     }
 
-    public static boolean loadRegionFromFile(RegionPos regionPos) throws IOException {
-        if (!missingRegionFiles.contains(regionPos)) {
-            String identifier = Client.INSTANCE.waypointTracker.mapRegionIdentifier;
-            File file = new File(getRegionFilePath(identifier, regionPos));
-            if (file.exists()) {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                MapRegion mapRegion = new MapRegion(regionPos.x, regionPos.z);
-                mapRegion.read(objectInputStream);
-                regionCache.put(regionPos.toLong(), mapRegion);
-                return true;
-            } else {
-                missingRegionFiles.add(regionPos);
-                return false;
-            }
-        } else {
+    public static boolean loadRegionFromFile(final RegionPos regionPos) throws IOException {
+        if (missingRegionFiles.contains(regionPos)) {
             return false;
         }
+
+        final String identifier = Client.INSTANCE.waypointTracker.mapRegionIdentifier;
+        final File file = new File(getRegionFilePath(identifier, regionPos));
+
+        if (!file.exists()) {
+            missingRegionFiles.add(regionPos);
+            return false;
+        }
+
+        final long key = regionPos.toLong();
+
+        MapRegion existing = regionCache.get(key);
+        if (existing != null) {
+            return true;
+        }
+
+        MapRegion loaded = regionCache.computeIfAbsent(key, k -> {
+            try (FileInputStream fis = new FileInputStream(file);
+                 ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+                MapRegion region = new MapRegion(regionPos.x, regionPos.z);
+                synchronized (region) {
+                    region.read(ois);
+                }
+                return region;
+
+            } catch (IOException e) {
+                Client.LOGGER.warn("Failed to load region file", e);
+                missingRegionFiles.add(regionPos);
+                return null;
+            }
+        });
+
+        return loaded != null;
     }
 
     public static int getWaypointHeight(BlockPos var1, boolean var2) {
