@@ -130,22 +130,34 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     @Override
     public void shutdown() {
-        notification.release();
-        songThumbnail.release();
+        if (notification != null) {
+            notification.release();
+        }
+        if (songThumbnail != null) {
+            songThumbnail.release();
+        }
+        if (dataLine != null) {
+            dataLine.close();
+        }
+
         notification = null;
         songThumbnail = null;
+        dataLine = null;
 
         thumbnailImage = null;
         scaledThumbnailImage = null;
 
         playing = false;
         playlist = null;
+        
         currentPlayingSongData = null;
         thumbnailProcessingSongData = null;
+
         visualizer.clear();
         amplitudes.clear();
-        dataLine.close();
         playlists.clear();
+
+        super.shutdown();
     }
 
     @Subscribe
