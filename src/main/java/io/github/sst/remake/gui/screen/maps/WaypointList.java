@@ -44,8 +44,8 @@ public class WaypointList extends ScrollablePanel {
             });
             waypoint.onPress(
                     var3x -> {
-                        Client.INSTANCE.waypointManager.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
-                        Client.INSTANCE.waypointManager.save();
+                        Client.INSTANCE.waypointTracker.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
+                        Client.INSTANCE.waypointTracker.save();
                         this.content.removeChildByName(waypoint.name);
                         this.waypoints.remove(var3x);
                     }

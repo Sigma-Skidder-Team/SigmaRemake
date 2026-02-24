@@ -155,7 +155,7 @@ public class WaypointsModule extends Module {
     }
 
     private List<Waypoint> collectAndSortWaypointsByDistance() {
-        List<Waypoint> waypoints = new ArrayList<>(Client.INSTANCE.waypointManager.getWaypoints());
+        List<Waypoint> waypoints = new ArrayList<>(Client.INSTANCE.waypointTracker.getWaypoints());
 
         if (unspawn.value) {
             waypoints.addAll(this.unspawnedWaypoints.values());

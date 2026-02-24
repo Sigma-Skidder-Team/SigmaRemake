@@ -37,7 +37,7 @@ public class MapsScreen extends Screen implements IMinecraft {
     private void setupWaypointPanelListener(AddWaypointDialog panel) {
         panel.method13131((var1x, var2, var3, var4) -> {
             this.mapPanel.waypointList.addWaypoint(var2, var3, var4);
-            Client.INSTANCE.waypointManager.add(new Waypoint(var2, var3.getX(), var3.getZ(), var4));
+            Client.INSTANCE.waypointTracker.add(new Waypoint(var2, var3.getX(), var3.getZ(), var4));
             this.closeWaypointPanel();
         });
     }

@@ -25,23 +25,23 @@ public class CorrectMovementModule extends Module {
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onJump(JumpEvent event) {
-        if (Client.INSTANCE.rotationManager.active && Client.INSTANCE.rotationManager.rotations != null && event.entity == client.player) {
-            event.yaw = Client.INSTANCE.rotationManager.rotations.yaw;
+        if (Client.INSTANCE.moduleManager.rotationTracker.active && Client.INSTANCE.moduleManager.rotationTracker.rotations != null && event.entity == client.player) {
+            event.yaw = Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw;
         }
     }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onVelocity(VelocityYawEvent event) {
-        if (Client.INSTANCE.rotationManager.active && Client.INSTANCE.rotationManager.rotations != null && event.entity == client.player) {
-            event.yaw = Client.INSTANCE.rotationManager.rotations.yaw;
+        if (Client.INSTANCE.moduleManager.rotationTracker.active && Client.INSTANCE.moduleManager.rotationTracker.rotations != null && event.entity == client.player) {
+            event.yaw = Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw;
         }
     }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onInput(InputEvent event) {
         if (!mode.value.equals("Silent")) return;
-        if (Client.INSTANCE.rotationManager.active && Client.INSTANCE.rotationManager.rotations != null) {
-            correctMovement(event, Client.INSTANCE.rotationManager.rotations.yaw);
+        if (Client.INSTANCE.moduleManager.rotationTracker.active && Client.INSTANCE.moduleManager.rotationTracker.rotations != null) {
+            correctMovement(event, Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw);
         }
     }
 

@@ -13,7 +13,7 @@ public abstract class Rotatable extends Module {
         super(name, description, category);
         this.priority = priority;
 
-        Client.INSTANCE.rotationManager.rotatables.add(this);
+        Client.INSTANCE.moduleManager.rotationTracker.rotatables.add(this);
     }
 
     public abstract Rotation getRotations();

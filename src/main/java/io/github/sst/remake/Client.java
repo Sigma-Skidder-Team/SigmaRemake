@@ -2,6 +2,7 @@ package io.github.sst.remake;
 
 import io.github.sst.remake.data.bus.EventBus;
 import io.github.sst.remake.manager.impl.*;
+import io.github.sst.remake.tracker.impl.WaypointTracker;
 import io.github.sst.remake.util.IMinecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,9 +22,8 @@ public class Client implements IMinecraft {
     public final BindManager bindManager = new BindManager();
     public final AccountManager accountManager = new AccountManager();
     public final NotificationManager notificationManager = new NotificationManager();
-    public final WaypointManager waypointManager = new WaypointManager();
+    public final WaypointTracker waypointTracker = new WaypointTracker();
     public final MusicManager musicManager = new MusicManager();
-    public final RotationManager rotationManager = new RotationManager();
     public final ViaManager viaManager = new ViaManager();
 
     public boolean loaded = false;
@@ -34,14 +34,12 @@ public class Client implements IMinecraft {
         viaManager.init();
         rpcManager.init();
 
-        configManager.init();
         accountManager.init();
 
         moduleManager.init();
+        configManager.init();
         bindManager.init();
-        rotationManager.init();
 
-        waypointManager.init();
         notificationManager.init();
 
         textureManager.init();
@@ -49,6 +47,7 @@ public class Client implements IMinecraft {
         hudManager.init();
 
         musicManager.init();
+        waypointTracker.enable();
 
         LOGGER.info("Everything has been initialised.");
     }
@@ -61,10 +60,9 @@ public class Client implements IMinecraft {
         textureManager.shutdown();
 
         musicManager.shutdown();
+        waypointTracker.disable();
         notificationManager.shutdown();
 
-        waypointManager.shutdown();
-        rotationManager.shutdown();
         bindManager.shutdown();
         moduleManager.shutdown();
 

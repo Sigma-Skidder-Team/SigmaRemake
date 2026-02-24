@@ -1,4 +1,4 @@
-package io.github.sst.remake.manager.impl;
+package io.github.sst.remake.tracker.impl;
 
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
@@ -8,7 +8,7 @@ import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityPitchEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityYawEvent;
 import io.github.sst.remake.event.impl.game.world.EntityLookEvent;
-import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.tracker.Tracker;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.game.RotationUtils;
 import net.minecraft.util.math.MathHelper;
@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public final class RotationManager extends Manager implements IMinecraft {
+public final class RotationTracker extends Tracker implements IMinecraft {
     public List<Rotatable> rotatables;
 
     private float lastSentYaw, lastSentPitch;
@@ -27,9 +27,9 @@ public final class RotationManager extends Manager implements IMinecraft {
     public boolean active;
 
     @Override
-    public void init() {
-        super.init();
+    public void enable() {
         rotatables = new ArrayList<>();
+        super.enable();
     }
 
     @Subscribe(priority = Priority.HIGHEST)

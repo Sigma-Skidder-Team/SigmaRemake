@@ -181,7 +181,7 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
             );
             GL11.glPopMatrix();
 
-            for (Waypoint var16 : Client.INSTANCE.waypointManager.getWaypoints()) {
+            for (Waypoint var16 : Client.INSTANCE.waypointTracker.getWaypoints()) {
                 float var17 = (float) (this.chunkPos.x * 16) - this.chunkOffsetX * 16.0F;
                 float var18 = (float) (this.chunkPos.z * 16) - this.chunkOffsetY * 16.0F;
                 float var19 = (float) var16.x - var17 + 1.0F;

@@ -12,6 +12,7 @@ import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.movement.CorrectMovementModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
+import io.github.sst.remake.tracker.impl.RotationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,18 @@ import java.util.stream.Collectors;
 public final class ModuleManager extends Manager {
     public List<Module> modules;
 
-    public Module currentModule = null;
+    public Module currentModule;
     private int toggleSoundSuppressDepth = 0;
+
+    public RotationTracker rotationTracker;
 
     @Override
     public void init() {
+        rotationTracker = new RotationTracker();
+        rotationTracker.enable();
+
         modules = new ArrayList<>();
+
         modules.add(new ActiveModsModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());
@@ -36,12 +43,9 @@ public final class ModuleManager extends Manager {
         modules.add(new TestModule());
         modules.add(new KillAuraModule());
         modules.add(new CorrectMovementModule());
-        initModules();
-        super.init();
-    }
 
-    private void initModules() {
         modules.forEach(Module::onInit);
+        super.init();
     }
 
     public Module getModule(String input) {

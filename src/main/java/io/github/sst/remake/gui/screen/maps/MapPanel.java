@@ -28,7 +28,7 @@ public class MapPanel extends InteractiveWidget {
         this.waypointListWidth = 260;
         this.addToList(this.waypointList = new WaypointList(this, "waypointList", 0, 65, this.waypointListWidth, this.height - 65));
 
-        for (Waypoint var10 : Client.INSTANCE.waypointManager.getWaypoints()) {
+        for (Waypoint var10 : Client.INSTANCE.waypointTracker.getWaypoints()) {
             this.waypointList.addWaypoint(var10.name, new Vec3i(var10.x, 64, var10.z), var10.color);
         }
 

@@ -1,4 +1,4 @@
-package io.github.sst.remake.manager.impl;
+package io.github.sst.remake.tracker.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -7,7 +7,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
-import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.tracker.Tracker;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.client.WaypointUtils;
@@ -29,7 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public final class WaypointManager extends Manager implements IMinecraft {
+public final class WaypointTracker extends Tracker implements IMinecraft {
     private List<Waypoint> waypoints;
     public String mapRegionIdentifier;
     private String logicalIdentifier;
@@ -37,7 +37,7 @@ public final class WaypointManager extends Manager implements IMinecraft {
     private boolean loaded = false;
 
     @Override
-    public void init() {
+    public void enable() {
         waypoints = new ArrayList<>();
 
         if (!ConfigUtils.WAYPOINTS_FOLDER.exists()) {
@@ -58,7 +58,7 @@ public final class WaypointManager extends Manager implements IMinecraft {
 
         ((Buffer) WaypointUtils.defaultChunkBuffer).flip();
 
-        super.init();
+        super.enable();
     }
 
     public List<Waypoint> getWaypoints() {

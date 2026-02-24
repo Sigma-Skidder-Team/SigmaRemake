@@ -160,7 +160,7 @@ public class WaypointUtils implements IMinecraft {
 
     public static boolean loadRegionFromFile(RegionPos regionPos) throws IOException {
         if (!missingRegionFiles.contains(regionPos)) {
-            String identifier = Client.INSTANCE.waypointManager.mapRegionIdentifier;
+            String identifier = Client.INSTANCE.waypointTracker.mapRegionIdentifier;
             File file = new File(getRegionFilePath(identifier, regionPos));
             if (file.exists()) {
                 FileInputStream fileInputStream = new FileInputStream(file);
