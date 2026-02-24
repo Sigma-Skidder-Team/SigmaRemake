@@ -73,7 +73,6 @@ public class Alert extends InteractiveWidget {
                                             new ColorHelper(
                                                     ClientColors.DEEP_TEAL.getColor(),
                                                     ClientColors.DEEP_TEAL.getColor(),
-                                                    ClientColors.DEEP_TEAL.getColor(),
                                                     ClientColors.DEEP_TEAL.getColor()
                                             ),
                                             component.text,
@@ -115,7 +114,7 @@ public class Alert extends InteractiveWidget {
                                         this.contentWidth,
                                         component.componentHeight,
                                         new ColorHelper(
-                                                ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor()
+                                                ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor(), ClientColors.MID_GREY.getColor()
                                         ),
                                         component.text,
                                         FontUtils.HELVETICA_LIGHT_20

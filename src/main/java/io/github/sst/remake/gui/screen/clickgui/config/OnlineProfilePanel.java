@@ -61,7 +61,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                 this.profileList
                         .addToList(
                                 profileButton = new Button(
-                                        this.profileList, "p_" + profile, 0, 0, width, 30, new ColorHelper(-723724, -2039584, 0, -14671840), profile, FontUtils.HELVETICA_LIGHT_18
+                                        this.profileList, "p_" + profile, 0, 0, width, 30, new ColorHelper(-723724, -2039584, 0), profile, FontUtils.HELVETICA_LIGHT_18
                                 )
                         );
                 profileButton.onClick((parent2, mouseButton) -> {
