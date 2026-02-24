@@ -85,7 +85,7 @@ public abstract class MixinMinecraftClient {
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))
     private String modifyWindowTitle(String title) {
-        title = "Jello for Fabric " + Client.VERSION;
+        title = "Jello for Sigma Fabric " + Client.VERSION;
         return title;
     }
 
