@@ -151,15 +151,21 @@ public final class WaypointTracker extends Tracker implements IMinecraft {
                                     MapRegion mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
                                     ByteBuffer chunkMap = WaypointUtils.generateChunkMap(chunk, WaypointUtils.areNeighborsLoaded(chunk));
                                     if (mapRegion != null) {
-                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        synchronized (mapRegion) {
+                                            mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        }
                                     } else if (!regionFile.exists()) {
                                         mapRegion = new MapRegion(regionPos.x, regionPos.z);
-                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        synchronized (mapRegion) {
+                                            mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        }
                                         WaypointUtils.regionCache.put(regionPos.toLong(), mapRegion);
                                         WaypointUtils.missingRegionFiles.clear();
                                     } else if (WaypointUtils.loadRegionFromFile(regionPos)) {
                                         mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
-                                        mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        synchronized (mapRegion) {
+                                            mapRegion.setChunkData(chunkMap, chunk.getPos());
+                                        }
                                     }
 
                                     this.pendingChunkSaveCount++;
@@ -245,16 +251,24 @@ public final class WaypointTracker extends Tracker implements IMinecraft {
     }
 
     public void saveModifiedRegions() throws IOException {
-        if (this.mapRegionIdentifier != null) {
-            try {
-                for (Map.Entry<Long, MapRegion> entry : WaypointUtils.regionCache.entrySet()) {
-                    ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(WaypointUtils.getRegionFilePath(mapRegionIdentifier, entry.getValue()))));
-                    entry.getValue().write(outputStream);
-                    outputStream.close();
-                }
+        if (this.mapRegionIdentifier == null) {
+            return;
+        }
+
+        for (Map.Entry<Long, MapRegion> entry : WaypointUtils.regionCache.entrySet()) {
+            MapRegion region = entry.getValue();
+            if (region == null) {
+                continue;
             }
-            catch (ConcurrentModificationException e) {
-                Client.LOGGER.warn("Failed to save modified regions", e);
+
+            String path = WaypointUtils.getRegionFilePath(this.mapRegionIdentifier, region);
+
+            synchronized (region) {
+                try (ObjectOutputStream out = new ObjectOutputStream(
+                        Files.newOutputStream(Paths.get(path))
+                )) {
+                    region.write(out);
+                }
             }
         }
     }
