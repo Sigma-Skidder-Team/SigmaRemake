@@ -62,8 +62,32 @@ public enum ViaProtocols {
         this.name = name;
     }
 
-    ViaProtocols(int protocol) {
-        this(protocol, "Unknown");
+    public boolean newerThan(ViaProtocols other) {
+        return this.protocol > other.protocol;
+    }
+
+    public boolean newerThanOrEqualTo(ViaProtocols other) {
+        return this.protocol >= other.protocol;
+    }
+
+    public boolean olderThan(ViaProtocols other) {
+        return this.protocol < other.protocol;
+    }
+
+    public boolean olderThanOrEqualTo(ViaProtocols other) {
+        return this.protocol <= other.protocol;
+    }
+
+    public boolean equalTo(ViaProtocols other) {
+        return this.protocol == other.protocol;
+    }
+
+    public boolean betweenInclusive(ViaProtocols min, ViaProtocols max) {
+        return this.protocol >= min.protocol && this.protocol <= max.protocol;
+    }
+
+    public boolean betweenExclusive(ViaProtocols min, ViaProtocols max) {
+        return this.protocol > min.protocol && this.protocol < max.protocol;
     }
 
     static {

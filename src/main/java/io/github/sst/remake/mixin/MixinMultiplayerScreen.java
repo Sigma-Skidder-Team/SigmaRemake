@@ -5,7 +5,6 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.ViaProtocols;
-import io.github.sst.remake.util.viaversion.version.ClientSideVersionUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -39,7 +38,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                 0,
                 ViaProtocols.values().length - 1,
                 1,
-                (options) -> (double) ClientSideVersionUtils.getProtocol().ordinal(),
+                (options) -> (double) ViaInstance.getTargetVersion().ordinal(),
                 Client.INSTANCE.viaManager::onVersionChange,
                 (options, option) -> {
                     int index = (int) option.get(options);

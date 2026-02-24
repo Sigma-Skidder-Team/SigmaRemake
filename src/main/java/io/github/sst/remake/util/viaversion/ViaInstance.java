@@ -1,10 +1,22 @@
 package io.github.sst.remake.util.viaversion;
 
 import io.github.sst.remake.Client;
+import io.github.sst.remake.util.viaversion.version.ClientSideVersionUtils;
 
 public class ViaInstance {
-
     public static boolean VIAVERSION_EXISTS = viaFabricExists() && viaVersionExists();
+
+    public static void init() {
+        ClientSideVersionUtils.init();
+    }
+
+    public static ViaProtocols getTargetVersion() {
+        return ClientSideVersionUtils.getProtocol();
+    }
+
+    public static void setTargetVersion(ViaProtocols protocol) {
+        ClientSideVersionUtils.setClientSideVersion(protocol.protocol);
+    }
 
     private static boolean viaFabricExists() {
         try {
@@ -27,5 +39,4 @@ public class ViaInstance {
             return false;
         }
     }
-
 }

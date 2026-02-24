@@ -15,7 +15,7 @@ import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.math.BasicTimer;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
-import io.github.sst.remake.util.viaversion.fixes.AttackUtils;
+import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -24,6 +24,7 @@ import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class KillAuraModule extends Rotatable {
     private void attack(Entity target) {
         switch (attackMode.value) {
             case "Packet":
-                AttackUtils.attackEntity(target, !noSwing.value);
+                AttackOrderUtils.sendFixedAttack(target, Hand.MAIN_HAND);
                 break;
             default:
                 client.doAttack();
