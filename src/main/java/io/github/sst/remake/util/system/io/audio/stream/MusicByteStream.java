@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.io.audio.stream;
+package io.github.sst.remake.util.system.io.audio.stream;
 
 import java.io.ByteArrayOutputStream;
 

@@ -3,7 +3,7 @@ package io.github.sst.remake.setting.impl;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 
 public class TextInputSetting extends Setting<String> {
     public TextInputSetting(String name, String description, String value) {

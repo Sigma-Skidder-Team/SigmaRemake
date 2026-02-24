@@ -1,7 +1,7 @@
 package io.github.sst.remake.gui.screen.snake;
 
 import io.github.sst.remake.util.client.ScreenDimension;
-import io.github.sst.remake.util.io.audio.SoundUtils;
+import io.github.sst.remake.util.system.io.audio.SoundUtils;
 
 public class SnakeGameLogic {
     public final int boardWidth;

@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.math.anim;
+package io.github.sst.remake.util.math.anim.ease;
 
 public class QuadraticEasing {
     public static float easeInQuad(float progress, float start, float change, float duration) {

@@ -76,5 +76,4 @@ public class Waypoint {
         result = 31 * result + identifier.hashCode();
         return result;
     }
-
 }

@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YoutubeUtils {
-
     private static final String GOOGLE_SEARCH_BASE_URL = "https://www.google.com/search?client=safari&num=21&gbv=1&tbm=vid&q=site:youtube.com/watch+music+";
     private static final String YOUTUBE_DEFAULT_FALLBACK_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
@@ -120,5 +119,4 @@ public class YoutubeUtils {
     private static boolean containsVideo(List<SongData> videos, String id) {
         return videos.stream().anyMatch(p -> p != null && p.id.equals(id));
     }
-
 }

@@ -8,7 +8,7 @@ import io.github.sst.remake.gui.framework.widget.Text;
 import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.screen.altmanager.AltManagerScreen;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.io.audio.SoundUtils;
+import io.github.sst.remake.util.system.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;

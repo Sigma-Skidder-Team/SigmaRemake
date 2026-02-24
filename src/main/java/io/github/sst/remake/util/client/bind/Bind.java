@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.screen.Screen;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Bind {
     @Setter
     private int key = -1;

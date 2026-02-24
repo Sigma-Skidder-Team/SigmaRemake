@@ -7,7 +7,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class RotationUtils implements IMinecraft {
-
     public static Rotation getRotationsRaw(Entity target) {
         if (target == null || client.player == null) return null;
 
@@ -243,5 +242,4 @@ public class RotationUtils implements IMinecraft {
     public static float wrapDegrees2(float start, float end) {
         return MathHelper.wrapDegrees(-(start - end));
     }
-
 }

@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.math;
+package io.github.sst.remake.util.math.timer;
 
 @SuppressWarnings("unused")
 public class BasicTimer {

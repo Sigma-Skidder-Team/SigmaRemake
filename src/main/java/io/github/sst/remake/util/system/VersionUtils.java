@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VersionUtils {
-
     public static boolean hasPython3_11() {
         String version = getPythonVersion();
 
@@ -79,5 +78,4 @@ public class VersionUtils {
             return false;
         }
     }
-
 }

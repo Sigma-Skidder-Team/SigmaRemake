@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class SkinUtils {
-
     private static String getSkinUrlByID(String uuid) {
         return "https://minotar.net/skin/" + uuid;
     }
@@ -66,5 +65,4 @@ public class SkinUtils {
             return null;
         }
     }
-
 }

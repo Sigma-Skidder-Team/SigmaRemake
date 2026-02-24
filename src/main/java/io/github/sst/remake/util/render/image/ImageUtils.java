@@ -14,7 +14,6 @@ import java.awt.image.ConvolveOp;
 import java.nio.ByteBuffer;
 
 public class ImageUtils {
-
     private static float getScaleFactor() {
         return Client.INSTANCE.screenManager.scaleFactor;
     }
@@ -334,5 +333,4 @@ public class ImageUtils {
     public static BufferedImage captureAndProcessRegion(int x, int y, int width, int height, int downscaleFactor, int blurRadius) {
         return captureAndProcessRegion(x, y, width, height, downscaleFactor, blurRadius, ClientColors.DEEP_TEAL.getColor(), false);
     }
-
 }

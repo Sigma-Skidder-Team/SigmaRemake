@@ -1,4 +1,6 @@
-package io.github.sst.remake.util.io.audio.stream;
+package io.github.sst.remake.util.system.io.audio.stream;
+
+import io.github.sst.remake.Client;
 
 import java.io.InputStream;
 
@@ -24,7 +26,7 @@ public final class AudioStreamer implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Client.LOGGER.warn("Something failed while trying to stream audio", e);
         }
 
         if (!Thread.interrupted()) {

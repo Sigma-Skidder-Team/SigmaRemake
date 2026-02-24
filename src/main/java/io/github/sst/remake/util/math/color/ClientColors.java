@@ -1,5 +1,8 @@
 package io.github.sst.remake.util.math.color;
 
+import lombok.Getter;
+
+@Getter
 public enum ClientColors {
     DEEP_TEAL(-16711423),
     DARK_BLUE_GREY(-16723258),
@@ -26,9 +29,4 @@ public enum ClientColors {
     ClientColors(int color) {
         this.color = color;
     }
-
-    public int getColor() {
-        return color;
-    }
 }
-

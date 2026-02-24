@@ -14,8 +14,8 @@ import io.github.sst.remake.util.client.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.MapRegion;
 import io.github.sst.remake.util.client.waypoint.RegionPos;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
-import io.github.sst.remake.util.io.FileUtils;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.FileUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 

@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.sst.remake.Client;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;

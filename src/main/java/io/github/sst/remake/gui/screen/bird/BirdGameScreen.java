@@ -3,11 +3,11 @@ package io.github.sst.remake.gui.screen.bird;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.EasingFunctions;
+import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
 public class BirdGameScreen extends Screen implements IMinecraft {

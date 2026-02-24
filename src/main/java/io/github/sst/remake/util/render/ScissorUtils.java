@@ -12,7 +12,6 @@ import java.util.Stack;
 import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
 public class ScissorUtils {
-
     private static final Stack<IntBuffer> buffer = new Stack<>();
 
     private static float getScaleFactor() {
@@ -98,5 +97,4 @@ public class ScissorUtils {
             GL11.glScissor(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));
         }
     }
-
 }

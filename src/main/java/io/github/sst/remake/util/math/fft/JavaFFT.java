@@ -1,9 +1,8 @@
-package io.github.sst.remake.util.math;
+package io.github.sst.remake.util.math.fft;
 
 import javax.sound.sampled.AudioFormat;
 
 public class JavaFFT implements Transform {
-
     private static final int MAX_FAST_BITS = 16;
     private static final int[][] FFT_BIT_TABLE = new int[MAX_FAST_BITS][];
     private final int numberOfSamples;

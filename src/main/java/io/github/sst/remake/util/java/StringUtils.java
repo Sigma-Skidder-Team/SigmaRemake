@@ -161,4 +161,9 @@ public class StringUtils {
             throw new RuntimeException("UTF-8 encoding not supported", e);
         }
     }
+
+    public static String stripQuery(String url) {
+        int idx = url.indexOf('?');
+        return idx >= 0 ? url.substring(0, idx) : url;
+    }
 }

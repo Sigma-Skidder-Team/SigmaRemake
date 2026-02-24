@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.notifications;
 
-import io.github.sst.remake.util.math.TogglableTimer;
+import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.texture.Texture;
 

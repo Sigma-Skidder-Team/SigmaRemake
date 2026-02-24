@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BindUtils {
-
     public static final Map<Class<? extends Screen> , Integer> SCREEN_BINDINGS = new HashMap<>();
 
     static {
@@ -39,5 +38,4 @@ public class BindUtils {
 
         return "Unknown";
     }
-
 }

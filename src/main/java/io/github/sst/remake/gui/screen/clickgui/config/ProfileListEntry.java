@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.data.profile.Profile;
-import io.github.sst.remake.util.io.audio.SoundUtils;
+import io.github.sst.remake.util.system.io.audio.SoundUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -46,7 +46,7 @@ public class ProfileListEntry extends Widget {
         ProfileActionButton deleteButton;
         this.editButtons.addToList(deleteButton = new ProfileActionButton(this.editButtons, "remove", this.editButtonsWidth / 2, 0, this.editButtonsWidth / 2, height, deleteButtonColors, "Delete"));
         this.editButtons.setHovered(false);
-        ColorHelper textFieldColor = new ColorHelper(-892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
+        ColorHelper textFieldColor = new ColorHelper(-892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
         this.addToList(this.profileName = new TextField(this, "profileName", 16, 8, this.getWidth() - 60, 50, textFieldColor, profile.name));
         this.profileName.setUnderlineEnabled(false);
         this.profileName.setFont(FontUtils.HELVETICA_LIGHT_24);

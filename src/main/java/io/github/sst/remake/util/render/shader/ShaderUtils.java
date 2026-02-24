@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.render;
+package io.github.sst.remake.util.render.shader;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class ShaderUtils implements IMinecraft {
-
     private static final Identifier BLUR_SHADER = new Identifier("shaders/post/blur.json");
 
     private static boolean canBlur() {
@@ -52,5 +51,4 @@ public class ShaderUtils implements IMinecraft {
     public static void setShaderRadiusRounded(float radius) {
         setShaderRadius(Math.round(radius * 20.0F));
     }
-
 }

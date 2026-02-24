@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScreenUtils implements IMinecraft {
-
     public static final Map<Class<? extends net.minecraft.client.gui.screen.Screen>, Class<? extends Screen>> replacementScreens = new HashMap<>();
     public static final Map<Class<? extends net.minecraft.client.gui.screen.Screen>, String> screenToScreenName = new HashMap<>();
 
@@ -101,5 +100,4 @@ public class ScreenUtils implements IMinecraft {
             return false;
         }
     }
-
 }

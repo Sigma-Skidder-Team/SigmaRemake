@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import io.github.sst.remake.util.math.TogglableTimer;
+import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -23,9 +23,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT;
 
 public class TextField extends Widget implements IMinecraft {
     public static final ColorHelper DEFAULT_COLORS = new ColorHelper(
-            -892679478, -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER
+            -892679478, -892679478, ClientColors.DEEP_TEAL.getColor(), FontAlignment.LEFT, FontAlignment.CENTER
     );
-    public static final ColorHelper INVERTED_COLORS = new ColorHelper(-1, -1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
+    public static final ColorHelper INVERTED_COLORS = new ColorHelper(-1, -1, ClientColors.LIGHT_GREYISH_BLUE.getColor(), FontAlignment.LEFT, FontAlignment.CENTER);
     private String placeholder = "";
     private float focusFade;
     private float textOffsetX;

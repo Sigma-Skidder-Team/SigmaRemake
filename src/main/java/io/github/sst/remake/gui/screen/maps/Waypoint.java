@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.screen.maps;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;

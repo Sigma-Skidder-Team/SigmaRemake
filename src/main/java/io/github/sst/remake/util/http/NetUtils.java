@@ -17,7 +17,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NetUtils {
-
     public static final String USER_AGENT = "SigmaRemake/" + Client.VERSION;
 
     public static CloseableHttpClient getHttpClient() {
@@ -54,6 +53,4 @@ public class NetUtils {
             return "";
         }
     }
-
-
 }

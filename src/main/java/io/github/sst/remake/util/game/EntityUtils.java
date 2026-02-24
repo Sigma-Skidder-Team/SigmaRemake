@@ -7,7 +7,6 @@ import net.minecraft.util.math.BlockPos;
 
 @SuppressWarnings("ALL")
 public class EntityUtils implements IMinecraft {
-
     public static double calculateDistanceSquared(BlockPos blockPos) {
         double deltaX = getEntityPosition(client.player).x - (double) blockPos.getX();
         double deltaY = getEntityPosition(client.player).y - (double) blockPos.getY();
@@ -22,5 +21,4 @@ public class EntityUtils implements IMinecraft {
                 entity.lastRenderZ + (entity.getZ() - entity.lastRenderZ) * (double) client.renderTickCounter.tickDelta
         );
     }
-
 }

@@ -43,7 +43,6 @@ public class DropdownMenu extends InteractiveWidget {
                                     ClientColors.LIGHT_GREYISH_BLUE.getColor(),
                                     -1381654,
                                     this.textColor.getPrimaryColor(),
-                                    this.textColor.getPrimaryColor(),
                                     FontAlignment.LEFT,
                                     FontAlignment.CENTER
                             ),

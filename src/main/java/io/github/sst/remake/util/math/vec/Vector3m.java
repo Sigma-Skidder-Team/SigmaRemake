@@ -1,7 +1,9 @@
 package io.github.sst.remake.util.math.vec;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class Vector3m implements Comparable<Vector3m> {
     public final double x;
     public final double y;
@@ -37,10 +39,6 @@ public class Vector3m implements Comparable<Vector3m> {
         this.z = 0.0;
     }
 
-    public double getX() {
-        return this.x;
-    }
-
     public int getRoundedX() {
         return (int) Math.round(this.x);
     }
@@ -53,10 +51,6 @@ public class Vector3m implements Comparable<Vector3m> {
         return new Vector3m(x, this.y, this.z);
     }
 
-    public double getY() {
-        return this.y;
-    }
-
     public int getRoundedY() {
         return (int) Math.round(this.y);
     }
@@ -67,10 +61,6 @@ public class Vector3m implements Comparable<Vector3m> {
 
     public Vector3m withY(int y) {
         return new Vector3m(this.x, y, this.z);
-    }
-
-    public double getZ() {
-        return this.z;
     }
 
     public int getRoundedZ() {

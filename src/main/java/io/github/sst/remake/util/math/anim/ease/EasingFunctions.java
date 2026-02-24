@@ -1,7 +1,6 @@
-package io.github.sst.remake.util.math.anim;
+package io.github.sst.remake.util.math.anim.ease;
 
 public class EasingFunctions {
-
     public static float easeInBack(float progress, float start, float change, float duration) {
         float s = 1.70158F;
         float ratio;

@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
 import io.github.sst.remake.gui.framework.widget.internal.DropdownMenu;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
@@ -82,7 +82,6 @@ public class Dropdown extends InteractiveWidget {
                             new ColorHelper(
                                     ClientColors.LIGHT_GREYISH_BLUE.getColor(),
                                     -1381654,
-                                    this.textColor.getPrimaryColor(),
                                     this.textColor.getPrimaryColor(),
                                     FontAlignment.LEFT,
                                     FontAlignment.CENTER

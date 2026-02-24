@@ -29,7 +29,6 @@ public class ThumbnailButton extends Widget {
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
-            ClientColors.DEEP_TEAL.getColor(),
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );

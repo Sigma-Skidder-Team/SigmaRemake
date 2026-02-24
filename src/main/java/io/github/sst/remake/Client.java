@@ -74,5 +74,4 @@ public class Client implements IMinecraft {
 
         LOGGER.info("Everything saved.");
     }
-
 }

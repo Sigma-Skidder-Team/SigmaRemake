@@ -3,7 +3,6 @@ package io.github.sst.remake.util.game;
 import io.github.sst.remake.util.IMinecraft;
 
 public class MovementUtils implements IMinecraft {
-
     public static float getDirection(float forward, float strafing, float yaw) {
         if (forward == 0.0f && strafing == 0.0f) {
             return yaw;
@@ -26,5 +25,4 @@ public class MovementUtils implements IMinecraft {
     public static float getDirection() {
         return getDirection(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
     }
-
 }

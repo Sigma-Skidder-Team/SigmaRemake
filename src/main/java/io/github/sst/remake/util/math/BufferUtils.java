@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 import java.nio.FloatBuffer;
 
 public class BufferUtils {
-
     private static float getGuiScaleFactor() {
         return (float) MinecraftClient.getInstance().getWindow().getScaleFactor();
     }
@@ -51,5 +50,4 @@ public class BufferUtils {
 
         return new float[]{offsetX, offsetY, fittedWidth, fittedHeight};
     }
-
 }

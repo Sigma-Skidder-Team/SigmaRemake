@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.client.blur;
+package io.github.sst.remake.util.render.shader.impl;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.Resource;
@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class SigmaBlurShader implements ResourceManager {
-
     public @NotNull Set<String> getAllNamespaces() {
         return MinecraftClient.getInstance().getResourceManager().getAllNamespaces();
     }

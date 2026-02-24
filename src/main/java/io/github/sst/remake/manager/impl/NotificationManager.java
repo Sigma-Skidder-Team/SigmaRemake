@@ -6,7 +6,7 @@ import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;

@@ -4,7 +4,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.module.impl.gui.ActiveModsModule;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.io.audio.SoundUtils;
+import io.github.sst.remake.util.system.io.audio.SoundUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package io.github.sst.remake.util.math.anim;
 
 import io.github.sst.remake.util.math.RandomIntGenerator;
-import io.github.sst.remake.util.math.TogglableTimer;
+import io.github.sst.remake.util.math.timer.TogglableTimer;
 import lombok.Getter;
 
 public class AnimationManager {

@@ -9,7 +9,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.Vector3m;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.StencilUtils;
+import io.github.sst.remake.util.render.shader.StencilUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.util.math.Vec3i;
 import org.lwjgl.opengl.GL11;

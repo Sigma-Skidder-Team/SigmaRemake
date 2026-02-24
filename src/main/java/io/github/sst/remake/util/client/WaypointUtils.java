@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class WaypointUtils implements IMinecraft {
-
     public static HashMap<Long, MapRegion> regionCache = new HashMap<>();
     public static final List<ChunkPos> processedChunks = new ArrayList<ChunkPos>();
     public static final List<ChunkPos> borderChunks = new ArrayList<ChunkPos>();
@@ -225,5 +224,4 @@ public class WaypointUtils implements IMinecraft {
 
         return var6;
     }
-
 }

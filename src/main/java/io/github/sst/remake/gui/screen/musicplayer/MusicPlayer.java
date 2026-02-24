@@ -12,7 +12,7 @@ import io.github.sst.remake.util.client.yt.PlaylistData;
 import io.github.sst.remake.util.client.yt.SongData;
 import io.github.sst.remake.util.http.YoutubeUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;

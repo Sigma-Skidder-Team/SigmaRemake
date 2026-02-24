@@ -9,7 +9,7 @@ import io.github.sst.remake.gui.framework.layout.GuiComponentVisitor;
 import io.github.sst.remake.gui.framework.event.InputListener;
 import io.github.sst.remake.gui.framework.layout.WidthSetter;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.font.FontUtils;
 import lombok.Getter;

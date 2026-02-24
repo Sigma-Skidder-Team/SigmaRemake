@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.io.audio;
+package io.github.sst.remake.util.system.io.audio;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.render.image.Resources;
@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SoundUtils {
-
     private static final String fileType = ".mp3";
     private static final List<String> VALID_SOUNDS = new ArrayList<>(
             Arrays.asList("activate", "deactivate", "click", "error", "pop", "connect", "switch", "clicksound")
@@ -37,5 +36,4 @@ public class SoundUtils {
             }
         }
     }
-
 }

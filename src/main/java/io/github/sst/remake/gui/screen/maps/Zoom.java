@@ -6,7 +6,7 @@ import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
-import io.github.sst.remake.util.render.StencilUtils;
+import io.github.sst.remake.util.render.shader.StencilUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import net.minecraft.client.MinecraftClient;

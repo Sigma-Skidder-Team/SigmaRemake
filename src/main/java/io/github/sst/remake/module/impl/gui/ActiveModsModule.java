@@ -10,7 +10,7 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;

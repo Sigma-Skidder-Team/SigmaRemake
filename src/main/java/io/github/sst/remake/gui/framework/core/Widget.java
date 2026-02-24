@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.framework.core;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.gui.framework.event.DragListener;
 import io.github.sst.remake.gui.framework.event.DragHandler;
-import io.github.sst.remake.util.math.TogglableTimer;
+import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 

@@ -7,11 +7,11 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ScreenUtils;
 import io.github.sst.remake.util.client.BindUtils;
-import io.github.sst.remake.util.math.anim.EasingFunctions;
+import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 
 import java.util.ArrayList;

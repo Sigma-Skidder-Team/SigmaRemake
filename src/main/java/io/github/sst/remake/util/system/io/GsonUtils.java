@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.io;
+package io.github.sst.remake.util.system.io;
 
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;

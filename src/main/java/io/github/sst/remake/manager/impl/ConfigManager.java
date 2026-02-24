@@ -8,8 +8,8 @@ import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
-import io.github.sst.remake.util.io.FileUtils;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.FileUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 
 import java.io.File;
 import java.io.FileReader;

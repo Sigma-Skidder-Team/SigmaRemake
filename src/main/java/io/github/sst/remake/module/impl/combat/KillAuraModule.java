@@ -13,7 +13,7 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
-import io.github.sst.remake.util.math.BasicTimer;
+import io.github.sst.remake.util.math.timer.BasicTimer;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;

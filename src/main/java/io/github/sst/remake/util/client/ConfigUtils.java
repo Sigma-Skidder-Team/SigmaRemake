@@ -4,14 +4,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.profile.Profile;
-import io.github.sst.remake.util.io.FileUtils;
+import io.github.sst.remake.util.system.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigUtils {
-
     public static final File CLIENT_FOLDER = new File("jello-remake");
 
     public static final File PROFILES_FOLDER = new File(CLIENT_FOLDER, "profiles");
@@ -98,5 +97,4 @@ public class ConfigUtils {
 
         return renamed;
     }
-
 }

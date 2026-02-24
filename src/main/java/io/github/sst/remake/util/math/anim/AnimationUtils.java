@@ -1,10 +1,13 @@
 package io.github.sst.remake.util.math.anim;
 
+import lombok.Getter;
+
 import java.util.Date;
 
 public class AnimationUtils {
     public int duration;
     public int reverseDuration;
+    @Getter
     public Direction direction;
     public Date startTime;
     public Date reverseStartTime;
@@ -38,10 +41,6 @@ public class AnimationUtils {
         return time != null && (float) (new Date().getTime() - time.getTime()) > elapsed;
     }
 
-    public int getDuration() {
-        return this.duration;
-    }
-
     public void changeDirection(final Direction direction) {
         if (this.direction == direction) {
             return;
@@ -54,13 +53,6 @@ public class AnimationUtils {
         this.direction = direction;
     }
 
-    /**
-     * Updates the start time of the animation based on the given progress value.
-     *
-     * @param progress The progress value, ranging from 0.0 to 1.0, representing the current state of the animation.
-     * @see #getDirection()
-     * @see #getDuration()
-     */
     public void updateStartTime(final float progress) {
         switch (this.direction) {
             case BACKWARDS: {
@@ -72,10 +64,6 @@ public class AnimationUtils {
                 break;
             }
         }
-    }
-
-    public Direction getDirection() {
-        return this.direction;
     }
 
     public float calcPercent() {

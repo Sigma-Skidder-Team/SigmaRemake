@@ -4,11 +4,11 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.math.anim.EasingFunctions;
+import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.ShaderUtils;
+import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 
 import java.util.Date;

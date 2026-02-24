@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.render;
+package io.github.sst.remake.util.render.shader;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -6,7 +6,6 @@ import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 
 public class StencilUtils {
-
     public static void beginStencilWrite() {
         GL11.glPushMatrix();
         resetFramebufferDepth();
@@ -55,5 +54,4 @@ public class StencilUtils {
             framebuffer.depthAttachment = -1;
         }
     }
-
 }

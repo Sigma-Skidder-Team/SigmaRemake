@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
+@SuppressWarnings("unchecked")
 public class MapRegion {
     public int regionX;
     public int regionZ;

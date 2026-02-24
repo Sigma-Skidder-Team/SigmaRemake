@@ -7,7 +7,7 @@ import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.gui.framework.widget.internal.AlertComponent;
 import io.github.sst.remake.gui.framework.widget.internal.ComponentType;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
-import io.github.sst.remake.util.math.anim.QuadraticEasing;
+import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;

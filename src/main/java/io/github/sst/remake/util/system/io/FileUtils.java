@@ -1,5 +1,7 @@
-package io.github.sst.remake.util.io;
+package io.github.sst.remake.util.system.io;
 
+import io.github.sst.remake.Client;
+import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import tv.wunderbox.nfd.FileDialog;
 import tv.wunderbox.nfd.FileDialogResult;
 import tv.wunderbox.nfd.nfd.NfdFileDialog;
@@ -11,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileUtils {
-
     public static String readFile(File file) {
         StringBuilder content = new StringBuilder();
 
@@ -46,4 +47,12 @@ public class FileUtils {
         }
     }
 
+    public static void writeFile(File file, String content) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8))) {
+
+            writer.write(content);
+        } catch (Exception ignored) {
+        }
+    }
 }

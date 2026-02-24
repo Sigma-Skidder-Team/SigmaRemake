@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.client.blur;
+package io.github.sst.remake.util.render.shader.impl;
 
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.metadata.ResourceMetadataReader;

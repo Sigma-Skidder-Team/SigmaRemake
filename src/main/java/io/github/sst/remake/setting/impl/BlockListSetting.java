@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
-import io.github.sst.remake.util.io.GsonUtils;
+import io.github.sst.remake.util.system.io.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
