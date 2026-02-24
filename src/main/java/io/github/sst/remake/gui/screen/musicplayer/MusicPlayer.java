@@ -86,6 +86,7 @@ public class MusicPlayer extends Widget {
         List<Thread> threads = new ArrayList<>();
 
         for (PlaylistData data : musicManager.playlists) {
+            ScrollablePanel queue = this.createPlaylistUI(data, color);
             threads.add(new Thread(() -> {
                 if (!videoMap.containsKey(data.id) && !data.updated) {
                     data.refresh();
@@ -94,7 +95,7 @@ public class MusicPlayer extends Widget {
                     videoMap.put(data.id, data);
                 }
 
-                this.addRunnable(() -> initializeMusicPlayerContent(data, color));
+                this.addRunnable(() -> populatePlaylistSongs(queue, data));
             }));
             threads.get(threads.size() - 1).start();
         }
@@ -505,62 +506,72 @@ public class MusicPlayer extends Widget {
         this.lastScrollOffset = this.activePlaylistPanel.getScrollOffset();
     }
 
-    private void initializeMusicPlayerContent(PlaylistData playlist, ColorHelper colorHelper) {
+    private ScrollablePanel createPlaylistUI(PlaylistData playlist, ColorHelper colorHelper) {
         if (!this.musicTabs.hasChildWithName(playlist.id)) {
+            int index = this.musicTabs.getContent().getChildren().size();
             Button playlistName;
             this.musicTabs.addToList(
-                            playlistName = new Button(
-                                    this.musicTabs,
-                                    playlist.id,
-                                    0,
-                                    this.musicTabs.getContent().getChildren().size() * 40,
-                                    this.playerWidth,
-                                    40,
-                                    colorHelper,
-                                    playlist.name,
-                                    FontUtils.HELVETICA_LIGHT_14
-                            )
-                    );
+                    playlistName = new Button(
+                            this.musicTabs,
+                            playlist.id,
+                            0,
+                            index * 40,
+                            this.playerWidth,
+                            40,
+                            colorHelper,
+                            playlist.name,
+                            FontUtils.HELVETICA_LIGHT_14
+                    )
+            );
             ScrollablePanel queue;
             this.addToList(
-                            queue = new ScrollablePanel(
-                                    this,
-                                    playlist.id,
-                                    this.playerWidth,
-                                    0,
-                                    this.getWidth() - this.playerWidth,
-                                    this.getHeight() - this.footerHeight,
-                                    ColorHelper.DEFAULT_COLOR,
-                                    playlist.name
-                            )
-                    );
+                    queue = new ScrollablePanel(
+                            this,
+                            playlist.id,
+                            this.playerWidth,
+                            0,
+                            this.getWidth() - this.playerWidth,
+                            this.getHeight() - this.footerHeight,
+                            ColorHelper.DEFAULT_COLOR,
+                            playlist.name
+                    )
+            );
             queue.setAllowUpdatesWhenHidden(true);
             queue.setSelfVisible(false);
             queue.setListening(false);
-            for (int i = 0; i < playlist.songs.size(); i++) {
-                SongData song = playlist.songs.get(i);
-                ThumbnailButton btnThumbnail;
-                int x = 65;
-                int y = 10;
-                if (!queue.hasChildWithName(song.id)) {
-                    queue.addToList(
-                            btnThumbnail = new ThumbnailButton(
-                                    queue,
-                                    y + i % 3 * 183 - (i % 3 <= 0 ? 0 : y) - (i % 3 <= 1 ? 0 : y),
-                                    x + y + (i - i % 3) / 3 * 210,
-                                    183,
-                                    220,
-                                    song
-                            )
-                    );
-                    btnThumbnail.onClick((parent, mouseButton) -> {
-                        if (this.parent.checkMusicPlayerDependencies())
-                            musicManager.play(playlist, song);
-                    });
-                }
-            }
-
             playlistName.onClick((parent, mouseButton) -> this.showPlaylistPanel(queue));
+            return queue;
+        }
+
+        return (ScrollablePanel) this.getChildByName(playlist.id);
+    }
+
+    private void populatePlaylistSongs(ScrollablePanel queue, PlaylistData playlist) {
+        if (queue == null) {
+            return;
+        }
+
+        for (int i = 0; i < playlist.songs.size(); i++) {
+            SongData song = playlist.songs.get(i);
+            ThumbnailButton btnThumbnail;
+            int x = 65;
+            int y = 10;
+            if (!queue.hasChildWithName(song.id)) {
+                queue.addToList(
+                        btnThumbnail = new ThumbnailButton(
+                                queue,
+                                y + i % 3 * 183 - (i % 3 <= 0 ? 0 : y) - (i % 3 <= 1 ? 0 : y),
+                                x + y + (i - i % 3) / 3 * 210,
+                                183,
+                                220,
+                                song
+                        )
+                );
+                btnThumbnail.onClick((parent, mouseButton) -> {
+                    if (this.parent.checkMusicPlayerDependencies())
+                        musicManager.play(playlist, song);
+                });
+            }
         }
     }
 }
