@@ -49,6 +49,8 @@ public final class MusicManager extends Manager implements IMinecraft {
     private static final int DEFAULT_THUMBNAIL_X = 70;
     private static final int DEFAULT_THUMBNAIL_Y = 0;
     private static final int DEFAULT_THUMBNAIL_SIZE = 180;
+    private static final int BLURRED_BANNER_WIDTH = 512;
+    private static final int BLURRED_BANNER_HEIGHT = 32;
 
     private long
             totalDuration = 0,
@@ -63,18 +65,20 @@ public final class MusicManager extends Manager implements IMinecraft {
     public int repeat = 0; //0 - NO REPEAT, 1 - REPEAT, 2 - LOOP
 
     @Getter
-    private boolean playing = false;
-    private boolean seekRequested = false;
-    private boolean processing = false;
+    private volatile boolean playing = false;
+    private volatile boolean seekRequested = false;
+    private volatile boolean processing = false;
 
     private SourceDataLine dataLine;
     private transient volatile Thread audioThread;
     private final AtomicInteger playbackSession = new AtomicInteger(0);
+    private final AtomicInteger thumbnailProcessGeneration = new AtomicInteger(0);
 
     private PlaylistData playlist;
     @Getter
-    private SongData currentPlayingSongData;
-    private SongData thumbnailProcessingSongData;
+    private volatile SongData currentPlayingSongData;
+    private volatile SongData thumbnailProcessingSongData;
+    private volatile SongData thumbnailPreparedForSong;
 
     public SongData getSongProcessed() {
         return currentPlayingSongData;
@@ -85,7 +89,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     @Getter
     private Texture notification, songThumbnail;
-    private BufferedImage thumbnailImage, scaledThumbnailImage;
+    private volatile BufferedImage thumbnailImage, scaledThumbnailImage;
     private volatile boolean thumbnailFailed = false;
 
     public List<PlaylistData> playlists;
@@ -156,6 +160,7 @@ public final class MusicManager extends Manager implements IMinecraft {
         thumbnailImage = null;
         scaledThumbnailImage = null;
         thumbnailFailed = false;
+        thumbnailPreparedForSong = null;
 
         playing = false;
         playlist = null;
@@ -214,7 +219,12 @@ public final class MusicManager extends Manager implements IMinecraft {
         }
 
         if (processing) {
-            if (thumbnailImage != null && scaledThumbnailImage != null && currentPlayingSongData != null && !client.isPaused()) {
+            if (thumbnailImage != null
+                    && scaledThumbnailImage != null
+                    && currentPlayingSongData != null
+                    && thumbnailPreparedForSong != null
+                    && isSameSong(currentPlayingSongData, thumbnailPreparedForSong)
+                    && !client.isPaused()) {
                 if (songThumbnail != null && songThumbnail != Resources.ARTWORK) {
                     songThumbnail.release();
                 }
@@ -225,15 +235,21 @@ public final class MusicManager extends Manager implements IMinecraft {
 
                 thumbnailImage = toCompatibleImageType(thumbnailImage);
                 scaledThumbnailImage = toCompatibleImageType(scaledThumbnailImage);
+                resetGlUnpackState();
 
-                songThumbnail = BufferedImageUtil.getTexture("picture", thumbnailImage);
-                notification = BufferedImageUtil.getTexture("picture", scaledThumbnailImage);
+                String textureKey = "music-" + currentPlayingSongData.id + "-" + System.nanoTime();
+                songThumbnail = BufferedImageUtil.getTexture(textureKey + "-bg", thumbnailImage);
+                notification = BufferedImageUtil.getTexture(textureKey + "-cover", scaledThumbnailImage);
                 thumbnailFailed = false;
                 Client.INSTANCE.notificationManager
                         .send(new Notification("Now Playing", currentPlayingSongData.title, 7000, notification));
                 thumbnailProcessingSongData = null;
                 processing = false;
-            } else if (thumbnailFailed && currentPlayingSongData != null && !client.isPaused()) {
+            } else if (thumbnailFailed
+                    && currentPlayingSongData != null
+                    && thumbnailPreparedForSong != null
+                    && isSameSong(currentPlayingSongData, thumbnailPreparedForSong)
+                    && !client.isPaused()) {
                 if (songThumbnail != null && songThumbnail != Resources.ARTWORK) {
                     songThumbnail.release();
                 }
@@ -244,6 +260,15 @@ public final class MusicManager extends Manager implements IMinecraft {
                 notification = Resources.ARTWORK;
                 thumbnailProcessingSongData = null;
                 processing = false;
+            } else if (thumbnailPreparedForSong != null
+                    && currentPlayingSongData != null
+                    && !isSameSong(currentPlayingSongData, thumbnailPreparedForSong)) {
+                // Drop stale processed thumbnails if playback switched songs before upload.
+                thumbnailImage = null;
+                scaledThumbnailImage = null;
+                thumbnailFailed = false;
+                processing = false;
+                thumbnailPreparedForSong = null;
             }
         }
 
@@ -251,10 +276,14 @@ public final class MusicManager extends Manager implements IMinecraft {
             SongData songData = thumbnailProcessingSongData;
             thumbnailProcessingSongData = null;
             visualizer.clear();
+            int generation = thumbnailProcessGeneration.incrementAndGet();
             new Thread(() -> {
                 try {
-                    processThumbnail(songData);
-                } catch (Exception ignored) {
+                    processThumbnail(songData, generation);
+                } catch (Exception e) {
+                    if (generation != thumbnailProcessGeneration.get()) {
+                        return;
+                    }
                     thumbnailFailed = true;
                     processing = false;
                     thumbnailProcessingSongData = null;
@@ -279,8 +308,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         this.playlist = playlist;
         playing = true;
-        totalDuration = 0;
-        playbackProgress = 0;
+        resetPlaybackTimers();
 
         for (int i = 0; i < playlist.songs.size(); i++) {
             if (playlist.songs.get(i) == song) {
@@ -294,8 +322,7 @@ public final class MusicManager extends Manager implements IMinecraft {
     public void playNext() {
         if (playlist != null) {
             startVideoIndex = currentlyPlayingVideoIndex + 1;
-            totalDuration = 0;
-            playbackProgress = 0;
+            resetPlaybackTimers();
             initPlaybackLoop();
         }
     }
@@ -303,8 +330,7 @@ public final class MusicManager extends Manager implements IMinecraft {
     public void playPrevious() {
         if (playlist != null) {
             startVideoIndex = currentlyPlayingVideoIndex - 1;
-            totalDuration = 0;
-            playbackProgress = 0;
+            resetPlaybackTimers();
             initPlaybackLoop();
         }
     }
@@ -321,6 +347,12 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     public int getTotalDuration() {
         return (int) this.totalDuration;
+    }
+
+    private void resetPlaybackTimers() {
+        totalDuration = 0;
+        duration = 0;
+        playbackProgress = 0;
     }
 
     private void initPlaybackLoop() {
@@ -407,7 +439,9 @@ public final class MusicManager extends Manager implements IMinecraft {
         if (shouldStopPlayback(sessionId)) {
             return;
         }
+        thumbnailProcessGeneration.incrementAndGet();
         thumbnailProcessingSongData = data;
+        thumbnailPreparedForSong = data;
         thumbnailFailed = false;
 
         URL videoStreamUrl = YoutubeUtils.buildYouTubeWatchUrl(data.id);
@@ -572,12 +606,16 @@ public final class MusicManager extends Manager implements IMinecraft {
         return copyImage(source.getSubimage(safeX, safeY, safeWidth, safeHeight));
     }
 
-    private void processThumbnail(SongData data) throws IOException {
+    private void processThumbnail(SongData data, int generation) throws IOException {
+        if (generation != thumbnailProcessGeneration.get()) {
+            return;
+        }
         processing = true;
         thumbnailFailed = false;
         thumbnailImage = null;
         scaledThumbnailImage = null;
-        BufferedImage buffImage = ImageIO.read(new URL(data.url));
+        String thumbnailUrl = resolveThumbnailUrl(data);
+        BufferedImage buffImage = ImageIO.read(new URL(thumbnailUrl));
         if (buffImage == null) {
             thumbnailFailed = true;
             processing = false;
@@ -600,6 +638,18 @@ public final class MusicManager extends Manager implements IMinecraft {
             processing = false;
             return;
         }
+        BufferedImage bannerTexture = toCompatibleImageType(
+                ImageUtils.scaleImage(
+                        blurredStrip,
+                        (double) BLURRED_BANNER_WIDTH / (double) blurredStrip.getWidth(),
+                        (double) BLURRED_BANNER_HEIGHT / (double) blurredStrip.getHeight()
+                )
+        );
+        if (bannerTexture == null) {
+            thumbnailFailed = true;
+            processing = false;
+            return;
+        }
 
         BufferedImage squareThumbnail = createSquareThumbnail(source, DEFAULT_THUMBNAIL_SIZE);
         if (squareThumbnail == null) {
@@ -608,8 +658,12 @@ public final class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        thumbnailImage = blurredStrip;
+        thumbnailImage = bannerTexture;
         scaledThumbnailImage = squareThumbnail;
+        thumbnailPreparedForSong = data;
+        if (generation != thumbnailProcessGeneration.get()) {
+            return;
+        }
         thumbnailProcessingSongData = null;
     }
 
@@ -636,11 +690,38 @@ public final class MusicManager extends Manager implements IMinecraft {
         return toCompatibleImageType(ImageUtils.scaleImage(square, scale, scale));
     }
 
+    private boolean isSameSong(SongData first, SongData second) {
+        return first != null
+                && second != null
+                && first.id != null
+                && first.id.equals(second.id);
+    }
+
+    private void resetGlUnpackState() {
+        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+    }
+
+    private String resolveThumbnailUrl(SongData data) {
+        if (data != null && data.url != null && !data.url.trim().isEmpty()) {
+            return data.url;
+        }
+        return data != null ? data.getThumbnailUrl() : "";
+    }
+
     private void renderBars() {
         float maxWidth = 114.0F;
         float width = (float) Math.ceil((float) client.getWindow().getWidth() / maxWidth);
+        int barCount = Math.min((int) maxWidth, amplitudes.size());
+        if (barCount <= 0) {
+            return;
+        }
 
-        for (int i = 0; (float) i < maxWidth; i++) {
+        for (int i = 0; i < barCount; i++) {
             float alpha = 1.0F - (float) (i + 1) / maxWidth;
             float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
             float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
@@ -654,16 +735,28 @@ public final class MusicManager extends Manager implements IMinecraft {
         }
 
         StencilUtils.beginStencilWrite();
-        for (int i = 0; (float) i < maxWidth; i++) {
-            float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
-            float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
-            RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        try {
+            for (int i = 0; i < barCount; i++) {
+                float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
+                float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
+                RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+            }
+            StencilUtils.beginStencilRead();
+            if (notification != null && songThumbnail != null) {
+                // Use linear filtering on the fullscreen blurred strip to avoid nearest-neighbor artifacts.
+                RenderUtils.drawImage(
+                        0.0F,
+                        0.0F,
+                        (float) client.getWindow().getWidth(),
+                        (float) client.getWindow().getHeight(),
+                        songThumbnail,
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F),
+                        false
+                );
+            }
+        } finally {
+            StencilUtils.endStencil();
         }
-        StencilUtils.beginStencilRead();
-        if (notification != null && songThumbnail != null) {
-            RenderUtils.drawImage(0.0F, 0.0F, (float) client.getWindow().getWidth(), (float) client.getWindow().getHeight(), songThumbnail, 0.4F);
-        }
-        StencilUtils.endStencil();
     }
 
     private void renderThumbnail() {
