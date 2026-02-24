@@ -18,6 +18,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.newdawn.slick.util.math.Color;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -155,6 +156,8 @@ public class RenderUtils implements IMinecraft {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
 
             texture.bind();
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
             float var17 = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
             float var18 = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
