@@ -172,17 +172,16 @@ public class GuiComponent implements InputListener {
         this.mouseX = mouseX;
         this.isHoveredInHierarchy = this.isVisible() && this.isMouseOverExclusive(mouseX, mouseY);
 
-        try {
-        for (Runnable runnable : new ArrayList<>(this.runOnDimensionUpdate)) {
-                if (runnable != null) {
-                    runnable.run();
-                }
-            }
-        } catch (ConcurrentModificationException e) {
-            Client.LOGGER.info("Failed to run dimension update runnables", e);
+        List<Runnable> pendingRunnables;
+        synchronized (this) {
+            pendingRunnables = new ArrayList<>(this.runOnDimensionUpdate);
+            this.runOnDimensionUpdate.clear();
         }
-
-        this.runOnDimensionUpdate.clear();
+        for (Runnable runnable : pendingRunnables) {
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
         this.updatingPanelDimensions = true;
 
         try {
