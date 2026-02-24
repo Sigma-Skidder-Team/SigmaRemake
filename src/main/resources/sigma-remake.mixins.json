@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinClientConnection",
-    "MixinEntity"
+    "MixinEntity",
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -18,6 +19,7 @@
     "MixinGameRenderer",
     "MixinInGameHud",
     "MixinKeyboard",
+    "MixinKeyboardInput",
     "MixinLivingEntityRenderer",
     "MixinMinecraftClient",
     "MixinMouse",

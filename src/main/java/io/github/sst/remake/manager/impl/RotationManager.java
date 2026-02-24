@@ -22,9 +22,9 @@ public final class RotationManager extends Manager implements IMinecraft {
     public List<Rotatable> rotatables;
 
     private float lastSentYaw, lastSentPitch;
-    private Rotation rotations;
+    public Rotation rotations;
     private Rotation lastRotations;
-    private boolean active;
+    public boolean active;
 
     @Override
     public void init() {

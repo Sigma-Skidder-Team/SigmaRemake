@@ -35,7 +35,7 @@ public class KillAuraModule extends Rotatable {
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
     private final ModeSetting sortMode = new ModeSetting("Sort mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
     private final ModeSetting attackMode = new ModeSetting("Attack mode", "Attack mode", 0, "Mouse", "Packet");
-    private final ModeSetting rotationMode = new ModeSetting("Rotation mode", "Rotation mode", 0, "NCP", "Smooth", "LockView", "None");
+    private final ModeSetting rotationMode = new ModeSetting("Rotation mode", "Rotation mode", 0, "NCP", "LockView", "None");
     private final ModeSetting clickMode = new ModeSetting("Click mode", "Click mode", 0, "CPS", "1.9");
 
     private final SliderSetting aimRange = new SliderSetting("Aim range", "Rotation range", 6, 1, 8, 0.01f);
@@ -247,14 +247,6 @@ public class KillAuraModule extends Rotatable {
             case "LockView":
                 client.player.pitch = rotations.pitch;
                 client.player.yaw = rotations.yaw;
-                return rotations;
-
-            case "Smooth":
-                float deltaYaw = RotationUtils.wrapDegrees2(client.player.yaw, rotations.yaw);
-                float deltaPitch = rotations.pitch - client.player.pitch;
-
-                rotations.yaw = (float) ((double) rotations.yaw + (double) (deltaYaw * 2.0F) / 5.0);
-                rotations.pitch = (float) ((double) rotations.pitch + (double) (deltaPitch * 2.0F) / 5.0);
                 return rotations;
 
             case "NCP":
