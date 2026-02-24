@@ -40,9 +40,6 @@ public abstract class MixinMinecraftClient {
     }
 
     @Shadow
-    private volatile boolean running;
-
-    @Shadow
     @Nullable
     public HitResult crosshairTarget;
 
@@ -50,11 +47,9 @@ public abstract class MixinMinecraftClient {
     @Nullable
     public ClientPlayerEntity player;
 
-    @Inject(method = "scheduleStop", at = @At("HEAD"))
-    private void injectShutdown(CallbackInfo ci) {
-        if (this.running) {
-            Client.INSTANCE.shutdown();
-        }
+    @Inject(method = "stop", at = @At("HEAD"))
+    private void injectStop(CallbackInfo ci) {
+        Client.INSTANCE.shutdown();
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
