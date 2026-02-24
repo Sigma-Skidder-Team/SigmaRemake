@@ -54,7 +54,7 @@ public class KeybindsPopOver extends InteractiveWidget {
                         FontUtils.HELVETICA_LIGHT_25
                 )
         );
-        var9.onClick((var1x, var2x) -> this.notifyAddButtonListeners());
+        var9.onClick((parent, mouseButton) -> this.notifyAddButtonListeners());
     }
 
     public void method13712() {
@@ -76,7 +76,7 @@ public class KeybindsPopOver extends InteractiveWidget {
             if (var7 == this.field21376) {
                 BindableActionEntry var8;
                 this.addToList(var8 = new BindableActionEntry(this, var10.getName(), 0, 20 + 55 * var3, this.width, 55, var10, var3++));
-                var8.onPress(var2 -> {
+                var8.onPress(interactiveWidget -> {
                     var10.setBind(0);
                     this.callUIHandlers();
                 });

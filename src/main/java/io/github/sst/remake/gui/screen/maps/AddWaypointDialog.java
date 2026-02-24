@@ -59,7 +59,7 @@ public class AddWaypointDialog extends InteractiveWidget {
                         FontUtils.HELVETICA_LIGHT_25
                 )
         );
-        var8.onClick((var1x, var2x) -> this.method13132(this.field20729.getText(), this.method13130(), this.field20730.field21296));
+        var8.onClick((parent, mouseButton) -> this.method13132(this.field20729.getText(), this.method13130(), this.field20730.field21296));
         this.addToList(this.field20729 = new TextField(this, "Name", 20, 7, this.width - 40, 60, TextField.DEFAULT_COLORS, "My waypoint", "My waypoint"));
         this.field20729.startFocus();
         this.field20729.setUnderlineEnabled(false);

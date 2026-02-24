@@ -23,9 +23,9 @@ public class ColorPicker extends InteractiveWidget {
         this.addToList(this.saturationBrightnessPanel = new SaturationBrightnessPanel(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
         this.addToList(this.hueSlider = new HueSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
         this.addToList(this.preview = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
-        this.saturationBrightnessPanel.onPress(var1x -> this.updateColorAndNotify());
-        this.hueSlider.onPress(var1x -> this.updateColorAndNotify());
-        this.preview.onClick((var1x, var2x) -> this.toggleRainbow(!this.getRainbow()));
+        this.saturationBrightnessPanel.onPress(interactiveWidget -> this.updateColorAndNotify());
+        this.hueSlider.onPress(interactiveWidget -> this.updateColorAndNotify());
+        this.preview.onClick((parent, mouseButton) -> this.toggleRainbow(!this.getRainbow()));
         this.rainbowEnabled = var8;
     }
 

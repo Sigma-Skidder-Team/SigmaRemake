@@ -577,9 +577,8 @@ public class GuiComponent implements InputListener {
         visitor.visit(this);
     }
 
-    public final GuiComponent addMouseButtonCallback(MouseButtonCallback callback) {
+    public void addMouseButtonCallback(MouseButtonCallback callback) {
         this.mouseButtonCallbacks.add(callback);
-        return this;
     }
 
     public void callMouseButtonCallbacks(int mouseButton) {
@@ -588,9 +587,8 @@ public class GuiComponent implements InputListener {
         }
     }
 
-    public GuiComponent addMouseListener(MouseListener listener) {
+    public void addMouseListener(MouseListener listener) {
         this.mouseButtonListeners.add(listener);
-        return this;
     }
 
     public void onMouseButtonUsed(int mouseButton) {
@@ -610,7 +608,7 @@ public class GuiComponent implements InputListener {
         }
     }
 
-    public final void addKeyPressListener(KeyPressedListener listener) {
+    public void addKeyPressListener(KeyPressedListener listener) {
         this.keyPressedListeners.add(listener);
     }
 

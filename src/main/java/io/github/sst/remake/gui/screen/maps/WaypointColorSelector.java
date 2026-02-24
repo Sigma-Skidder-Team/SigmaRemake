@@ -24,17 +24,17 @@ public class WaypointColorSelector extends InteractiveWidget {
                 this.field21296 = var11.color;
             }
 
-            var12.onClick((var1x, var2x) -> {
-                for (GuiComponent var6 : var1x.getParent().getChildren()) {
+            var12.onClick((parent, mouseButton) -> {
+                for (GuiComponent var6 : parent.getParent().getChildren()) {
                     if (var6 instanceof WaypointColorBadge) {
                         ((WaypointColorBadge) var6).field20598 = false;
                         ((WaypointColorBadge) var6).field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
                     }
                 }
 
-                ((WaypointColorBadge) var1x).field20598 = true;
-                ((WaypointColorBadge) var1x).field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
-                this.field21296 = ((WaypointColorBadge) var1x).color.color;
+                ((WaypointColorBadge) parent).field20598 = true;
+                ((WaypointColorBadge) parent).field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                this.field21296 = ((WaypointColorBadge) parent).color.color;
             });
             var7 = false;
         }

@@ -26,7 +26,7 @@ public class Keyboard extends InteractiveWidget {
                             key.keycode
                     )
             );
-            var11.onClick((var2x, var3x) -> {
+            var11.onClick((parent, mouseButton) -> {
                 this.field20696 = var11.field20690;
                 this.callUIHandlers();
             });

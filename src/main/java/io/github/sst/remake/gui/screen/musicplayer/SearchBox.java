@@ -64,7 +64,7 @@ public class SearchBox extends Widget {
                                                                     song
                                                             )
                                                     );
-                                            thumbnail.onClick((var2, var3xx) -> this.musicManager.play(null, song));
+                                            thumbnail.onClick((parent, mouseButton) -> this.musicManager.play(null, song));
                                         }
                                     }
                                 }

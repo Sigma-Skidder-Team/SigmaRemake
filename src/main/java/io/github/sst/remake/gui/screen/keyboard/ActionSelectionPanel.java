@@ -72,11 +72,11 @@ public class ActionSelectionPanel extends InteractiveWidget {
                     .addToList(
                             var16 = new Button(this.field21308, var14.getName(), 0, var11++ * 55, this.field21308.getWidth(), 55, var15, var14.getName())
                     );
-            var16.onClick((var2x, var3x) -> {
-                for (Entry var7 : ScreenUtils.screenToScreenName.entrySet()) {
-                    BindableAction var8 = new BindableAction((Class<? extends Screen>) var7.getKey());
-                    if (var8.getName().equals(var16.getName()) && !this.field21311) {
-                        this.selectedBindableAction = var8;
+            var16.onClick((parent, mouseButton) -> {
+                for (Entry<Class<? extends Screen>, String> entry : ScreenUtils.screenToScreenName.entrySet()) {
+                    BindableAction action = new BindableAction(entry.getKey());
+                    if (action.getName().equals(var16.getName()) && !this.field21311) {
+                        this.selectedBindableAction = action;
                         this.field21311 = true;
                         break;
                     }
@@ -96,7 +96,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
                             )
                     );
             var21.setTextOffsetX(10);
-            var21.onClick((var2x, var3x) -> {
+            var21.onClick((parent, mouseButton) -> {
                 for (Module mod2 : Client.INSTANCE.moduleManager.modules) {
                     if (mod2.getName().equals(var21.getText()) && !this.field21311) {
                         this.selectedBindableAction = new BindableAction(mod2);

@@ -38,7 +38,7 @@ public class Dropdown extends InteractiveWidget {
         DropdownMenu var5 = new DropdownMenu(this, "sub" + parentIndex, this.width + 10, this.getHeight() * (parentIndex + 1), 200, this.getHeight(), values, 0);
         this.subMenusByIndex.put(parentIndex, var5);
         var5.setSelfVisible(false);
-        var5.onPress(var2x -> {
+        var5.onPress(interactiveWidget -> {
             this.setIndex(parentIndex);
             this.setExpanded(false);
             this.callUIHandlers();
@@ -67,7 +67,7 @@ public class Dropdown extends InteractiveWidget {
             var1.setWidth(this.getWidth());
             var1.setHeight(this.getHeight());
         });
-        dropdownButton.onClick((var1, var2) -> this.setExpanded(!this.isExpanded()));
+        dropdownButton.onClick((parent, mouseButton) -> this.setExpanded(!this.isExpanded()));
 
         for (String mode : this.values) {
             Button button;
@@ -92,7 +92,7 @@ public class Dropdown extends InteractiveWidget {
                     )
             );
             button.setTextOffsetX(10);
-            button.onClick((var2, var3x) -> {
+            button.onClick((parent, mouseButton) -> {
                 int var6x = this.getIndex();
                 this.setIndex(this.values.indexOf(mode));
                 this.setExpanded(false);

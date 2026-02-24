@@ -31,14 +31,14 @@ public class OnlineProfilePanel extends InteractiveWidget {
 
         TextButton blankButton = new TextButton(this, "blankButton", 25, 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Blank"), 30, ColorHelper.DEFAULT_COLOR, "Blank", FontUtils.HELVETICA_LIGHT_20);
 
-        blankButton.onClick((var1x, var2x) -> {
+        blankButton.onClick((parent2, mouseButton) -> {
             ProfileScreen profileScreen = (ProfileScreen) this.getParent();
             profileScreen.createBlankProfile();
         });
 
         TextButton duplicateButton = new TextButton(this, "dupeButton", width - 25 - FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 30, ColorHelper.DEFAULT_COLOR, "Duplicate", FontUtils.HELVETICA_LIGHT_20);
 
-        duplicateButton.onClick((var1x, var2x) -> {
+        duplicateButton.onClick((parent2, mouseButton) -> {
             ProfileScreen profileScreen = (ProfileScreen) this.getParent();
             profileScreen.duplicateSelectedProfile();
         });
@@ -64,7 +64,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                                         this.profileList, "p_" + profile, 0, 0, width, 30, new ColorHelper(-723724, -2039584, 0, -14671840), profile, FontUtils.HELVETICA_LIGHT_18
                                 )
                         );
-                profileButton.onClick((var3x, var4x) -> {
+                profileButton.onClick((parent2, mouseButton) -> {
                     this.setLoading(true);
                     new Thread(() -> {
                         Profile onlineProfile = onlineProfileManager.downloadOnlineProfile(profile);

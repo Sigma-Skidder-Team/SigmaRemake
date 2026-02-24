@@ -127,23 +127,23 @@ public class MusicPlayer extends Widget {
         this.musicControls.addToList(this.volumeSlider = new VolumeSlider(this.musicControls, "volume", this.getWidth() - this.playerWidth - 19, 14, 4, 40));
         ChangingButton repeat;
         this.musicControls.addToList(repeat = new ChangingButton(this.musicControls, "repeat", 14, 34, 27, 20, this.musicManager.repeat));
-        repeat.onPress(var2x -> this.musicManager.repeat = repeat.repeatMode);
+        repeat.onPress(interactiveWidget -> this.musicManager.repeat = repeat.repeatMode);
         this.addToList(this.songProgressBar = new ProgressBar(this, "progress", this.playerWidth, this.getHeight() - 5, this.getWidth() - this.playerWidth, 5));
         this.songProgressBar.setReAddChildren(true);
         this.songProgressBar.setListening(false);
         this.reShowView.setReAddChildren(true);
-        this.reShowView.addMouseButtonCallback((var1x, var2x) -> {
+        this.reShowView.addMouseButtonCallback((screen, mouseButton) -> {
             isAnimatingBack = true;
             this.targetX = (float) this.getX();
             this.targetY = (float) this.getY();
         });
         this.pause.setSelfVisible(false);
         this.play.setSelfVisible(false);
-        this.play.onClick((var1x, var2x) -> this.musicManager.setPlaying(true));
-        this.pause.onClick((var1x, var2x) -> this.musicManager.setPlaying(false));
-        this.forwards.onClick((var1x, var2x) -> this.musicManager.playNext());
-        this.backwards.onClick((var1x, var2x) -> this.musicManager.playPrevious());
-        this.volumeSlider.addVolumeChangeListener(var1x -> this.musicManager.volume = (int) ((1.0F - this.volumeSlider.getVolume()) * 100.0F));
+        this.play.onClick((parent2, mouseButton) -> this.musicManager.setPlaying(true));
+        this.pause.onClick((parent2, mouseButton) -> this.musicManager.setPlaying(false));
+        this.forwards.onClick((parent2, mouseButton) -> this.musicManager.playNext());
+        this.backwards.onClick((parent2, mouseButton) -> this.musicManager.playPrevious());
+        this.volumeSlider.addVolumeChangeListener(slider -> this.musicManager.volume = (int) ((1.0F - this.volumeSlider.getVolume()) * 100.0F));
         this.volumeSlider.setVolume(1.0F - (float) this.musicManager.volume / 100.0F);
         this.addToList(
                 this.searchBox = new SearchBox(
@@ -560,7 +560,7 @@ public class MusicPlayer extends Widget {
                 }
             }
 
-            playlistName.onClick((var2, var3x) -> this.showPlaylistPanel(queue));
+            playlistName.onClick((parent, mouseButton) -> this.showPlaylistPanel(queue));
         }
     }
 }

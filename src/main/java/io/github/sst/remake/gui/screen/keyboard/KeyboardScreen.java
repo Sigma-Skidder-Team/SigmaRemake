@@ -32,8 +32,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
         this.addToList(this.field20957 = new Keyboard(this, "keyboard", (this.width - 1060) / 2, (this.height - 357) / 2));
         this.field20957.setScale(0.4F, 0.4F);
         this.field20957
-                .onPress(
-                        var2 -> {
+                .onPress(interactiveWidget -> {
                             boolean popOver = false;
 
                             for (GuiComponent child : this.getChildren()) {
@@ -51,7 +50,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                                 this.field20956 = new KeybindsPopOver(
                                         this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, bind
                                 );
-                                this.field20956.onPress(var1x -> this.method13329(this.field20957));
+                                this.field20956.onPress(interactiveWidget1 -> this.method13329(this.field20957));
                                 this.field20956.addAddButtonListener(pop -> {
                                     pop.setReAddChildren(false);
                                     this.method13331();

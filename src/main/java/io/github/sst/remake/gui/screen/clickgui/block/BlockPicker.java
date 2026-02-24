@@ -64,7 +64,7 @@ public class BlockPicker extends InteractiveWidget {
                     BlockItemButton var10;
                     this.scrollPanel.addToList(var10 = new BlockItemButton(this, "btn" + var9, 0, 0, 40, 40, item.getDefaultStack()));
                     var10.setSelected(this.selectedValues.contains(var9), false);
-                    var10.onPress(var3 -> {
+                    var10.onPress(interactiveWidget -> {
                         int var6 = this.selectedValues.size();
                         this.selectedValues.remove(var9);
                         if (var10.isSelected()) {

@@ -117,7 +117,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         filterDropdown.addSubMenu(servers, 1);
         filterDropdown.setIndex(2);
         this.addToList(filterDropdown);
-        filterDropdown.onPress(var2 -> {
+        filterDropdown.onPress(interactiveWidget -> {
             switch (filterDropdown.getIndex()) {
                 case 0:
                     this.accountSortType = AccountCompareType.ALPHABETICAL;
@@ -164,7 +164,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         TextButton addButton;
         this.addToList(addButton = new TextButton(this, "btnt", this.getWidth() - 90, 43, 70, 30, ColorHelper.DEFAULT_COLOR, "Add +", FontUtils.HELVETICA_LIGHT_25));
         this.accountListPanel.requestFocus();
-        addButton.onClick((var1, var2) -> {
+        addButton.onClick((parent, mouseButton) -> {
             if (this.canOpenLoginDialog()) {
                 this.loginDialog.setOpen(!this.loginDialog.isHovered());
             }
@@ -192,9 +192,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             accountListEntry.setAccountListRefreshing(true);
         }
 
-        accountListEntry.addMouseButtonCallback((var2x, var3) -> {
-            if (var3 != 0) {
-                this.deleteAlert.onPress(element -> {
+        accountListEntry.addMouseButtonCallback((screen, mouseButton) -> {
+            if (mouseButton != 0) {
+                this.deleteAlert.onPress(interactiveWidget -> {
                     Client.INSTANCE.accountManager.remove(accountListEntry.selectedAccount);
                     this.accountDetailsPanel.handleSelectedAccount(null);
                     this.updateAccountList(false);
@@ -253,7 +253,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         AlertComponent button3 = new AlertComponent(ComponentType.BUTTON, "Web login", 50);
         this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", true, "Add Alt", header, firstline1, firstline2, usernameInput, button, button2, button3));
 
-        this.loginDialog.onPress(element -> {
+        this.loginDialog.onPress(interactiveWidget -> {
             Button clickedButton = this.loginDialog.getClickedButton();
             if (clickedButton != null) {
                 switch (clickedButton.getText()) {

@@ -33,11 +33,11 @@ public class OptionsPage extends GuiComponent {
         Checkbox blurCheckbox;
         this.addToList(blurCheckbox = new Checkbox(this, "guiBlurCheckBox", width / 2 - 70, height - 220, 25, 25));
         blurCheckbox.setValue(Client.INSTANCE.configManager.guiBlur, false);
-        blurCheckbox.onPress(e -> Client.INSTANCE.configManager.guiBlur = blurCheckbox.getValue());
+        blurCheckbox.onPress(interactiveWidget -> Client.INSTANCE.configManager.guiBlur = blurCheckbox.getValue());
         Checkbox ingameBlurCheckbox;
         this.addToList(ingameBlurCheckbox = new Checkbox(this, "guiBlurIngameCheckBox", width / 2 + 130, height - 220, 25, 25));
         ingameBlurCheckbox.setValue(Client.INSTANCE.configManager.hqBlur, false);
-        ingameBlurCheckbox.onPress(e -> Client.INSTANCE.configManager.hqBlur = ingameBlurCheckbox.getValue());
+        ingameBlurCheckbox.onPress(interactiveWidget -> Client.INSTANCE.configManager.hqBlur = ingameBlurCheckbox.getValue());
     }
 
     @Override

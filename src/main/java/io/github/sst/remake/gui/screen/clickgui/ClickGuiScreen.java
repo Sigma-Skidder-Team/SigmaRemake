@@ -81,7 +81,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
 
         moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
         moreButton.setListening(false);
-        moreButton.onClick((var1, var2) -> this.addRunnable(() -> {
+        moreButton.onClick((parent, mouseButton) -> this.addRunnable(() -> {
             if (this.profileScreen != null && this.hasChild(this.profileScreen)) {
                 this.queueChildRemoval(this.profileScreen);
             } else {
@@ -117,7 +117,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
 
                 components.add(new AlertComponent(ComponentType.BUTTON, "Download", 55));
                 showAlert(dependencyAlert = new Alert(this, "music", true, "Dependencies.", components.toArray(new AlertComponent[0])));
-                dependencyAlert.onPress(e -> {
+                dependencyAlert.onPress(interactiveWidget -> {
                     if (!hasPy)
                         Util.getOperatingSystem().open("https://www.python.org/downloads/release/python-31114/");
 

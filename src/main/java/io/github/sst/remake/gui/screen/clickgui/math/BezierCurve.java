@@ -26,7 +26,7 @@ public class BezierCurve extends InteractiveWidget {
         this.padding = var7;
         this.addToList(this.controlPoint1 = new BezierDot(this, 10, "pos1"));
         this.addToList(this.controlPoint2 = new BezierDot(this, 10, "pos2"));
-        this.addMouseListener((var1x, var2x) -> this.callUIHandlers());
+        this.addMouseListener((screen, mouseButton) -> this.callUIHandlers());
         this.setCurveValues(var8, var9, var10, var11);
     }
 

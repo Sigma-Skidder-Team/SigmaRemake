@@ -61,7 +61,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                     }
                 });
 
-                checkBox.onPress(widget -> bS.setValue(((Checkbox) widget).getValue()));
+                checkBox.onPress(interactiveWidget -> bS.setValue(((Checkbox) interactiveWidget).getValue()));
                 checkBox.addWidthSetter((comp1, comp2) -> comp1.setX(comp2.getWidth() - 24 - offset));
                 panel.addToList(checkBoxText);
                 panel.addToList(checkBox);
@@ -92,8 +92,8 @@ public class ModuleSettingsList extends ScrollablePanel {
                         slider.setValue(SettingSlider.normalizeValue(updated.min, updated.max, updated.value), false);
                     }
                 });
-                slider.onPress(widget -> {
-                    float sliderValue = ((SettingSlider) widget).getValue();
+                slider.onPress(interactiveWidget -> {
+                    float sliderValue = ((SettingSlider) interactiveWidget).getValue();
                     float newValue = SettingSlider.denormalizeValue(sliderValue, sS.min, sS.max, sS.increment, sS.getPlaces());
                     if (newValue != sS.value) {
                         slider.setText(Float.toString(newValue));
@@ -138,8 +138,8 @@ public class ModuleSettingsList extends ScrollablePanel {
                         dropdown.setIndex(updated.getModeIndex());
                     }
                 });
-                dropdown.onPress(widget -> {
-                    mS.setModeByIndex(((Dropdown) widget).getIndex());
+                dropdown.onPress(interactiveWidget -> {
+                    mS.setModeByIndex(((Dropdown) interactiveWidget).getIndex());
                     dropdown.setIndex(mS.getModeIndex());
                 });
 
@@ -168,7 +168,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                 Text blocksText = new Text(panel, bLS.name + "lbl", x, yOffset, LABEL_WIDTH, 200, Text.defaultColorHelper, bLS.name);
                 BlockPicker blockPicker = new BlockPicker(panel, bLS.name + "picker", panel.getWidth() - offset, yOffset + 5, 175, 200, bLS.enabled, bLS.value.toArray(new String[0]));
                 this.labelToSetting.put(blocksText, bLS);
-                blockPicker.onPress(ignored -> bLS.setValue(blockPicker.getSelectedValues()));
+                blockPicker.onPress(interactiveWidget -> bLS.setValue(blockPicker.getSelectedValues()));
                 blockPicker.addWidthSetter((comp1, comp2) -> comp1.setX(panel.getWidth() - 175 - offset));
                 panel.addToList(blocksText);
                 panel.addToList(blockPicker);
@@ -187,9 +187,9 @@ public class ModuleSettingsList extends ScrollablePanel {
                     picker.setValue(settC.value);
                     picker.setRainbow(settC.rainbow);
                 });
-                picker.onPress(widget -> {
-                    cS.setValue(((ColorPicker) widget).getValue(), false);
-                    cS.rainbow = ((ColorPicker) widget).getRainbow();
+                picker.onPress(interactiveWidget -> {
+                    cS.setValue(((ColorPicker) interactiveWidget).getValue(), false);
+                    cS.rainbow = ((ColorPicker) interactiveWidget).getRainbow();
                 });
                 panel.addToList(colorText);
                 panel.addToList(picker);
@@ -207,7 +207,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                     CurveSetting.Curve profile = settC.value;
                     curve.setCurveValues(profile.initial, profile.mid, profile.finalStage, profile.maximum);
                 });
-                curve.onPress(widget ->
+                curve.onPress(interactiveWidget ->
                         crvS.setValue(curve.getCurveValues()[0], curve.getCurveValues()[1], curve.getCurveValues()[2], curve.getCurveValues()[3])
                 );
                 panel.addToList(text);

@@ -38,16 +38,15 @@ public class WaypointList extends ScrollablePanel {
             waypoint.targetY = waypoint.getY();
             this.waypoints.add(waypoint);
             this.addToList(waypoint);
-            waypoint.onClick((var2x, var3x) -> {
+            waypoint.onClick((parent, mouseButton) -> {
                 MapPanel mapPanel = (MapPanel) this.getParent();
                 mapPanel.mapFrame.centerOn(waypoint.waypointPos.getX(), waypoint.waypointPos.getZ());
             });
-            waypoint.onPress(
-                    var3x -> {
+            waypoint.onPress(interactiveWidget -> {
                         Client.INSTANCE.waypointTracker.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
                         Client.INSTANCE.waypointTracker.save();
                         this.content.removeChildByName(waypoint.name);
-                        this.waypoints.remove(var3x);
+                        this.waypoints.remove(interactiveWidget);
                     }
             );
         }

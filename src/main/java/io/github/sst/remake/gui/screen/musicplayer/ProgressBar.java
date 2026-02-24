@@ -15,12 +15,12 @@ public class ProgressBar extends InteractiveWidget {
 
     public ProgressBar(GuiComponent parentScreen, String var2, int var3, int var4, int var5, int var6) {
         super(parentScreen, var2, var3, var4, var5, var6, false);
-        this.addMouseButtonCallback((var1x, var2x) -> {
-            int var5x = (int) this.musicManager.getTotalDuration();
+        this.addMouseButtonCallback((screen, mouseButton) -> {
+            int var5x = this.musicManager.getTotalDuration();
             int var6x = this.musicManager.getDuration();
             this.progress = Math.min((float) var5x / (float) var6x, 1.0F);
         });
-        this.addMouseListener((var1x, var2x) -> {
+        this.addMouseListener((screen, mouseButton) -> {
             if (this.isHoveredInHierarchy() && this.isFocused()) {
                 int var5x = (int) Math.min((int) (this.progress * (float) this.musicManager.getDuration()), this.musicManager.getPlaybackProgress());
                 this.musicManager.seekTo(var5x);
