@@ -27,7 +27,7 @@ public class MixinConfirmScreenActionC2SPacket {
         ci.cancel();
 
         if (ViaInstance.getTargetVersion().newerThanOrEqualTo(ViaProtocols.R1_17)) {
-            buf.writeByte(syncId);
+            buf.writeInt(syncId);
         } else {
             buf.writeByte(syncId);
             buf.writeShort(actionId);
