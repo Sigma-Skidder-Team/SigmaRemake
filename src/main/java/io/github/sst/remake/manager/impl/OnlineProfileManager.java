@@ -22,9 +22,6 @@ import java.util.List;
 public class OnlineProfileManager {
     public final List<String> cachedProfileNames = new ArrayList<>();
 
-    public OnlineProfileManager() {
-    }
-
     public void getOnlineProfileNames(ProfileNamesListener listener) {
         new Thread(() -> {
             if (this.cachedProfileNames.isEmpty())

@@ -125,6 +125,26 @@ public class MusicManager extends Manager implements IMinecraft {
         super.init();
     }
 
+    @Override
+    public void shutdown() {
+        notification.release();
+        songThumbnail.release();
+        notification = null;
+        songThumbnail = null;
+
+        thumbnailImage = null;
+        scaledThumbnailImage = null;
+
+        playing = false;
+        playlist = null;
+        currentPlayingSongData = null;
+        thumbnailProcessingSongData = null;
+        visualizer.clear();
+        amplitudes.clear();
+        dataLine.close();
+        playlists.clear();
+    }
+
     @Subscribe
     public void onRender(RenderHudEvent ignoredEvent) {
         if (!playing || !spectrum || notification == null) return;

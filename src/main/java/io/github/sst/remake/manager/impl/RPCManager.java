@@ -57,6 +57,7 @@ public class RPCManager extends Manager {
         }
     }
 
+    @Override
     public void shutdown() {
         if (this.rpc != null) {
             this.rpc.shutdown();
