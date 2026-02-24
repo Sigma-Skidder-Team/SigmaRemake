@@ -8,6 +8,8 @@ Minecraft Sigma Client UI port & base remake for Fabric 1.16.5.
 - [ ] Add encryption/decryption for alt tokens when saving/loading alts list;
 - [ ] Add MS alt token refresher;
 - [ ] Separate managers into trackers, processors, storages...
+- [ ] Music player play button on song thumbnail looking weird
+- [ ] Missing shuffle song button on music player
 
 ## Screenshots
 
