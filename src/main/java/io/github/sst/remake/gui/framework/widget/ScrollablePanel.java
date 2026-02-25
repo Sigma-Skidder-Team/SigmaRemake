@@ -12,27 +12,46 @@ public class ScrollablePanel extends Widget {
     private boolean allowUpdatesWhenHidden = false;
     public GuiComponent content;
     public VerticalScrollBar scrollBar;
-    private boolean enableScissor = true;
+    private boolean scissorEnabled = true;
     public int scrollBarWidth = 35;
     public boolean reserveScrollbarSpace = false;
 
-    public ScrollablePanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6) {
-        super(var1, name, var3, var4, var5, var6, false);
+    public ScrollablePanel(GuiComponent parent, String name, int x, int y, int width, int height) {
+        super(parent, name, x, y, width, height, false);
         this.initContentAndScrollBar();
     }
 
-    public ScrollablePanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7) {
-        super(var1, name, var3, var4, var5, var6, var7, false);
+    public ScrollablePanel(GuiComponent parent, String name, int x, int y, int width, int height, ColorHelper textColor) {
+        super(parent, name, x, y, width, height, textColor, false);
         this.initContentAndScrollBar();
     }
 
-    public ScrollablePanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8) {
-        super(var1, name, var3, var4, var5, var6, var7, var8, false);
+    public ScrollablePanel(
+            GuiComponent parent,
+            String name,
+            int x,
+            int y,
+            int width,
+            int height,
+            ColorHelper textColor,
+            String text
+    ) {
+        super(parent, name, x, y, width, height, textColor, text, false);
         this.initContentAndScrollBar();
     }
 
-    public ScrollablePanel(GuiComponent var1, String name, int var3, int var4, int var5, int var6, ColorHelper var7, String var8, TrueTypeFont var9) {
-        super(var1, name, var3, var4, var5, var6, var7, var8, var9, false);
+    public ScrollablePanel(
+            GuiComponent parent,
+            String name,
+            int x,
+            int y,
+            int width,
+            int height,
+            ColorHelper textColor,
+            String text,
+            TrueTypeFont font
+    ) {
+        super(parent, name, x, y, width, height, textColor, text, font, false);
         this.initContentAndScrollBar();
     }
 
@@ -43,8 +62,8 @@ public class ScrollablePanel extends Widget {
         this.scrollBar.setReAddChildren(true);
     }
 
-    public void setScrollOffset(int var1) {
-        this.scrollBar.setOffset(var1);
+    public void setScrollOffset(int offset) {
+        this.scrollBar.setOffset(offset);
     }
 
     public int getScrollOffset() {
@@ -57,44 +76,49 @@ public class ScrollablePanel extends Widget {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (!this.allowUpdatesWhenHidden || this.isSelfVisible()) {
+        if (this.allowUpdatesWhenHidden || this.isSelfVisible()) {
             super.updatePanelDimensions(mouseX, mouseY);
-            this.content.setY(-1 * this.scrollBar.getOffset());
 
-            for (GuiComponent var6 : this.getContent().getChildren()) {
-                for (WidthSetter var8 : var6.getWidthSetters()) {
-                    var8.setWidth(var6, this);
+            this.content.setY(-this.scrollBar.getOffset());
+
+            for (GuiComponent child : this.getContent().getChildren()) {
+                for (WidthSetter widthSetter : child.getWidthSetters()) {
+                    widthSetter.setWidth(child, this);
                 }
             }
         }
     }
 
     public void setScissorEnabled(boolean enableScissor) {
-        this.enableScissor = enableScissor;
+        this.scissorEnabled = enableScissor;
     }
 
     public boolean isScissorEnabled() {
-        return this.enableScissor;
+        return this.scissorEnabled;
     }
 
     @Override
     public void draw(float partialTicks) {
         this.applyScaleTransforms();
-        if (!this.allowUpdatesWhenHidden || this.isSelfVisible()) {
-            if (this.enableScissor) {
-                ScissorUtils.startScissor(this);
-            }
 
-            super.draw(partialTicks);
-            if (this.enableScissor) {
-                ScissorUtils.restoreScissor();
-            }
+        if (!this.allowUpdatesWhenHidden && !this.isSelfVisible()) {
+            return;
+        }
+
+        if (this.scissorEnabled) {
+            ScissorUtils.startScissor(this);
+        }
+
+        super.draw(partialTicks);
+
+        if (this.scissorEnabled) {
+            ScissorUtils.restoreScissor();
         }
     }
 
     @Override
-    public void addToList(GuiComponent var1) {
-        this.content.addToList(var1);
+    public void addToList(GuiComponent component) {
+        this.content.addToList(component);
     }
 
     @Override
@@ -103,15 +127,15 @@ public class ScrollablePanel extends Widget {
     }
 
     @Override
-    public boolean hasChildWithName(String var1) {
-        return this.content.hasChildWithName(var1);
+    public boolean hasChildWithName(String name) {
+        return this.content.hasChildWithName(name);
     }
 
     public GuiComponent getContent() {
         return this.content;
     }
 
-    public void setReserveScrollbarSpace(boolean var1) {
-        this.reserveScrollbarSpace = var1;
+    public void setReserveScrollbarSpace(boolean reserveScrollbarSpace) {
+        this.reserveScrollbarSpace = reserveScrollbarSpace;
     }
 }

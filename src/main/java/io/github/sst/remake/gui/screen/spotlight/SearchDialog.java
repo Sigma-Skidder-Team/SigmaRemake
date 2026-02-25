@@ -10,38 +10,54 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchDialog extends InteractiveWidget {
-    public TextField query;
-    public String field20640;
+    public TextField queryInput;
+    public String queryText;
 
-    public SearchDialog(GuiComponent screen, String iconName, int var3, int var4, int width, int height, boolean var7) {
-        super(screen, iconName, var3, var4, width, height, var7);
-        this.addToList(this.query = new TextField(this, "search", 50, 0, width - 60, height - 2, TextField.DEFAULT_COLORS, "", "Search..."));
-        this.query.setUnderlineEnabled(false);
-        this.query.addChangeListener(var1x -> this.field20640 = this.query.getText());
+    public SearchDialog(GuiComponent screen, String name, int x, int y, int width, int height, boolean draggable) {
+        super(screen, name, x, y, width, height, draggable);
+
+        this.queryInput = new TextField(
+                this,
+                "search",
+                50,
+                0,
+                width - 60,
+                height - 2,
+                TextField.DEFAULT_COLORS,
+                "",
+                "Search..."
+        );
+        this.addToList(this.queryInput);
+
+        this.queryInput.setUnderlineEnabled(false);
+        this.queryInput.addChangeListener(ignored -> this.queryText = this.queryInput.getText());
     }
 
     @Override
     public void draw(float partialTicks) {
-        this.query.setFocused(true);
-        int var4 = 10;
+        this.queryInput.setFocused(true);
+
+        int padding = 10;
+
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var4 / 2),
-                (float) (this.y + var4 / 2),
-                (float) (this.width - var4),
-                (float) (this.height - var4),
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.width - padding),
+                (float) (this.height - padding),
                 9.0F,
                 partialTicks * 0.9F
         );
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var4 / 2),
-                (float) (this.y + var4 / 2),
-                (float) (this.width - var4),
-                (float) (this.height - var4),
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.width - padding),
+                (float) (this.height - padding),
                 30.0F,
                 partialTicks * 0.4F
         );
@@ -50,9 +66,10 @@ public class SearchDialog extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                (float) var4,
+                (float) padding,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.97F)
         );
+
         RenderUtils.drawImage(
                 (float) (this.x + 20),
                 (float) (this.y + 20),
@@ -61,17 +78,22 @@ public class SearchDialog extends InteractiveWidget {
                 Resources.SEARCH_ICON,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F)
         );
-        List<Module> modules = this.getModules();
-        if (!modules.isEmpty() && this.sortByName(this.field20640, modules.get(0).getName())) {
-            String var6 = modules.get(0).getName();
-            String var7 = this.field20640
-                    + modules.get(0).getName().substring(this.field20640.length(), var6.length())
-                    + (!modules.get(0).isEnabled() ? " - Disabled" : " - Enabled");
+
+        List<Module> matches = this.getMatchingModules();
+        if (!matches.isEmpty() && this.matchesQueryPrefix(this.queryText, matches.get(0).getName())) {
+            Module first = matches.get(0);
+
+            String moduleName = first.getName();
+            String autoComplete =
+                    this.queryText
+                            + moduleName.substring(this.queryText.length())
+                            + (first.isEnabled() ? " - Enabled" : " - Disabled");
+
             RenderUtils.drawString(
-                    this.query.getFont(),
+                    this.queryInput.getFont(),
                     (float) (this.x + 54),
                     (float) (this.y + 14),
-                    var7,
+                    autoComplete,
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.25F)
             );
         }
@@ -79,35 +101,39 @@ public class SearchDialog extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
-    public List<Module> getModules() {
-        List<Module> var3 = new ArrayList<>();
-        if (this.field20640 != null && !this.field20640.isEmpty()) {
-            for (Module var5 : Client.INSTANCE.moduleManager.modules) {
-                if (this.sortByName(this.field20640, var5.getName())) {
-                    var3.add(var5);
-                }
-            }
+    public List<Module> getMatchingModules() {
+        List<Module> matches = new ArrayList<>();
 
-            return var3;
-        } else {
-            return var3;
+        if (this.queryText == null || this.queryText.isEmpty()) {
+            return matches;
         }
+
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            if (this.matchesQueryPrefix(this.queryText, module.getName())) {
+                matches.add(module);
+            }
+        }
+
+        return matches;
     }
 
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 257) {
-            List<Module> var4 = this.getModules();
-            if (!var4.isEmpty()) {
-                var4.get(0).toggle();
+
+        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            List<Module> matches = this.getMatchingModules();
+            if (!matches.isEmpty()) {
+                matches.get(0).toggle();
             }
 
             MinecraftClient.getInstance().openScreen(null);
         }
     }
 
-    private boolean sortByName(String var1, String var2) {
-        return var1 == null || var1 == "" || var2 == null || var2.toLowerCase().startsWith(var1.toLowerCase());
+    private boolean matchesQueryPrefix(String query, String candidate) {
+        return query == null || query.isEmpty()
+                || candidate == null
+                || candidate.toLowerCase().startsWith(query.toLowerCase());
     }
 }
