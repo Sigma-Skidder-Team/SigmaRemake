@@ -211,7 +211,7 @@ public class ThumbnailButton extends Widget {
                 (float) (this.getY() + this.getWidth() / 2) - (playIconSize / 2) * scale,
                 playIconSize * scale,
                 playIconSize * scale,
-                Resources.PLAY,
+                Resources.PLAY_ICON,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
         );
     }
