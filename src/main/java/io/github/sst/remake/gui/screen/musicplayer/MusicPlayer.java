@@ -296,26 +296,26 @@ public class MusicPlayer extends Widget {
         }
     }
 
-    private void drawDuration(float var1) {
+    private void drawDuration(float partialTicks) {
         int total = this.musicManager.getTotalDuration();
         int duration = this.musicManager.getDuration();
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + PLAYER_WIDTH + 14),
-                (float) (this.getY() + this.getHeight() - 10) - 22.0F * var1,
+                (float) (this.getY() + this.getHeight() - 10) - 22.0F * partialTicks,
                 YoutubeUtils.formatSecondsAsTimestamp(total),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + this.getWidth() - 14 - FontUtils.HELVETICA_LIGHT_14.getWidth(YoutubeUtils.formatSecondsAsTimestamp(duration))),
-                (float) (this.getY() + this.getHeight() - 10) - 22.0F * var1,
+                (float) (this.getY() + this.getHeight() - 10) - 22.0F * partialTicks,
                 YoutubeUtils.formatSecondsAsTimestamp(duration),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
         );
     }
 
-    private void drawThumbnail(float var1) {
+    private void drawThumbnail(float partialTicks) {
         Texture var4 = this.musicManager.getNotification();
         Texture var5 = this.musicManager.getSongThumbnail();
         if (var4 != null && var5 != null) {
@@ -325,21 +325,21 @@ public class MusicPlayer extends Widget {
                     (float) this.getWidth(),
                     (float) FOOTER_HEIGHT,
                     var5,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) (this.getY() + this.getHeight() - FOOTER_HEIGHT),
                     (float) (this.getX() + this.getWidth()),
                     (float) (this.getY() + this.getHeight() - 5),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) (this.getY() + this.getHeight() - 5),
                     (float) (this.getX() + PLAYER_WIDTH),
                     (float) (this.getY() + this.getHeight()),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
             );
             RenderUtils.drawImage(
                     (float) (this.getX() + (PLAYER_WIDTH - 114) / 2),
@@ -347,10 +347,10 @@ public class MusicPlayer extends Widget {
                     114.0F,
                     114.0F,
                     var4,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
             );
             RenderUtils.drawRoundedRect(
-                    (float) (this.getX() + (PLAYER_WIDTH - 114) / 2), (float) (this.getY() + this.getHeight() - 170), 114.0F, 114.0F, 14.0F, var1
+                    (float) (this.getX() + (PLAYER_WIDTH - 114) / 2), (float) (this.getY() + this.getHeight() - 170), 114.0F, 114.0F, 14.0F, partialTicks
             );
         } else {
             RenderUtils.drawImage(
@@ -359,21 +359,21 @@ public class MusicPlayer extends Widget {
                     (float) this.getWidth(),
                     (float) FOOTER_HEIGHT,
                     Resources.BACKGROUND,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1 * var1)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) (this.getY() + this.getHeight() - FOOTER_HEIGHT),
                     (float) (this.getX() + this.getWidth()),
                     (float) (this.getY() + this.getHeight() - 5),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
             );
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) (this.getY() + this.getHeight() - 5),
                     (float) (this.getX() + PLAYER_WIDTH),
                     (float) (this.getY() + this.getHeight()),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * var1)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
             );
             RenderUtils.drawImage(
                     (float) (this.getX() + (PLAYER_WIDTH - 114) / 2),
@@ -381,17 +381,17 @@ public class MusicPlayer extends Widget {
                     114.0F,
                     114.0F,
                     Resources.ARTWORK,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var1)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
             );
             RenderUtils.drawRoundedRect(
-                    (float) (this.getX() + (PLAYER_WIDTH - 114) / 2), (float) (this.getY() + this.getHeight() - 170), 114.0F, 114.0F, 14.0F, var1
+                    (float) (this.getX() + (PLAYER_WIDTH - 114) / 2), (float) (this.getY() + this.getHeight() - 170), 114.0F, 114.0F, 14.0F, partialTicks
             );
         }
     }
 
-    private void drawSongTitle(float alpha) {
+    private void drawSongTitle(float partialTicks) {
         if (this.musicManager.getSongProcessed() == null) {
-            this.drawString(alpha, "Jello Music", PLAYER_WIDTH - 30 * 2, 12, 0);
+            this.drawString(partialTicks, "Jello Music", PLAYER_WIDTH - 30 * 2, 12, 0);
             return;
         }
 
@@ -399,10 +399,10 @@ public class MusicPlayer extends Widget {
             String[] titles = this.musicManager.getSongProcessed().title.split(" - ");
             int offset = 30;
             if (titles.length <= 1) {
-                this.drawString(alpha, !titles[0].isEmpty() ? titles[0] : "Jello Music", PLAYER_WIDTH - offset * 2, 12, 0);
+                this.drawString(partialTicks, !titles[0].isEmpty() ? titles[0] : "Jello Music", PLAYER_WIDTH - offset * 2, 12, 0);
             } else {
-                this.drawString(alpha, titles[1], PLAYER_WIDTH - offset * 2, 0, 0);
-                this.drawString(alpha, titles[0], PLAYER_WIDTH - offset * 2, 20, -1000);
+                this.drawString(partialTicks, titles[1], PLAYER_WIDTH - offset * 2, 0, 0);
+                this.drawString(partialTicks, titles[0], PLAYER_WIDTH - offset * 2, 20, -1000);
             }
         }
     }
