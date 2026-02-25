@@ -76,25 +76,25 @@ public class RenderUtils implements IMinecraft {
         drawRoundedRect(x, y, x + width, y + height, color);
     }
 
-    public static void drawRoundedRect(float x, float y, float width, float height, float size, int color) {
-        drawRoundedRect(x, y + size, x + width, y + height - size, color);
-        drawRoundedRect(x + size, y, x + width - size, y + size, color);
-        drawRoundedRect(x + size, y + height - size, x + width - size, y + height, color);
+    public static void drawRoundedRect(float x, float y, float width, float height, float radius, int color) {
+        drawRoundedRect(x, y + radius, x + width, y + height - radius, color);
+        drawRoundedRect(x + radius, y, x + width - radius, y + radius, color);
+        drawRoundedRect(x + radius, y + height - radius, x + width - radius, y + height, color);
 
-        ScissorUtils.startScissor(x, y, x + size, y + size);
-        drawCircle(x + size, y + size, size * 2.0F, color);
+        ScissorUtils.startScissor(x, y, x + radius, y + radius);
+        drawCircle(x + radius, y + radius, radius * 2.0F, color);
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(x + width - size, y, x + width, y + size);
-        drawCircle(x - size + width, y + size, size * 2.0F, color);
+        ScissorUtils.startScissor(x + width - radius, y, x + width, y + radius);
+        drawCircle(x - radius + width, y + radius, radius * 2.0F, color);
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(x, y + height - size, x + size, y + height);
-        drawCircle(x + size, y - size + height, size * 2.0F, color);
+        ScissorUtils.startScissor(x, y + height - radius, x + radius, y + height);
+        drawCircle(x + radius, y - radius + height, radius * 2.0F, color);
         ScissorUtils.restoreScissor();
 
-        ScissorUtils.startScissor(x + width - size, y + height - size, x + width, y + height);
-        drawCircle(x - size + width, y - size + height, size * 2.0F, color);
+        ScissorUtils.startScissor(x + width - radius, y + height - radius, x + width, y + height);
+        drawCircle(x - radius + width, y - radius + height, radius * 2.0F, color);
         ScissorUtils.restoreScissor();
     }
 
