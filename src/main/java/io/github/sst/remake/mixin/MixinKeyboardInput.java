@@ -20,7 +20,7 @@ public abstract class MixinKeyboardInput extends Input {
         this.jumping = event.jumping;
         this.sneaking = event.sneaking;
 
-        if (this.sneaking) {
+        if (this.sneaking && !slowDown) {
             this.movementSideways *= event.sneakFactor;
             this.movementForward *= event.sneakFactor;
         }
