@@ -3,7 +3,7 @@
 Minecraft Sigma Client UI port & base remake for Fabric 1.16.5.
 
 ## TODO List
-- [ ] Fix changelog in-out animation;
+- [x] Fix changelog in-out animation;
 - [ ] Fix alt manager blur effect breaking when pressing "Add Alt"
 - [ ] Add encryption/decryption for alt tokens when saving/loading alts list;
 - [ ] Add MS alt token refresher;

@@ -78,13 +78,14 @@ public class AnimationUtils {
         FORWARDS
     }
 
-    public static float calculateTransition(float var0, float var1, float var2, float var3) {
-        var0 /= var3;
-        return var2 * (var0 * var0 * --var0 + 1.0F) + var1;
+    public static float easeOutCubic(float elapsedTime, float startValue, float change, float duration) {
+        elapsedTime /= duration;
+        elapsedTime--; // equivalent to --t in classic easing formula
+        return change * (elapsedTime * elapsedTime * elapsedTime + 1.0F) + startValue;
     }
 
-    public static float calculateBackwardTransition(float var0, float var1, float var2, float var3) {
-        var0 /= var3;
-        return var2 * var0 * var0 * var0 + var1;
+    public static float easeInCubic(float elapsedTime, float startValue, float change, float duration) {
+        elapsedTime /= duration;
+        return change * elapsedTime * elapsedTime * elapsedTime + startValue;
     }
 }

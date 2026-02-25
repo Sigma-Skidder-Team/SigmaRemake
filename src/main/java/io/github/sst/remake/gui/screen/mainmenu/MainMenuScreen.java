@@ -13,7 +13,6 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import org.newdawn.slick.opengl.texture.Texture;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -88,9 +87,9 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        float transitionProgress = AnimationUtils.calculateTransition(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float transitionProgress = AnimationUtils.easeOutCubic(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.changelogTransitionAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            transitionProgress = AnimationUtils.calculateBackwardTransition(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            transitionProgress = AnimationUtils.easeInCubic(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         float scaleOffset = 0.07F * transitionProgress;
@@ -158,6 +157,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     Resources.MENU_FOREGROUND
             );
 
+            // blurs background when changelog animation
             RenderUtils.drawImage(
                     (float) this.backgroundParallaxX,
                     (float) (this.backgroundParallaxY - 50),
@@ -168,6 +168,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     false
             );
 
+            //darkness effect
             RenderUtils.drawRoundedRect2(
                     0.0F,
                     0.0F,
@@ -176,10 +177,10 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), transitionProgress * 0.3F)
             );
 
-
             for (GuiComponent object : this.getChildren()) {
                 if (object.isSelfVisible()) {
                     GL11.glPushMatrix();
+
                     if (object instanceof ChangelogPage) {
                         if (transitionProgress > 0.0F) {
                             object.draw(partialTicks);
@@ -191,7 +192,6 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     GL11.glPopMatrix();
                 }
             }
-
 
             if (foregroundOpacity > 0.0F && !Client.INSTANCE.loaded) {
                 LoadingScreen.renderFadeOut(backgroundOpacity, 1.0F);
