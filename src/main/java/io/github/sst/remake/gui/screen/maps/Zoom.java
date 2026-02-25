@@ -12,7 +12,6 @@ import io.github.sst.remake.util.render.image.ImageUtils;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,6 +26,7 @@ public class Zoom extends InteractiveWidget {
     public int zoomCooldown = 0;
     public boolean needsRedraw = true;
     private Texture backgroundTexture;
+    private String backgroundTextureId;
 
     public Zoom(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
         super(var1, var2, var3, var4, var5, var6, false);
@@ -71,7 +71,7 @@ public class Zoom extends InteractiveWidget {
                     this.backgroundTexture.release();
                 }
 
-                this.backgroundTexture = BufferedImageUtil.getTexture("blur", var6);
+                this.backgroundTexture = ImageUtils.createTexture(this.getBackgroundTextureId(), var6);
                 this.needsRedraw = false;
             }
 
@@ -153,6 +153,13 @@ public class Zoom extends InteractiveWidget {
         super.draw(partialTicks);
     }
 
+    private String getBackgroundTextureId() {
+        if (this.backgroundTextureId == null) {
+            this.backgroundTextureId = "zoom-blur-" + System.nanoTime();
+        }
+        return this.backgroundTextureId;
+    }
+
     public static class ZoomParticle {
         public float animationProgress;
         public boolean isZoomIn;
@@ -165,4 +172,3 @@ public class Zoom extends InteractiveWidget {
         }
     }
 }
-

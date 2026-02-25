@@ -22,7 +22,6 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -457,7 +456,7 @@ public class MusicPlayer extends Widget {
                     this.texture.release();
                 }
 
-                this.texture = BufferedImageUtil.getTexture(
+                this.texture = ImageUtils.createTexture(
                         "blur",
                         ImageUtils.captureAndProcessRegion(this.getX() + PLAYER_WIDTH, this.getY(), this.getWidth() - PLAYER_WIDTH, HEADER_HEIGHT, 10, 10)
                 );

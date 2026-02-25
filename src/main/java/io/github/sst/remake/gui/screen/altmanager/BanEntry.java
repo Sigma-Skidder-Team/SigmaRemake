@@ -18,7 +18,6 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.codec.binary.Base64;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -59,9 +58,13 @@ public class BanEntry extends Widget {
                 try {
                     BufferedImage var6 = decodeBase64Image(this.info.getIcon());
                     if (var6 != null) {
-                        this.serverIconTexture = BufferedImageUtil.getTexture("servericon", var6);
-                        this.serverBanner = BufferedImageUtil.getTexture(
-                                "servericon", ImageUtils.applyBlur(ImageUtils.adjustImageHSB(scaleImage(var6, 2.5, 2.5), 0.0F, 1.1F, 0.0F), 25)
+                        this.serverIconTexture = ImageUtils.createTexture("servericon", var6);
+                        this.serverBanner = ImageUtils.createTexture(
+                                "servericon",
+                                ImageUtils.applyBlur(
+                                        ImageUtils.adjustImageHSB(scaleImage(var6, 2.5, 2.5), 0.0F, 1.1F, 0.0F),
+                                        25
+                                )
                         );
                     }
                 } catch (IOException e) {
