@@ -35,6 +35,11 @@ public class YtDlpUtils {
     }
 
     public static URL resolveStream(String songUrl) {
+        if (songUrl == null) {
+            Client.LOGGER.error("Failed to play song, url is null");
+            return null;
+        }
+
         YtDlpRequest request = new YtDlpRequest(songUrl, ConfigUtils.MUSIC_FOLDER.getAbsolutePath());
         request.addOption("no-check-certificates");
         request.addOption("rm-cache-dir");
