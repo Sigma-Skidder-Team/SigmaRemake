@@ -120,7 +120,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                     components.add(new AlertComponent(ComponentType.FIRST_LINE, "- yt-dlp (auto install failed)", 30));
 
                 components.add(new AlertComponent(ComponentType.BUTTON, "Download", 55));
-                showAlert(dependencyAlert = new Alert(this, "music", true, "Dependencies.", components.toArray(new AlertComponent[0])));
+                showAlert(dependencyAlert = new Alert(this, "music", components.toArray(new AlertComponent[0])));
                 dependencyAlert.onPress(interactiveWidget -> {
                     if (!hasPy)
                         Util.getOperatingSystem().open("https://www.python.org/downloads/release/python-31114/");

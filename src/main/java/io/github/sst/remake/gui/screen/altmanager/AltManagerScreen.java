@@ -250,7 +250,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         AlertComponent button = new AlertComponent(ComponentType.BUTTON, "Cracked login", 50);
         AlertComponent button2 = new AlertComponent(ComponentType.BUTTON, "Cookie login", 50);
         AlertComponent button3 = new AlertComponent(ComponentType.BUTTON, "Web login", 50);
-        this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", true, "Add Alt", header, firstline1, firstline2, usernameInput, button, button2, button3));
+        this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", header, firstline1, firstline2, usernameInput, button, button2, button3));
 
         this.loginDialog.onPress(interactiveWidget -> {
             Button clickedButton = this.loginDialog.getClickedButton();
@@ -324,7 +324,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         AlertComponent firstLine = new AlertComponent(ComponentType.FIRST_LINE, "Are you sure you want", 15);
         AlertComponent secondLine = new AlertComponent(ComponentType.FIRST_LINE, "to delete this alt?", 40);
         AlertComponent button = new AlertComponent(ComponentType.BUTTON, "Delete", 50);
-        this.addToList(this.deleteAlert = new Alert(this, "delete", true, "Delete", title, firstLine, secondLine, button));
+        this.addToList(this.deleteAlert = new Alert(this, "delete", title, firstLine, secondLine, button));
     }
 
     @Override
