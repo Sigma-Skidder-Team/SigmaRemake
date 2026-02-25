@@ -121,7 +121,7 @@ public class Dropdown extends InteractiveWidget {
     }
 
     private int getAnimatedExpandHeight() {
-        float var3 = AnimationUtils.calculateTransition(this.expandAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+        float var3 = AnimationUtils.easeOutCubic(this.expandAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.expandAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
             var3 = QuadraticEasing.easeInQuad(this.expandAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }

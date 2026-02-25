@@ -123,7 +123,7 @@ public class ProfileListEntry extends Widget {
         partialTicks *= 1.0F - this.deleteAnimation.calcPercent();
         float slideAnimationPercentage = VecUtils.interpolate(this.slideAnimation.calcPercent(), 0.28, 1.26, 0.33, 1.04);
         if (this.slideAnimation.getDirection().equals(AnimationUtils.Direction.FORWARDS)) {
-            slideAnimationPercentage = AnimationUtils.calculateBackwardTransition(this.slideAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+            slideAnimationPercentage = AnimationUtils.easeInCubic(this.slideAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
         this.editButtons.setHovered(this.slideAnimation.calcPercent() == 1.0F);

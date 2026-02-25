@@ -263,7 +263,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         if (this.moduleSettingsDialog != null) {
             float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
             if (this.moduleSettingsDialog.fadeAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                var8 = AnimationUtils.calculateBackwardTransition(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+                var8 = AnimationUtils.easeInCubic(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
             fadeAmount -= this.moduleSettingsDialog.fadeAnimation.calcPercent() * 0.1F;
