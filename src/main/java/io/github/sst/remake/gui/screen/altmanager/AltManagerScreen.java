@@ -155,8 +155,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                         32,
                         TextField.DEFAULT_COLORS,
                         "",
-                        "Search...",
-                        FontUtils.HELVETICA_LIGHT_18
+                        "Search..."
                 )
         );
         this.searchBox.setFont(FontUtils.HELVETICA_LIGHT_18);
