@@ -64,10 +64,11 @@ public class Resources {
     public static final Texture MULTIPLAYER_ICON = loadTexture("jello/icons/multiplayer.png");
     public static final Texture OPTIONS_ICON = loadTexture("jello/icons/options.png");
     public static final Texture SINGLEPLAYER_ICON = loadTexture("jello/icons/singleplayer.png");
-    public static final Texture SHOP_ICON = loadTexture("jello/icons/shop.png");
+    public static final Texture WORLD_ICON = loadTexture("jello/icons/world.png");
     public static final Texture ALT_ICON = loadTexture("jello/icons/alt.png");
-    public static final Texture DVD = loadTexture("jello/icons/dvd.png");
+
     public static final Texture LOADING_INDICATOR = loadTexture("jello/icons/loading_indicator.png");
+    public static final Texture DVD = loadTexture("jello/icons/dvd.png");
 
     ///         FLAPPY BIRD         ///
     public static final Texture GAME_BACKGROUND = loadTexture("jello/games/bg.png");
