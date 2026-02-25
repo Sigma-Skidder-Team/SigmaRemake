@@ -9,14 +9,16 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class ChangingButton extends InteractiveWidget {
-    public int repeatMode;
+    public int repeatModeIndex;
 
-    public ChangingButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int repeatMode) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.repeatMode = repeatMode;
-        this.onClick((parent, mouseButton) -> {
-            this.repeatMode = (this.repeatMode + 1) % 3; // cycles 0 -> 1 -> 2 -> 0
-            this.callUIHandlers();
+    public ChangingButton(GuiComponent parent, String name, int x, int y, int width, int height, int repeatModeIndex) {
+        super(parent, name, x, y, width, height, false);
+
+        this.repeatModeIndex = repeatModeIndex;
+
+        this.onClick((clickedParent, mouseButton) -> {
+            this.repeatModeIndex = (this.repeatModeIndex + 1) % 3; // 0 -> 1 -> 2 -> 0
+            this.firePressHandlers();
         });
     }
 
@@ -24,7 +26,7 @@ public class ChangingButton extends InteractiveWidget {
     public void draw(float partialTicks) {
         ScissorUtils.startScissor((float) this.x, (float) this.y, (float) this.width, (float) this.height);
         RenderUtils.drawImage(
-                (float) (this.x - this.repeatMode * this.width),
+                (float) (this.x - this.repeatModeIndex * this.width),
                 (float) this.y,
                 (float) (this.width * 3),
                 (float) this.height,

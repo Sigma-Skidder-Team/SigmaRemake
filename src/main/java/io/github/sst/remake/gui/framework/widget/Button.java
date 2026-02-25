@@ -12,20 +12,30 @@ public class Button extends InteractiveWidget {
     private int textOffsetX = 0;
     public int cornerRadius = 0;
 
-    public Button(GuiComponent screen, String iconName, int x, int y, int width, int height) {
-        super(screen, iconName, x, y, width, height, false);
+    public Button(GuiComponent screen, String name, int x, int y, int width, int height) {
+        super(screen, name, x, y, width, height, false);
     }
 
-    public Button(GuiComponent screen, String iconName, int x, int y, int width, int var6, ColorHelper var7) {
-        super(screen, iconName, x, y, width, var6, var7, false);
+    public Button(GuiComponent screen, String name, int x, int y, int width, int height, ColorHelper color) {
+        super(screen, name, x, y, width, height, color, false);
     }
 
-    public Button(GuiComponent screen, String iconName, int x, int y, int width, int var6, ColorHelper var7, String text) {
-        super(screen, iconName, x, y, width, var6, var7, text, false);
+    public Button(GuiComponent screen, String name, int x, int y, int width, int height, ColorHelper color, String text) {
+        super(screen, name, x, y, width, height, color, text, false);
     }
 
-    public Button(GuiComponent screen, String iconName, int x, int y, int width, int height, ColorHelper var7, String var8, TrueTypeFont font) {
-        super(screen, iconName, x, y, width, height, var7, var8, font, false);
+    public Button(
+            GuiComponent screen,
+            String name,
+            int x,
+            int y,
+            int width,
+            int height,
+            ColorHelper color,
+            String text,
+            TrueTypeFont font
+    ) {
+        super(screen, name, x, y, width, height, color, text, font, false);
     }
 
     @Override
@@ -37,42 +47,44 @@ public class Button extends InteractiveWidget {
 
     @Override
     public void draw(float partialTicks) {
-        float var4 = !this.isHovered() ? 0.3F : (!this.isDragging() ? (!this.isMouseDownOverComponent() ? Math.max(partialTicks * this.hoverFade, 0.0F) : 1.5F) : 0.0F);
-        int color = ColorHelper.applyAlpha(
-                ColorHelper.shiftTowardsOther(this.textColor.getPrimaryColor(), this.textColor.getSecondaryColor(), 1.0F - var4),
-                (float) (this.textColor.getPrimaryColor() >> 24 & 0xFF) / 255.0F * partialTicks
+        float hoverBlendFactor = this.computeHoverBlendFactor(partialTicks);
+
+        int backgroundColor = ColorHelper.applyAlpha(
+                ColorHelper.shiftTowardsOther(
+                        this.textColor.getPrimaryColor(),
+                        this.textColor.getSecondaryColor(),
+                        1.0F - hoverBlendFactor
+                ),
+                ((this.textColor.getPrimaryColor() >> 24) & 0xFF) / 255.0F * partialTicks
         );
+
         if (this.cornerRadius <= 0) {
             RenderUtils.drawRoundedRect(
                     (float) this.getX(),
                     (float) this.getY(),
                     (float) (this.getX() + this.getWidth()),
                     (float) (this.getY() + this.getHeight()),
-                    color
+                    backgroundColor
             );
         } else {
             RenderUtils.drawRoundedButton(
-                    (float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), (float) this.cornerRadius, color
+                    (float) this.getX(),
+                    (float) this.getY(),
+                    (float) this.getWidth(),
+                    (float) this.getHeight(),
+                    (float) this.cornerRadius,
+                    backgroundColor
             );
         }
 
-        int var10 = this.getX()
-                + (
-                this.textColor.getWidthAlignment() != FontAlignment.CENTER
-                        ? 0
-                        : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT ? this.getWidth() / 2 : this.getWidth())
-        );
-        int var11 = this.getY()
-                + (
-                this.textColor.getHeightAlignment() != FontAlignment.CENTER
-                        ? 0
-                        : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM ? this.getHeight() / 2 : this.getHeight())
-        );
         if (this.getText() != null) {
+            int textAnchorX = this.computeTextAnchorX();
+            int textAnchorY = this.computeTextAnchorY();
+
             RenderUtils.drawString(
                     this.getFont(),
-                    (float) (this.textOffsetX + var10),
-                    (float) var11,
+                    (float) (this.textOffsetX + textAnchorX),
+                    (float) textAnchorY,
                     this.getText(),
                     ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
                     this.textColor.getWidthAlignment(),
@@ -89,5 +101,36 @@ public class Button extends InteractiveWidget {
 
     public int getTextOffsetX() {
         return this.textOffsetX;
+    }
+
+    private float computeHoverBlendFactor(float partialTicks) {
+        if (!this.isHovered()) {
+            return 0.3F;
+        }
+        if (this.isDragging()) {
+            return 0.0F;
+        }
+        if (this.isMouseDownOverComponent()) {
+            return 1.5F;
+        }
+        return Math.max(partialTicks * this.hoverFade, 0.0F);
+    }
+
+    private int computeTextAnchorX() {
+        if (this.textColor.getWidthAlignment() != FontAlignment.CENTER) {
+            return this.getX();
+        }
+        return this.textColor.getWidthAlignment() != FontAlignment.RIGHT
+                ? this.getX() + this.getWidth() / 2
+                : this.getX() + this.getWidth();
+    }
+
+    private int computeTextAnchorY() {
+        if (this.textColor.getHeightAlignment() != FontAlignment.CENTER) {
+            return this.getY();
+        }
+        return this.textColor.getHeightAlignment() != FontAlignment.BOTTOM
+                ? this.getY() + this.getHeight() / 2
+                : this.getY() + this.getHeight();
     }
 }

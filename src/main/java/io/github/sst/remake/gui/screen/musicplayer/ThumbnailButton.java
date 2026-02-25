@@ -25,178 +25,236 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ThumbnailButton extends Widget {
-    private static final ColorHelper field20771 = new ColorHelper(
+    private static final ColorHelper DEFAULT_TEXT_STYLE = new ColorHelper(
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
             ClientColors.DEEP_TEAL.getColor(),
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );
-    public URL videoUrl;
-    public BufferedImage field20773;
-    public boolean field20774 = false;
-    private Texture field20775;
-    private Texture field20776;
-    private final AnimationUtils animation = new AnimationUtils(125, 125);
+    public URL thumbnailUrl;
+    public BufferedImage thumbnailImage;
+    public boolean thumbnailLoadStarted = false;
+    private Texture thumbnailTexture;
+    private Texture blurredThumbnailTexture;
+    private final AnimationUtils hoverAnimation = new AnimationUtils(125, 125);
 
-    public ThumbnailButton(GuiComponent var1, int x, int y, int width, int height, SongData video) {
-        super(var1, video.id, x, y, width, height, field20771, video.title, false);
+    public ThumbnailButton(GuiComponent parent, int x, int y, int width, int height, SongData video) {
+        super(parent, video.id, x, y, width, height, DEFAULT_TEXT_STYLE, video.title, false);
 
         try {
-            this.videoUrl = new URL(video.getThumbnailUrl());
+            this.thumbnailUrl = new URL(video.getThumbnailUrl());
         } catch (MalformedURLException e) {
             Client.LOGGER.error("Failed to parse url", e);
         }
-
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        boolean hovered = this.isHoveredInHierarchy() && this.getParent().getParent().isMouseOverComponent(mouseX, mouseY);
-        this.animation.changeDirection(!hovered ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+        boolean isHoveredInVisibleArea =
+                this.isHoveredInHierarchy()
+                        && this.getParent() != null
+                        && this.getParent().getParent() != null
+                        && this.getParent().getParent().isMouseOverComponent(mouseX, mouseY);
+
+        // hovered -> BACKWARDS, not hovered -> FORWARDS.
+        this.hoverAnimation.changeDirection(
+                isHoveredInVisibleArea ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS
+        );
 
         super.updatePanelDimensions(mouseX, mouseY);
     }
 
-    public boolean method13157() {
-        if (this.getParent() != null && this.getParent().getParent() != null) {
-            GuiComponent var3 = this.getParent().getParent();
-            if (var3 instanceof ScrollablePanel) {
-                ScrollablePanel var4 = (ScrollablePanel) var3;
-                int var5 = var4.getScrollOffset() + var4.getHeight() + this.getHeight();
-                int var6 = var4.getScrollOffset() - this.getHeight();
-                return this.getY() <= var5 && this.getY() >= var6;
-            }
+    private boolean isWithinScrollableViewport() {
+        if (this.getParent() == null || this.getParent().getParent() == null) {
+            return true;
         }
 
-        return true;
+        GuiComponent container = this.getParent().getParent();
+        if (!(container instanceof ScrollablePanel)) {
+            return true;
+        }
+
+        ScrollablePanel scrollablePanel = (ScrollablePanel) container;
+
+        int maxY = scrollablePanel.getScrollOffset() + scrollablePanel.getHeight() + this.getHeight();
+        int minY = scrollablePanel.getScrollOffset() - this.getHeight();
+
+        return this.getY() <= maxY && this.getY() >= minY;
     }
 
     @Override
     public void draw(float partialTicks) {
-        if (!this.method13157()) {
-            if (this.field20775 != null) {
-                this.field20775.release();
-                this.field20775 = null;
-            }
+        if (!this.isWithinScrollableViewport()) {
+            this.releaseTexturesIfPresent();
+            return;
+        }
 
-            if (this.field20776 != null) {
-                this.field20776.release();
-                this.field20776 = null;
-            }
-        } else {
-            if (this.method13157() && !this.field20774) {
-                this.field20774 = true;
-                new Thread(() -> {
-                    try {
-                        BufferedImage var3 = ImageIO.read(this.videoUrl);
-                        if (var3.getHeight() != var3.getWidth()) {
-                            this.field20773 = var3.getSubimage(70, 0, 180, 180);
-                        } else {
-                            this.field20773 = var3;
-                        }
-                    } catch (IOException | NumberFormatException e) {
-                        Client.LOGGER.warn("Failed to do something with the image", e);
-                    }
-                }).start();
-            }
+        if (!this.thumbnailLoadStarted) {
+            this.thumbnailLoadStarted = true;
+            this.loadThumbnailAsync();
+        }
 
-            float var4 = this.animation.calcPercent();
-            float var5 = (float) Math.round((float) (this.getX() + 15) - 5.0F * var4);
-            float var6 = (float) Math.round((float) (this.getY() + 15) - 5.0F * var4);
-            float var7 = (float) Math.round((float) (this.getWidth() - 30) + 10.0F * var4);
-            float var8 = (float) Math.round((float) (this.getWidth() - 30) + 10.0F * var4);
-            RenderUtils.drawRoundedRect(
-                    (float) (this.getX() + 15) - 5.0F * var4,
-                    (float) (this.getY() + 15) - 5.0F * var4,
-                    (float) (this.getWidth() - 30) + 10.0F * var4,
-                    (float) (this.getWidth() - 30) + 10.0F * var4,
-                    20.0F,
-                    partialTicks
-            );
-            if (this.field20775 == null && this.field20773 == null) {
-                RenderUtils.drawImage(var5, var6, var7, var8, Resources.ARTWORK, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - var4)));
-                if (this.field20776 != null) {
-                    RenderUtils.drawImage(var5, var6, var7, var8, Resources.ARTWORK, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks));
-                }
-            } else {
-                if (this.field20775 == null) {
-                    try {
-                        if (this.field20775 != null) {
-                            this.field20775.release();
-                        }
+        float hoverPercent = this.hoverAnimation.calcPercent();
 
-                        this.field20775 = BufferedImageUtil.getTexture("picture", this.field20773);
-                    } catch (IOException e) {
-                        Client.LOGGER.warn("Failed to get texture 'picture'", e);
-                    }
+        float imageX = (float) Math.round((this.getX() + 15) - 5.0F * hoverPercent);
+        float imageY = (float) Math.round((this.getY() + 15) - 5.0F * hoverPercent);
+        float imageW = (float) Math.round((this.getWidth() - 30) + 10.0F * hoverPercent);
+        float imageH = (float) Math.round((this.getWidth() - 30) + 10.0F * hoverPercent);
+
+        RenderUtils.drawRoundedRect(
+                (float) (this.getX() + 15) - 5.0F * hoverPercent,
+                (float) (this.getY() + 15) - 5.0F * hoverPercent,
+                (float) (this.getWidth() - 30) + 10.0F * hoverPercent,
+                (float) (this.getWidth() - 30) + 10.0F * hoverPercent,
+                20.0F,
+                partialTicks
+        );
+
+        this.drawThumbnail(imageX, imageY, imageW, imageH, hoverPercent, partialTicks);
+        this.drawPlayOverlay(hoverPercent, partialTicks);
+        this.drawTitleText(partialTicks);
+    }
+
+    private void loadThumbnailAsync() {
+        new Thread(() -> {
+            try {
+                BufferedImage loaded = ImageIO.read(this.thumbnailUrl);
+                if (loaded == null) {
+                    return;
                 }
 
-                if (this.field20776 == null && var4 > 0.0F) {
-                    try {
-                        if (this.field20776 != null) {
-                            this.field20776.release();
-                        }
-
-                        this.field20776 = BufferedImageUtil.getTexture("picture", ImageUtils.applyBlur(this.field20773, 14));
-                    } catch (IOException e) {
-                        Client.LOGGER.warn("Failed to get texture 'picture'", e);
-                    }
-                } else if (var4 == 0.0F && this.field20776 != null) {
-                    this.field20776 = null;
-                }
-
-                RenderUtils.drawImage(var5, var6, var7, var8, this.field20775, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - var4)));
-                if (this.field20776 != null) {
-                    RenderUtils.drawImage(var5, var6, var7, var8, this.field20776, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks));
-                }
-            }
-
-            float var9 = 50;
-            if (this.isMouseDownOverComponent()) {
-                var9 = 40;
-            }
-
-            float var10 = 0.5F + var4 / 2.0F;
-            RenderUtils.drawImage(
-                    (float) (this.getX() + this.getWidth() / 2) - (var9 / 2) * var10,
-                    (float) (this.getY() + this.getWidth() / 2) - (var9 / 2) * var10,
-                    var9 * var10,
-                    var9 * var10,
-                    Resources.PLAY,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks)
-            );
-            TrueTypeFont var11 = FontUtils.HELVETICA_LIGHT_12;
-            if (this.text != null) {
-                ScissorUtils.startScissor(this);
-                String[] var12 = this.getText().replaceAll("\\(.*\\)", "").replaceAll("\\[.*\\]", "").split(" - ");
-                if (var12.length > 1) {
-                    RenderUtils.drawString(
-                            var11,
-                            (float) (this.getX() + (this.getWidth() - var11.getWidth(var12[1])) / 2),
-                            (float) (this.getY() + this.getWidth() - 2),
-                            var12[1],
-                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
-                    );
-                    RenderUtils.drawString(
-                            var11,
-                            (float) (this.getX() + (this.getWidth() - var11.getWidth(var12[0])) / 2),
-                            (float) (this.getY() + this.getWidth() - 2 + 13),
-                            var12[0],
-                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
-                    );
+                if (loaded.getHeight() != loaded.getWidth()) {
+                    // TODO: verify these crop constants
+                    this.thumbnailImage = loaded.getSubimage(70, 0, 180, 180);
                 } else {
-                    RenderUtils.drawString(
-                            var11,
-                            (float) (this.getX() + (this.getWidth() - var11.getWidth(var12[0])) / 2),
-                            (float) (this.getY() + this.getWidth() - 2 + 6),
-                            var12[0],
-                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
-                    );
+                    this.thumbnailImage = loaded;
                 }
+            } catch (IOException | NumberFormatException e) {
+                Client.LOGGER.warn("Failed to load/process thumbnail image", e);
+            }
+        }).start();
+    }
 
-                ScissorUtils.restoreScissor();
+    private void releaseTexturesIfPresent() {
+        if (this.thumbnailTexture != null) {
+            this.thumbnailTexture.release();
+            this.thumbnailTexture = null;
+        }
+
+        if (this.blurredThumbnailTexture != null) {
+            this.blurredThumbnailTexture.release();
+            this.blurredThumbnailTexture = null;
+        }
+    }
+
+    private void drawThumbnail(float x, float y, float w, float h, float hoverPercent, float partialTicks) {
+        if (this.thumbnailTexture == null && this.thumbnailImage == null) {
+            RenderUtils.drawImage(
+                    x, y, w, h,
+                    Resources.ARTWORK,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - hoverPercent))
+            );
+
+            if (this.blurredThumbnailTexture != null) {
+                RenderUtils.drawImage(
+                        x, y, w, h,
+                        Resources.ARTWORK,
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+                );
+            }
+            return;
+        }
+
+        if (this.thumbnailTexture == null) {
+            try {
+                this.thumbnailTexture = BufferedImageUtil.getTexture("picture", this.thumbnailImage);
+            } catch (IOException e) {
+                Client.LOGGER.warn("Failed to get texture 'picture'", e);
             }
         }
+
+        if (this.blurredThumbnailTexture == null && hoverPercent > 0.0F) {
+            try {
+                this.blurredThumbnailTexture = BufferedImageUtil.getTexture(
+                        "picture",
+                        ImageUtils.applyBlur(this.thumbnailImage, 14)
+                );
+            } catch (IOException e) {
+                Client.LOGGER.warn("Failed to get texture 'picture'", e);
+            }
+        } else if (hoverPercent == 0.0F && this.blurredThumbnailTexture != null) {
+            this.blurredThumbnailTexture = null;
+        }
+
+        RenderUtils.drawImage(
+                x, y, w, h,
+                this.thumbnailTexture,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - hoverPercent))
+        );
+
+        if (this.blurredThumbnailTexture != null) {
+            RenderUtils.drawImage(
+                    x, y, w, h,
+                    this.blurredThumbnailTexture,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+            );
+        }
+    }
+
+    private void drawPlayOverlay(float hoverPercent, float partialTicks) {
+        float playIconSize = this.isMouseDownOverComponent() ? 40.0F : 50.0F;
+        float scale = 0.5F + hoverPercent / 2.0F;
+
+        RenderUtils.drawImage(
+                (float) (this.getX() + this.getWidth() / 2) - (playIconSize / 2) * scale,
+                (float) (this.getY() + this.getWidth() / 2) - (playIconSize / 2) * scale,
+                playIconSize * scale,
+                playIconSize * scale,
+                Resources.PLAY,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+        );
+    }
+
+    private void drawTitleText(float partialTicks) {
+        if (this.text == null) {
+            return;
+        }
+
+        TrueTypeFont font = FontUtils.HELVETICA_LIGHT_12;
+
+        ScissorUtils.startScissor(this);
+
+        String[] parts = this.getText()
+                .replaceAll("\\(.*\\)", "")
+                .replaceAll("\\[.*\\]", "")
+                .split(" - ");
+
+        if (parts.length > 1) {
+            RenderUtils.drawString(
+                    font,
+                    (float) (this.getX() + (this.getWidth() - font.getWidth(parts[1])) / 2),
+                    (float) (this.getY() + this.getWidth() - 2),
+                    parts[1],
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+            );
+            RenderUtils.drawString(
+                    font,
+                    (float) (this.getX() + (this.getWidth() - font.getWidth(parts[0])) / 2),
+                    (float) (this.getY() + this.getWidth() - 2 + 13),
+                    parts[0],
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+            );
+        } else {
+            RenderUtils.drawString(
+                    font,
+                    (float) (this.getX() + (this.getWidth() - font.getWidth(parts[0])) / 2),
+                    (float) (this.getY() + this.getWidth() - 2 + 6),
+                    parts[0],
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+            );
+        }
+
+        ScissorUtils.restoreScissor();
     }
 }
