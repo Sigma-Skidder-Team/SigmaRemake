@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class MusicManager extends Manager implements IMinecraft {
-    private static final int DEFAULT_THUMBNAIL_X = 70;
-    private static final int DEFAULT_THUMBNAIL_Y = 0;
     private static final int DEFAULT_THUMBNAIL_SIZE = 180;
     private static final int BLURRED_BANNER_WIDTH = 512;
     private static final int BLURRED_BANNER_HEIGHT = 32;
@@ -184,6 +182,7 @@ public final class MusicManager extends Manager implements IMinecraft {
         renderBars();
         renderThumbnail();
         renderSongTitle();
+        RenderUtils.resetHudGlState();
     }
 
     @Subscribe

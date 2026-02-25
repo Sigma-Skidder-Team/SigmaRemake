@@ -12,6 +12,7 @@ import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.impl.SigmaBlurShader;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.shader.ShaderUtils;
@@ -74,6 +75,7 @@ public final class HUDManager extends Manager implements IMinecraft {
             RenderSystem.disableBlend();
 
             new RenderClient2DEvent().call();
+            RenderUtils.resetHudGlState();
         }
 
         if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {

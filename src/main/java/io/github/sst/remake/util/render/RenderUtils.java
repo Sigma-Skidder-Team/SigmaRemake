@@ -327,6 +327,7 @@ public class RenderUtils implements IMinecraft {
             float blue = (float) (color & 0xFF) / 255.0F;
 
             font.drawString((float) Math.round(x + (float) adjustedX), (float) Math.round(y + (float) adjustedY), text, new Color(red, green, blue, alpha));
+            TextureImpl.unbind();
         }
 
         RenderSystem.disableBlend();
@@ -1304,5 +1305,22 @@ public class RenderUtils implements IMinecraft {
         GL11.glEnd();
         GL11.glEnable(2929);
         RenderSystem.shadeModel(7424);
+    }
+
+    public static void resetHudGlState() {
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColorMask(true, true, true, true);
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.SRC_ALPHA,
+                GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SrcFactor.ONE,
+                GlStateManager.DstFactor.ZERO
+        );
     }
 }
