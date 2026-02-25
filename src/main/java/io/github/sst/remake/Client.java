@@ -35,12 +35,11 @@ public class Client implements IMinecraft {
         rpcManager.init();
 
         accountManager.init();
+        notificationManager.init();
 
         moduleManager.init();
         configManager.init();
         bindManager.init();
-
-        notificationManager.init();
 
         textureManager.init();
         screenManager.init();
