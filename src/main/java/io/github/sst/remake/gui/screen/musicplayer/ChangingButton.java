@@ -24,7 +24,7 @@ public class ChangingButton extends InteractiveWidget {
 
     @Override
     public void draw(float partialTicks) {
-        ScissorUtils.startScissor((float) this.x, (float) this.y, (float) this.width, (float) this.height);
+        ScissorUtils.startScissorRect((float) this.x, (float) this.y, (float) this.width, (float) this.height);
         RenderUtils.drawImage(
                 (float) (this.x - this.repeatModeIndex * this.width),
                 (float) this.y,

@@ -26,6 +26,10 @@ public class ScissorUtils {
         startScissor((int) x, (int) y, (int) width, (int) height, true);
     }
 
+    public static void startScissorRect(float x, float y, float width, float height) {
+        startScissor((int) x, (int) y, (int) (x + width), (int) (y + height), true);
+    }
+
     public static void startScissorNoGL(int x, int y, int width, int height) {
         startScissor(x, y, width, height, false);
     }
