@@ -333,4 +333,58 @@ public class ImageUtils {
     public static BufferedImage captureAndProcessRegion(int x, int y, int width, int height, int downscaleFactor, int blurRadius) {
         return captureAndProcessRegion(x, y, width, height, downscaleFactor, blurRadius, ClientColors.DEEP_TEAL.getColor(), false);
     }
+
+    public static BufferedImage copyImage(BufferedImage image) {
+        if (image == null) {
+            return null;
+        }
+        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        copy.getGraphics().drawImage(image, 0, 0, null);
+        copy.getGraphics().dispose();
+        return copy;
+    }
+
+    public static BufferedImage copySubImageSafe(BufferedImage source, int x, int y, int width, int height) {
+        if (source == null || width <= 0 || height <= 0) {
+            return null;
+        }
+        int safeX = Math.max(0, Math.min(x, source.getWidth() - 1));
+        int safeY = Math.max(0, Math.min(y, source.getHeight() - 1));
+        int safeWidth = Math.max(1, Math.min(width, source.getWidth() - safeX));
+        int safeHeight = Math.max(1, Math.min(height, source.getHeight() - safeY));
+        return copyImage(source.getSubimage(safeX, safeY, safeWidth, safeHeight));
+    }
+
+    public static BufferedImage createSquareThumbnail(BufferedImage source, int size) {
+        if (source == null || size <= 0) {
+            return source;
+        }
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int side = Math.min(width, height);
+        if (side <= 0) {
+            return source;
+        }
+        int x = (width - side) / 2;
+        int y = (height - side) / 2;
+        BufferedImage square = copySubImageSafe(source, x, y, side, side);
+        if (square == null) {
+            return null;
+        }
+        if (side == size) {
+            return square;
+        }
+        double scale = (double) size / (double) side;
+        return toCompatibleImageType(scaleImage(square, scale, scale));
+    }
+
+    public static BufferedImage toCompatibleImageType(BufferedImage image) {
+        if (image == null || image.getType() == BufferedImage.TYPE_INT_ARGB) {
+            return image;
+        }
+        BufferedImage compatibleImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        compatibleImage.getGraphics().drawImage(image, 0, 0, null);
+        compatibleImage.getGraphics().dispose();
+        return compatibleImage;
+    }
 }

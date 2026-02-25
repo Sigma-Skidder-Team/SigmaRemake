@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class NetUtils {
     public static final String USER_AGENT = "SigmaRemake/" + Client.VERSION;
@@ -52,5 +53,17 @@ public class NetUtils {
         } catch (IOException | ParseException e) {
             return "";
         }
+    }
+
+    public static URLConnection getConnection(URL url) throws IOException {
+        URLConnection connection = url.openConnection();
+        connection.setConnectTimeout(14000);
+        connection.setReadTimeout(14000);
+        connection.setUseCaches(true);
+
+        connection.setRequestProperty("Connection", "Keep-Alive");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+        return connection;
     }
 }

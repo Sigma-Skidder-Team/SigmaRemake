@@ -12,6 +12,7 @@ import io.github.sst.remake.util.client.ConfigUtils;
 import io.github.sst.remake.util.client.yt.PlaylistData;
 import io.github.sst.remake.util.client.yt.SongData;
 import io.github.sst.remake.util.client.yt.YtDlpUtils;
+import io.github.sst.remake.util.http.NetUtils;
 import io.github.sst.remake.util.http.YoutubeUtils;
 import io.github.sst.remake.util.system.io.audio.stream.MusicStream;
 import io.github.sst.remake.util.math.fft.JavaFFT;
@@ -40,7 +41,6 @@ import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,19 +109,10 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         boolean hasPy = VersionUtils.hasPython3_11();
         boolean hasFF = VersionUtils.hasFFMPEG();
+
         if (!hasPy || !hasFF) {
             Client.LOGGER.warn("Music Player will not work, because either Python 3.11 or FFMPEG was not found on your system.");
         }
-
-        /*
-        playlists.add(new PlaylistData("Country", "RDCLAK5uy_lRZyKy_XqMaPeU5v-pvA2PLUn8ZMVMGoE"));
-        playlists.add(new PlaylistData("Mellow", "RDCLAK5uy_kzhe4thDu2Gh_HJX-PhiswAlcxHsqjvfo"));
-        playlists.add(new PlaylistData("Hip-Hop", "RDCLAK5uy_mFEnPWt71C547zB84TE8T42ORbAQiGe1M"));
-        playlists.add(new PlaylistData("EDM", "RDCLAK5uy_md-KWXDxKwI1W3J1PjCERreBRd8hZLCLw"));
-        playlists.add(new PlaylistData("Freestyle", "RDCLAK5uy_mGMqJUDr4XGV_mSXMwyRTHIJFtiaFSuj4"));
-        playlists.add(new PlaylistData("Jazz", "RDCLAK5uy_nyRN5z0Kh9XP7r7qhm3ANS_3pCF_qco-o"));
-        playlists.add(new PlaylistData("Blues", "RDCLAK5uy_k6B0CcfHO04oWPAyUVlO96Vvmg_pB62JM"));
-         */
 
         playlists.add(new PlaylistData("Trap Nation", "PLC1og_v3eb4hrv4wsqG1G5dsNZh9bIscJ"));
         playlists.add(new PlaylistData("Chill Nation", "PL3EfCK9aCbkptFjtgWYJ8wiXgJQw5k3M3"));
@@ -221,7 +212,6 @@ public final class MusicManager extends Manager implements IMinecraft {
         if (processing) {
             if (thumbnailImage != null
                     && scaledThumbnailImage != null
-                    && currentPlayingSongData != null
                     && thumbnailPreparedForSong != null
                     && isSameSong(currentPlayingSongData, thumbnailPreparedForSong)
                     && !client.isPaused()) {
@@ -233,9 +223,9 @@ public final class MusicManager extends Manager implements IMinecraft {
                     notification.release();
                 }
 
-                thumbnailImage = toCompatibleImageType(thumbnailImage);
-                scaledThumbnailImage = toCompatibleImageType(scaledThumbnailImage);
-                resetGlUnpackState();
+                thumbnailImage = ImageUtils.toCompatibleImageType(thumbnailImage);
+                scaledThumbnailImage = ImageUtils.toCompatibleImageType(scaledThumbnailImage);
+                RenderUtils.resetGlUnpackState();
 
                 String textureKey = "music-" + currentPlayingSongData.id + "-" + System.nanoTime();
                 songThumbnail = BufferedImageUtil.getTexture(textureKey + "-bg", thumbnailImage);
@@ -454,7 +444,7 @@ public final class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        MusicStream mS = new MusicStream(getConnection(audioStreamUrl).getInputStream());
+        MusicStream mS = new MusicStream(NetUtils.getConnection(audioStreamUrl).getInputStream());
 
         MP4Container container = new MP4Container(mS);
 
@@ -563,49 +553,6 @@ public final class MusicManager extends Manager implements IMinecraft {
         }
     }
 
-    private URLConnection getConnection(URL url) throws IOException {
-        URLConnection connection = url.openConnection();
-        connection.setConnectTimeout(14000);
-        connection.setReadTimeout(14000);
-        connection.setUseCaches(true);
-
-        connection.setRequestProperty("Connection", "Keep-Alive");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-        return connection;
-    }
-
-    private BufferedImage toCompatibleImageType(BufferedImage image) {
-        if (image == null || image.getType() == BufferedImage.TYPE_INT_ARGB) {
-            return image;
-        }
-        BufferedImage compatibleImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        compatibleImage.getGraphics().drawImage(image, 0, 0, null);
-        compatibleImage.getGraphics().dispose();
-        return compatibleImage;
-    }
-
-    private BufferedImage copyImage(BufferedImage image) {
-        if (image == null) {
-            return null;
-        }
-        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        copy.getGraphics().drawImage(image, 0, 0, null);
-        copy.getGraphics().dispose();
-        return copy;
-    }
-
-    private BufferedImage copySubImageSafe(BufferedImage source, int x, int y, int width, int height) {
-        if (source == null || width <= 0 || height <= 0) {
-            return null;
-        }
-        int safeX = Math.max(0, Math.min(x, source.getWidth() - 1));
-        int safeY = Math.max(0, Math.min(y, source.getHeight() - 1));
-        int safeWidth = Math.max(1, Math.min(width, source.getWidth() - safeX));
-        int safeHeight = Math.max(1, Math.min(height, source.getHeight() - safeY));
-        return copyImage(source.getSubimage(safeX, safeY, safeWidth, safeHeight));
-    }
-
     private void processThumbnail(SongData data, int generation) throws IOException {
         if (generation != thumbnailProcessGeneration.get()) {
             return;
@@ -622,7 +569,7 @@ public final class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        BufferedImage source = toCompatibleImageType(buffImage);
+        BufferedImage source = ImageUtils.toCompatibleImageType(buffImage);
         BufferedImage blurred = ImageUtils.applyBlur(source, 15);
         if (blurred == null) {
             thumbnailFailed = true;
@@ -632,13 +579,13 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         int startY = (int) (blurred.getHeight() * 0.75F);
         int cropHeight = Math.max(1, (int) (blurred.getHeight() * 0.2F));
-        BufferedImage blurredStrip = copySubImageSafe(blurred, 0, startY, blurred.getWidth(), cropHeight);
+        BufferedImage blurredStrip = ImageUtils.copySubImageSafe(blurred, 0, startY, blurred.getWidth(), cropHeight);
         if (blurredStrip == null) {
             thumbnailFailed = true;
             processing = false;
             return;
         }
-        BufferedImage bannerTexture = toCompatibleImageType(
+        BufferedImage bannerTexture = ImageUtils.toCompatibleImageType(
                 ImageUtils.scaleImage(
                         blurredStrip,
                         (double) BLURRED_BANNER_WIDTH / (double) blurredStrip.getWidth(),
@@ -651,7 +598,7 @@ public final class MusicManager extends Manager implements IMinecraft {
             return;
         }
 
-        BufferedImage squareThumbnail = createSquareThumbnail(source, DEFAULT_THUMBNAIL_SIZE);
+        BufferedImage squareThumbnail = ImageUtils.createSquareThumbnail(source, DEFAULT_THUMBNAIL_SIZE);
         if (squareThumbnail == null) {
             thumbnailFailed = true;
             processing = false;
@@ -667,43 +614,11 @@ public final class MusicManager extends Manager implements IMinecraft {
         thumbnailProcessingSongData = null;
     }
 
-    private BufferedImage createSquareThumbnail(BufferedImage source, int size) {
-        if (source == null || size <= 0) {
-            return source;
-        }
-        int width = source.getWidth();
-        int height = source.getHeight();
-        int side = Math.min(width, height);
-        if (side <= 0) {
-            return source;
-        }
-        int x = (width - side) / 2;
-        int y = (height - side) / 2;
-        BufferedImage square = copySubImageSafe(source, x, y, side, side);
-        if (square == null) {
-            return null;
-        }
-        if (side == size) {
-            return square;
-        }
-        double scale = (double) size / (double) side;
-        return toCompatibleImageType(ImageUtils.scaleImage(square, scale, scale));
-    }
-
     private boolean isSameSong(SongData first, SongData second) {
         return first != null
                 && second != null
                 && first.id != null
                 && first.id.equals(second.id);
-    }
-
-    private void resetGlUnpackState() {
-        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
     }
 
     private String resolveThumbnailUrl(SongData data) {
@@ -717,7 +632,8 @@ public final class MusicManager extends Manager implements IMinecraft {
         float maxWidth = 114.0F;
         float width = (float) Math.ceil((float) client.getWindow().getWidth() / maxWidth);
         int barCount = Math.min((int) maxWidth, amplitudes.size());
-        if (barCount <= 0) {
+
+        if (barCount == 0) {
             return;
         }
 
