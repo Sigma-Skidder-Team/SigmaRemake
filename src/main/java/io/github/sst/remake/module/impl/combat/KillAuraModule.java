@@ -6,15 +6,20 @@ import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
+import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.setting.impl.BooleanSetting;
+import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.math.anim.AnimationUtils;
+import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.timer.BasicTimer;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
+import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -27,7 +32,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 
 @SuppressWarnings({"ALL"})
@@ -62,10 +68,15 @@ public class KillAuraModule extends Rotatable {
 
     private final BooleanSetting deathToggle = new BooleanSetting("Disable on death", "Toggle Aura on death", true);
 
+    private final BooleanSetting targetESP = new BooleanSetting("Outline target", "Render an outline for the target(s)", true);
+    private final ColorSetting targetESPColor = new ColorSetting("Outline color", "Color for the outline", ClientColors.LIGHT_GREYISH_BLUE.getColor()).hide(() -> !targetESP.value);
+
     private final ClickDelayCalculator cpsCalculator = new ClickDelayCalculator(minCPS.value, maxCPS.value);
     private final List<LivingEntity> targets = new ArrayList<>();
     private final BasicTimer attackTimer = new BasicTimer();
     private Entity target;
+
+    private final HashMap<Entity, AnimationUtils> outlinedTargets = new HashMap<>();
 
     public KillAuraModule() {
         super("KillAura", "Attacks nearby entities.", Category.COMBAT, 100);
@@ -105,6 +116,39 @@ public class KillAuraModule extends Rotatable {
         }
 
         updateTargets();
+    }
+
+    @Subscribe
+    public void onRender(Render3DEvent event) {
+        if (this.targets == null || !targetESP.value) return;
+
+        Iterator<Map.Entry<Entity, AnimationUtils>> targets = outlinedTargets.entrySet().iterator();
+
+        while (targets.hasNext()) {
+            Map.Entry<Entity, AnimationUtils> entry = targets.next();
+            entry.getValue().changeDirection(AnimationUtils.Direction.FORWARDS);
+            if (entry.getValue().calcPercent() == 0.0f) {
+                targets.remove();
+            }
+        }
+
+        for (LivingEntity target : this.targets) {
+            if (outlinedTargets.containsKey(target)) {
+                outlinedTargets.get(target).changeDirection(AnimationUtils.Direction.BACKWARDS);
+            } else {
+                outlinedTargets.put(target, new AnimationUtils(250, 250));
+            }
+        }
+
+        double maxRange = aimRange.value;
+        double maxRangeSq = maxRange * maxRange;
+
+        for (Map.Entry<Entity, AnimationUtils> entry : outlinedTargets.entrySet()) {
+            if (entry.getKey() != target) continue;
+            if (client.player.squaredDistanceTo(target) > maxRangeSq) continue;
+
+            RenderUtils.drawTargetIndicatorRing(new Color(targetESPColor.getValue()), entry.getKey(), entry.getValue().calcPercent());
+        }
     }
 
     @Subscribe
