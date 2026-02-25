@@ -24,7 +24,7 @@ import java.nio.IntBuffer;
  * @author Brian Matzon
  */
 public class TextureImpl implements Texture {
-    private static final Logger LOGGER = LogManager.getLogger("Slick2D");
+    public static final Logger LOGGER = LogManager.getLogger("Slick2D");
 
     /**
      * The renderer to use for all GL operations

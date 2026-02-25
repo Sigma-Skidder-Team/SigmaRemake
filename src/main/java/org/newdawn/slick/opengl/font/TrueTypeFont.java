@@ -1,5 +1,6 @@
 package org.newdawn.slick.opengl.font;
 
+import org.newdawn.slick.opengl.texture.TextureImpl;
 import org.newdawn.slick.util.GLUtils;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.renderer.Renderer;
@@ -236,9 +237,8 @@ public class TrueTypeFont implements Font {
             }
 
             this.fontTexture = BufferedImageUtil.getTexture(this.font.toString(), imgTemp);
-        } catch (IOException var15) {
-            System.err.println("Failed to create font.");
-            var15.printStackTrace();
+        } catch (IOException e) {
+            TextureImpl.LOGGER.error("Failed to create font.", e);
         }
     }
 
