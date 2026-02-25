@@ -59,7 +59,6 @@ public class KillAuraModule extends Rotatable {
 
     private final BooleanSetting raytrace = new BooleanSetting("Raytrace", "Raytrace to target", true);
     private final BooleanSetting throughWalls = new BooleanSetting("Through walls", "Target entities behind walls", false);
-    private final BooleanSetting noSwing = new BooleanSetting("No swing", "Skip swinging animation", false).hide(() -> !attackMode.value.equals("Packet"));
 
     private final BooleanSetting deathToggle = new BooleanSetting("Disable on death", "Toggle Aura on death", true);
 
