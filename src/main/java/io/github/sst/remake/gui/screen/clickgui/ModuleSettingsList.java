@@ -48,7 +48,7 @@ public class ModuleSettingsList extends ScrollablePanel {
             case CHECKBOX:
                 BooleanSetting bS = (BooleanSetting) setting;
 
-                Text checkBoxText = new Text(panel, bS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, bS.name);
+                Text checkBoxText = new Text(panel, bS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.DEFAULT_TEXT_STYLE, bS.name);
                 Checkbox checkBox = new Checkbox(panel, bS.name + "checkbox", panel.getWidth() - 24 - offset, yOffset + 6, 24, 24);
 
                 this.labelToSetting.put(checkBoxText, bS);
@@ -71,7 +71,7 @@ public class ModuleSettingsList extends ScrollablePanel {
             case SLIDER:
                 SliderSetting sS = (SliderSetting) setting;
 
-                Text sliderName = new Text(panel, sS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, sS.name);
+                Text sliderName = new Text(panel, sS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.DEFAULT_TEXT_STYLE, sS.name);
                 this.labelToSetting.put(sliderName, sS);
                 SettingSlider slider = new SettingSlider(panel, sS.name + "slider", panel.getWidth() - 126 - offset, yOffset + 6, 126, 24);
                 slider.getHandle().setFont(FontUtils.HELVETICA_LIGHT_14);
@@ -108,7 +108,7 @@ public class ModuleSettingsList extends ScrollablePanel {
 
             case TEXT_INPUT:
                 TextInputSetting tIS = (TextInputSetting) setting;
-                Text textInputText = new Text(panel, tIS.name + "lbl", x, yOffset, LABEL_WIDTH, 27, Text.defaultColorHelper, tIS.name);
+                Text textInputText = new Text(panel, tIS.name + "lbl", x, yOffset, LABEL_WIDTH, 27, Text.DEFAULT_TEXT_STYLE, tIS.name);
                 panel.addToList(textInputText);
                 this.labelToSetting.put(textInputText, tIS);
                 TextField input = new TextField(panel, tIS.name + "txt", panel.getWidth() - offset - 114, yOffset + 27 / 4 - 1, 114, 27, TextField.DEFAULT_COLORS, tIS.value);
@@ -128,7 +128,7 @@ public class ModuleSettingsList extends ScrollablePanel {
 
             case DROPDOWN:
                 ModeSetting mS = (ModeSetting) setting;
-                Text dropdownText = new Text(panel, mS.name + "lbl", x, yOffset + 2, LABEL_WIDTH, 27, Text.defaultColorHelper, mS.name);
+                Text dropdownText = new Text(panel, mS.name + "lbl", x, yOffset + 2, LABEL_WIDTH, 27, Text.DEFAULT_TEXT_STYLE, mS.name);
                 Dropdown dropdown = new Dropdown(panel, mS.name + "btn", panel.getWidth() - offset, yOffset + 6 - 1, 123, 27, mS.modes, mS.getModeIndex());
                 this.labelToSetting.put(dropdownText, mS);
 
@@ -165,7 +165,7 @@ public class ModuleSettingsList extends ScrollablePanel {
 
             case BLOCKS:
                 BlockListSetting bLS = (BlockListSetting) setting;
-                Text blocksText = new Text(panel, bLS.name + "lbl", x, yOffset, LABEL_WIDTH, 200, Text.defaultColorHelper, bLS.name);
+                Text blocksText = new Text(panel, bLS.name + "lbl", x, yOffset, LABEL_WIDTH, 200, Text.DEFAULT_TEXT_STYLE, bLS.name);
                 BlockPicker blockPicker = new BlockPicker(panel, bLS.name + "picker", panel.getWidth() - offset, yOffset + 5, 175, 200, bLS.enabled, bLS.value.toArray(new String[0]));
                 this.labelToSetting.put(blocksText, bLS);
                 blockPicker.onPress(interactiveWidget -> bLS.setValue(blockPicker.getSelectedValues()));
@@ -177,7 +177,7 @@ public class ModuleSettingsList extends ScrollablePanel {
 
             case COLOR:
                 ColorSetting cS = (ColorSetting) setting;
-                Text colorText = new Text(panel, setting.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, setting.name);
+                Text colorText = new Text(panel, setting.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.DEFAULT_TEXT_STYLE, setting.name);
                 ColorPicker picker = new ColorPicker(
                         panel, setting.name + "color", panel.getWidth() - 160 - offset + 10, yOffset, 160, 114, (Integer) setting.value, cS.rainbow
                 );
@@ -199,7 +199,7 @@ public class ModuleSettingsList extends ScrollablePanel {
             case CURVE:
                 CurveSetting crvS = (CurveSetting) setting;
                 CurveSetting.Curve value = crvS.value;
-                Text text = new Text(panel, crvS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.defaultColorHelper, crvS.name);
+                Text text = new Text(panel, crvS.name + "lbl", x, yOffset, LABEL_WIDTH, 24, Text.DEFAULT_TEXT_STYLE, crvS.name);
                 BezierCurve curve = new BezierCurve(panel, crvS.name + "color", panel.getWidth() - 150 - offset + 10, yOffset, 150, 150, 20, value.initial, value.mid, value.finalStage, value.maximum);
                 this.labelToSetting.put(text, setting);
                 crvS.addListener(sett -> {
