@@ -105,6 +105,7 @@ public class ChangelogPage extends GuiComponent {
         partialTicks *= this.pageAnimation.calcPercent();
 
         float fadeFactor = VecUtils.interpolate(this.pageAnimation.calcPercent(), 0.17f, 1.0f, 0.51f, 1.0f);
+
         if (this.pageAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
             fadeFactor = 1.0f;
         }
@@ -120,11 +121,10 @@ public class ChangelogPage extends GuiComponent {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
         );
 
-        TrueTypeFont headerFont = FontUtils.HELVETICA_LIGHT_25;
         String versionText = "You're currently using Sigma Remake " + Client.VERSION;
 
         RenderUtils.drawString(
-                headerFont,
+                FontUtils.HELVETICA_LIGHT_25,
                 100.0f,
                 150.0f,
                 versionText,
