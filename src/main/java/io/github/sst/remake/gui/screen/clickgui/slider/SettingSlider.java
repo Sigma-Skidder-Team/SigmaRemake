@@ -122,7 +122,7 @@ public class SettingSlider extends InteractiveWidget {
         this.value = var1;
         this.handle.setX((int) ((float) (this.getWidth() - this.handle.getWidth()) * var1 + 0.5F));
         if (var2 && var5 != var1) {
-            this.callUIHandlers();
+            this.firePressHandlers();
         }
     }
 

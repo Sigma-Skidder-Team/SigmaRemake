@@ -28,7 +28,7 @@ public class Keyboard extends InteractiveWidget {
             );
             var11.onClick((parent, mouseButton) -> {
                 this.field20696 = var11.field20690;
-                this.callUIHandlers();
+                this.firePressHandlers();
             });
         }
 
@@ -41,7 +41,7 @@ public class Keyboard extends InteractiveWidget {
             return super.onMouseDown(mouseX, mouseY, mouseButton);
         } else {
             this.field20696 = mouseButton;
-            this.callUIHandlers();
+            this.firePressHandlers();
             return false;
         }
     }
@@ -56,7 +56,7 @@ public class Keyboard extends InteractiveWidget {
         }
 
         this.field20696 = keyCode;
-        this.callUIHandlers();
+        this.firePressHandlers();
         super.keyPressed(keyCode);
     }
 

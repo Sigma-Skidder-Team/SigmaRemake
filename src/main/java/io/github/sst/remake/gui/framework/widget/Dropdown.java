@@ -41,7 +41,7 @@ public class Dropdown extends InteractiveWidget {
         var5.onPress(interactiveWidget -> {
             this.setIndex(parentIndex);
             this.setExpanded(false);
-            this.callUIHandlers();
+            this.firePressHandlers();
         });
         this.addToList(var5);
     }
@@ -96,7 +96,7 @@ public class Dropdown extends InteractiveWidget {
                 this.setIndex(this.values.indexOf(mode));
                 this.setExpanded(false);
                 if (var6x != this.getIndex()) {
-                    this.callUIHandlers();
+                    this.firePressHandlers();
                 }
             });
         }

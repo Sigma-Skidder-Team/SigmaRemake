@@ -77,7 +77,7 @@ public class HueSlider extends InteractiveWidget {
         float var5 = this.hue;
         this.hue = var1;
         if (var2 && var5 != var1) {
-            this.callUIHandlers();
+            this.firePressHandlers();
         }
     }
 }

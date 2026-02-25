@@ -40,7 +40,7 @@ public class Waypoint extends InteractiveWidget {
             this.setDraggable(false);
             this.setX(Math.round((float) this.getWidth() * QuadraticEasing.easeInQuad(this.deleteAnimation.calcPercent(), 0.0F, 1.0F, 1.0F)));
             if (this.deleteAnimation.calcPercent() == 1.0F) {
-                this.callUIHandlers();
+                this.firePressHandlers();
             }
         }
     }

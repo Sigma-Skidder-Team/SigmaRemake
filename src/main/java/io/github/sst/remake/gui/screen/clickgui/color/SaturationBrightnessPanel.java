@@ -98,7 +98,7 @@ public class SaturationBrightnessPanel extends InteractiveWidget {
         float var5 = this.saturation;
         this.saturation = var1;
         if (var2 && var5 != var1) {
-            this.callUIHandlers();
+            this.firePressHandlers();
         }
     }
 
@@ -115,7 +115,7 @@ public class SaturationBrightnessPanel extends InteractiveWidget {
         float var5 = this.brightness;
         this.brightness = var1;
         if (var2 && var5 != var1) {
-            this.callUIHandlers();
+            this.firePressHandlers();
         }
     }
 

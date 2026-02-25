@@ -30,7 +30,7 @@ public class Checkbox extends InteractiveWidget {
             this.value = value;
             this.animation.changeDirection(!this.value ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
             if (call) {
-                this.callUIHandlers();
+                this.firePressHandlers();
             }
         }
     }

@@ -39,7 +39,7 @@ public class BlockItemButton extends InteractiveWidget {
     public void setSelected(boolean selected, boolean notify) {
         if (selected != this.isSelected()) {
             this.selected = selected;
-            this.callUIHandlers();
+            this.firePressHandlers();
         }
     }
 

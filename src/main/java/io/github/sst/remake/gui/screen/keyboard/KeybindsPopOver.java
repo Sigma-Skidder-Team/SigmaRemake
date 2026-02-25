@@ -78,7 +78,7 @@ public class KeybindsPopOver extends InteractiveWidget {
                 this.addToList(var8 = new BindableActionEntry(this, var10.getName(), 0, 20 + 55 * var3, this.width, 55, var10, var3++));
                 var8.onPress(interactiveWidget -> {
                     var10.setBind(0);
-                    this.callUIHandlers();
+                    this.firePressHandlers();
                 });
                 if (!children.isEmpty() && !children.contains(var10.getName())) {
                     var8.startHeightAnimation();

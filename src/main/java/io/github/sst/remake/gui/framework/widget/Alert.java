@@ -187,14 +187,14 @@ public class Alert extends InteractiveWidget {
         this.clickedButton = button;
         this.inputMap = this.collectInputMap();
         this.setOpen(false);
-        this.callUIHandlers();
+        this.firePressHandlers();
     }
 
     public void onButtonClick() {
         this.clickedButton = null;
         this.inputMap = this.collectInputMap();
         this.setOpen(false);
-        this.callUIHandlers();
+        this.firePressHandlers();
     }
 
     @Override

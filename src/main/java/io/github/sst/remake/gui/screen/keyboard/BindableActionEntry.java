@@ -24,7 +24,7 @@ public class BindableActionEntry extends InteractiveWidget {
         this.addToList(this.keybindDeleteButton = new KeybindDeleteButton(this, "delete", 200, 20, 20, 20));
         this.keybindDeleteButton.onClick((element, button) -> {
             this.animationStartDate = new Date();
-            this.callUIHandlers();
+            this.firePressHandlers();
         });
         this.bindableAction = bindableAction;
         this.entryIndex = entryIndex;

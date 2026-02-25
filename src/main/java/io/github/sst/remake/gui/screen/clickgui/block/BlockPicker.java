@@ -72,7 +72,7 @@ public class BlockPicker extends InteractiveWidget {
                         }
 
                         if (var6 != this.selectedValues.size()) {
-                            this.callUIHandlers();
+                            this.firePressHandlers();
                         }
                     });
                 }

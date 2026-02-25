@@ -31,7 +31,7 @@ public class ColorPicker extends InteractiveWidget {
 
     public void toggleRainbow(boolean var1) {
         this.setRainbow(var1);
-        this.callUIHandlers();
+        this.firePressHandlers();
     }
 
     public void setRainbow(boolean var1) {
@@ -60,7 +60,7 @@ public class ColorPicker extends InteractiveWidget {
 
     private void updateColorAndNotify() {
         this.updateColorFromControls();
-        this.callUIHandlers();
+        this.firePressHandlers();
     }
 
     private void updateColorFromControls() {

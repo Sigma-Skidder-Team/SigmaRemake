@@ -53,7 +53,7 @@ public class DropdownMenu extends InteractiveWidget {
             button.setTextOffsetX(10);
             button.onClick((mouseX, mouseY) -> {
                 this.setSelectedIndex(this.values.indexOf(value));
-                this.callUIHandlers();
+                this.firePressHandlers();
             });
         }
 
