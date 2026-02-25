@@ -4,7 +4,8 @@ import io.github.sst.remake.Client;
 import net.minecraft.util.Identifier;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureLoader;
-import org.newdawn.slick.util.image.BufferedImageUtil;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -111,8 +112,8 @@ public class Resources {
     }
 
     public static Texture loadTexture(String filePath, String fileType) {
-        try {
-            return TextureLoader.getTexture(fileType, readInputStream(filePath));
+        try (InputStream inputStream = readInputStream(filePath)) {
+            return loadTextureSafe(fileType, inputStream);
         } catch (IOException e) {
             try (InputStream inputStream = readInputStream(filePath)) {
                 byte[] header = new byte[8];
@@ -125,6 +126,27 @@ public class Resources {
             } catch (IOException ex) {
                 throw new IllegalStateException("Unable to load texture " + filePath, ex);
             }
+        }
+    }
+
+    private static Texture loadTextureSafe(String fileType, InputStream inputStream) throws IOException {
+        int prevUnpackAlignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT);
+        int prevUnpackRowLength = GL11.glGetInteger(GL12.GL_UNPACK_ROW_LENGTH);
+        int prevUnpackSkipRows = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_ROWS);
+        int prevUnpackSkipPixels = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_PIXELS);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, 0);
+
+        try {
+            return TextureLoader.getTexture(fileType, inputStream);
+        } finally {
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, prevUnpackAlignment);
+            GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, prevUnpackRowLength);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
         }
     }
 
@@ -216,7 +238,7 @@ public class Resources {
                     brightnessOffset
             );
 
-            return BufferedImageUtil.getTexture(resourcePath, processedImage);
+            return ImageUtils.createTexture(resourcePath, processedImage);
 
         } catch (IOException e) {
             throw new IllegalStateException(

@@ -14,7 +14,6 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.ImageUtils;
 import net.minecraft.client.MinecraftClient;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,10 +25,10 @@ public class Alert extends InteractiveWidget {
     private static final int CONTENT_WIDTH = 240;
     private static final int COMPONENT_SPACING = 10;
     private static final int PANEL_PADDING = 60;
-
     private final AnimationUtils openCloseAnimation = new AnimationUtils(285, 100);
     private final GuiComponent modalContent;
     public Texture backgroundBlurTexture;
+    private String blurTextureId;
     public int contentWidth = CONTENT_WIDTH;
     public int contentHeight = 0;
     private Button clickedButton;
@@ -340,8 +339,8 @@ public class Alert extends InteractiveWidget {
                     this.backgroundBlurTexture.release();
                 }
 
-                this.backgroundBlurTexture = BufferedImageUtil.getTexture(
-                        "blur",
+                this.backgroundBlurTexture = ImageUtils.createTexture(
+                        this.getBlurTextureId(),
                         ImageUtils.captureFramebufferRegion(
                                 0,
                                 0,
@@ -369,6 +368,13 @@ public class Alert extends InteractiveWidget {
         }
 
         this.setReAddChildren(open);
+    }
+
+    private String getBlurTextureId() {
+        if (this.blurTextureId == null) {
+            this.blurTextureId = "alert-blur-" + System.nanoTime();
+        }
+        return this.blurTextureId;
     }
 
     public void addCloseListener(AlertCloseListener listener) {

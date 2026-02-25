@@ -3,14 +3,19 @@ package io.github.sst.remake.util.render.image;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.math.color.ClientColors;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.util.image.BufferedImageUtil;
+import org.newdawn.slick.opengl.texture.Texture;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class ImageUtils {
@@ -140,15 +145,78 @@ public class ImageUtils {
         height = (int) (height * getScaleFactor());
         downscaleFactor = (int) (downscaleFactor * getScaleFactor());
 
-        y = MinecraftClient.getInstance().getWindow().getFramebufferHeight() - y - height;
+        int framebufferWidth = MinecraftClient.getInstance().getWindow().getFramebufferWidth();
+        int framebufferHeight = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
+
+        y = framebufferHeight - y - height;
 
         if (downscaleFactor <= 0) {
             downscaleFactor = 1;
         }
 
+        if (width <= 0 || height <= 0) {
+            BufferedImage empty = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            empty.setRGB(0, 0, paddingColor);
+            return empty;
+        }
+
+        if (x < 0) {
+            width += x;
+            x = 0;
+        }
+        if (y < 0) {
+            height += y;
+            y = 0;
+        }
+
+        if (x + width > framebufferWidth) {
+            width = framebufferWidth - x;
+        }
+        if (y + height > framebufferHeight) {
+            height = framebufferHeight - y;
+        }
+
+        if (width <= 0 || height <= 0) {
+            BufferedImage empty = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            empty.setRGB(0, 0, paddingColor);
+            return empty;
+        }
+
         ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(width * height * BYTES_PER_PIXEL);
 
+        Framebuffer framebuffer = MinecraftClient.getInstance().getFramebuffer();
+        if (framebuffer != null) {
+            framebuffer.beginRead();
+        }
+
+        int prevReadBuffer = GL11.glGetInteger(GL11.GL_READ_BUFFER);
+        if (GL11.glGetInteger(GL30.GL_FRAMEBUFFER_BINDING) != 0) {
+            GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        } else {
+            GL11.glReadBuffer(GL11.GL_BACK);
+        }
+
+        int prevPackAlignment = GL11.glGetInteger(GL11.GL_PACK_ALIGNMENT);
+        int prevPackRowLength = GL11.glGetInteger(GL12.GL_PACK_ROW_LENGTH);
+        int prevPackSkipRows = GL11.glGetInteger(GL12.GL_PACK_SKIP_ROWS);
+        int prevPackSkipPixels = GL11.glGetInteger(GL12.GL_PACK_SKIP_PIXELS);
+
+        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL12.GL_PACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL12.GL_PACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL12.GL_PACK_SKIP_PIXELS, 0);
+
         GL11.glReadPixels(x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
+
+        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, prevPackAlignment);
+        GL11.glPixelStorei(GL12.GL_PACK_ROW_LENGTH, prevPackRowLength);
+        GL11.glPixelStorei(GL12.GL_PACK_SKIP_ROWS, prevPackSkipRows);
+        GL11.glPixelStorei(GL12.GL_PACK_SKIP_PIXELS, prevPackSkipPixels);
+
+        GL11.glReadBuffer(prevReadBuffer);
+        if (framebuffer != null) {
+            framebuffer.beginWrite(true);
+        }
 
         BufferedImage image = new BufferedImage(width / downscaleFactor, height / downscaleFactor, BufferedImage.TYPE_INT_ARGB);
 
@@ -386,5 +454,26 @@ public class ImageUtils {
         compatibleImage.getGraphics().drawImage(image, 0, 0, null);
         compatibleImage.getGraphics().dispose();
         return compatibleImage;
+    }
+
+    public static Texture createTexture(String key, BufferedImage image) throws IOException {
+        int prevUnpackAlignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT);
+        int prevUnpackRowLength = GL11.glGetInteger(GL12.GL_UNPACK_ROW_LENGTH);
+        int prevUnpackSkipRows = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_ROWS);
+        int prevUnpackSkipPixels = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_PIXELS);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, 0);
+
+        try {
+            return BufferedImageUtil.getTexture(key, image);
+        } finally {
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, prevUnpackAlignment);
+            GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, prevUnpackRowLength);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
+        }
     }
 }
