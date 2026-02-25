@@ -25,6 +25,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import io.github.sst.remake.util.system.VersionUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
@@ -104,8 +105,9 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     public boolean checkMusicPlayerDependencies() {
         boolean hasPy = VersionUtils.hasPython3_11();
         boolean hasFF = VersionUtils.hasFFMPEG();
+        boolean hasYtDlp = YtDlpUtils.isPrepared();
 
-        if (!hasPy || !hasFF && dependencyAlert == null) {
+        if ((!hasPy || !hasFF || !hasYtDlp) && dependencyAlert == null) {
             addRunnable(() -> {
                 List<AlertComponent> components = new ArrayList<>();
                 components.add(new AlertComponent(ComponentType.HEADER, "Music", 40));
@@ -114,6 +116,8 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                     components.add(new AlertComponent(ComponentType.FIRST_LINE, "- Python 3.11+", 30));
                 if (!hasFF)
                     components.add(new AlertComponent(ComponentType.FIRST_LINE, "- FFMPEG", 30));
+                if (!hasYtDlp)
+                    components.add(new AlertComponent(ComponentType.FIRST_LINE, "- yt-dlp (auto install failed)", 30));
 
                 components.add(new AlertComponent(ComponentType.BUTTON, "Download", 55));
                 showAlert(dependencyAlert = new Alert(this, "music", true, "Dependencies.", components.toArray(new AlertComponent[0])));
@@ -123,6 +127,9 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
 
                     if (!hasFF)
                         Util.getOperatingSystem().open("https://ffmpeg.org/download.html");
+
+                    if (!hasYtDlp)
+                        Util.getOperatingSystem().open("https://github.com/yt-dlp/yt-dlp/releases/latest");
                 });
 
                 dependencyAlert.addCloseListener(thread -> new Thread(() -> addRunnable(() -> {

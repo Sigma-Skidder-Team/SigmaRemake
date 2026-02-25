@@ -23,6 +23,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class YtDlpUtils {
+    private static volatile boolean prepared = false;
+    private static volatile String prepareError = null;
+
+    public static boolean isPrepared() {
+        return prepared;
+    }
+
+    public static String getPrepareError() {
+        return prepareError;
+    }
+
     public static URL resolveStream(String songUrl) {
         YtDlpRequest request = new YtDlpRequest(songUrl, ConfigUtils.MUSIC_FOLDER.getAbsolutePath());
         request.addOption("no-check-certificates");
@@ -42,6 +53,9 @@ public class YtDlpUtils {
     }
 
     public static void prepareExecutable() {
+        prepared = false;
+        prepareError = null;
+
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
         String assetName = isWindows ? "yt-dlp.exe" : "yt-dlp";
 
@@ -82,20 +96,36 @@ public class YtDlpUtils {
 
         if (needsDownload) {
             Client.LOGGER.info("Downloading YT-DLP...");
-            downloadYtDlp(targetFile, assetName);
-            if (latestBaseUrl != null) {
+            boolean downloaded = downloadYtDlp(targetFile, assetName);
+            if (downloaded && latestBaseUrl != null) {
                 FileUtils.writeFile(versionFile, latestBaseUrl);
+            } else if (!downloaded && !targetFile.exists()) {
+                prepareError = "download_failed";
             }
         }
 
-        if (!isWindows) {
+        if (!isWindows && targetFile.exists()) {
             targetFile.setExecutable(true);
         }
 
-        YtDlp.setExecutablePath(targetFile.getAbsolutePath());
+        boolean ready = targetFile.exists() && targetFile.length() > 0;
+        if (!isWindows && ready) {
+            ready = targetFile.canExecute() || targetFile.setExecutable(true);
+        }
+
+        prepared = ready;
+
+        if (prepared) {
+            YtDlp.setExecutablePath(targetFile.getAbsolutePath());
+        } else {
+            if (prepareError == null) {
+                prepareError = "missing_executable";
+            }
+            Client.LOGGER.warn("YT-DLP executable not available; music playback will not work.");
+        }
     }
 
-    private static void downloadYtDlp(File targetFile, String assetName) {
+    private static boolean downloadYtDlp(File targetFile, String assetName) {
         String downloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/" + assetName;
 
         CloseableHttpClient client = null;
@@ -108,7 +138,7 @@ public class YtDlpUtils {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 Client.LOGGER.error("Failed to download YT-DLP: empty response entity");
-                return;
+                return false;
             }
 
             FileOutputStream outputStream = null;
@@ -118,8 +148,10 @@ public class YtDlpUtils {
             } finally {
                 RandomUtils.closeQuietly(outputStream);
             }
+            return true;
         } catch (IOException e) {
             Client.LOGGER.error("Failed to download YT-DLP", e);
+            return false;
         } finally {
             RandomUtils.closeQuietly(response);
             RandomUtils.closeQuietly(client);

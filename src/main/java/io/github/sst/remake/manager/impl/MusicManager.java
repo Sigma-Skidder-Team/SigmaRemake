@@ -107,12 +107,13 @@ public final class MusicManager extends Manager implements IMinecraft {
             ConfigUtils.MUSIC_FOLDER.mkdirs();
         }
 
-        if (!VersionUtils.hasPython3_11() || !VersionUtils.hasFFMPEG()) {
-            Client.LOGGER.warn("Music Player will not work, because either Python 3.11 or FFMPEG was not found on your system.");
-            return;
-        }
-
         YtDlpUtils.prepareExecutable();
+
+        boolean hasPy = VersionUtils.hasPython3_11();
+        boolean hasFF = VersionUtils.hasFFMPEG();
+        if (!hasPy || !hasFF) {
+            Client.LOGGER.warn("Music Player will not work, because either Python 3.11 or FFMPEG was not found on your system.");
+        }
 
         /*
         playlists.add(new PlaylistData("Country", "RDCLAK5uy_lRZyKy_XqMaPeU5v-pvA2PLUn8ZMVMGoE"));
@@ -469,7 +470,7 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         if (duration > 1300) {
             mS.close();
-            Client.INSTANCE.notificationManager.send(new Notification("Now Playing", "Music is too long."));
+            Client.INSTANCE.notificationManager.send(new Notification("Song skipped", "Music is too long.", Resources.ALERT_ICON));
         }
 
         streamAudioData(track, mS, audioFormat, sessionId);
