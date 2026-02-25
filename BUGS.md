@@ -1,14 +1,4 @@
 # Known bugs
-- Alt Manager
-```bash
-[17:41:38] [Thread-8/ERROR] (FabricLoader) Uncaught exception in thread "Thread-8"
- java.util.ConcurrentModificationException: null
-	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1095) ~[?:?]
-	at java.util.ArrayList$Itr.next(ArrayList.java:1049) ~[?:?]
-	at io.github.sst.remake.gui.screen.altmanager.AltManagerScreen.clearRefreshingState(AltManagerScreen.java:380) ~[main/:?]
-	at io.github.sst.remake.gui.screen.altmanager.AltManagerScreen.lambda$loginToAccount$5(AltManagerScreen.java:237) ~[main/:?]
-	at java.lang.Thread.run(Thread.java:1583) [?:?]
-```
 - Music player
 ```bash
 Feb 25, 2026 12:15:05 PM net.sourceforge.jaad.mp4.api.Track readNextFrame
