@@ -65,7 +65,6 @@ public final class BanTracker extends Tracker implements IMinecraft {
 
     private boolean checkBanMessage(GameMessageS2CPacket chat) {
         String raw = chat.getMessage().getString();
-        System.out.println("raw: " + raw);
         if (raw == null) return false;
 
         return isBanMessage(raw);
@@ -88,18 +87,11 @@ public final class BanTracker extends Tracker implements IMinecraft {
             currentAccount.bans.add(newBan);
         }
 
-        System.out.println(
-                "registering ban " + currentAccount.name
-                        + " - " + existingBan.address
-                        + " until=" + new Date(untilMs)
-        );
         Client.INSTANCE.configManager.saveAlts();
     }
 
     private long parseBanUntil(String message) {
         message = message.toLowerCase();
-
-        System.out.println(message);
 
         if (message.contains("security") && message.contains("alert")) return Long.MAX_VALUE - 1;
         if (message.contains("permanent")
@@ -159,7 +151,6 @@ public final class BanTracker extends Tracker implements IMinecraft {
         );
 
         if (commonBanMessages.contains(msg)) {
-            System.out.println("got banned: " + msg);
             return true;
         }
 
@@ -172,10 +163,6 @@ public final class BanTracker extends Tracker implements IMinecraft {
                         || msg.contains(normalize("compromised"))
                         || msg.contains(normalize("vous avez été banni"))
                         || msg.contains(normalize("gebannt"));
-
-        if (keyword) {
-            System.out.println("got banned: " + msg);
-        }
 
         return keyword;
     }
