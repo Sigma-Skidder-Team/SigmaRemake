@@ -80,6 +80,8 @@ public class AACBlockFly extends SubModule implements Rotatable {
             client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.inventory.selectedSlot));
             getParent().lastSpoofedSlot = -1;
         }
+
+        setTimer(1.0f);
     }
 
     @Subscribe(priority = Priority.LOW)
