@@ -7,7 +7,8 @@
     "MixinConfirmScreenActionC2SPacket",
     "MixinConfirmScreenActionS2CPacket",
     "MixinEntity",
-    "MixinLivingEntity"
+    "MixinLivingEntity",
+    "MixinPlayerEntity"
   ],
   "injectors": {
     "defaultRequire": 1

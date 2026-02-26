@@ -1,9 +1,12 @@
 package io.github.sst.remake.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
+import io.github.sst.remake.event.impl.game.player.MovementFovEvent;
 import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.render.RenderLevelEvent;
@@ -16,9 +19,11 @@ import org.lwjgl.opengl.GL11;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
@@ -62,5 +67,12 @@ public class MixinGameRenderer {
         } else {
             return null;
         }
+    }
+
+    @ModifyExpressionValue(method = "updateMovementFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getSpeed()F"))
+    private float modifyGetSpeed(float original) {
+        MovementFovEvent event = new MovementFovEvent(original);
+        event.call();
+        return event.speed;
     }
 }

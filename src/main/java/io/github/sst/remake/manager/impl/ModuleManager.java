@@ -12,6 +12,7 @@ import io.github.sst.remake.module.impl.gui.*;
 import io.github.sst.remake.module.impl.misc.TestModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.CorrectMovementModule;
+import io.github.sst.remake.module.impl.movement.SafeWalkModule;
 import io.github.sst.remake.module.impl.render.WaypointsModule;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.tracker.impl.RotationTracker;
@@ -46,6 +47,7 @@ public final class ModuleManager extends Manager {
         modules.add(new KillAuraModule());
         modules.add(new CorrectMovementModule());
         modules.add(new BlockFlyModule());
+        modules.add(new SafeWalkModule());
 
         modules.forEach(Module::onInit);
         super.init();
