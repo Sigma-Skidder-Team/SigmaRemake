@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.sun.net.httpserver.HttpServer;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Util;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -20,7 +19,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -85,14 +83,23 @@ public final class MicrosoftUtils {
                         errorMsg.set(String.format("%s: %s", query.get("error"), query.get("error_description")));
                     }
 
-                    final InputStream stream = MicrosoftUtils.class.getResourceAsStream("/callback.html");
-                    final byte[] response = stream != null ? IOUtils.toByteArray(stream) : new byte[0];
-                    exchange.getResponseHeaders().add("Content-Type", "text/html");
-                    exchange.sendResponseHeaders(200, response.length);
-                    exchange.getResponseBody().write(response);
-                    exchange.getResponseBody().close();
+                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.html", MicrosoftUtils.class);
 
                     latch.countDown();
+                });
+
+                server.createContext("/callback.css", exchange -> {
+                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.css", MicrosoftUtils.class);
+                });
+
+                server.createContext("/assets/", exchange -> {
+                    String path = exchange.getRequestURI().getPath();
+                    if (!NetUtils.isSafePath(path, "/assets/")) {
+                        NetUtils.sendNotFound(exchange);
+                        return;
+                    }
+
+                    NetUtils.sendClasspathResource(exchange, path, MicrosoftUtils.class);
                 });
 
                 final URIBuilder uriBuilder = new URIBuilder("https://login.live.com/oauth20_authorize.srf")
@@ -118,7 +125,13 @@ public final class MicrosoftUtils {
                                             .orElse("There was no auth code or error description present.")
                             ));
                 } finally {
-                    server.stop(2);
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException ignored) {
+                        }
+                        server.stop(2);
+                    }, "MsAuthCallbackServerStopper").start();
                 }
             } catch (InterruptedException e) {
                 throw new CancellationException("Microsoft auth code acquisition was cancelled!");
