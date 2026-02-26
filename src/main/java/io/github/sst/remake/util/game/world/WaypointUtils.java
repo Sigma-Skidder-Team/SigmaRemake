@@ -1,10 +1,11 @@
-package io.github.sst.remake.util.client;
+package io.github.sst.remake.util.game.world;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.game.world.Chunk;
-import io.github.sst.remake.util.game.world.RegionPos;
-import io.github.sst.remake.util.game.world.MapRegion;
+import io.github.sst.remake.util.client.ConfigUtils;
+import io.github.sst.remake.util.game.world.data.Chunk;
+import io.github.sst.remake.util.game.world.data.RegionPos;
+import io.github.sst.remake.util.game.world.data.MapRegion;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;

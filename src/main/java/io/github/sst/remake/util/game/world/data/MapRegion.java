@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.game.world;
+package io.github.sst.remake.util.game.world.data;
 
 import io.github.sst.remake.Client;
 import net.minecraft.util.math.ChunkPos;

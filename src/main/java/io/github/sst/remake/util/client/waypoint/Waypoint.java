@@ -2,7 +2,7 @@ package io.github.sst.remake.util.client.waypoint;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import io.github.sst.remake.util.client.WaypointUtils;
+import io.github.sst.remake.util.game.world.WaypointUtils;
 
 public class Waypoint {
     public String name;

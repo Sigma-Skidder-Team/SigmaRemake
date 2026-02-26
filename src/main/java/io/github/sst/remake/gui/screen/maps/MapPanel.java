@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.screen.maps;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
-import io.github.sst.remake.util.client.WaypointUtils;
+import io.github.sst.remake.util.game.world.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;

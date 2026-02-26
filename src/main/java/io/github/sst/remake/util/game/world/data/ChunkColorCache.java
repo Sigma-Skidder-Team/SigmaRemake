@@ -1,7 +1,7 @@
-package io.github.sst.remake.util.game.world;
+package io.github.sst.remake.util.game.world.data;
 
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.client.WaypointUtils;
+import io.github.sst.remake.util.game.world.WaypointUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.WorldChunk;

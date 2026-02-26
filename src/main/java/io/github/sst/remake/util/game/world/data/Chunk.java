@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.game.world;
+package io.github.sst.remake.util.game.world.data;
 
 import java.nio.ByteBuffer;
 
