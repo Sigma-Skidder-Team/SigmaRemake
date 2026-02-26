@@ -21,8 +21,6 @@ public abstract class Module implements IMinecraft {
         this.name = name;
         this.description = description;
         this.category = category;
-
-        Client.INSTANCE.moduleManager.currentModule = this;
     }
 
     public Module(Category category, String name, String description) {

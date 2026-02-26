@@ -1,5 +1,6 @@
 package io.github.sst.remake.gui.screen.clickgui;
 
+import io.github.sst.remake.data.setting.DropdownSetting;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.layout.ContentSize;
 import io.github.sst.remake.gui.framework.widget.*;
@@ -126,28 +127,39 @@ public class ModuleSettingsList extends ScrollablePanel {
                 yOffset += 27 + offset;
                 break;
 
-            case DROPDOWN:
-                ModeSetting mS = (ModeSetting) setting;
-                Text dropdownText = new Text(panel, mS.name + "lbl", x, yOffset + 2, LABEL_WIDTH, 27, Text.DEFAULT_TEXT_STYLE, mS.name);
-                Dropdown dropdown = new Dropdown(panel, mS.name + "btn", panel.getWidth() - offset, yOffset + 6 - 1, 123, 27, mS.modes, mS.getModeIndex());
-                this.labelToSetting.put(dropdownText, mS);
+            case DROPDOWN: {
+                final int W = 123, H = 27;
 
-                mS.addListener(sett -> {
-                    ModeSetting updated = (ModeSetting) sett;
-                    if (dropdown.getIndex() != updated.getModeIndex()) {
-                        dropdown.setIndex(updated.getModeIndex());
-                    }
-                });
-                dropdown.onPress(interactiveWidget -> {
-                    mS.setModeByIndex(((Dropdown) interactiveWidget).getIndex());
-                    dropdown.setIndex(mS.getModeIndex());
+                DropdownSetting s = (DropdownSetting) setting;
+
+                Text dropdownText = new Text(panel, s.getName() + "lbl", x, yOffset + 2, LABEL_WIDTH, H,
+                        Text.DEFAULT_TEXT_STYLE, s.getName());
+
+                List<String> labels = s.getModeLabels();
+                Dropdown dropdown = new Dropdown(panel, s.getName() + "btn",
+                        panel.getWidth() - offset, yOffset + 5, W, H,
+                        labels, s.getModeIndex());
+
+                this.labelToSetting.put(dropdownText, setting);
+
+                setting.addListener(sett -> {
+                    DropdownSetting updated = (DropdownSetting) sett;
+                    int newIdx = updated.getModeIndex();
+                    if (dropdown.getIndex() != newIdx) dropdown.setIndex(newIdx);
                 });
 
-                dropdown.addWidthSetter((comp1, comp2) -> comp1.setX(panel.getWidth() - 123 - offset));
+                dropdown.onPress(w -> {
+                    s.setModeByIndex(((Dropdown) w).getIndex());
+                    dropdown.setIndex(s.getModeIndex());
+                });
+
+                dropdown.addWidthSetter((c1, c2) -> c1.setX(panel.getWidth() - W - offset));
                 panel.addToList(dropdownText);
                 panel.addToList(dropdown);
-                yOffset += 27 + offset;
+
+                yOffset += H + offset;
                 break;
+            }
 
             case GROUP:
                 GuiComponent view = new GuiComponent(panel, setting.name + "view", x, yOffset, panel.getWidth(), 0);
