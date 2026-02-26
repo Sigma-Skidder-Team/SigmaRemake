@@ -60,7 +60,8 @@ public final class RotationTracker extends Tracker implements IMinecraft {
                 .orElse(null);
         currentRotatable = module;
 
-        if (module == null || module.getRotations() == null) {
+        Rotation target = module == null ? null : module.getRotations();
+        if (target == null) {
             active = false;
             currentRotatable = null;
             rotations = null;
@@ -70,8 +71,6 @@ public final class RotationTracker extends Tracker implements IMinecraft {
 
             return;
         }
-
-        Rotation target = module.getRotations();
 
         if (!active || renderHeadCurrent == null) {
             float currentYaw = client.player.yaw;
