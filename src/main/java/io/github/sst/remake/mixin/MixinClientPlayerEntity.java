@@ -4,11 +4,13 @@ import com.mojang.authlib.GameProfile;
 import io.github.sst.remake.data.bus.State;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
+import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.MovementType;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
@@ -18,7 +20,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
@@ -52,8 +57,12 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Shadow
     @Final
     protected MinecraftClient client;
+
     @Unique
     private ClientPlayerTickEvent clientPlayerTickEvent;
+
+    @Unique
+    private MoveEvent moveEvent;
 
     public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
         super(world, profile);
@@ -69,6 +78,21 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     private void injectTickEnd(CallbackInfo ci) {
         clientPlayerTickEvent.state = State.POST;
         clientPlayerTickEvent.call();
+    }
+
+    @Inject(method = "move", at = @At("HEAD"), cancellable = true)
+    private void injectMove(MovementType movementType, Vec3d movement, CallbackInfo ci) {
+        moveEvent = new MoveEvent(movement);
+        moveEvent.call();
+
+        if (moveEvent.cancelled) {
+            ci.cancel();
+        }
+    }
+
+    @ModifyArgs(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V"))
+    private void injectMoveAccessVec3d(Args args) {
+        args.set(1, moveEvent.movement);
     }
 
     @Inject(method = "sendMovementPackets", at = @At("HEAD"), cancellable = true)
