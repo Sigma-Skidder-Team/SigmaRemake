@@ -4,6 +4,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.util.math.color.ClientColors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import org.apache.commons.codec.binary.Base64;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -11,10 +12,12 @@ import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.util.image.BufferedImageUtil;
 import org.newdawn.slick.opengl.texture.Texture;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -475,5 +478,35 @@ public class ImageUtils {
             GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
             GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
         }
+    }
+
+    public static BufferedImage decodeBase64Image(String input) {
+        if (input == null) {
+            return null;
+        }
+        if (!Base64.isBase64(input)) {
+            return null;
+        }
+
+        try {
+            return ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(input)));
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public static BufferedImage scaleSquareImage(BufferedImage img, double widthScale, double heightScale) {
+        BufferedImage out = null;
+        if (img != null) {
+            int scaledHeight = (int) ((double) img.getHeight() * heightScale);
+            int scaledWidth = (int) ((double) img.getWidth() * widthScale);
+
+            out = new BufferedImage(scaledWidth, scaledHeight, img.getType());
+            Graphics2D g = out.createGraphics();
+            AffineTransform scale = AffineTransform.getScaleInstance(widthScale, heightScale);
+            g.drawRenderedImage(img, scale);
+        }
+
+        return out;
     }
 }
