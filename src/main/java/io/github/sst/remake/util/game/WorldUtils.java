@@ -9,10 +9,12 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class WorldUtils implements IMinecraft {
     public static final List<Block> INVALID_BLOCKS = new ArrayList<>();
@@ -92,6 +94,20 @@ public class WorldUtils implements IMinecraft {
         BlockHitResult result = client.world.raycast(context);
 
         return result.getType() == HitResult.Type.MISS || result.getType() == HitResult.Type.ENTITY;
+    }
+
+    public static boolean isAboveBounds(Entity entity, float yBounds) {
+        Box bounds = new Box(
+                entity.getBoundingBox().minX,
+                entity.getBoundingBox().minY - (double) yBounds,
+                entity.getBoundingBox().minZ,
+                entity.getBoundingBox().maxX,
+                entity.getBoundingBox().maxY,
+                entity.getBoundingBox().maxZ
+        );
+        Stream<VoxelShape> shapes = client.world.getBlockCollisions(client.player, bounds);
+
+        return shapes.findAny().isPresent();
     }
 
     public static boolean isPlacableBlockItem(Item item) {
