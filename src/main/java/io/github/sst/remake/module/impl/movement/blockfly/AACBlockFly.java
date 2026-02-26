@@ -215,7 +215,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
         return new Rotation(targetYaw, targetPitch);
     }
 
-    private List<PositionFacing> getPlacementPath(BlockPos startPos) {
+    private static List<PositionFacing> getPlacementPath(BlockPos startPos) {
         return BlockUtils.findPlacementPath(
                 Blocks.STONE,
                 startPos,
@@ -251,12 +251,12 @@ public class AACBlockFly extends SubModule implements Rotatable {
         }
 
         if (hit.getSide() == Direction.UP
-                && (hit.getPos().getY() + 2) > client.player.getY()
+                && (double) (hit.getPos().getY() + 2) > client.player.getY()
                 && BlockUtils.isValidBlockPosition(hit.getBlockPos())) {
             return false;
         }
 
-        if (hit.getPos().getY() == client.player.getY()) {
+        if ((double) hit.getPos().getY() == client.player.getY()) {
             return false;
         }
 
