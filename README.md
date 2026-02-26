@@ -3,7 +3,7 @@
 Minecraft Sigma Client UI port & base remake for Fabric 1.16.5.
 
 ## TODO List
-- [ ] Add encryption/decryption for alt tokens when saving/loading alts list;
+- [x] Add encryption/decryption for alt tokens when saving/loading alts list;
 - [ ] Add MS alt token refresher;
 - [ ] Separate managers into trackers, processors, storages...
 

@@ -265,6 +265,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                             Account account = new Account(username, "0", Account.STEVE_UUID);
                             if (!Client.INSTANCE.accountManager.has(account)) {
                                 Client.INSTANCE.accountManager.add(account);
+                                Client.INSTANCE.configManager.saveAlts();
                             }
                         }
                         this.updateAccountList(false);
@@ -283,6 +284,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                                 Account account = new Account(session.username, session.playerID, session.token);
                                 if (!Client.INSTANCE.accountManager.has(account)) {
                                     Client.INSTANCE.accountManager.add(account);
+                                    Client.INSTANCE.configManager.saveAlts();
                                 }
 
                                 this.updateAccountList(false);
@@ -305,6 +307,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                                     Account account = new Account(session.getUsername(), session.getAccessToken(), session.getUuid());
                                     if (!Client.INSTANCE.accountManager.has(account)) {
                                         Client.INSTANCE.accountManager.add(account);
+                                        Client.INSTANCE.configManager.saveAlts();
                                     }
 
                                     this.updateAccountList(false);

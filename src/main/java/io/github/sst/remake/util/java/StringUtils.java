@@ -51,6 +51,8 @@ public class StringUtils {
 
     public static final String RANDOM_GOODBYE_TITLE = goodbyeTitles[new Random().nextInt(goodbyeTitles.length)];
     public static final String RANDOM_GOODBYE_MESSAGE = goodbyeMessages[new Random().nextInt(goodbyeMessages.length)];
+    private static final String TOKEN_PREFIX = "obf:";
+    private static final byte[] TOKEN_KEY = "MonkeyBusiness".getBytes(StandardCharsets.UTF_8);
 
     public static boolean isPrintableCharacter(char character) {
         return character != '\u00A7'   // section sign (§)
@@ -223,5 +225,35 @@ public class StringUtils {
         }
 
         return 0;
+    }
+
+    public static String obfuscateToken(String token) {
+        if (token == null || token.isEmpty()) {
+            return token;
+        }
+        byte[] data = token.getBytes(StandardCharsets.UTF_8);
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) (data[i] ^ TOKEN_KEY[i % TOKEN_KEY.length]);
+        }
+        return TOKEN_PREFIX + java.util.Base64.getEncoder().encodeToString(data);
+    }
+
+    public static String deobfuscateToken(String token) {
+        if (token == null || token.isEmpty()) {
+            return token;
+        }
+        if (!token.startsWith(TOKEN_PREFIX)) {
+            return token;
+        }
+        try {
+            String encoded = token.substring(TOKEN_PREFIX.length());
+            byte[] data = java.util.Base64.getDecoder().decode(encoded);
+            for (int i = 0; i < data.length; i++) {
+                data[i] = (byte) (data[i] ^ TOKEN_KEY[i % TOKEN_KEY.length]);
+            }
+            return new String(data, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return token;
+        }
     }
 }

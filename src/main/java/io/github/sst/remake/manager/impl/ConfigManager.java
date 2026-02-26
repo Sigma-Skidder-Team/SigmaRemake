@@ -8,6 +8,7 @@ import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.data.profile.Profile;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.client.ConfigUtils;
+import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.system.io.FileUtils;
 import io.github.sst.remake.util.system.io.GsonUtils;
 
@@ -212,7 +213,12 @@ public final class ConfigManager extends Manager implements IMinecraft {
         JsonArray jsonArray = new JsonArray();
 
         for (Account account : Client.INSTANCE.accountManager.accounts) {
-            jsonArray.add(new JsonParser().parse(account.toJson()).getAsJsonObject());
+            JsonObject altJson = new JsonParser().parse(account.toJson()).getAsJsonObject();
+            if (altJson.has("token")) {
+                String token = altJson.get("token").getAsString();
+                altJson.addProperty("token", StringUtils.obfuscateToken(token));
+            }
+            jsonArray.add(altJson);
         }
 
         JsonObject jsonObject = new JsonObject();
@@ -233,7 +239,12 @@ public final class ConfigManager extends Manager implements IMinecraft {
                 if (json.has("alts") && json.get("alts").isJsonArray()) {
                     JsonArray alts = json.getAsJsonArray("alts");
                     for (JsonElement altElement : alts) {
-                        Account account = Account.fromJson(altElement.toString());
+                        JsonObject altJson = altElement.getAsJsonObject();
+                        if (altJson.has("token")) {
+                            String token = altJson.get("token").getAsString();
+                            altJson.addProperty("token", StringUtils.deobfuscateToken(token));
+                        }
+                        Account account = Account.fromJson(altJson.toString());
                         if (account != null) {
                             Client.INSTANCE.accountManager.accounts.add(account);
                         }
