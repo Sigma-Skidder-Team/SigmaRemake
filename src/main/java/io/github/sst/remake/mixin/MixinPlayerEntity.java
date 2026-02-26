@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity {
     @ModifyExpressionValue(method = "adjustMovementForSneaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;method_30263()Z"))
-    private boolean gateSneakEdgeAdjustment(boolean original) {
+    private boolean modifyAdjustMovementForSneaking(boolean original) {
         SafeWalkEvent safeWalkEvent = new SafeWalkEvent(true);
         safeWalkEvent.call();
 
-        return safeWalkEvent.situation == SafeWalkEvent.Situation.PLAYER || original;
+        return original || safeWalkEvent.situation == SafeWalkEvent.Situation.SAFE;
     }
 
     @Inject(method = "adjustMovementForSneaking", at = @At("TAIL"))
