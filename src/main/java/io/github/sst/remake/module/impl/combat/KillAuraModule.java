@@ -10,6 +10,7 @@ import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.module.Category;
+import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
@@ -37,8 +38,7 @@ import java.util.*;
 import java.util.List;
 
 @SuppressWarnings({"ALL"})
-public class KillAuraModule extends Rotatable {
-
+public class KillAuraModule extends Module implements Rotatable {
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
     private final ModeSetting sortMode = new ModeSetting("Sort mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
     private final ModeSetting attackMode = new ModeSetting("Attack mode", "Attack mode", 0, "Mouse", "Packet");
@@ -79,7 +79,8 @@ public class KillAuraModule extends Rotatable {
     private final HashMap<Entity, AnimationUtils> outlinedTargets = new HashMap<>();
 
     public KillAuraModule() {
-        super("KillAura", "Attacks nearby entities.", Category.COMBAT, 100);
+        super("KillAura", "Attacks nearby entities.", Category.COMBAT);
+        registerRotatable();
 
         minCPS.addListener(setting -> cpsCalculator.setMinCPS(setting.value));
         maxCPS.addListener(setting -> cpsCalculator.setMaxCPS(setting.value));
@@ -267,6 +268,11 @@ public class KillAuraModule extends Rotatable {
         }
 
         target = best;
+    }
+
+    @Override
+    public int getPriority() {
+        return 100;
     }
 
     @Override
