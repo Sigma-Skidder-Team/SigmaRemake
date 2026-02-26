@@ -86,6 +86,7 @@ public abstract class Module implements IMinecraft {
                 if (setting instanceof SubModuleSetting ) {
                     SubModuleSetting sms = (SubModuleSetting) setting;
                     for (SubModule mode : sms.modes) {
+                        mode.parent = this;
                         findSubModuleSettings(sms, mode);
                     }
                 }
