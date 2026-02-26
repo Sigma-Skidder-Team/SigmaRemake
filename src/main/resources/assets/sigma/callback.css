@@ -1,0 +1,110 @@
+@font-face {
+  font-family: "Helvetica Neue Jello";
+  src: url("/assets/sigma/font/helvetica-neue-light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Helvetica Neue Jello";
+  src: url("/assets/sigma/font/helvetica-neue medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --text: rgba(1, 1, 1, 0.8);
+  --muted: #999999;
+  --bg: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: "Helvetica Neue Jello", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+.blur-layer {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  pointer-events: none;
+}
+.corner-title {
+  position: fixed;
+  top: 16px;
+  left: 18px;
+  color: rgba(1, 1, 1, 0.8);
+  font-weight: 300;
+  z-index: 0;
+}
+.corner-title .jello {
+  font-size: 40px;
+  line-height: 1;
+}
+.corner-title .alt {
+  position: absolute;
+  left: 87px;
+  top: 15px;
+  font-size: 25px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.wrap {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  position: relative;
+  z-index: 2;
+}
+.card {
+  width: min(420px, 92vw);
+  border-radius: 10px;
+  padding: 24px 22px;
+  text-align: left;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  font-family: "Helvetica Neue Jello", Arial, sans-serif;
+}
+h1 {
+  margin: 0 0 0;
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  font-family: "Helvetica Neue Jello", Arial, sans-serif;
+}
+p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: "Helvetica Neue Jello", Arial, sans-serif;
+}
+.actions {
+  margin-top: 16px;
+}
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 14px;
+  font-size: 18px;
+  font-weight: 300;
+  color: #fefefe;
+  background: #3b99fd;
+  cursor: pointer;
+  width: 100%;
+  font-family: "Helvetica Neue Jello", Arial, sans-serif;
+}
+.btn:hover {
+  background: #378fe9;
+}
+.btn:active {
+  background: #327fce;
+}
