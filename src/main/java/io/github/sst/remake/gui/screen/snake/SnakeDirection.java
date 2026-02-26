@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.snake;
 
-import io.github.sst.remake.util.client.ScreenDimension;
+import io.github.sst.remake.util.math.vec.ScreenDimension;
 
 public enum SnakeDirection {
     UP(0, -1),

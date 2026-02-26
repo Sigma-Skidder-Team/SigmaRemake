@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.client.waypoint;
+package io.github.sst.remake.util.game.world;
 
 import net.minecraft.util.math.ChunkPos;
 

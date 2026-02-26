@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.client;
+package io.github.sst.remake.util.math.vec;
 
 import java.util.Objects;
 

@@ -3,7 +3,7 @@ package io.github.sst.remake.gui.screen.snake;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.client.ScreenDimension;
+import io.github.sst.remake.util.math.vec.ScreenDimension;
 import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;

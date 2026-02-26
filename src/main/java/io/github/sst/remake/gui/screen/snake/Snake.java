@@ -1,6 +1,6 @@
 package io.github.sst.remake.gui.screen.snake;
 
-import io.github.sst.remake.util.client.ScreenDimension;
+import io.github.sst.remake.util.math.vec.ScreenDimension;
 
 import java.util.ArrayList;
 import java.util.List;
