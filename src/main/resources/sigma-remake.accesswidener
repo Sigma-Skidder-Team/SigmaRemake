@@ -44,9 +44,6 @@ accessible method net/minecraft/client/gui/hud/DebugHud getRightText ()Ljava/uti
 accessible method net/minecraft/client/MinecraftClient doAttack ()V
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
 
-mutable field net/minecraft/client/render/RenderTickCounter tickTime F
-accessible field net/minecraft/client/render/RenderTickCounter tickTime F
-
 mutable field net/minecraft/util/math/Vec3d x D
 mutable field net/minecraft/util/math/Vec3d y D
 mutable field net/minecraft/util/math/Vec3d z D

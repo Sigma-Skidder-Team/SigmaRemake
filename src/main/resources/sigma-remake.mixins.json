@@ -28,6 +28,7 @@
     "MixinMinecraftClient",
     "MixinMouse",
     "MixinMultiplayerScreen",
+    "MixinRenderTickCounter",
     "MixinWindow"
   ]
 }
