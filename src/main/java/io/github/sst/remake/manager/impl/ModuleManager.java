@@ -48,7 +48,6 @@ public final class ModuleManager extends Manager {
         modules.add(new BlockFlyModule());
 
         modules.forEach(Module::onInit);
-        modules.forEach(this::findSettings);
         super.init();
     }
 
@@ -157,20 +156,5 @@ public final class ModuleManager extends Manager {
 
     public boolean isToggleSoundSuppressed() {
         return toggleSoundSuppressDepth > 0;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private void findSettings(Module module) {
-        for (Field field : module.getClass().getDeclaredFields()) {
-            if (!Setting.class.isAssignableFrom(field.getType())) continue;
-            field.setAccessible(true);
-
-            try {
-                Setting setting = (Setting) field.get(module);
-                module.settings.add(setting);
-            } catch (IllegalAccessException e) {
-                Client.LOGGER.error("Failed to access setting field {}", field.getName(), e);
-            }
-        }
     }
 }

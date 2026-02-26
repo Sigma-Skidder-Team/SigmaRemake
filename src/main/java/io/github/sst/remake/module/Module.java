@@ -39,6 +39,7 @@ public abstract class Module implements IMinecraft {
     }
 
     public void onInit() {
+        findSettings();
     }
 
     public void setEnabled(boolean enabled) {
@@ -70,6 +71,46 @@ public abstract class Module implements IMinecraft {
 
     public void toggle() {
         setEnabled(!enabled);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void findSettings() {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (!Setting.class.isAssignableFrom(field.getType())) continue;
+            field.setAccessible(true);
+
+            try {
+                Setting setting = (Setting) field.get(this);
+                this.settings.add(setting);
+
+                if (setting instanceof SubModuleSetting ) {
+                    SubModuleSetting sms = (SubModuleSetting) setting;
+                    for (SubModule mode : sms.modes) {
+                        findSubModuleSettings(sms, mode);
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                Client.LOGGER.error("Failed to access setting field {}", field.getName(), e);
+            }
+        }
+    }
+
+    private void findSubModuleSettings(SubModuleSetting sms, SubModule mode) {
+        for (Field field2 : mode.getClass().getDeclaredFields()) {
+            if (!Setting.class.isAssignableFrom(field2.getType())) continue;
+            field2.setAccessible(true);
+
+            try {
+                Setting inner = (Setting) field2.get(mode);
+
+                final SubModule owner = mode;
+
+                inner.hide(() -> sms.value != owner);
+                this.settings.add(inner);
+            } catch (IllegalAccessException e) {
+                Client.LOGGER.error("Failed to access submodule inner setting field {}", field2.getName(), e);
+            }
+        }
     }
 
     private void toggleSubModules(boolean enabled) {

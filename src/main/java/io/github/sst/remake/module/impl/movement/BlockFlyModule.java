@@ -3,10 +3,15 @@ package io.github.sst.remake.module.impl.movement;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
+import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
+import io.github.sst.remake.module.impl.movement.blockfly.NCPBlockFly;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
+import io.github.sst.remake.setting.impl.SubModuleSetting;
+import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.WorldUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -26,6 +31,7 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockFlyModule extends Module {
 
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new NCPBlockFly());
     private final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
     private final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
     private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "FakeInv", "OpenInv");
@@ -44,59 +50,144 @@ public class BlockFlyModule extends Module {
 
     @Override
     public void onDisable() {
-        this.blockCountAnim.changeDirection(AnimationUtils.Direction.FORWARDS);
+        blockCountAnim.changeDirection(AnimationUtils.Direction.FORWARDS);
     }
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
         if (showBlockAmount.value) {
-            this.cachedBlockCount = this.countPlaceableBlocks();
+            cachedBlockCount = countPlaceableBlocks();
         }
     }
 
     @Subscribe
     public void onRender(RenderClient2DEvent event) {
-        this.blockCountAnim.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        blockCountAnim.changeDirection(AnimationUtils.Direction.BACKWARDS);
         if (blockCountAnim.calcPercent() != 0.0f && showBlockAmount.value) {
             renderBlockCountJello(
                     client.getWindow().getWidth() / 2,
                     client.getWindow().getHeight() - 138
-                            - (int) (25.0F * AnimationUtils.easeOutCubic(this.blockCountAnim.calcPercent(), 0.0F,
+                            - (int) (25.0F * AnimationUtils.easeOutCubic(blockCountAnim.calcPercent(), 0.0F,
                             1.0F, 1.0F)),
-                    this.blockCountAnim.calcPercent());
+                    blockCountAnim.calcPercent());
+        }
+    }
+
+    // Don't annotate with @Subscribe !!
+    public void performTowering(MoveEvent event) {
+        if (client.renderTickCounter.tickTime == 0.8038576f) {
+            client.renderTickCounter.tickTime = 1.0F;
+        }
+
+        if (countPlaceableBlocks() != 0 && (!client.player.verticalCollision
+                || towerMode.value.equals("Vanilla"))) {
+
+            if (!MovementUtils.isMoving() || moveAndTower.value) {
+                switch (towerMode.value) {
+                    case "NCP":
+                        if (event.getY() > 0.0) {
+                            if (MovementUtils.getJumpBoost() == 0) {
+                                if (event.getY() > 0.247 && event.getY() < 0.249) {
+                                    event.setY((double) ((int) (client.player.getY() + event.getY())) - client.player.getY());
+                                }
+                            } else {
+                                double yFloor = (int) (client.player.getY() + event.getY());
+                                if (yFloor != (double) ((int) client.player.getY())
+                                        && client.player.getY() + event.getY() - yFloor < 0.15) {
+                                    event.setY(yFloor - client.player.getY());
+                                }
+                            }
+                        }
+
+                        if (client.player.getY() == (double) ((int) client.player.getY())
+                                && WorldUtils.isAboveBounds(client.player, 0.001f)) {
+                            if (client.options.keyJump.isPressed()) {
+                                if (!MovementUtils.isMoving()) {
+                                    MovementUtils.strafe(0.0);
+                                    MovementUtils.setMotion(event, 0.0);
+                                }
+                                event.setY(MovementUtils.getJumpValue());
+                            } else {
+                                event.setY(-1.0E-5);
+                            }
+                        }
+                        break;
+
+                    case "AAC":
+                        if (event.getY() > 0.247 && event.getY() < 0.249) {
+                            event.setY((double) ((int) (client.player.getY() + event.getY())) - client.player.getY());
+                            if (client.options.keyJump.isPressed() && !MovementUtils.isMoving()) {
+                                MovementUtils.strafe(0.0);
+                                MovementUtils.setMotion(event, 0.0);
+                            }
+                        } else if (client.player.getY() == (double) ((int) client.player.getY())
+                                && WorldUtils.isAboveBounds(client.player, 0.001f)) {
+                            event.setY(-1.0E-10);
+                        }
+                        break;
+
+                    case "Vanilla":
+                        if (client.options.keyJump.isPressed()
+                                && WorldUtils.isAboveBounds(client.player, 0.001f)
+                                && !client.world.getBlockCollisions(client.player, client.player.getBoundingBox().offset(0.0, 1.0, 0.0)).findAny().isPresent()) {
+
+                            client.player.setPosition(client.player.getX(), client.player.getY() + 1.0, client.player.getZ());
+                            event.setY(0.0);
+                            MovementUtils.setMotion(event, 0.0);
+                            client.renderTickCounter.tickTime = 0.8038576f;
+                        }
+                        break;
+                }
+            }
+        } else if (!towerMode.value.equals("AAC")
+                || !WorldUtils.isAboveBounds(client.player, 0.001F)
+                || !client.options.keyJump.isPressed()) {
+            if (!towerMode.value.equals("NCP")
+                    && !towerMode.value.equals("Vanilla")
+                    && WorldUtils.isAboveBounds(client.player, 0.001F)
+                    && client.options.keyJump.isPressed()) {
+                client.player.jumpingCooldown = 20;
+                event.setY(MovementUtils.getJumpValue());
+            }
+        } else if (!MovementUtils.isMoving() || moveAndTower.value) {
+            client.player.jumpingCooldown = 0;
+            client.player.jump();
+            MovementUtils.setMotion(event, MovementUtils.getSmartSpeed());
+            MovementUtils.strafe(MovementUtils.getSmartSpeed());
+        }
+
+        if (!towerMode.value.equals("Vanilla")) {
+            client.player.setVelocity(client.player.getVelocity().x, event.getY(), client.player.getVelocity().z);
         }
     }
 
     private void selectPlaceableHotbarSlot() {
-        try {
-            for (int containerSlot = 36; containerSlot < 45; containerSlot++) {
-                int hotbarIndex = containerSlot - 36;
+        for (int containerSlot = 36; containerSlot < 45; containerSlot++) {
+            int hotbarIndex = containerSlot - 36;
 
-                Slot slot = client.player.playerScreenHandler.getSlot(containerSlot);
-                if (!slot.hasStack()) {
-                    continue;
-                }
-
-                ItemStack stack = slot.getStack();
-                if (stack.getCount() == 0 || !WorldUtils.isPlacableBlockItem(stack.getItem())) {
-                    continue;
-                }
-
-                if (client.player.inventory.selectedSlot == hotbarIndex) {
-                    return;
-                }
-
-                client.player.inventory.selectedSlot = hotbarIndex;
-
-                if (itemSpoofMode.value.equals("LiteSpoof")
-                        && (this.lastSpoofedSlot < 0 || this.lastSpoofedSlot != hotbarIndex)) {
-                    client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(hotbarIndex));
-                    this.lastSpoofedSlot = hotbarIndex;
-                }
-
-                break;
+            Slot slot = client.player.playerScreenHandler.getSlot(containerSlot);
+            if (!slot.hasStack()) {
+                continue;
             }
-        } catch (Exception ignored) {
+
+            ItemStack stack = slot.getStack();
+            if (stack.getCount() == 0 || !WorldUtils.isPlacableBlockItem(stack.getItem())) {
+                continue;
+            }
+
+            if (client.player.inventory.selectedSlot == hotbarIndex) {
+                return;
+            }
+
+            client.player.inventory.selectedSlot = hotbarIndex;
+
+            if (itemSpoofMode.value.equals("LiteSpoof")
+                    && (lastSpoofedSlot < 0 || lastSpoofedSlot != hotbarIndex)) {
+                client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(hotbarIndex));
+                lastSpoofedSlot = hotbarIndex;
+            }
+
+            break;
         }
     }
 
@@ -125,12 +216,12 @@ public class BlockFlyModule extends Module {
             return;
         }
 
-        if (this.countPlaceableBlocks() == 0) {
+        if (countPlaceableBlocks() == 0) {
             return;
         }
 
         int targetContainerSlot = 43; // default hotbar slot (container index), preserved from original
-        boolean hasBlocksInHotbar = this.hasPlaceableBlockInHotbar();
+        boolean hasBlocksInHotbar = hasPlaceableBlockInHotbar();
 
         if (!intelligentBlockPicker.value) {
             if (hasBlocksInHotbar) {
@@ -159,7 +250,7 @@ public class BlockFlyModule extends Module {
                     client.getNetworkHandler().sendPacket(new ClientStatusC2SPacket());
                 }
 
-                this.swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
+                swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
 
                 if (fakeInv) {
                     client.getNetworkHandler().sendPacket(new CloseScreenS2CPacket(-1));
@@ -169,7 +260,7 @@ public class BlockFlyModule extends Module {
             return;
         }
 
-        int sourceSlot = this.findLargestBlockStackSlot();
+        int sourceSlot = findLargestBlockStackSlot();
 
         if (!hasBlocksInHotbar) {
             for (int slotIndex = 36; slotIndex < 45; slotIndex++) {
@@ -205,7 +296,7 @@ public class BlockFlyModule extends Module {
                 client.getNetworkHandler().sendPacket(new ClientStatusC2SPacket());
             }
 
-            this.swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
+            swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
 
             if (fakeInv) {
                 client.getNetworkHandler().sendPacket(new CloseScreenS2CPacket(-1));
@@ -214,7 +305,7 @@ public class BlockFlyModule extends Module {
     }
 
     private int findLargestBlockStackSlot() {
-        if (this.countPlaceableBlocks() == 0) {
+        if (countPlaceableBlocks() == 0) {
             return -1;
         }
 
@@ -249,8 +340,8 @@ public class BlockFlyModule extends Module {
     }
 
     private boolean canPlaceWithHand(Hand hand) {
-        if (!this.itemSpoofMode.value.equals("None")) {
-            return this.countPlaceableBlocks() != 0;
+        if (!itemSpoofMode.value.equals("None")) {
+            return countPlaceableBlocks() != 0;
         }
 
         return WorldUtils.isPlacableBlockItem(client.player.getStackInHand(hand).getItem());
@@ -263,7 +354,7 @@ public class BlockFlyModule extends Module {
     private void renderBlockCountJello(int x, int y, float alphaPercent) {
         int width = 0;
 
-        int numberWidth = FontUtils.HELVETICA_LIGHT_18.getWidth(this.cachedBlockCount + "") + 3;
+        int numberWidth = FontUtils.HELVETICA_LIGHT_18.getWidth(cachedBlockCount + "") + 3;
         width += numberWidth;
         width += FontUtils.HELVETICA_LIGHT_14.getWidth("Blocks");
 
@@ -279,7 +370,7 @@ public class BlockFlyModule extends Module {
                 FontUtils.HELVETICA_LIGHT_18,
                 (float) (x + 10),
                 (float) (y + 4),
-                this.cachedBlockCount + "",
+                cachedBlockCount + "",
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaPercent));
 
         RenderUtils.drawString(
