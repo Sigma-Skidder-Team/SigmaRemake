@@ -3,10 +3,12 @@ package io.github.sst.remake.module;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.module.impl.gui.ActiveModsModule;
 import io.github.sst.remake.setting.Setting;
+import io.github.sst.remake.setting.impl.SubModuleSetting;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.system.io.audio.SoundUtils;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +60,8 @@ public abstract class Module implements IMinecraft {
             }
             this.onDisable();
         }
+
+        toggleSubModules(enabled);
     }
 
     public void setKeycode(int keycode) {
@@ -68,4 +72,17 @@ public abstract class Module implements IMinecraft {
         setEnabled(!enabled);
     }
 
+    private void toggleSubModules(boolean enabled) {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (!SubModuleSetting.class.isAssignableFrom(field.getType())) continue;
+            field.setAccessible(true);
+
+            try {
+                SubModuleSetting setting = (SubModuleSetting) field.get(this);
+                setting.value.setEnabled(enabled);
+            } catch (IllegalAccessException e) {
+                Client.LOGGER.error("Failed to access submodule setting field {}", field.getName(), e);
+            }
+        }
+    }
 }

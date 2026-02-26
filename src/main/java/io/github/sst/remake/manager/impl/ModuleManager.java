@@ -160,7 +160,7 @@ public final class ModuleManager extends Manager {
     }
 
     @SuppressWarnings("rawtypes")
-    public void findSettings(Module module) {
+    private void findSettings(Module module) {
         for (Field field : module.getClass().getDeclaredFields()) {
             if (!Setting.class.isAssignableFrom(field.getType())) continue;
             field.setAccessible(true);
