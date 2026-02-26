@@ -514,7 +514,6 @@ public class RenderUtils implements IMinecraft {
         drawFloatingPanelClipped(x, y, width, height, color, x, y);
     }
 
-
     public static void drawFloatingPanelClipped(int x, int y, int width, int height, int color, int scissorX, int scissorY) {
         int tileSize = 36;
         int padding = 10;
