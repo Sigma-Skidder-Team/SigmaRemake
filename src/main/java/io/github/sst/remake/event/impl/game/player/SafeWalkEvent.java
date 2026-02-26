@@ -3,7 +3,7 @@ package io.github.sst.remake.event.impl.game.player;
 import io.github.sst.remake.event.Event;
 
 public class SafeWalkEvent extends Event {
-    public Situation situation = Situation.SAFE;
+    public Situation situation = Situation.DEFAULT;
     public boolean onEdge;
 
     public SafeWalkEvent(boolean onEdge) {
@@ -15,6 +15,6 @@ public class SafeWalkEvent extends Event {
     }
 
     public enum Situation {
-        PLAYER, SAFE
+        DEFAULT, PLAYER, SAFE
     }
 }

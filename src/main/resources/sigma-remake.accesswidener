@@ -49,3 +49,14 @@ mutable field net/minecraft/util/math/Vec3d y D
 mutable field net/minecraft/util/math/Vec3d z D
 
 accessible field net/minecraft/entity/LivingEntity jumpingCooldown I
+
+accessible field net/minecraft/client/network/ClientPlayerEntity lastX D
+accessible field net/minecraft/client/network/ClientPlayerEntity lastBaseY D
+accessible field net/minecraft/client/network/ClientPlayerEntity lastZ D
+
+accessible field net/minecraft/client/network/ClientPlayerEntity lastYaw F
+accessible field net/minecraft/client/network/ClientPlayerEntity lastPitch F
+
+accessible field net/minecraft/entity/LivingEntity jumping Z
+
+accessible method net/minecraft/entity/LivingEntity getJumpVelocity ()F

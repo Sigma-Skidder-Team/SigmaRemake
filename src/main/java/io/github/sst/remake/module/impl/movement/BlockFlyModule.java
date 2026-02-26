@@ -13,6 +13,7 @@ import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
 import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.WorldUtils;
+import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -21,9 +22,7 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.ClientStatusC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
@@ -32,17 +31,17 @@ import org.lwjgl.opengl.GL11;
 public class BlockFlyModule extends Module {
 
     private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new NCPBlockFly());
-    private final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
-    private final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
-    private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "FakeInv", "OpenInv");
-    private final BooleanSetting moveAndTower = new BooleanSetting("Tower while moving", "Allow towering while moving", false);
+    public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
+    public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
+    private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "OpenInv");
+    public final BooleanSetting moveAndTower = new BooleanSetting("Tower while moving", "Allow towering while moving", false).hide(() -> towerMode.value.equals("None"));
     private final BooleanSetting showBlockAmount = new BooleanSetting("Show block amount", "Render available blocks in inventory", true);
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
-    private final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false);
+    public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false);
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     private int cachedBlockCount = 0;
-    private int lastSpoofedSlot;
+    public int lastSpoofedSlot;
 
     public BlockFlyModule() {
         super("BlockFly", "Helps you bridge.", Category.MOVEMENT);
@@ -51,6 +50,7 @@ public class BlockFlyModule extends Module {
     @Override
     public void onDisable() {
         blockCountAnim.changeDirection(AnimationUtils.Direction.FORWARDS);
+        setTimer(1.0f);
     }
 
     @Subscribe
@@ -75,13 +75,11 @@ public class BlockFlyModule extends Module {
 
     // Don't annotate with @Subscribe !!
     public void performTowering(MoveEvent event) {
-        if (client.renderTickCounter.tickTime == 0.8038576f) {
-            client.renderTickCounter.tickTime = 1.0F;
+        if (getTimer() == 0.8038576f) {
+            setTimer(1.0f);
         }
 
-        if (countPlaceableBlocks() != 0 && (!client.player.verticalCollision
-                || towerMode.value.equals("Vanilla"))) {
-
+        if (countPlaceableBlocks() != 0 && (!client.player.verticalCollision || towerMode.value.equals("Vanilla"))) {
             if (!MovementUtils.isMoving() || moveAndTower.value) {
                 switch (towerMode.value) {
                     case "NCP":
@@ -129,22 +127,21 @@ public class BlockFlyModule extends Module {
                     case "Vanilla":
                         if (client.options.keyJump.isPressed()
                                 && WorldUtils.isAboveBounds(client.player, 0.001f)
-                                && !client.world.getBlockCollisions(client.player, client.player.getBoundingBox().offset(0.0, 1.0, 0.0)).findAny().isPresent()) {
-
+                                && client.world.getBlockCollisions(client.player, client.player.getBoundingBox().offset(0.0, 1.0, 0.0))
+                                .count() == 0L) {
                             client.player.setPosition(client.player.getX(), client.player.getY() + 1.0, client.player.getZ());
                             event.setY(0.0);
                             MovementUtils.setMotion(event, 0.0);
-                            client.renderTickCounter.tickTime = 0.8038576f;
+                            setTimer(0.8038576f);
                         }
-                        break;
                 }
             }
         } else if (!towerMode.value.equals("AAC")
-                || !WorldUtils.isAboveBounds(client.player, 0.001F)
+                || !WorldUtils.isAboveBounds(client.player, 0.001f)
                 || !client.options.keyJump.isPressed()) {
             if (!towerMode.value.equals("NCP")
                     && !towerMode.value.equals("Vanilla")
-                    && WorldUtils.isAboveBounds(client.player, 0.001F)
+                    && WorldUtils.isAboveBounds(client.player, 0.001f)
                     && client.options.keyJump.isPressed()) {
                 client.player.jumpingCooldown = 20;
                 event.setY(MovementUtils.getJumpValue());
@@ -157,11 +154,11 @@ public class BlockFlyModule extends Module {
         }
 
         if (!towerMode.value.equals("Vanilla")) {
-            client.player.setVelocity(client.player.getVelocity().x, event.getY(), client.player.getVelocity().z);
+            MovementUtils.setPlayerYMotion(event.getY());
         }
     }
 
-    private void selectPlaceableHotbarSlot() {
+    public void selectPlaceableHotbarSlot() {
         for (int containerSlot = 36; containerSlot < 45; containerSlot++) {
             int hotbarIndex = containerSlot - 36;
 
@@ -171,7 +168,7 @@ public class BlockFlyModule extends Module {
             }
 
             ItemStack stack = slot.getStack();
-            if (stack.getCount() == 0 || !WorldUtils.isPlacableBlockItem(stack.getItem())) {
+            if (stack.getCount() == 0 || !BlockUtils.isPlacableBlockItem(stack.getItem())) {
                 continue;
             }
 
@@ -201,7 +198,7 @@ public class BlockFlyModule extends Module {
             }
 
             ItemStack stack = slot.getStack();
-            if (WorldUtils.isPlacableBlockItem(stack.getItem())) {
+            if (BlockUtils.isPlacableBlockItem(stack.getItem())) {
                 total += stack.getCount();
             }
         }
@@ -209,7 +206,7 @@ public class BlockFlyModule extends Module {
         return total;
     }
 
-    private void refillHotbarWithBlocks() {
+    public void refillHotbarWithBlocks() {
         String pickingMode = pickMode.value;
 
         if (pickingMode.equals("OpenInv") && !(client.currentScreen instanceof InventoryScreen)) {
@@ -231,7 +228,7 @@ public class BlockFlyModule extends Module {
             int sourceSlot = -1;
             for (int slotIndex = 9; slotIndex < 36; slotIndex++) {
                 Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
-                if (slot.hasStack() && WorldUtils.isPlacableBlockItem(slot.getStack().getItem())) {
+                if (slot.hasStack() && BlockUtils.isPlacableBlockItem(slot.getStack().getItem())) {
                     sourceSlot = slotIndex;
                     break;
                 }
@@ -245,16 +242,7 @@ public class BlockFlyModule extends Module {
             }
 
             if (sourceSlot >= 0) {
-                boolean fakeInv = pickingMode.equals("FakeInv") && !(client.currentScreen instanceof InventoryScreen);
-                if (fakeInv) {
-                    client.getNetworkHandler().sendPacket(new ClientStatusC2SPacket());
-                }
-
                 swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
-
-                if (fakeInv) {
-                    client.getNetworkHandler().sendPacket(new CloseScreenS2CPacket(-1));
-                }
             }
 
             return;
@@ -271,13 +259,13 @@ public class BlockFlyModule extends Module {
             }
         } else {
             for (int slotIndex = 36; slotIndex < 45; slotIndex++) {
-                Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
+                    Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
                 if (!slot.hasStack()) {
                     continue;
                 }
 
                 ItemStack hotbarStack = slot.getStack();
-                if (WorldUtils.isPlacableBlockItem(hotbarStack.getItem())) {
+                if (BlockUtils.isPlacableBlockItem(hotbarStack.getItem())) {
                     targetContainerSlot = slotIndex;
 
                     // If the hotbar stack equals the best stack size, skip swapping (original behavior: set -1).
@@ -291,16 +279,7 @@ public class BlockFlyModule extends Module {
         }
 
         if (targetContainerSlot >= 0 && client.player.playerScreenHandler.getSlot(targetContainerSlot).id != sourceSlot) {
-            boolean fakeInv = pickingMode.equals("FakeInv") && !(client.currentScreen instanceof InventoryScreen);
-            if (fakeInv) {
-                client.getNetworkHandler().sendPacket(new ClientStatusC2SPacket());
-            }
-
             swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
-
-            if (fakeInv) {
-                client.getNetworkHandler().sendPacket(new CloseScreenS2CPacket(-1));
-            }
         }
     }
 
@@ -319,7 +298,7 @@ public class BlockFlyModule extends Module {
             }
 
             ItemStack stack = slot.getStack();
-            if (WorldUtils.isPlacableBlockItem(stack.getItem()) && stack.getCount() > bestCount) {
+            if (BlockUtils.isPlacableBlockItem(stack.getItem()) && stack.getCount() > bestCount) {
                 bestCount = stack.getCount();
                 bestSlot = slotIndex;
             }
@@ -331,7 +310,7 @@ public class BlockFlyModule extends Module {
     private boolean hasPlaceableBlockInHotbar() {
         for (int slotIndex = 36; slotIndex < 45; slotIndex++) {
             Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
-            if (slot.hasStack() && WorldUtils.isPlacableBlockItem(slot.getStack().getItem())) {
+            if (slot.hasStack() && BlockUtils.isPlacableBlockItem(slot.getStack().getItem())) {
                 return true;
             }
         }
@@ -344,7 +323,7 @@ public class BlockFlyModule extends Module {
             return countPlaceableBlocks() != 0;
         }
 
-        return WorldUtils.isPlacableBlockItem(client.player.getStackInHand(hand).getItem());
+        return BlockUtils.isPlacableBlockItem(client.player.getStackInHand(hand).getItem());
     }
 
     private void swapSlotToHotbar(int sourceSlot, int hotbarIndex) {

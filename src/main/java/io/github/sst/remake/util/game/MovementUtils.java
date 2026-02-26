@@ -44,13 +44,14 @@ public class MovementUtils implements IMinecraft {
     }
 
     public static void strafe(double speed) {
-        float[] adjusted = getDirectionArray();
-        float forward = adjusted[1];
-        float side = adjusted[2];
-        float yaw = adjusted[0];
+        float[] strafe = getDirectionArray();
+        float forward = strafe[1];
+        float side = strafe[2];
+        float yaw = strafe[0];
 
         if (forward == 0.0F && side == 0.0F) {
-            stop();
+            setPlayerXMotion(0.0);
+            setPlayerZMotion(0.0);
         }
 
         double cos = Math.cos(Math.toRadians(yaw));
@@ -58,7 +59,8 @@ public class MovementUtils implements IMinecraft {
         double x = (forward * cos + side * sin) * speed;
         double z = (forward * sin - side * cos) * speed;
 
-        client.player.setVelocity(x, client.player.getVelocity().y, z);
+        setPlayerXMotion(x);
+        setPlayerZMotion(z);
     }
 
     public static void setMotion(MoveEvent moveEvent, double motionSpeed) {
@@ -80,7 +82,8 @@ public class MovementUtils implements IMinecraft {
         moveEvent.setX(x);
         moveEvent.setZ(z);
 
-        client.player.setVelocity(moveEvent.getX(), client.player.getVelocity().y, moveEvent.getZ());
+        setPlayerXMotion(moveEvent.getX());
+        setPlayerZMotion(moveEvent.getZ());
     }
 
     private static float[] getDirectionArray() {
@@ -145,4 +148,72 @@ public class MovementUtils implements IMinecraft {
 
         return speed * (double) multiplier;
     }
+
+    public static double getAacHopSpeed(int hopTicks, int speedStage, Runnable resetStage) {
+        double speed = 0.29;
+
+        // Base speed tables by hop tick
+        double base3019 = 0.3019;
+        double dynamicAdd = 0.0286 - (double) hopTicks / 1000.0;
+
+        double[] baseSpeedByTick = new double[]{
+                0.497, 0.3031, 0.302, base3019, base3019, base3019, base3019, base3019, base3019, base3019, base3019,
+                0.3, 0.301, 0.298, 0.297
+        };
+        double[] stage2AddByTick = new double[]{
+                0.1069, 0.0642, 0.0629, 0.0607, 0.0584, 0.0561, 0.0539, 0.0517, 0.0496, 0.0475, 0.0455,
+                0.045, 0.042, 0.042, 0.042
+        };
+        double[] stage3AddByTick = new double[]{
+                0.046, dynamicAdd, dynamicAdd, dynamicAdd, dynamicAdd, dynamicAdd, dynamicAdd, dynamicAdd, dynamicAdd,
+                dynamicAdd, dynamicAdd, 0.018, dynamicAdd + 0.001, dynamicAdd + 0.001, dynamicAdd + 0.001
+        };
+
+        if (hopTicks < 0) {
+            return speed;
+        }
+
+        if (hopTicks < baseSpeedByTick.length) {
+            speed = baseSpeedByTick[hopTicks];
+        }
+
+        if (speedStage >= 2 && hopTicks < stage2AddByTick.length) {
+            speed += stage2AddByTick[hopTicks];
+        }
+
+        if (speedStage >= 3 && hopTicks < stage3AddByTick.length) {
+            speed += stage3AddByTick[hopTicks];
+        }
+
+        if (hopTicks == 12 && speedStage <= 2) {
+            resetStage.run();
+        }
+
+        if (client.player.forwardSpeed <= 0.0F) {
+            speed -= 0.06;
+        }
+
+        if (client.player.horizontalCollision) {
+            speed -= 0.1;
+            resetStage.run();
+        }
+
+        return speed;
+    }
+
+    public static double setPlayerXMotion(double x) {
+        client.player.setVelocity(x, client.player.getVelocity().y, client.player.getVelocity().z);
+        return x;
+    }
+
+    public static double setPlayerYMotion(double y) {
+        client.player.setVelocity(client.player.getVelocity().x, y, client.player.getVelocity().z);
+        return y;
+    }
+
+    public static double setPlayerZMotion(double z) {
+        client.player.setVelocity(client.player.getVelocity().x, client.player.getVelocity().y, z);
+        return z;
+    }
+
 }
