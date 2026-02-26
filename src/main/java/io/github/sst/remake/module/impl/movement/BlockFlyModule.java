@@ -28,6 +28,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
 import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
 
     private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new NCPBlockFly());
@@ -50,7 +51,6 @@ public class BlockFlyModule extends Module {
     @Override
     public void onDisable() {
         blockCountAnim.changeDirection(AnimationUtils.Direction.FORWARDS);
-        setTimer(1.0f);
     }
 
     @Subscribe

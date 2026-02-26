@@ -29,7 +29,7 @@ import net.minecraft.util.math.Direction;
 
 import java.util.List;
 
-@SuppressWarnings("DataFlowIssue")
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public class AACBlockFly extends SubModule implements Rotatable {
     private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground.", false);
 
