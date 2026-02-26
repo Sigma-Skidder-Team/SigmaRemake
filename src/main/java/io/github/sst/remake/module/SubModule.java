@@ -2,10 +2,13 @@ package io.github.sst.remake.module;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
+import lombok.Getter;
 
 public class SubModule implements IMinecraft {
     public final String name;
+    @Getter
     public Module parent;
+    @Getter
     private boolean enabled;
 
     public SubModule(String name) {
@@ -26,9 +29,5 @@ public class SubModule implements IMinecraft {
             Client.BUS.unregister(this);
             onDisable();
         }
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 }
