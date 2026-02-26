@@ -64,4 +64,36 @@ public class SubModuleSetting extends Setting<SubModule> implements DropdownSett
         this.setValue(resolved);
         return jsonObject;
     }
+
+    @Override
+    public JsonObject fromJson(JsonObject jsonObject) {
+        jsonObject.addProperty("name", this.name);
+        String valueName = this.value != null && this.value.name != null ? this.value.name : this.defaultValue.name;
+        jsonObject.addProperty("value", valueName);
+        return jsonObject;
+    }
+
+    @Override
+    public void loadFromJson(com.google.gson.JsonElement element) {
+        String savedName = null;
+        if (element != null) {
+            if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+                savedName = element.getAsString();
+            } else if (element.isJsonObject() && element.getAsJsonObject().has("name")) {
+                savedName = element.getAsJsonObject().get("name").getAsString();
+            }
+        }
+
+        SubModule resolved = this.defaultValue;
+        if (savedName != null) {
+            for (SubModule mode : this.modes) {
+                if (mode != null && mode.name != null && mode.name.equals(savedName)) {
+                    resolved = mode;
+                    break;
+                }
+            }
+        }
+
+        this.setValue(resolved, false);
+    }
 }
