@@ -9,6 +9,7 @@ import net.minecraft.client.util.Session;
 import org.newdawn.slick.opengl.texture.Texture;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Account {
     public static final String STEVE_UUID = "c06f8906-4c8a-4911-9c29-ea1dbd1aab82";
@@ -22,7 +23,7 @@ public class Account {
     public long dateAdded;
     public int useCount;
 
-    public final ArrayList<AccountBan> bans = new ArrayList<>();
+    public final List<AccountBan> bans = new ArrayList<>();
 
     private transient Thread updateThread;
     private transient Thread headUpdateThread;
@@ -58,7 +59,7 @@ public class Account {
         return this.uuid.replaceAll("-", "");
     }
 
-    public void unbanFromServerIP(String serverIP) {
+    public void removeBanByIp(String serverIP) {
         this.bans.removeIf(accountBan -> accountBan.address.equals(serverIP));
     }
 

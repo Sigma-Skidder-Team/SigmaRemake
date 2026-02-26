@@ -11,6 +11,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
     private static final String[] goodbyeTitles = new String[]{
@@ -165,5 +167,61 @@ public class StringUtils {
     public static String stripQuery(String url) {
         int idx = url.indexOf('?');
         return idx >= 0 ? url.substring(0, idx) : url;
+    }
+
+    public static int extractDays(String var1) {
+        String[] dayKeywords = new String[]{"day", "jour", "tage", "día", "dia"};
+
+        for (String keyword : dayKeywords) {
+            Pattern pattern = Pattern.compile("([0-9]+)(?:d| " + keyword + "s|" + keyword + "s| " + keyword + "|" + keyword + ")[ |\\n]");
+            Matcher matcher = pattern.matcher(var1);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        }
+
+        return 0;
+    }
+
+    public static int extractHours(String input) {
+        String[] hourKeywords = new String[]{"hour", "heure", "uhr", "hora"};
+
+        for (String keyword : hourKeywords) {
+            Pattern pattern = Pattern.compile("([0-9]+)(?:h| " + keyword + "s|" + keyword + "s| " + keyword + "|" + keyword + ")[ |\\n]");
+            Matcher matcher = pattern.matcher(input);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        }
+
+        return 0;
+    }
+
+    public static int extractMinutes(String input) {
+        String[] minuteKeywords = new String[]{"minute", "min", "minuto", "mínuto"};
+
+        for (String keyword : minuteKeywords) {
+            Pattern pattern = Pattern.compile("([0-9]+)(?:m| " + keyword + "s|" + keyword + "s| " + keyword + "|" + keyword + ")[ |\\n]");
+            Matcher matcher = pattern.matcher(input);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        }
+
+        return 0;
+    }
+
+    public static int extractSeconds(String input) {
+        String[] secondKeywords = new String[]{"second", "sec", "seconde", "sekunde", "segundo"};
+
+        for (String keyword : secondKeywords) {
+            Pattern pattern = Pattern.compile("([0-9]+)(?:s| " + keyword + "s|" + keyword + "s| " + keyword + "|" + keyword + ")[ |\\n]");
+            Matcher matcher = pattern.matcher(input);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        }
+
+        return 0;
     }
 }

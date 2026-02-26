@@ -2,6 +2,7 @@ package io.github.sst.remake.manager.impl;
 
 import io.github.sst.remake.data.alt.Account;
 import io.github.sst.remake.manager.Manager;
+import io.github.sst.remake.tracker.impl.BanTracker;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public final class AccountManager extends Manager {
     @Override
     public void init() {
         accounts = new ArrayList<>();
+        new BanTracker().enable();
     }
 
     public boolean login(Account account) {
