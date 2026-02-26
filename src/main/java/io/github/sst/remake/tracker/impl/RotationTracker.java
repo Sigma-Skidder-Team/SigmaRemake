@@ -19,6 +19,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public final class RotationTracker extends Tracker implements IMinecraft {
     public List<Rotatable> rotatables;
+    private Rotatable currentRotatable;
 
     public Rotation rotations;
 
@@ -35,6 +36,7 @@ public final class RotationTracker extends Tracker implements IMinecraft {
     @Override
     public void enable() {
         rotatables = new ArrayList<>();
+        currentRotatable = null;
         rotations = null;
 
         renderHeadPrevious = null;
@@ -54,15 +56,13 @@ public final class RotationTracker extends Tracker implements IMinecraft {
 
         Rotatable module = rotatables.stream()
                 .filter(Rotatable::isEnabled)
-                .max(Comparator.comparingInt(a -> a.priority))
+                .max(Comparator.comparingInt(Rotatable::getPriority))
                 .orElse(null);
-
-        for (Rotatable rotator : rotatables) {
-            rotator.canPerform = (rotator == module);
-        }
+        currentRotatable = module;
 
         if (module == null || module.getRotations() == null) {
             active = false;
+            currentRotatable = null;
             rotations = null;
 
             renderHeadPrevious = null;
@@ -152,5 +152,9 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         if (delta < -BODY_TURN_SPEED) delta = -BODY_TURN_SPEED;
 
         return from + delta;
+    }
+
+    public Rotatable getCurrentRotatable() {
+        return currentRotatable;
     }
 }

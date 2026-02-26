@@ -6,6 +6,7 @@ import io.github.sst.remake.util.IMinecraft;
 public class SubModule implements IMinecraft {
     public final String name;
     public Module parent;
+    private boolean enabled;
 
     public SubModule(String name) {
         this.name = name;
@@ -15,6 +16,9 @@ public class SubModule implements IMinecraft {
     public void onDisable() {}
 
     public void setEnabled(boolean enabled) {
+        if (this.enabled == enabled) return;
+        this.enabled = enabled;
+
         if (enabled) {
             onEnable();
             Client.BUS.register(this);
@@ -22,5 +26,9 @@ public class SubModule implements IMinecraft {
             Client.BUS.unregister(this);
             onDisable();
         }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 }

@@ -1,21 +1,23 @@
 package io.github.sst.remake.data.rotation;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.module.Category;
-import io.github.sst.remake.module.Module;
 
-public abstract class Rotatable extends Module {
+public interface Rotatable {
+    int getPriority();
 
-    public final int priority;
-    public boolean canPerform;
-
-    public Rotatable(String name, String description, Category category, int priority) {
-        super(name, description, category);
-        this.priority = priority;
-
-        Client.INSTANCE.moduleManager.rotationTracker.rotatables.add(this);
+    default boolean canPerform() {
+        if (Client.INSTANCE == null || Client.INSTANCE.moduleManager == null
+                || Client.INSTANCE.moduleManager.rotationTracker == null) {
+            return false;
+        }
+        return Client.INSTANCE.moduleManager.rotationTracker.getCurrentRotatable() == this;
     }
 
-    public abstract Rotation getRotations();
+    boolean isEnabled();
 
+    Rotation getRotations();
+
+    default void registerRotatable() {
+        Client.INSTANCE.moduleManager.rotationTracker.rotatables.add(this);
+    }
 }
