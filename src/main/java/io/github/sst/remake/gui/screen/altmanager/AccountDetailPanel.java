@@ -16,58 +16,65 @@ import java.util.Collections;
 import java.util.List;
 
 public class AccountDetailPanel extends Widget {
-    private Account currentAccount = null;
+    private Account selectedAccount = null;
     private final List<BanEntry> banEntries = new ArrayList<>();
     private float visibilityFade = 0.0F;
 
-    public AccountDetailPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, false);
+    public AccountDetailPanel(GuiComponent parent, String text, int x, int y, int width, int height) {
+        super(parent, text, x, y, width, height, false);
     }
 
     public void handleSelectedAccount(Account account) {
-        this.currentAccount = account;
+        this.selectedAccount = account;
 
-        for (BanEntry ban : this.banEntries) {
-            this.queueChildRemoval(ban);
+        for (BanEntry banEntry : this.banEntries) {
+            this.queueChildRemoval(banEntry);
         }
+        this.banEntries.clear();
 
         if (account != null) {
             List<AccountBan> accountBans = new ArrayList<>(account.bans);
             Collections.reverse(accountBans);
 
-            int index = 0;
-            int var14 = 90;
-            int var7 = 14;
+            int visibleBanCount = 0;
+            int entryHeight = 90;
+            int entrySpacing = 14;
 
-            for (AccountBan var9 : accountBans) {
-                if (var9.getServer() != null && var9.getServer().getIcon() != null) {
-                    BanEntry var10 = new BanEntry(
-                            this, accountBans.get(index).address, 40, 100 + index * (var14 + var7), this.width - 90, var14, var9
-                    );
-                    this.addToList(var10);
-                    this.banEntries.add(var10);
-                    index++;
-                }
+            for (AccountBan ban : accountBans) {
+                BanEntry entry = new BanEntry(
+                        this,
+                        accountBans.get(visibleBanCount).address,
+                        40,
+                        100 + visibleBanCount * (entryHeight + entrySpacing),
+                        this.width - 90,
+                        entryHeight,
+                        ban
+                );
+                this.addToList(entry);
+                this.banEntries.add(entry);
+                visibleBanCount++;
             }
 
-            this.setHeight(index * (var14 + var7) + 116);
+            this.setHeight(visibleBanCount * (entryHeight + entrySpacing) + 116);
         }
     }
 
     @Override
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
+
         this.visibilityFade = (float) ((double) this.visibilityFade + (this.isSelfVisible() ? 0.33 : -0.33));
         this.visibilityFade = Math.min(1.0F, Math.max(0.0F, this.visibilityFade));
 
-        if (this.currentAccount == null) {
-            int var4 = this.width - 30;
-            int var5 = this.x + 5;
+        if (this.selectedAccount == null) {
+            int imageWidth = this.width - 30;
+            int imageX = this.x + 5;
+
             RenderUtils.drawImage(
-                    (float) var5,
-                    (float) ((MinecraftClient.getInstance().getWindow().getHeight() - var4 * 342 / 460) / 2 - 60),
-                    (float) var4,
-                    (float) (var4 * 342 / 460),
+                    (float) imageX,
+                    (float) ((MinecraftClient.getInstance().getWindow().getHeight() - imageWidth * 342 / 460) / 2 - 60),
+                    (float) imageWidth,
+                    (float) (imageWidth * 342 / 460),
                     Resources.INFORMATION
             );
             return;
@@ -75,11 +82,12 @@ public class AccountDetailPanel extends Widget {
 
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_36,
-                (float) (this.x + (this.width - FontUtils.HELVETICA_LIGHT_36.getWidth(this.currentAccount.name)) / 2),
+                (float) (this.x + (this.width - FontUtils.HELVETICA_LIGHT_36.getWidth(this.selectedAccount.name)) / 2),
                 (float) this.y - 20,
-                this.currentAccount.name,
+                this.selectedAccount.name,
                 ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)
         );
+
         super.draw(partialTicks);
     }
 }
