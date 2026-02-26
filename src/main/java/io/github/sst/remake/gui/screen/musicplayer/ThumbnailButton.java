@@ -16,7 +16,6 @@ import io.github.sst.remake.util.render.image.ImageUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -168,7 +167,7 @@ public class ThumbnailButton extends Widget {
 
         if (this.thumbnailTexture == null) {
             try {
-                this.thumbnailTexture = BufferedImageUtil.getTexture("picture", this.thumbnailImage);
+                this.thumbnailTexture = ImageUtils.createTexture("picture", this.thumbnailImage);
             } catch (IOException e) {
                 Client.LOGGER.warn("Failed to get texture 'picture'", e);
             }
@@ -176,7 +175,7 @@ public class ThumbnailButton extends Widget {
 
         if (this.blurredThumbnailTexture == null && hoverPercent > 0.0F) {
             try {
-                this.blurredThumbnailTexture = BufferedImageUtil.getTexture(
+                this.blurredThumbnailTexture = ImageUtils.createTexture(
                         "picture",
                         ImageUtils.applyBlur(this.thumbnailImage, 14)
                 );

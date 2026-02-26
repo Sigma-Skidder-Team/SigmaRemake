@@ -3,6 +3,8 @@ package io.github.sst.remake.util.http;
 import io.github.sst.remake.Client;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureLoader;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -32,7 +34,7 @@ public class SkinUtils {
 
     public static Texture getHead(String uuid) {
         try (InputStream inputStream = NetUtils.getInputStreamFromURL(getHeadUrlByID(uuid, 75))) {
-            return TextureLoader.getTexture("PNG", inputStream);
+            return loadTextureSafe("PNG", inputStream);
         } catch (IOException e) {
             Client.LOGGER.error("Failed to load head from URL", e);
             return null;
@@ -59,10 +61,31 @@ public class SkinUtils {
             return null;
         }
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
-            return TextureLoader.getTexture("PNG", inputStream);
+            return loadTextureSafe("PNG", inputStream);
         } catch (IOException e) {
             Client.LOGGER.error("Failed to decode head texture", e);
             return null;
+        }
+    }
+
+    private static Texture loadTextureSafe(String format, InputStream inputStream) throws IOException {
+        int prevUnpackAlignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT);
+        int prevUnpackRowLength = GL11.glGetInteger(GL12.GL_UNPACK_ROW_LENGTH);
+        int prevUnpackSkipRows = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_ROWS);
+        int prevUnpackSkipPixels = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_PIXELS);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, 0);
+
+        try {
+            return TextureLoader.getTexture(format, inputStream);
+        } finally {
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, prevUnpackAlignment);
+            GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, prevUnpackRowLength);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
+            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
         }
     }
 }

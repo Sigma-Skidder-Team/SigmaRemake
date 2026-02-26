@@ -44,7 +44,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
         int xOffset = 0;
         this.addToList(this.singleplayerButton = new RoundButton(this, "Singleplayer", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.SINGLEPLAYER_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
         this.addToList(this.multiplayerButton = new RoundButton(this, "Multiplayer", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.MULTIPLAYER_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
-        this.addToList(this.realmsButton = new RoundButton(this, "Realms", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.SHOP_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
+        this.addToList(this.realmsButton = new RoundButton(this, "Realms", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.WORLD_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
         this.addToList(this.optionsButton = new RoundButton(this, "Options", this.calculateButtonX(xOffset++), this.calculateButtonY(), 128, 128, Resources.OPTIONS_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
         this.addToList(this.altManagerButton = new RoundButton(this, "Alt Manager", this.calculateButtonX(xOffset), this.calculateButtonY(), 128, 128, Resources.ALT_ICON, new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())));
 

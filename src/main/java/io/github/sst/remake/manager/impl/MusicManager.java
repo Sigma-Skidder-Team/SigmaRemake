@@ -34,7 +34,6 @@ import net.sourceforge.jaad.mp4.api.Frame;
 import net.sourceforge.jaad.mp4.api.Movie;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.texture.Texture;
-import org.newdawn.slick.util.image.BufferedImageUtil;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -228,8 +227,8 @@ public final class MusicManager extends Manager implements IMinecraft {
                 RenderUtils.resetGlUnpackState();
 
                 String textureKey = "music-" + currentPlayingSongData.id + "-" + System.nanoTime();
-                songThumbnail = BufferedImageUtil.getTexture(textureKey + "-bg", thumbnailImage);
-                notification = BufferedImageUtil.getTexture(textureKey + "-cover", scaledThumbnailImage);
+                songThumbnail = ImageUtils.createTexture(textureKey + "-bg", thumbnailImage);
+                notification = ImageUtils.createTexture(textureKey + "-cover", scaledThumbnailImage);
                 thumbnailFailed = false;
                 Client.INSTANCE.notificationManager
                         .send(new Notification("Now Playing", currentPlayingSongData.title, 7000, notification));

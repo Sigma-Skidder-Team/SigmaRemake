@@ -36,11 +36,11 @@ public class ScissorUtils {
 
     public static void startScissor(int x, int y, int width, int height, boolean useOpenGLCoordinates) {
         if (!useOpenGLCoordinates) {
-            float scaleFactor = getScaleFactor();
-            x = (int) (x * scaleFactor);
-            y = (int) (y * scaleFactor);
-            width = (int) (width * scaleFactor);
-            height = (int) (height * scaleFactor);
+            int scaleFactor = (int) getScaleFactor();
+            x *= scaleFactor;
+            y *= scaleFactor;
+            width *= scaleFactor;
+            height *= scaleFactor;
         } else {
             float[] startCoords = io.github.sst.remake.util.math.BufferUtils.screenCoordinatesToOpenGLCoordinates(x, y);
             x = (int) startCoords[0];

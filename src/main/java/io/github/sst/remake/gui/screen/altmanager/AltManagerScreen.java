@@ -227,18 +227,21 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         account.setLoadingIndicator(true);
 
         new Thread(() -> {
-            if (!Client.INSTANCE.accountManager.login(account.selectedAccount)) {
-                account.setErrorBlinkTicks(114);
-                SoundUtils.play("error");
-                account.setLoadingIndicator(false);
-                return;
-            }
+            boolean success = Client.INSTANCE.accountManager.login(account.selectedAccount);
+            this.addRunnable(() -> {
+                if (!success) {
+                    account.setErrorBlinkTicks(114);
+                    SoundUtils.play("error");
+                    account.setLoadingIndicator(false);
+                    return;
+                }
 
-            this.clearRefreshingState();
-            account.setAccountListRefreshing(true);
-            SoundUtils.play("connect");
-            this.updateAccountList(false);
-            account.setLoadingIndicator(false);
+                this.clearRefreshingState();
+                account.setAccountListRefreshing(true);
+                SoundUtils.play("connect");
+                this.updateAccountList(false);
+                account.setLoadingIndicator(false);
+            });
         }).start();
     }
 
