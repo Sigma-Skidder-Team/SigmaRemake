@@ -5,7 +5,8 @@ import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
-import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
+import io.github.sst.remake.event.impl.client.KeyPressEvent;
+import io.github.sst.remake.event.impl.client.MouseHoverEvent;
 import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
 import io.github.sst.remake.event.impl.game.player.JumpEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
@@ -14,38 +15,40 @@ import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
+import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
-import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
-@SuppressWarnings({"unused", "DataFlowIssue"})
-public class SmoothBlockFly extends SubModule implements Rotatable {
+@SuppressWarnings({"DataFlowIssue", "unused"})
+public class NCPBlockFly extends SubModule implements Rotatable {
     private static final float NO_ROTATION_SENTINEL = 999.0f;
 
     private float targetYaw;
     private float targetPitch;
+
     private PositionFacing pendingPlace;
     private int originalHotbarSlot = -1;
     private int rotationChangeTicks;
     private int groundTicksSinceLeave;
-    private Hand placeHand;
-    private boolean pauseSpeedBoost;
-    private boolean allowJumpCancel = false;
+    private Hand placeHand = Hand.MAIN_HAND;
+    private boolean allowJumpCancel;
     private double lockedY;
-    private int placeDelayTicks = 0;
+    private boolean isSneakDownwards;
 
-    public SmoothBlockFly() {
-        super("Smooth");
+    private final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true);
+    private final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true);
+
+    public NCPBlockFly() {
+        super("NCP");
         registerRotatable();
     }
 
@@ -59,15 +62,19 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         if (client.player == null) return;
 
         originalHotbarSlot = client.player.inventory.selectedSlot;
-
-        targetYaw = NO_ROTATION_SENTINEL;
-        targetPitch = NO_ROTATION_SENTINEL;
-
+        targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
+        if (client.options.keySneak.isPressed() && downwards.value) {
+            client.options.keySneak.setPressed(false);
+            isSneakDownwards = true;
+        }
+
+        if (!client.options.keySneak.isPressed()) {
+            isSneakDownwards = false;
+        }
 
         lockedY = -1.0;
         allowJumpCancel = false;
-
         if (client.player.isOnGround()) {
             lockedY = client.player.getY();
         }
@@ -82,7 +89,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         if (originalHotbarSlot != -1 && getParent().itemSpoofMode.value.equals("Switch")) {
             client.player.inventory.selectedSlot = originalHotbarSlot;
         }
-
         originalHotbarSlot = -1;
 
         if (getParent().lastSpoofedSlot >= 0) {
@@ -92,11 +98,9 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
         MovementUtils.strafe(MovementUtils.getSpeed() * 0.9);
         setTimer(1.0f);
-
         if (getParent().speedMode.value.equals("Cubecraft") && groundTicksSinceLeave == 0) {
             MovementUtils.setPlayerYMotion(-0.0789);
         }
-
         client.options.keySneak.setPressed(false);
     }
 
@@ -110,16 +114,9 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     }
 
     @Subscribe
-    public void onJump(JumpEvent event) {
-        if (event.entity != client.player) return;
-
-        if (getParent().towerMode.value.equals("Vanilla") && (!MovementUtils.isMoving() || getParent().moveAndTower.value)) {
-            event.cancel();
-        }
-    }
-
-    @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
+        if (client.player == null) return;
+
         if (getParent().speedMode.value.equals("Cubecraft")
             /*&& !Client.getInstance().moduleManager.getModuleByClass(Fly.class).isEnabled()*/) {
 
@@ -134,13 +131,36 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
             return;
         }
 
-        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()) {
+        if (client.player.isOnGround()
+                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()
+                && (!isSneakDownwards || !downwards.value)) {
             event.setSafe(true);
         }
     }
 
     @Subscribe
+    public void onKey(KeyPressEvent event) {
+        if (client.player == null) return;
+
+        if (downwards.value && event.key == client.options.keySneak.boundKey.getCode()) {
+            event.cancel();
+            isSneakDownwards = true;
+        }
+    }
+
+    @Subscribe
+    public void onHover(MouseHoverEvent event) {
+        if (client.player == null) return;
+
+        if (downwards.value && event.button == client.options.keySneak.boundKey.getCode()) {
+            event.cancel();
+            isSneakDownwards = false;
+        }
+    }
+
+    @Subscribe(priority = Priority.HIGH)
     public void onMove(MoveEvent event) {
+        if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
         if (client.player.isOnGround() || WorldUtils.isAboveBounds(client.player, 0.01f)) {
@@ -159,14 +179,11 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
         switch (getParent().speedMode.value) {
             case "Jump":
-                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !pauseSpeedBoost) {
+                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !isSneakDownwards) {
                     allowJumpCancel = false;
-
                     client.player.jump();
-                    //Client.getInstance().moduleManager.getModuleByClass(Speed.class)).resetHopStage();
-
+                    // Client.INSTANCE.moduleManager.getModule(SpeedModule.class).resetHopStage();
                     allowJumpCancel = true;
-
                     event.setY(client.player.getVelocity().y);
                     event.setX(client.player.getVelocity().x);
                     event.setZ(client.player.getVelocity().z);
@@ -178,9 +195,50 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
                     MovementUtils.setMotion(event, MovementUtils.getSpeed() * 0.82);
                 }
                 break;
-
             case "Cubecraft":
-                handleCubecraftSpeed(event);
+                double speed = 0.2;
+                float yaw = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+
+                if (client.options.keyJump.isPressed()) {
+                    setTimer(1.0f);
+                } else if (client.player.isOnGround()) {
+                    if (MovementUtils.isMoving() && !client.player.isSneaking() && !isSneakDownwards) {
+                        event.setY(1.01);
+                    }
+                } else if (groundTicksSinceLeave == 1) {
+                    if (event.getY() <= 0.9) {
+                        groundTicksSinceLeave = -1;
+                    } else {
+                        event.setY(0.122);
+                        setTimer(0.7f);
+                        speed = 2.4;
+                    }
+                } else if (groundTicksSinceLeave == 2) {
+                    if (event.getY() > 0.05) {
+                        groundTicksSinceLeave = -1;
+                    } else {
+                        setTimer(0.7f);
+                        speed = 0.28;
+                    }
+                } else if (groundTicksSinceLeave == 3) {
+                    setTimer(0.3f);
+                    speed = 2.4;
+                } else if (groundTicksSinceLeave == 4) {
+                    speed = 0.28;
+                    setTimer(1.0f);
+                } else if (groundTicksSinceLeave == 6) {
+                    event.setY(-1.023456987345906);
+                }
+
+                if (!MovementUtils.isMoving()) {
+                    speed = 0.0;
+                }
+
+                if (client.player.fallDistance < 1.0F) {
+                    MovementUtils.setMotionWithTurnLimit(event, speed, yaw, yaw, 360.0F);
+                }
+
+                MovementUtils.setPlayerYMotion(event.getY());
                 break;
 
             case "Slow":
@@ -195,15 +253,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
             case "Sneak":
                 client.options.keySneak.setPressed(true);
-                /*
-                if (client.player.isOnGround()) {
-                    event.setX(event.getX() * 0.65);
-                    event.setZ(event.getZ() * 0.65);
-                } else {
-                    event.setX(event.getX() * 0.85);
-                    event.setZ(event.getZ() * 0.85);
-                }
-                 */
                 break;
 
             case "None":
@@ -215,29 +264,31 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     }
 
     @Subscribe
-    public void onRender(RenderClient2DEvent event) {
-        if (!getParent().speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
+    public void onJump(JumpEvent event) {
+        if (event.entity != client.player) return;
+        if (!allowJumpCancel) return;
 
-        if (client.player.fallDistance > 1.2f) return;
-        if (client.player.capeY < lockedY) return;
-        if (client.player.jumping) return;
-
-        client.player.getPos().y = lockedY;
-        client.player.lastRenderY = lockedY;
-        client.player.capeY = lockedY;
-        client.player.prevY = lockedY;
-
-        if (MovementUtils.isMoving()) {
-            client.player.strideDistance = 0.099999994f;
+        if (getParent().towerMode.value.equals("Vanilla")
+                && (!MovementUtils.isMoving() || getParent().moveAndTower.value)) {
+            event.cancel();
         }
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.LOW)
     public void onMotion(MotionEvent event) {
+        if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
         if (!event.isPre()) {
-            handlePlace(event);
+            getParent().refillHotbarWithBlocks();
+            handlePlace();
+        } else {
+            if (getParent().countPlaceableBlocks() == 0) {
+                pendingPlace = null;
+                targetYaw = NO_ROTATION_SENTINEL;
+                targetPitch = NO_ROTATION_SENTINEL;
+            }
+            event.moving = true;
         }
     }
 
@@ -248,6 +299,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Override
     public Rotation getRotations() {
+        if (client.player == null) return null;
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
             targetYaw = NO_ROTATION_SENTINEL;
@@ -258,14 +310,17 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         updateTarget();
 
         if (pendingPlace != null) {
-            Rotation rotations = RotationUtils.getMovementDirectionBlockRotations();
-            if (rotations != null) {
-                targetYaw = rotations.yaw;
-                targetPitch = rotations.pitch;
-            }
+            Rotation rotations = RotationUtils.getBlockPlacementRotations(pendingPlace.blockPos, pendingPlace.direction);
+            targetYaw = rotations.yaw;
+            targetPitch = rotations.pitch;
+        } else if (!keepRotations.value) {
+            targetYaw = NO_ROTATION_SENTINEL;
+            targetPitch = NO_ROTATION_SENTINEL;
         }
 
-        if (targetYaw == NO_ROTATION_SENTINEL) return null;
+        if (targetYaw == NO_ROTATION_SENTINEL) {
+            return null;
+        }
 
         if (client.player.yaw != targetYaw || client.player.pitch != targetPitch) {
             rotationChangeTicks = 0;
@@ -274,54 +329,10 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         return new Rotation(targetYaw, targetPitch);
     }
 
-    private void handlePlace(MotionEvent event) {
-        if (!canPerform()) return;
-        if (targetYaw == NO_ROTATION_SENTINEL) return;
-
-        getParent().refillHotbarWithBlocks();
-
-        if (pendingPlace == null) return;
-
-        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, 5.0f, event);
-        if (hit.getType() == HitResult.Type.MISS) {
-            return;
-        }
-
-        if (hit.getSide() == Direction.UP
-                && (double) hit.getBlockPos().getY() <= client.player.getY() - 1.0
-                && client.player.isOnGround()) {
-            return;
-        }
-
-        int prevSlot = client.player.inventory.selectedSlot;
-        if (!getParent().itemSpoofMode.value.equals("None")) {
-            getParent().selectPlaceableHotbarSlot();
-        }
-
-        new ItemUsageContext(client.player, Hand.MAIN_HAND, hit);
-
-        client.interactionManager.interactBlock(client.player, client.world, placeHand, hit);
-
-        pendingPlace = null;
-
-        client.player.swingHand(Hand.MAIN_HAND);
-
-        String spoofMode = getParent().itemSpoofMode.value;
-        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = prevSlot;
-        }
-    }
-
     private void updateTarget() {
         rotationChangeTicks++;
-        placeDelayTicks--;
 
         placeHand = Hand.MAIN_HAND;
-        if (BlockUtils.isPlacableBlockItem(client.player.getStackInHand(Hand.OFF_HAND).getItem())
-                && (client.player.getStackInHand(placeHand).isEmpty()
-                || !BlockUtils.isPlacableBlockItem(client.player.getStackInHand(placeHand).getItem()))) {
-            placeHand = Hand.OFF_HAND;
-        }
 
         double targetX = client.player.getX();
         double targetZ = client.player.getZ();
@@ -337,8 +348,9 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
                 && client.player.fallDistance > 1.0f
                 && RaytraceUtils.rayTrace(0.0f, 90.0f, 3.0f).getType() == HitResult.Type.MISS) {
             targetY += Math.min(client.player.getVelocity().y * 2.0, 4.0);
-        } else if ((getParent().speedMode.value.equals("Jump")
-                || getParent().speedMode.value.equals("Cubecraft"))
+        } else if (isSneakDownwards && downwards.value) {
+            targetY -= 1.0;
+        } else if ((getParent().speedMode.value.equals("Jump") || getParent().speedMode.value.equals("Cubecraft"))
                 && !client.options.keyJump.isPressed()) {
             targetY = lockedY;
         }
@@ -355,59 +367,38 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         }
 
         BlockPos belowTarget = new BlockPos(targetX, targetY - 1.0, targetZ);
-        if (!BlockUtils.isValidBlockPosition(belowTarget)
-                && getParent().canPlaceWithHand(placeHand)
-                && placeDelayTicks <= 0) {
 
-            pendingPlace = BlockUtils.findPlaceableNeighbor(belowTarget, false);
+        if (!BlockUtils.isValidBlockPosition(belowTarget) && getParent().canPlaceWithHand(placeHand)) {
+            pendingPlace = BlockUtils.findPlaceableNeighbor(belowTarget, !isSneakDownwards && downwards.value);
         } else {
             pendingPlace = null;
         }
     }
 
-    private void handleCubecraftSpeed(MoveEvent event) {
-        double speed = 0.2;
-        float dir = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+    private void handlePlace() {
+        if (pendingPlace == null) return;
 
-        if (client.options.keyJump.isPressed()) {
-            setTimer(1.0f);
-        } else if (client.player.isOnGround()) {
-            if (MovementUtils.isMoving() && !client.player.isSneaking() && !pauseSpeedBoost) {
-                event.setY(1.00000000000001);
-            }
-        } else if (groundTicksSinceLeave == 1) {
-            if (event.getY() <= 0.9) {
-                groundTicksSinceLeave = -1;
-            } else {
-                event.setY(0.122);
-                setTimer(0.7f);
-                speed = 2.4;
-            }
-        } else if (groundTicksSinceLeave == 2) {
-            if (event.getY() > 0.05) {
-                groundTicksSinceLeave = -1;
-            } else {
-                setTimer(0.7f);
-                speed = 0.28;
-            }
-        } else if (groundTicksSinceLeave == 3) {
-            setTimer(0.3f);
-            speed = 2.4;
-        } else if (groundTicksSinceLeave == 4) {
-            speed = 0.28;
-            setTimer(1.0f);
-        } else if (groundTicksSinceLeave == 6) {
-            event.setY(-1.023456987345906);
+        BlockHitResult hit = new BlockHitResult(
+                BlockUtils.getRandomizedHitVec(pendingPlace.blockPos, pendingPlace.direction),
+                pendingPlace.direction,
+                pendingPlace.blockPos,
+                false
+        );
+
+        int prevSlot = client.player.inventory.selectedSlot;
+
+        if (!getParent().itemSpoofMode.value.equals("None")) {
+            getParent().selectPlaceableHotbarSlot();
         }
 
-        if (!MovementUtils.isMoving()) {
-            speed = 0.0;
-        }
+        client.interactionManager.interactBlock(client.player, client.world, placeHand, hit);
+        client.player.swingHand(placeHand);
 
-        if (client.player.fallDistance < 1.0f) {
-            MovementUtils.setMotionWithTurnLimit(event, speed, dir, dir, 360.0f);
-        }
+        pendingPlace = null;
 
-        MovementUtils.setPlayerYMotion(event.getY());
+        String spoofMode = getParent().itemSpoofMode.value;
+        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
+            client.player.inventory.selectedSlot = prevSlot;
+        }
     }
 }
