@@ -13,6 +13,8 @@ public class SafeWalkModule extends Module {
 
     @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
+        if (client.player == null) return;
+        
         if (client.player.isOnGround() && !Client.INSTANCE.moduleManager.getModule(BlockFlyModule.class).enabled) {
             event.setSafe(true);
         }
