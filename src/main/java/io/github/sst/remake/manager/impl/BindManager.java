@@ -66,15 +66,11 @@ public final class BindManager extends Manager implements IMinecraft {
         }
     }
 
-    private final Map<Integer, List<Bind>> bindCache = new HashMap<>();
-
     public List<Bind> getBindedObjects(int key) {
         if (key == -1) {
             return Collections.emptyList();
         }
-
-        // Return cached result if present
-        return bindCache.computeIfAbsent(key, this::buildBindsForKey);
+        return buildBindsForKey(key);
     }
 
     public int getKeybindFor(Class<? extends Screen> screen) {
