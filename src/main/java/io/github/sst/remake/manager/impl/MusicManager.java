@@ -39,9 +39,12 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class MusicManager extends Manager implements IMinecraft {
@@ -181,15 +184,14 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         double[] visualize = visualizer.get(0);
 
-        if (amplitudes.isEmpty()) {
-            for (double v : visualize) {
-                if (amplitudes.size() < 1024) {
-                    amplitudes.add(v);
-                }
+        if (amplitudes.size() < visualize.length) {
+            for (int i = amplitudes.size(); i < visualize.length; i++) {
+                amplitudes.add(visualize[i]);
             }
         }
 
-        float fps = 60.0F / (float) MinecraftClient.currentFps;
+        int currentFps = Math.max(1, MinecraftClient.currentFps);
+        float fps = 60.0F / (float) currentFps;
 
         for (int i = 0; i < visualize.length; i++) {
             double var7 = amplitudes.get(i) - visualize[i];
@@ -448,7 +450,7 @@ public final class MusicManager extends Manager implements IMinecraft {
         MP4Container container = new MP4Container(mS);
 
         Movie movie = container.getMovie();
-        AudioTrack track = (AudioTrack) movie.getTracks().get(1);
+        AudioTrack track = selectAudioTrack(movie, data);
         AudioFormat audioFormat = new AudioFormat((float) track.getSampleRate(), 16, track.getChannelCount(), true, true);
 
         dataLine = AudioSystem.getSourceDataLine(audioFormat);
@@ -461,7 +463,35 @@ public final class MusicManager extends Manager implements IMinecraft {
             Client.INSTANCE.notificationManager.send(new Notification("Song skipped", "Music is too long.", Resources.ALERT_ICON));
         }
 
-        streamAudioData(track, mS, audioFormat, sessionId);
+        try {
+            streamAudioData(track, mS, audioFormat, sessionId);
+        } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                throw (InterruptedException) e;
+            }
+
+            if (isAacDecodeFailure(e) && !shouldStopPlayback(sessionId)) {
+                if (VersionUtils.hasFFMPEG()) {
+                    try {
+                        mS.close();
+                    } catch (IOException ignored) {
+                    }
+                    if (dataLine != null) {
+                        dataLine.close();
+                    }
+                    streamAudioDataWithFfmpeg(audioStreamUrl, audioFormat, sessionId);
+                    return;
+                }
+            }
+
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            }
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new IOException("Unexpected playback failure", e);
+        }
     }
 
     private void streamAudioData(AudioTrack track, MusicStream mS, AudioFormat audioFormat, int sessionId) throws InterruptedException, IOException {
@@ -488,7 +518,8 @@ public final class MusicManager extends Manager implements IMinecraft {
             }
 
             Frame frame = track.readNextFrame();
-            aacDecoder.decodeFrame(frame.getData(), sampleBuffer);
+            byte[] frameData = frame.getData();
+            aacDecoder.decodeFrame(frameData, sampleBuffer);
 
             byte[] pcmBufferData = sampleBuffer.getData();
             dataLine.write(pcmBufferData, 0, pcmBufferData.length);
@@ -534,6 +565,164 @@ public final class MusicManager extends Manager implements IMinecraft {
 
         dataLine.close();
         mS.close();
+    }
+
+    private void streamAudioDataWithFfmpeg(URL audioStreamUrl, AudioFormat audioFormat, int sessionId) throws IOException, InterruptedException, LineUnavailableException {
+        Process process = new ProcessBuilder(
+                "ffmpeg",
+                "-hide_banner",
+                "-loglevel", "error",
+                "-i", audioStreamUrl.toString(),
+                "-f", "s16be",
+                "-acodec", "pcm_s16be",
+                "-ac", Integer.toString(audioFormat.getChannels()),
+                "-ar", Integer.toString((int) audioFormat.getSampleRate()),
+                "-"
+        ).start();
+
+        Thread errReader = new Thread(() -> drainFfmpegErrors(process.getErrorStream()), "Sigma-Music-ffmpeg-err-" + sessionId);
+        errReader.setDaemon(true);
+        errReader.start();
+
+        dataLine = AudioSystem.getSourceDataLine(audioFormat);
+        dataLine.open();
+        dataLine.start();
+
+        InputStream pcmStream = process.getInputStream();
+        byte[] pcmBuffer = new byte[4096];
+        double playedSeconds = 0.0D;
+
+        try {
+            while (true) {
+                while (!playing) {
+                    if (shouldStopPlayback(sessionId)) {
+                        process.destroyForcibly();
+                        return;
+                    }
+                    Thread.sleep(300);
+                    visualizer.clear();
+                }
+
+                if (shouldStopPlayback(sessionId)) {
+                    process.destroyForcibly();
+                    return;
+                }
+
+                int bytesRead = pcmStream.read(pcmBuffer);
+                if (bytesRead <= 0) {
+                    break;
+                }
+
+                dataLine.write(pcmBuffer, 0, bytesRead);
+
+                byte[] fftBuffer = bytesRead == pcmBuffer.length ? pcmBuffer : Arrays.copyOf(pcmBuffer, bytesRead);
+                float[] pcmSamples = JavaFFT.convertToPCMFloatArray(fftBuffer, audioFormat);
+                int fftSize = largestPowerOfTwo(pcmSamples.length);
+                if (fftSize >= 2) {
+                    float[] fftSamples = pcmSamples.length == fftSize ? pcmSamples : Arrays.copyOf(pcmSamples, fftSize);
+                    JavaFFT fftProcessor = new JavaFFT(fftSize);
+                    float[][] fftResult = fftProcessor.transform(fftSamples);
+                    visualizer.add(JavaFFT.calculateAmplitudes(fftResult[0], fftResult[1]));
+                    if (visualizer.size() > 18) {
+                        visualizer.remove(0);
+                    }
+                }
+
+                adjustVolume(dataLine, volume);
+
+                double frameRate = audioFormat.getFrameRate();
+                int frameSize = audioFormat.getFrameSize();
+                if (frameRate > 0 && frameSize > 0) {
+                    playedSeconds += bytesRead / (frameRate * frameSize);
+                    totalDuration = Math.round(playedSeconds);
+                    playbackProgress = playedSeconds;
+                }
+            }
+        } finally {
+            try {
+                pcmStream.close();
+            } catch (IOException ignored) {
+            }
+            if (dataLine != null) {
+                dataLine.close();
+            }
+            if (!process.waitFor(2, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
+        }
+    }
+
+    private void drainFfmpegErrors(InputStream errStream) {
+        byte[] buffer = new byte[1024];
+        try {
+            while (!Thread.currentThread().isInterrupted() && errStream.read(buffer) != -1) {
+            }
+        } catch (IOException ignored) {
+        } finally {
+            try {
+                errStream.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    private boolean isAacDecodeFailure(Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            String className = current.getClass().getName();
+            if ("net.sourceforge.jaad.aac.AACException".equals(className)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static int largestPowerOfTwo(int value) {
+        if (value <= 0) {
+            return 0;
+        }
+        int result = 1;
+        while ((result << 1) > 0 && (result << 1) <= value) {
+            result <<= 1;
+        }
+        return result;
+    }
+
+    private AudioTrack selectAudioTrack(Movie movie, SongData data) throws IOException {
+        AudioTrack bestTrack = null;
+        int bestTrackSampleRate = -1;
+
+        List<?> tracks = movie.getTracks();
+        for (int i = 0; i < tracks.size(); i++) {
+            Object track = tracks.get(i);
+            boolean isAudioTrack = track instanceof AudioTrack;
+
+            if (!isAudioTrack) {
+                continue;
+            }
+
+            AudioTrack audioTrack = (AudioTrack) track;
+            int sampleRate = audioTrack.getSampleRate();
+
+            if (bestTrack == null || sampleRate > bestTrackSampleRate) {
+                bestTrack = audioTrack;
+                bestTrackSampleRate = sampleRate;
+            }
+        }
+
+        if (bestTrack == null) {
+            throw new IOException("No audio tracks found for song '" + safeSongTitle(data) + "' (id=" + safeSongId(data) + ")");
+        }
+        return bestTrack;
+    }
+
+    private static String safeSongId(SongData song) {
+        return song == null || song.id == null ? "unknown" : song.id;
+    }
+
+    private static String safeSongTitle(SongData song) {
+        return song == null || song.title == null ? "unknown" : song.title;
     }
 
     private void adjustVolume(SourceDataLine source, int volume) {

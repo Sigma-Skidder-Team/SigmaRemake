@@ -40,21 +40,56 @@ public class YtDlpUtils {
             return null;
         }
 
+        String[] formatCandidates = new String[]{
+                "140",
+                "bestaudio[ext=m4a]",
+                "bestaudio[acodec^=mp4a]",
+                "best[ext=mp4][acodec^=mp4a]"
+        };
+
+        for (String format : formatCandidates) {
+            URL resolved = tryResolveStream(songUrl, format);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
+
+        return null;
+    }
+
+    private static URL tryResolveStream(String songUrl, String format) {
         YtDlpRequest request = new YtDlpRequest(songUrl, ConfigUtils.MUSIC_FOLDER.getAbsolutePath());
         request.addOption("no-check-certificates");
         request.addOption("rm-cache-dir");
         request.addOption("get-url");
         request.addOption("retries", 10);
-        request.addOption("format", 18);
+        request.addOption("extractor-args", "youtube:player_client=android,ios,web");
+        request.addOption("format", format);
 
         try {
             YtDlpResponse response = YtDlp.execute(request);
-            return new URL(response.getOut());
-        } catch (YtDlpException | MalformedURLException e) {
-            Client.LOGGER.error("Failed to grab response from YT-DLP", e);
-        }
+            String output = response.getOut();
+            if (output == null || output.trim().isEmpty()) {
+                return null;
+            }
 
-        return null;
+            String[] lines = output.split("\\R");
+            String streamUrl = null;
+            for (String line : lines) {
+                if (line != null && !line.trim().isEmpty()) {
+                    streamUrl = line.trim();
+                    break;
+                }
+            }
+
+            if (streamUrl == null) {
+                return null;
+            }
+
+            return new URL(streamUrl);
+        } catch (YtDlpException | MalformedURLException e) {
+            return null;
+        }
     }
 
     public static void prepareExecutable() {

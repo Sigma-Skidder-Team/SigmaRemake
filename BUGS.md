@@ -1,19 +1,6 @@
 # Known bugs
 - Music player
 ```bash
-[22:01:38] [Sigma-Music-1/ERROR] (Sigma) Failed to play track
- net.sourceforge.jaad.aac.AACException: FIL element overread: -700
-	at net.sourceforge.jaad.aac.syntax.FIL.decode(FIL.java:59) ~[jaad-1.0.2.jar:?]
-	at net.sourceforge.jaad.aac.syntax.SyntacticElements.decodeFIL(SyntacticElements.java:176) ~[jaad-1.0.2.jar:?]
-	at net.sourceforge.jaad.aac.syntax.SyntacticElements.decode(SyntacticElements.java:84) ~[jaad-1.0.2.jar:?]
-	at net.sourceforge.jaad.aac.Decoder.decode(Decoder.java:108) ~[jaad-1.0.2.jar:?]
-	at net.sourceforge.jaad.aac.Decoder.decodeFrame(Decoder.java:85) ~[jaad-1.0.2.jar:?]
-	at io.github.sst.remake.manager.impl.MusicManager.streamAudioData(MusicManager.java:491) ~[main/:?]
-	at io.github.sst.remake.manager.impl.MusicManager.playTrack(MusicManager.java:464) ~[main/:?]
-	at io.github.sst.remake.manager.impl.MusicManager.playbackLoop(MusicManager.java:397) [main/:?]
-	at io.github.sst.remake.manager.impl.MusicManager.lambda$initPlaybackLoop$0(MusicManager.java:361) [main/:?]
-	at java.lang.Thread.run(Thread.java:1447) [?:?]
-
 Feb 25, 2026 12:15:05 PM net.sourceforge.jaad.mp4.api.Track readNextFrame
 WARNING: readNextFrame failed: tried to read 371 bytes at 3,421,887
 [12:15:05] [Sigma-Music-3/ERROR] (Sigma) Failed to play track
