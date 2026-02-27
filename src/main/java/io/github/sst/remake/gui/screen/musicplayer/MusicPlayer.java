@@ -1,5 +1,6 @@
 package io.github.sst.remake.gui.screen.musicplayer;
 
+import com.google.gson.JsonObject;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
@@ -167,6 +168,34 @@ public class MusicPlayer extends Widget {
         this.activePlaylistPanel = var1;
         this.searchBox.setSelfVisible(false);
         this.activePlaylistPanel.scrollBarWidth = 65;
+    }
+
+    @Override
+    public void loadConfig(JsonObject config) {
+        super.loadConfig(config);
+
+        this.setDragging(false);
+        this.isAnimatingBack = false;
+
+        if (this.parent != null) {
+            int minY = 0;
+            int maxY = Math.max(0, this.parent.getHeight() - this.getHeight());
+            this.setY(Math.max(minY, Math.min(this.getY(), maxY)));
+
+            if (this.getX() + this.getWidth() > this.parent.getWidth()) {
+                int hiddenX = this.parent.getWidth() - 40;
+                this.setX(hiddenX);
+                this.setDraggable(false);
+            } else {
+                int minX = 0;
+                int maxX = Math.max(0, this.parent.getWidth() - this.getWidth());
+                this.setX(Math.max(minX, Math.min(this.getX(), maxX)));
+                this.setDraggable(true);
+            }
+        }
+
+        this.targetX = (float) this.getX();
+        this.targetY = (float) this.getY();
     }
 
     @Override
