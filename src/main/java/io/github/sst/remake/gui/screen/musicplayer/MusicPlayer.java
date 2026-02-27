@@ -180,7 +180,6 @@ public class MusicPlayer extends Widget {
                 if ((this.isMouseDownOverComponent || isAnimatingBack) && !this.isDraggable()) {
                     isAnimatingBack = true;
                     int var11 = this.parent.getWidth() - 20 - this.getWidth();
-                    int var13 = (this.parent.getHeight() - this.getHeight()) / 2;
                     this.targetX = Math.max(this.targetX - (this.targetX - (float) var11) * 0.25F * var7, (float) var11);
 
                     if (!(this.targetX - (float) var11 < 0.0F)) {
@@ -193,7 +192,7 @@ public class MusicPlayer extends Widget {
 
                     this.setX((int) this.targetX);
                     this.setY((int) this.targetY);
-                    if (Math.abs(this.targetX - (float) var11) < 2.0F && Math.abs(this.targetY - (float) var13) < 2.0F) {
+                    if (Math.abs(this.targetX - (float) var11) < 2.0F) {
                         this.setDraggable(true);
                         isAnimatingBack = false;
                     }
@@ -204,7 +203,6 @@ public class MusicPlayer extends Widget {
                     }
 
                     int var8 = this.parent.getWidth() - 40;
-                    int var9 = (this.parent.getHeight() - this.getHeight()) / 2;
                     this.targetX = Math.min(this.targetX - (this.targetX - (float) var8) * 0.25F * var7, (float) var8);
 
                     if (!(this.targetX - (float) var8 > 0.0F)) {
@@ -215,7 +213,7 @@ public class MusicPlayer extends Widget {
                         this.targetX = (float) var8;
                     }
 
-                    if (Math.abs(this.targetX - (float) var8) < 2.0F && Math.abs(this.targetY - (float) var9) < 2.0F) {
+                    if (Math.abs(this.targetX - (float) var8) < 2.0F) {
                         this.targetX = (float) this.getX();
                         this.targetY = (float) this.getY();
                     }
