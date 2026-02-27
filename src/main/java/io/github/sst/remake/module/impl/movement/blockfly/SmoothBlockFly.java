@@ -19,7 +19,6 @@ import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -77,16 +76,11 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     public void onDisable() {
         if (client.player == null) return;
 
-        if (originalHotbarSlot != -1 && getParent().itemSpoofMode.value.equals("Switch")) {
-            client.player.inventory.selectedSlot = originalHotbarSlot;
-        }
-
+        getParent().handleDisableSlotSpoof(originalHotbarSlot);
         originalHotbarSlot = -1;
-
-        if (getParent().lastSpoofedSlot >= 0) {
-            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.inventory.selectedSlot));
-            getParent().lastSpoofedSlot = -1;
-        }
+        pendingPlace = null;
+        targetYaw = NO_ROTATION_SENTINEL;
+        targetPitch = NO_ROTATION_SENTINEL;
 
         MovementUtils.strafe(MovementUtils.getSpeed() * 0.9);
         setTimer(1.0f);
@@ -109,17 +103,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
-        if (getParent().speedMode.value.equals("Cubecraft")
-            /*&& !Client.getInstance().moduleManager.getModuleByClass(Fly.class).isEnabled()*/) {
-
-            if (!client.world.getBlockCollisions(client.player,
-                    client.player.getBoundingBox()
-                            .stretch(0.0, -1.5, 0.0)
-                            .shrink(0.05, 0.0, 0.05)
-                            .shrink(-0.05, 0.0, -0.05)
-            ).findAny().isPresent() && client.player.fallDistance < 1.0f) {
-                event.setSafe(true);
-            }
+        if (getParent().applyCubecraftSafeWalk(event)) {
             return;
         }
 
@@ -218,6 +202,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Subscribe
     public void onMotion(MotionEvent event) {
+        if (!getParent().isEnabled()) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
         if (!event.isPre()) {
@@ -232,6 +217,13 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Override
     public Rotation getRotations() {
+        if (!getParent().isEnabled()) {
+            pendingPlace = null;
+            targetYaw = NO_ROTATION_SENTINEL;
+            targetPitch = NO_ROTATION_SENTINEL;
+            return null;
+        }
+
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
             targetYaw = NO_ROTATION_SENTINEL;
@@ -277,23 +269,13 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
             return;
         }
 
-        int prevSlot = client.player.inventory.selectedSlot;
-        if (!getParent().itemSpoofMode.value.equals("None")) {
-            getParent().selectPlaceableHotbarSlot();
-        }
-
         new ItemUsageContext(client.player, Hand.MAIN_HAND, hit);
 
-        client.interactionManager.interactBlock(client.player, client.world, placeHand, hit);
+        getParent().interactBlockWithSpoofing(placeHand, hit);
 
         pendingPlace = null;
 
         client.player.swingHand(Hand.MAIN_HAND);
-
-        String spoofMode = getParent().itemSpoofMode.value;
-        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = prevSlot;
-        }
     }
 
     private void updateTarget() {

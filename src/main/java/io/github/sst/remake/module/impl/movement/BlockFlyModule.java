@@ -6,6 +6,7 @@ import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
+import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
@@ -30,7 +31,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings({"unused", "DataFlowIssue"})
@@ -347,6 +350,50 @@ public class BlockFlyModule extends Module {
         }
 
         return BlockUtils.isPlacableBlockItem(client.player.getStackInHand(hand).getItem());
+    }
+
+    public void handleDisableSlotSpoof(int originalHotbarSlot) {
+        if (originalHotbarSlot != -1 && itemSpoofMode.value.equals("Switch")) {
+            client.player.inventory.selectedSlot = originalHotbarSlot;
+        }
+
+        if (lastSpoofedSlot >= 0) {
+            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.inventory.selectedSlot));
+            lastSpoofedSlot = -1;
+        }
+    }
+
+    public boolean applyCubecraftSafeWalk(SafeWalkEvent event) {
+        if (!speedMode.value.equals("Cubecraft")) {
+            return false;
+        }
+
+        if (!client.world.getBlockCollisions(client.player,
+                client.player.getBoundingBox()
+                        .stretch(0.0, -1.5, 0.0)
+                        .shrink(0.05, 0.0, 0.05)
+                        .shrink(-0.05, 0.0, -0.05)
+        ).findAny().isPresent() && client.player.fallDistance < 1.0f) {
+            event.setSafe(true);
+        }
+
+        return true;
+    }
+
+    public ActionResult interactBlockWithSpoofing(Hand hand, BlockHitResult hit) {
+        int previousSlot = client.player.inventory.selectedSlot;
+        if (!itemSpoofMode.value.equals("None")) {
+            selectPlaceableHotbarSlot();
+        }
+
+        ActionResult result = client.interactionManager.interactBlock(client.player, client.world, hand, hit);
+
+        String spoofMode = itemSpoofMode.value;
+        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
+            client.player.inventory.selectedSlot = previousSlot;
+        }
+
+        return result;
     }
 
     private void swapSlotToHotbar(int sourceSlot, int hotbarIndex) {

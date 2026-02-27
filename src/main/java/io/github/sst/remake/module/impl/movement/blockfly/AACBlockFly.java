@@ -17,7 +17,6 @@ import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
 import net.minecraft.block.Blocks;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -69,16 +68,10 @@ public class AACBlockFly extends SubModule implements Rotatable {
     public void onDisable() {
         if (client.player == null) return;
 
-        if (originalHotbarSlot != -1 && getParent().itemSpoofMode.value.equals("Switch")) {
-            client.player.inventory.selectedSlot = originalHotbarSlot;
-        }
-
+        getParent().handleDisableSlotSpoof(originalHotbarSlot);
         originalHotbarSlot = -1;
-
-        if (getParent().lastSpoofedSlot >= 0) {
-            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.inventory.selectedSlot));
-            getParent().lastSpoofedSlot = -1;
-        }
+        targetYaw = client.player.yaw;
+        targetPitch = client.player.pitch;
 
         setTimer(1.0f);
     }
@@ -155,6 +148,10 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
     @Subscribe(priority = Priority.LOWEST)
     public void onMotion(MotionEvent event) {
+        if (!getParent().isEnabled()) {
+            return;
+        }
+
         if (!event.isPre()) {
             if (MovementUtils.isMoving()
                     && client.player.isOnGround()
@@ -183,6 +180,10 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
     @Override
     public Rotation getRotations() {
+        if (!getParent().isEnabled()) {
+            return null;
+        }
+
         double y = client.player.getY();
         if (!client.player.jumping && haphe.value) {
             y = scaffoldYLevel;
@@ -252,17 +253,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
         getParent().refillHotbarWithBlocks();
 
-        int previousSlot = client.player.inventory.selectedSlot;
-        if (!getParent().itemSpoofMode.value.equals("None")) {
-            getParent().selectPlaceableHotbarSlot();
-        }
-
-        ActionResult result = client.interactionManager.interactBlock(client.player, client.world, Hand.MAIN_HAND, hit);
-
-        String spoofMode = getParent().itemSpoofMode.value;
-        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = previousSlot;
-        }
+        ActionResult result = getParent().interactBlockWithSpoofing(Hand.MAIN_HAND, hit);
 
         if (result != ActionResult.SUCCESS) {
             return false;
