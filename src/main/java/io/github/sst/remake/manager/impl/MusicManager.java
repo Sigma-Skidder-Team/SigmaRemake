@@ -439,6 +439,12 @@ public final class MusicManager extends Manager implements IMinecraft {
         URL audioStreamUrl = YtDlpUtils.resolveStream(videoStreamUrl.toString());
 
         if (audioStreamUrl == null) {
+            URL fallbackUrl = YtDlpUtils.resolveFallbackStream(videoStreamUrl.toString());
+            if (fallbackUrl != null && VersionUtils.hasFFMPEG() && !shouldStopPlayback(sessionId)) {
+                AudioFormat fallbackFormat = new AudioFormat(44100.0F, 16, 2, true, true);
+                streamAudioDataWithFfmpeg(fallbackUrl, fallbackFormat, sessionId);
+                return;
+            }
             if (!shouldStopPlayback(sessionId)) {
                 Thread.sleep(1000);
             }

@@ -39,6 +39,14 @@ public class YtDlpUtils {
             Client.LOGGER.error("Failed to play song, url is null");
             return null;
         }
+        return tryResolveStream(songUrl, "18", false);
+    }
+
+    public static URL resolveFallbackStream(String songUrl) {
+        if (songUrl == null) {
+            Client.LOGGER.error("Failed to play song, url is null");
+            return null;
+        }
 
         String[] formatCandidates = new String[]{
                 "140",
@@ -48,7 +56,7 @@ public class YtDlpUtils {
         };
 
         for (String format : formatCandidates) {
-            URL resolved = tryResolveStream(songUrl, format);
+            URL resolved = tryResolveStream(songUrl, format, true);
             if (resolved != null) {
                 return resolved;
             }
@@ -57,13 +65,15 @@ public class YtDlpUtils {
         return null;
     }
 
-    private static URL tryResolveStream(String songUrl, String format) {
+    private static URL tryResolveStream(String songUrl, String format, boolean useExtractorArgs) {
         YtDlpRequest request = new YtDlpRequest(songUrl, ConfigUtils.MUSIC_FOLDER.getAbsolutePath());
         request.addOption("no-check-certificates");
         request.addOption("rm-cache-dir");
         request.addOption("get-url");
         request.addOption("retries", 10);
-        request.addOption("extractor-args", "youtube:player_client=android,ios,web");
+        if (useExtractorArgs) {
+            request.addOption("extractor-args", "youtube:player_client=android,ios,web");
+        }
         request.addOption("format", format);
 
         try {
