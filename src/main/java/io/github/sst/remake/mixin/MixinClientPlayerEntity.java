@@ -126,7 +126,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
             ++this.ticksSinceLastPositionPacketSent;
 
-            boolean moving = dX * dX + dY * dY + dZ * dZ > 9.0E-4 || this.ticksSinceLastPositionPacketSent >= 20;
+            boolean moving = motionEvent.moving || dX * dX + dY * dY + dZ * dZ > 9.0E-4 || this.ticksSinceLastPositionPacketSent >= 20;
             boolean looking = dYaw != 0.0 || dPitch != 0.0;
 
             if (this.hasVehicle()) {
