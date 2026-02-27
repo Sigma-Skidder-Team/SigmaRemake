@@ -2,34 +2,12 @@ package io.github.sst.remake.util.game;
 
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.util.IMinecraft;
-import net.minecraft.client.input.Input;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.util.math.MathHelper;
 
 public class MovementUtils implements IMinecraft {
-    public static float getDirection(float forward, float strafing, float yaw) {
-        if (forward == 0.0f && strafing == 0.0f) {
-            return yaw;
-        }
-
-        boolean isReversed = forward < 0.0f;
-        float strafingAdjustment = 90.0f * (isReversed ? -0.5f : (forward > 0.0f ? 0.5f : 1.0f));
-
-        if (isReversed) {
-            yaw += 180.0f;
-        }
-
-        if (strafing != 0.0f) {
-            yaw += (strafing > 0.0f) ? -strafingAdjustment : strafingAdjustment;
-        }
-
-        return yaw;
-    }
-
-    public static float getDirection() {
-        return getDirection(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
-    }
 
     public static boolean isMoving() {
         return client.player.forwardSpeed != 0 || client.player.sidewaysSpeed != 0;
@@ -44,7 +22,7 @@ public class MovementUtils implements IMinecraft {
     }
 
     public static void strafe(double speed) {
-        float[] strafe = getDirectionArray();
+        float[] strafe = RotationUtils.getDirectionArray();
         float forward = strafe[1];
         float side = strafe[2];
         float yaw = strafe[0];
@@ -64,7 +42,7 @@ public class MovementUtils implements IMinecraft {
     }
 
     public static void setMotion(MoveEvent moveEvent, double motionSpeed) {
-        float[] strafe = getDirectionArray();
+        float[] strafe = RotationUtils.getDirectionArray();
         float forward = strafe[1];
         float side = strafe[2];
         float yaw = strafe[0];
@@ -86,37 +64,6 @@ public class MovementUtils implements IMinecraft {
         setPlayerZMotion(moveEvent.getZ());
     }
 
-    private static float[] getDirectionArray() {
-        Input input = client.player.input;
-        return getDirectionArray(input.movementForward, input.movementSideways);
-    }
-
-    private static float[] getDirectionArray(float forward, float strafe) {
-        float yaw = client.player.yaw + 90.0f;
-
-        if (forward != 0.0f) {
-            if (!(strafe >= 1.0f)) {
-                if (strafe <= -1.0f) {
-                    yaw += (float) (!(forward > 0.0f) ? -45 : 45);
-                    strafe = 0.0f;
-                }
-            } else {
-                yaw += (float) (!(forward > 0.0f) ? 45 : -45);
-                strafe = 0.0f;
-            }
-
-            if (!(forward > 0.0f)) {
-                if (forward < 0.0f) {
-                    forward = -1.0f;
-                }
-            } else {
-                forward = 1.0f;
-            }
-        }
-
-        return new float[]{yaw, forward, strafe};
-    }
-
     public static void stop() {
         stop(false);
     }
@@ -125,7 +72,7 @@ public class MovementUtils implements IMinecraft {
         client.player.setVelocity(0, stopY ? 0.0 : client.player.getVelocity().y, 0);
     }
 
-    public static double getSmartSpeed() {
+    public static double getSpeed() {
         double speed = 0.2873;
         float multiplier = 1.0F;
         EntityAttributeInstance attribute = client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
@@ -216,4 +163,24 @@ public class MovementUtils implements IMinecraft {
         return z;
     }
 
+    public static float setMotionWithTurnLimit(MoveEvent event, double speed, float targetYaw, float currentYaw, float maxTurnDegrees) {
+        float angleDelta = RotationUtils.getWrappedAngleDifference(currentYaw, targetYaw);
+
+        float newYaw;
+        if (!(angleDelta > maxTurnDegrees)) {
+            newYaw = targetYaw;
+        } else {
+            boolean shouldTurnPositive = MathHelper.wrapDegrees(targetYaw - currentYaw) > 0.0F;
+            newYaw = currentYaw + (shouldTurnPositive ? maxTurnDegrees : -maxTurnDegrees);
+        }
+
+        float radians = (newYaw - 90.0F) * (float) (Math.PI / 180.0);
+        event.setX((double) (-MathHelper.sin(radians)) * speed);
+        event.setZ((double) MathHelper.cos(radians) * speed);
+
+        setPlayerXMotion(event.getX());
+        setPlayerZMotion(event.getZ());
+
+        return newYaw;
+    }
 }

@@ -2,6 +2,7 @@ package io.github.sst.remake.util.game.world;
 
 import com.google.common.collect.ImmutableList;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.world.data.PlacementPattern;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
@@ -9,10 +10,10 @@ import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BlockUtils implements IMinecraft {
@@ -147,5 +148,70 @@ public class BlockUtils implements IMinecraft {
                 && !(block instanceof BannerBlock)
                 && !(block instanceof ChestBlock)
                 && !(block instanceof DoorBlock);
+    }
+
+    public static double[] getSafeExtendedXZ(double extend) {
+        double startX = client.player.getX();
+        double startZ = client.player.getZ();
+
+        double forward = client.player.input.movementForward;
+        double strafe = client.player.input.movementSideways;
+        float yawDegrees = client.player.yaw;
+
+        BlockPos belowCandidate = new BlockPos(startX, client.player.getY() - 1.0, startZ);
+
+        double candidateX = startX;
+        double candidateZ = startZ;
+
+        double stepIndex = 0.0;
+        double maxSteps = extend * 2.0F;
+
+        for (; isValidBlockPosition(belowCandidate);
+             belowCandidate = new BlockPos(candidateX, client.player.getY() - 1.0, candidateZ)) {
+
+            if (++stepIndex > maxSteps) {
+                stepIndex = maxSteps;
+            }
+
+            double yawRad = Math.toRadians((double) (yawDegrees + 90.0F));
+
+            candidateX = startX + (forward * 0.45 * Math.cos(yawRad) + strafe * 0.45 * Math.sin(yawRad)) * stepIndex;
+            candidateZ = startZ + (forward * 0.45 * Math.sin(yawRad) - strafe * 0.45 * Math.cos(yawRad)) * stepIndex;
+
+            if (stepIndex == maxSteps) {
+                break;
+            }
+        }
+
+        return new double[]{candidateX, candidateZ};
+    }
+
+    public static PositionFacing findPlaceableNeighbor(BlockPos pos, boolean disallowDownFace) {
+        Vec3i[] baseOffsets = new Vec3i[]{
+                new Vec3i(0, 0, 0), new Vec3i(-1, 0, 0), new Vec3i(1, 0, 0), new Vec3i(0, 0, 1), new Vec3i(0, 0, -1)
+        };
+        PlacementPattern[] searchPatterns = new PlacementPattern[]{
+                new PlacementPattern(1, 1, 1, false),
+                new PlacementPattern(2, 1, 2, false),
+                new PlacementPattern(3, 1, 3, false),
+                new PlacementPattern(4, 1, 4, false),
+                new PlacementPattern(0, -1, 0, true)
+        };
+
+        for (PlacementPattern pattern : searchPatterns) {
+            for (Vec3i baseOffset : baseOffsets) {
+                Vec3i candidateOffset = !pattern.isAdditive
+                        ? new Vec3i(baseOffset.getX() * pattern.offsetX, baseOffset.getY() * pattern.offsetY, baseOffset.getZ() * pattern.offsetZ)
+                        : new Vec3i(baseOffset.getX() + pattern.offsetX, baseOffset.getY() + pattern.offsetY, baseOffset.getZ() + pattern.offsetZ);
+
+                for (Direction face : Direction.values()) {
+                    if ((face != Direction.DOWN || !disallowDownFace) && isValidBlockPosition(pos.add(candidateOffset).offset(face, -1))) {
+                        return new PositionFacing(pos.add(candidateOffset).offset(face, -1), face);
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

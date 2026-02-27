@@ -7,8 +7,8 @@ import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.world.data.ChunkColorCache;
-import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
@@ -158,7 +158,7 @@ public class MiniMapModule extends Module {
         ScissorUtils.restoreScissor();
         GL11.glPopMatrix();
 
-        int direction = (int) MovementUtils.getDirection();
+        int direction = (int) RotationUtils.getDirection();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);

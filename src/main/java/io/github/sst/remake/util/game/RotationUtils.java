@@ -2,7 +2,11 @@ package io.github.sst.remake.util.game;
 
 import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.world.RaytraceUtils;
+import net.minecraft.client.input.Input;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -287,5 +291,135 @@ public class RotationUtils implements IMinecraft {
         }
 
         return yaw;
+    }
+
+    public static float getDirection(float forward, float strafing, float yaw) {
+        if (forward == 0.0f && strafing == 0.0f) {
+            return yaw;
+        }
+
+        boolean isReversed = forward < 0.0f;
+        float strafingAdjustment = 90.0f * (isReversed ? -0.5f : (forward > 0.0f ? 0.5f : 1.0f));
+
+        if (isReversed) {
+            yaw += 180.0f;
+        }
+
+        if (strafing != 0.0f) {
+            yaw += (strafing > 0.0f) ? -strafingAdjustment : strafingAdjustment;
+        }
+
+        return yaw;
+    }
+
+    public static float getDirection() {
+        return getDirection(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
+    }
+
+    public static float getDirection(float yaw) {
+        float directionDegrees = 0.0F;
+
+        float strafe = client.player.sidewaysSpeed;
+        float forward = client.player.forwardSpeed;
+
+        if (!(strafe > 0.0F)) {
+            if (strafe < 0.0F) {
+                if (!(forward > 0.0F)) {
+                    if (!(forward < 0.0F)) {
+                        yaw += 90.0F;
+                    } else {
+                        yaw -= 45.0F;
+                    }
+                } else {
+                    yaw += 45.0F;
+                }
+            }
+        } else if (!(forward > 0.0F)) {
+            if (!(forward < 0.0F)) {
+                yaw -= 90.0F;
+            } else {
+                yaw += 45.0F;
+            }
+        } else {
+            yaw -= 45.0F;
+        }
+
+        if (yaw >= 45.0F && yaw <= 135.0F) {
+            directionDegrees = 90.0F;
+        } else if (yaw >= 135.0F || yaw <= -135.0F) {
+            directionDegrees = 180.0F;
+        } else if (yaw <= -45.0F && yaw >= -135.0F) {
+            directionDegrees = -90.0F;
+        } else if (yaw >= -45.0F && yaw <= 45.0F) {
+            directionDegrees = 0.0F;
+        }
+
+        if (forward < 0.0F) {
+            directionDegrees -= 180.0F;
+        }
+
+        return directionDegrees + 90.0F;
+    }
+
+    public static float[] getDirectionArray() {
+        Input input = client.player.input;
+        return getDirectionArray(input.movementForward, input.movementSideways);
+    }
+
+    public static float[] getDirectionArray(float forward, float strafe) {
+        float yaw = client.player.yaw + 90.0f;
+
+        if (forward != 0.0f) {
+            if (!(strafe >= 1.0f)) {
+                if (strafe <= -1.0f) {
+                    yaw += (float) (!(forward > 0.0f) ? -45 : 45);
+                    strafe = 0.0f;
+                }
+            } else {
+                yaw += (float) (!(forward > 0.0f) ? 45 : -45);
+                strafe = 0.0f;
+            }
+
+            if (!(forward > 0.0f)) {
+                if (forward < 0.0f) {
+                    forward = -1.0f;
+                }
+            } else {
+                forward = 1.0f;
+            }
+        }
+
+        return new float[]{yaw, forward, strafe};
+    }
+
+    public static float getWrappedAngleDifference(float angleA, float angleB) {
+        float difference = Math.abs(angleA - angleB) % 360.0F;
+        return difference > 180.0F ? 360.0F - difference : difference;
+    }
+
+    public static Rotation getMovementDirectionBlockRotations() {
+        BlockHitResult result = RaytraceUtils.rayTraceBlocksFromFeetYaw(RotationUtils.getMovementDirectionYaw() - 270.0F);
+
+        if (result.getType() == HitResult.Type.MISS) {
+            return null;
+        }
+
+        double targetX = result.getPos().x - result.getPos().getX();
+        double targetY = result.getPos().y - result.getPos().getY();
+        double targetZ = result.getPos().z - result.getPos().getZ();
+
+        double dX = result.getPos().getX() - client.player.getX() + targetX;
+        double dY = result.getPos().getY() - (client.player.getY() + (double) client.player.getEyeHeight(client.player.getPose())) + targetY;
+        double dZ = result.getPos().getZ() - client.player.getZ() + targetZ;
+
+        double dist = Math.hypot(dX, dZ);
+
+        float targetYaw =
+                (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0F;
+
+        float targetPitch =
+                (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
+
+        return new Rotation(client.player.yaw + normalizeYaw(targetYaw - client.player.yaw), client.player.pitch + normalizePitch(targetPitch - client.player.pitch));
     }
 }
