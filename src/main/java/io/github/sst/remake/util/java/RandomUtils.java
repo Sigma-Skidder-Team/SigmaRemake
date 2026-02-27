@@ -12,4 +12,8 @@ public class RandomUtils {
         } catch (IOException ignored) {
         }
     }
+
+    public static double randomInRange(double max, double min) {
+        return Math.random() * (max - min) + min;
+    }
 }

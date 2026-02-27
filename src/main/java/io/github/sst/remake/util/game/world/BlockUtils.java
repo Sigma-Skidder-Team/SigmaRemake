@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.game.world.data.PlacementPattern;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import io.github.sst.remake.util.java.RandomUtils;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShape;
 
@@ -213,5 +215,34 @@ public class BlockUtils implements IMinecraft {
         }
 
         return null;
+    }
+
+    public static Vec3d getRandomizedHitVec(BlockPos blockPos, Direction side) {
+        double x = (double) blockPos.getX() + 0.5;
+        double y = (double) blockPos.getY() + 0.5;
+        double z = (double) blockPos.getZ() + 0.5;
+
+        x += (double) side.getOffsetX() / 2.0;
+        y += (double) side.getOffsetY() / 2.0;
+        z += (double) side.getOffsetZ() / 2.0;
+
+        double jitter = 0.2;
+
+        if (side != Direction.UP && side != Direction.DOWN) {
+            y += RandomUtils.randomInRange(jitter, -jitter);
+        } else {
+            x += RandomUtils.randomInRange(jitter, -jitter);
+            z += RandomUtils.randomInRange(jitter, -jitter);
+        }
+
+        if (side == Direction.WEST || side == Direction.EAST) {
+            z += RandomUtils.randomInRange(jitter, -jitter);
+        }
+
+        if (side == Direction.SOUTH || side == Direction.NORTH) {
+            x += RandomUtils.randomInRange(jitter, -jitter);
+        }
+
+        return new Vec3d(x, y, z);
     }
 }

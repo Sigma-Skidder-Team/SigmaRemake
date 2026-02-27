@@ -139,7 +139,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
         getParent().performTowering(event);
 
         if (haphe.value) {
-            if (!client.player.isOnGround() || client.player.forwardSpeed == 0.0F && client.player.sidewaysSpeed == 0.0F) {
+            if (!client.player.isOnGround() || client.player.forwardSpeed == 0.0f && client.player.sidewaysSpeed == 0.0f) {
                 if (hopTicks >= 0) {
                     hopTicks++;
                 }
@@ -152,7 +152,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
                 }
             }
 
-            if (client.player.forwardSpeed == 0.0F && client.player.sidewaysSpeed == 0.0F || client.player.horizontalCollision) {
+            if (client.player.forwardSpeed == 0.0f && client.player.sidewaysSpeed == 0.0f || client.player.horizontalCollision) {
                 speedStage = 0;
             }
 
@@ -228,7 +228,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
                 client.player.lastYaw,
                 client.player.lastPitch,
                 client.interactionManager.getReachDistance(),
-                0.0F
+                0.0f
         );
 
         if (hit == null || hit.getType() != HitResult.Type.BLOCK) {

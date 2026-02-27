@@ -32,7 +32,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class SmoothBlockFly extends SubModule implements Rotatable {
-    private static final float NO_ROTATION_SENTINEL = 999.0F;
+    private static final float NO_ROTATION_SENTINEL = 999.0f;
 
     private float targetYaw;
     private float targetPitch;
@@ -45,9 +45,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     private boolean allowJumpCancel = false;
     private double lockedY;
     private int placeDelayTicks = 0;
-
-    private final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Cubecraft", "Slow", "Sneak");
-    private final SliderSetting extend = new SliderSetting("Extend", "Block place extend", 0.0f, 0.0f, 6.0f, 0.1f);
 
     public SmoothBlockFly() {
         super("Smooth");
@@ -98,7 +95,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         MovementUtils.strafe(MovementUtils.getSpeed() * 0.9);
         setTimer(1.0f);
 
-        if (speedMode.value.equals("Cubecraft") && groundTicksSinceLeave == 0) {
+        if (getParent().speedMode.value.equals("Cubecraft") && groundTicksSinceLeave == 0) {
             MovementUtils.setPlayerYMotion(-0.0789);
         }
 
@@ -125,7 +122,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
-        if (speedMode.value.equals("Cubecraft")
+        if (getParent().speedMode.value.equals("Cubecraft")
                 /*&& !Client.getInstance().moduleManager.getModuleByClass(Fly.class).isEnabled()*/) {
 
             if (client.world.getBlockCollisions(client.player,
@@ -133,7 +130,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
                                     .stretch(0.0, -1.5, 0.0)
                                     .shrink(0.05, 0.0, 0.05)
                                     .shrink(-0.05, 0.0, -0.05)
-                    ).count() == 0L && client.player.fallDistance < 1.0F) {
+                    ).count() == 0L && client.player.fallDistance < 1.0f) {
                 event.setSafe(true);
             }
             return;
@@ -148,7 +145,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     public void onMove(MoveEvent event) {
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        if (client.player.isOnGround() || WorldUtils.isAboveBounds(client.player, 0.01F)) {
+        if (client.player.isOnGround() || WorldUtils.isAboveBounds(client.player, 0.01f)) {
             lockedY = client.player.getY();
         }
 
@@ -162,7 +159,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
             groundTicksSinceLeave++;
         }
 
-        switch (speedMode.value) {
+        switch (getParent().speedMode.value) {
             case "Jump":
                 if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !pauseSpeedBoost) {
                     allowJumpCancel = false;
@@ -221,7 +218,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Subscribe
     public void onRender(RenderClient2DEvent event) {
-        if (!speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
+        if (!getParent().speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
 
         if (client.player.fallDistance > 1.2f) return;
         if (client.player.capeY < lockedY) return;
@@ -333,17 +330,17 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         double targetY = client.player.getY();
 
         if (!client.player.horizontalCollision && !client.options.keyJump.isPressed()) {
-            double[] extended = BlockUtils.getSafeExtendedXZ(extend.value);
+            double[] extended = BlockUtils.getSafeExtendedXZ(getParent().extend.value);
             targetX = extended[0];
             targetZ = extended[1];
         }
 
         if (client.player.getVelocity().y < 0.0
-                && client.player.fallDistance > 1.0F
-                && RaytraceUtils.rayTrace(0.0F, 90.0F, 3.0F).getType() == HitResult.Type.MISS) {
+                && client.player.fallDistance > 1.0f
+                && RaytraceUtils.rayTrace(0.0f, 90.0f, 3.0f).getType() == HitResult.Type.MISS) {
             targetY += Math.min(client.player.getVelocity().y * 2.0, 4.0);
-        } else if ((speedMode.value.equals("Jump")
-                || speedMode.value.equals("Cubecraft"))
+        } else if ((getParent().speedMode.value.equals("Jump")
+                || getParent().speedMode.value.equals("Cubecraft"))
                 && !client.options.keyJump.isPressed()) {
             targetY = lockedY;
         }

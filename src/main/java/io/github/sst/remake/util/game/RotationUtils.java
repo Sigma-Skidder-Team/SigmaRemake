@@ -422,4 +422,43 @@ public class RotationUtils implements IMinecraft {
 
         return new Rotation(client.player.yaw + normalizeYaw(targetYaw - client.player.yaw), client.player.pitch + normalizePitch(targetPitch - client.player.pitch));
     }
+
+    public static Rotation getBlockPlacementRotations(BlockPos blockPos, Direction face) {
+        float offsetX = 0.0F;
+        float offsetZ = 0.0F;
+        float offsetY = 0.0F;
+
+        switch (face) {
+            case EAST:
+                offsetX += 0.49F;
+                break;
+            case NORTH:
+                offsetZ -= 0.49F;
+                break;
+            case SOUTH:
+                offsetZ += 0.49F;
+                break;
+            case WEST:
+                offsetX -= 0.49F;
+                break;
+            case UP:
+                offsetY += 0.0F;
+            case DOWN:
+                offsetY++;
+        }
+
+        double dX = (double) blockPos.getX() + 0.5 - client.player.getX() + (double) offsetX;
+        double dY = (double) blockPos.getY() - 0.02 - (client.player.getY() + (double) client.player.getEyeHeight(client.player.getPose())) + (double) offsetY;
+        double dZ = (double) blockPos.getZ() + 0.5 - client.player.getZ() + (double) offsetZ;
+
+        double dist = Math.hypot(dX, dZ);
+
+        float yaw = (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0f;
+        float pitch = (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
+
+        return new Rotation(
+                client.player.yaw + normalizeYaw(yaw - client.player.yaw),
+                client.player.pitch + normalizePitch(pitch - client.player.pitch)
+        );
+    }
 }
