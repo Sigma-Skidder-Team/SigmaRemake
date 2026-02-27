@@ -245,18 +245,18 @@ public class AACBlockFly extends SubModule implements Rotatable {
             if (hit.getSide() == Direction.UP) {
                 return false;
             }
-            if (hit.getPos().getY() != scaffoldYLevel - 1) {
+            if (hit.getBlockPos().getY() != scaffoldYLevel - 1) {
                 return false;
             }
         }
 
         if (hit.getSide() == Direction.UP
-                && (double) (hit.getPos().getY() + 2) > client.player.getY()
+                && (hit.getBlockPos().getY() + 2) > client.player.getY()
                 && BlockUtils.isValidBlockPosition(hit.getBlockPos())) {
             return false;
         }
 
-        if ((double) hit.getPos().getY() == client.player.getY()) {
+        if (hit.getBlockPos().getY() == client.player.getY()) {
             return false;
         }
 
@@ -281,7 +281,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
         client.player.swingHand(Hand.MAIN_HAND);
 
         if (hit.getSide() == Direction.UP) {
-            scaffoldYLevel = (int) (hit.getPos().getY() + 2);
+            scaffoldYLevel = (int) (hit.getBlockPos().getY() + 2);
         }
 
         return true;
