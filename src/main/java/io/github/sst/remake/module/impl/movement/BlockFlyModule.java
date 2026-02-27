@@ -7,7 +7,7 @@ import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
-import io.github.sst.remake.module.impl.movement.blockfly.NCPBlockFly;
+import io.github.sst.remake.module.impl.movement.blockfly.SmoothBlockFly;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
@@ -31,7 +31,7 @@ import org.lwjgl.opengl.GL11;
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
 
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new NCPBlockFly());
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly());
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
     public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
     private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "OpenInv");
@@ -149,8 +149,8 @@ public class BlockFlyModule extends Module {
         } else if (!MovementUtils.isMoving() || moveAndTower.value) {
             client.player.jumpingCooldown = 0;
             client.player.jump();
-            MovementUtils.setMotion(event, MovementUtils.getSmartSpeed());
-            MovementUtils.strafe(MovementUtils.getSmartSpeed());
+            MovementUtils.setMotion(event, MovementUtils.getSpeed());
+            MovementUtils.strafe(MovementUtils.getSpeed());
         }
 
         if (!towerMode.value.equals("Vanilla")) {
@@ -188,7 +188,7 @@ public class BlockFlyModule extends Module {
         }
     }
 
-    private int countPlaceableBlocks() {
+    public int countPlaceableBlocks() {
         int total = 0;
 
         for (int slotIndex = 0; slotIndex < 45; slotIndex++) {
@@ -318,7 +318,7 @@ public class BlockFlyModule extends Module {
         return false;
     }
 
-    private boolean canPlaceWithHand(Hand hand) {
+    public boolean canPlaceWithHand(Hand hand) {
         if (!itemSpoofMode.value.equals("None")) {
             return countPlaceableBlocks() != 0;
         }
