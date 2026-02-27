@@ -1,12 +1,15 @@
 package io.github.sst.remake.module.impl.movement;
 
+import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
+import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
+import io.github.sst.remake.module.impl.movement.blockfly.HypixelBlockFly;
 import io.github.sst.remake.module.impl.movement.blockfly.NCPBlockFly;
 import io.github.sst.remake.module.impl.movement.blockfly.SmoothBlockFly;
 import io.github.sst.remake.setting.impl.BooleanSetting;
@@ -33,15 +36,22 @@ import org.lwjgl.opengl.GL11;
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
 
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly(), new NCPBlockFly());
-    public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP"));
-    public final SliderSetting extend = new SliderSetting("Extend", "Block place extend", 0.0f, 0.0f, 6.0f, 0.1f).hide(() -> !mode.value.name.equals("NCP"));
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly(), new NCPBlockFly(), new HypixelBlockFly());
+    public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
+
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
     public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
     private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "OpenInv");
+
+    public final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
+    public final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
+
+    public final SliderSetting extend = new SliderSetting("Extend", "Block place extend", 0.0f, 0.0f, 6.0f, 0.1f).hide(() -> !mode.value.name.equals("NCP"));
+
     public final BooleanSetting moveAndTower = new BooleanSetting("Tower while moving", "Allow towering while moving", false).hide(() -> towerMode.value.equals("None"));
     private final BooleanSetting showBlockAmount = new BooleanSetting("Show block amount", "Render available blocks in inventory", true);
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
+
     public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false);
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
@@ -74,6 +84,16 @@ public class BlockFlyModule extends Module {
                             - (int) (25.0F * AnimationUtils.easeOutCubic(blockCountAnim.calcPercent(), 0.0F,
                             1.0F, 1.0F)),
                     blockCountAnim.calcPercent());
+        }
+    }
+
+
+    @Subscribe(priority = Priority.LOW)
+    public void onSendPacket(SendPacketEvent event) {
+        if (client.player == null) return;
+
+        if (event.packet instanceof UpdateSelectedSlotC2SPacket && lastSpoofedSlot >= 0) {
+            event.cancel();
         }
     }
 
@@ -131,8 +151,7 @@ public class BlockFlyModule extends Module {
                     case "Vanilla":
                         if (client.options.keyJump.isPressed()
                                 && WorldUtils.isAboveBounds(client.player, 0.001f)
-                                && client.world.getBlockCollisions(client.player, client.player.getBoundingBox().offset(0.0, 1.0, 0.0))
-                                .count() == 0L) {
+                                && !client.world.getBlockCollisions(client.player, client.player.getBoundingBox().offset(0.0, 1.0, 0.0)).findAny().isPresent()) {
                             client.player.setPosition(client.player.getX(), client.player.getY() + 1.0, client.player.getZ());
                             event.setY(0.0);
                             MovementUtils.setMotion(event, 0.0);

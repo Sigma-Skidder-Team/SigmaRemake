@@ -1,12 +1,10 @@
 package io.github.sst.remake.module.impl.movement.blockfly;
 
 import io.github.sst.remake.Client;
-import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
-import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
 import io.github.sst.remake.event.impl.game.player.JumpEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
@@ -39,7 +37,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
     private int rotationChangeTicks;
     private int groundTicksSinceLeave;
     private Hand placeHand;
-    private boolean pauseSpeedBoost;
+    private boolean isSneakDownwards;
     private boolean allowJumpCancel = false;
     private double lockedY;
     private int placeDelayTicks = 0;
@@ -100,15 +98,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         client.options.keySneak.setPressed(false);
     }
 
-    @Subscribe(priority = Priority.LOW)
-    public void onSendPacket(SendPacketEvent event) {
-        if (client.player == null) return;
-
-        if (event.packet instanceof UpdateSelectedSlotC2SPacket && getParent().lastSpoofedSlot >= 0) {
-            event.cancel();
-        }
-    }
-
     @Subscribe
     public void onJump(JumpEvent event) {
         if (event.entity != client.player) return;
@@ -159,7 +148,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
         switch (getParent().speedMode.value) {
             case "Jump":
-                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !pauseSpeedBoost) {
+                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !isSneakDownwards) {
                     allowJumpCancel = false;
 
                     client.player.jump();
@@ -204,11 +193,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
                     event.setZ(event.getZ() * 0.85);
                 }
                  */
-                break;
-
-            case "None":
-            default:
-                break;
         }
 
         getParent().performTowering(event);
@@ -372,7 +356,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         if (client.options.keyJump.isPressed()) {
             setTimer(1.0f);
         } else if (client.player.isOnGround()) {
-            if (MovementUtils.isMoving() && !client.player.isSneaking() && !pauseSpeedBoost) {
+            if (MovementUtils.isMoving() && !client.player.isSneaking() && !isSneakDownwards) {
                 event.setY(1.00000000000001);
             }
         } else if (groundTicksSinceLeave == 1) {

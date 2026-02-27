@@ -6,7 +6,6 @@ import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.game.net.ReceivePacketEvent;
-import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
 import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
@@ -82,15 +81,6 @@ public class AACBlockFly extends SubModule implements Rotatable {
         }
 
         setTimer(1.0f);
-    }
-
-    @Subscribe(priority = Priority.LOW)
-    public void onSendPacket(SendPacketEvent event) {
-        if (client.player == null) return;
-
-        if (event.packet instanceof UpdateSelectedSlotC2SPacket && getParent().lastSpoofedSlot >= 0) {
-            event.cancel();
-        }
     }
 
     @Subscribe

@@ -7,7 +7,7 @@ import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.KeyPressEvent;
 import io.github.sst.remake.event.impl.client.MouseHoverEvent;
-import io.github.sst.remake.event.impl.game.net.SendPacketEvent;
+import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.JumpEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
@@ -15,7 +15,6 @@ import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
-import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.WorldUtils;
@@ -44,9 +43,6 @@ public class NCPBlockFly extends SubModule implements Rotatable {
     private double lockedY;
     private boolean isSneakDownwards;
 
-    private final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true);
-    private final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true);
-
     public NCPBlockFly() {
         super("NCP");
         registerRotatable();
@@ -64,7 +60,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
         originalHotbarSlot = client.player.inventory.selectedSlot;
         targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
-        if (client.options.keySneak.isPressed() && downwards.value) {
+        if (client.options.keySneak.isPressed() && getParent().downwards.value) {
             client.options.keySneak.setPressed(false);
             isSneakDownwards = true;
         }
@@ -104,15 +100,6 @@ public class NCPBlockFly extends SubModule implements Rotatable {
         client.options.keySneak.setPressed(false);
     }
 
-    @Subscribe(priority = Priority.LOW)
-    public void onSendPacket(SendPacketEvent event) {
-        if (client.player == null) return;
-
-        if (event.packet instanceof UpdateSelectedSlotC2SPacket && getParent().lastSpoofedSlot >= 0) {
-            event.cancel();
-        }
-    }
-
     @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
         if (client.player == null) return;
@@ -133,7 +120,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
 
         if (client.player.isOnGround()
                 && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()
-                && (!isSneakDownwards || !downwards.value)) {
+                && (!isSneakDownwards || !getParent().downwards.value)) {
             event.setSafe(true);
         }
     }
@@ -142,7 +129,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
     public void onKey(KeyPressEvent event) {
         if (client.player == null) return;
 
-        if (downwards.value && event.key == client.options.keySneak.boundKey.getCode()) {
+        if (getParent().downwards.value && event.key == client.options.keySneak.boundKey.getCode()) {
             event.cancel();
             isSneakDownwards = true;
         }
@@ -152,7 +139,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
     public void onHover(MouseHoverEvent event) {
         if (client.player == null) return;
 
-        if (downwards.value && event.button == client.options.keySneak.boundKey.getCode()) {
+        if (getParent().downwards.value && event.button == client.options.keySneak.boundKey.getCode()) {
             event.cancel();
             isSneakDownwards = false;
         }
@@ -253,11 +240,6 @@ public class NCPBlockFly extends SubModule implements Rotatable {
 
             case "Sneak":
                 client.options.keySneak.setPressed(true);
-                break;
-
-            case "None":
-            default:
-                break;
         }
 
         getParent().performTowering(event);
@@ -292,6 +274,24 @@ public class NCPBlockFly extends SubModule implements Rotatable {
         }
     }
 
+    @Subscribe
+    public void onRender(RenderClient2DEvent event) {
+        if (!getParent().speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
+
+        if (client.player.fallDistance > 1.2f) return;
+        if (client.player.capeY < lockedY) return;
+        if (client.player.jumping) return;
+
+        client.player.getPos().y = lockedY;
+        client.player.lastRenderY = lockedY;
+        client.player.capeY = lockedY;
+        client.player.prevY = lockedY;
+
+        if (MovementUtils.isMoving()) {
+            client.player.strideDistance = 0.099999994f;
+        }
+    }
+
     @Override
     public int getPriority() {
         return 80;
@@ -313,7 +313,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
             Rotation rotations = RotationUtils.getBlockPlacementRotations(pendingPlace.blockPos, pendingPlace.direction);
             targetYaw = rotations.yaw;
             targetPitch = rotations.pitch;
-        } else if (!keepRotations.value) {
+        } else if (!getParent().keepRotations.value) {
             targetYaw = NO_ROTATION_SENTINEL;
             targetPitch = NO_ROTATION_SENTINEL;
         }
@@ -348,7 +348,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
                 && client.player.fallDistance > 1.0f
                 && RaytraceUtils.rayTrace(0.0f, 90.0f, 3.0f).getType() == HitResult.Type.MISS) {
             targetY += Math.min(client.player.getVelocity().y * 2.0, 4.0);
-        } else if (isSneakDownwards && downwards.value) {
+        } else if (isSneakDownwards && getParent().downwards.value) {
             targetY -= 1.0;
         } else if ((getParent().speedMode.value.equals("Jump") || getParent().speedMode.value.equals("Cubecraft"))
                 && !client.options.keyJump.isPressed()) {
@@ -369,7 +369,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
         BlockPos belowTarget = new BlockPos(targetX, targetY - 1.0, targetZ);
 
         if (!BlockUtils.isValidBlockPosition(belowTarget) && getParent().canPlaceWithHand(placeHand)) {
-            pendingPlace = BlockUtils.findPlaceableNeighbor(belowTarget, !isSneakDownwards && downwards.value);
+            pendingPlace = BlockUtils.findPlaceableNeighbor(belowTarget, !isSneakDownwards && getParent().downwards.value);
         } else {
             pendingPlace = null;
         }
