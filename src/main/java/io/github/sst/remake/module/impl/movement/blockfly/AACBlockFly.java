@@ -281,7 +281,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
         client.player.swingHand(Hand.MAIN_HAND);
 
         if (hit.getSide() == Direction.UP) {
-            scaffoldYLevel = (int) (hit.getBlockPos().getY() + 2);
+            scaffoldYLevel = hit.getBlockPos().getY() + 2;
         }
 
         return true;
