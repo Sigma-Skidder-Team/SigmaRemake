@@ -14,8 +14,6 @@ import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
-import io.github.sst.remake.setting.impl.ModeSetting;
-import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.WorldUtils;
@@ -29,7 +27,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 
 public class SmoothBlockFly extends SubModule implements Rotatable {
     private static final float NO_ROTATION_SENTINEL = 999.0f;
@@ -369,7 +366,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     private void handleCubecraftSpeed(MoveEvent event) {
         double speed = 0.2;
-        float dir = RotationUtils.getDirection(MathHelper.wrapDegrees(client.player.yaw));
+        float dir = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
 
         if (client.options.keyJump.isPressed()) {
             setTimer(1.0f);

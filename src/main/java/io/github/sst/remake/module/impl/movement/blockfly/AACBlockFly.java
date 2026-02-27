@@ -31,7 +31,7 @@ import java.util.List;
 
 @SuppressWarnings({"DataFlowIssue", "unused"})
 public class AACBlockFly extends SubModule implements Rotatable {
-    private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground.", false);
+    private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground", false);
 
     private float targetYaw;
     private float targetPitch;

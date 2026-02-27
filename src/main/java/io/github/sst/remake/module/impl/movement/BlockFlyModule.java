@@ -7,9 +7,11 @@ import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
+import io.github.sst.remake.module.impl.movement.blockfly.NCPBlockFly;
 import io.github.sst.remake.module.impl.movement.blockfly.SmoothBlockFly;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
+import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
 import io.github.sst.remake.util.game.MovementUtils;
 import io.github.sst.remake.util.game.WorldUtils;
@@ -31,7 +33,9 @@ import org.lwjgl.opengl.GL11;
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
 
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly());
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly(), new NCPBlockFly());
+    public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP"));
+    public final SliderSetting extend = new SliderSetting("Extend", "Block place extend", 0.0f, 0.0f, 6.0f, 0.1f).hide(() -> !mode.value.name.equals("NCP"));
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
     public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
     private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "OpenInv");
@@ -259,7 +263,7 @@ public class BlockFlyModule extends Module {
             }
         } else {
             for (int slotIndex = 36; slotIndex < 45; slotIndex++) {
-                    Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
+                Slot slot = client.player.playerScreenHandler.getSlot(slotIndex);
                 if (!slot.hasStack()) {
                     continue;
                 }
