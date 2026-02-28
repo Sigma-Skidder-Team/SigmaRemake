@@ -112,8 +112,10 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
     @Override
     public void onScroll(float scroll) {
         super.onScroll(scroll);
-        if (this.isHoveredInHierarchy()) {
-            this.zoomLevel = Math.round(Math.max(3.0F, Math.min(33.0F, (float) this.zoomLevel + scroll / 10.0F)));
+        if (this.isMouseOverComponent(this.getMouseX(), this.getMouseY())) {
+            int direction = scroll > 0.0F ? -1 : 1;
+            int steps = Math.max(1, Math.round(Math.abs(scroll)));
+            this.zoomLevel = Math.max(3, Math.min(33, this.zoomLevel + direction * steps));
             this.fireUpdateEvent();
         }
     }
