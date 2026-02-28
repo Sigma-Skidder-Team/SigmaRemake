@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.util.math.Color;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -134,6 +135,7 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
             RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
             GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
@@ -1307,6 +1309,8 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void resetHudGlState() {
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        TextureImpl.unbind();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glColorMask(true, true, true, true);

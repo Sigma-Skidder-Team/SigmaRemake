@@ -75,11 +75,14 @@ public final class HUDManager extends Manager implements IMinecraft {
             RenderSystem.disableBlend();
 
             new RenderClient2DEvent().call();
-            RenderUtils.resetHudGlState();
         }
 
+        RenderUtils.resetHudGlState();
+
         if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
+            RenderUtils.resetHudGlState();
             Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
+            RenderUtils.resetHudGlState();
         }
 
         RenderSystem.popMatrix();

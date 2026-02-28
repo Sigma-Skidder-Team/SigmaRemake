@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.game.render.RenderHudEvent;
 import io.github.sst.remake.event.impl.game.render.RenderScoreboardEvent;
+import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -49,6 +50,7 @@ public class MixinInGameHud {
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
         new RenderHudEvent().call();
+        RenderUtils.resetHudGlState();
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableCull();
