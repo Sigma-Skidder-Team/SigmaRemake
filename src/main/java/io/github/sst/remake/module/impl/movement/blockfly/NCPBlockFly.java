@@ -247,10 +247,9 @@ public class NCPBlockFly extends SubModule implements Rotatable {
         if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        if (!event.isPre()) {
+        if (event.isPre()) {
             getParent().refillHotbarWithBlocks();
             handlePlace();
-        } else {
             if (getParent().countPlaceableBlocks() == 0) {
                 pendingPlace = null;
                 targetYaw = NO_ROTATION_SENTINEL;

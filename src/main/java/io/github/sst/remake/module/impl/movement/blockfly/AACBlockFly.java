@@ -152,7 +152,7 @@ public class AACBlockFly extends SubModule implements Rotatable {
             return;
         }
 
-        if (!event.isPre()) {
+        if (event.isPre()) {
             if (MovementUtils.isMoving()
                     && client.player.isOnGround()
                     && haphe.value

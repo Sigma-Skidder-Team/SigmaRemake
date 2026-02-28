@@ -205,7 +205,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         if (!getParent().isEnabled()) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        if (!event.isPre()) {
+        if (event.isPre()) {
             handlePlace(event);
         }
     }
