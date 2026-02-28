@@ -38,10 +38,12 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
     private static class MapTextureData {
         final Chunk texture;
         final ChunkPos center;
+        final long version;
 
-        MapTextureData(Chunk texture, ChunkPos center) {
+        MapTextureData(Chunk texture, ChunkPos center, long version) {
             this.texture = texture;
             this.center = center;
+            this.version = version;
         }
     }
 
@@ -133,12 +135,19 @@ public class MapFrame extends InteractiveWidget implements IMinecraft {
             this.isGeneratingTexture = false;
         }
 
-        boolean needsNewTexture = this.currentMapTextureData == null || this.zoomLevel != this.lastZoomLevel || !this.currentMapTextureData.center.equals(idealCenterChunk);
+        long currentMapVersion = WaypointUtils.getMapDataVersion();
+        boolean needsNewTexture = this.currentMapTextureData == null
+                || this.zoomLevel != this.lastZoomLevel
+                || !this.currentMapTextureData.center.equals(idealCenterChunk)
+                || this.currentMapTextureData.version != currentMapVersion;
         if (needsNewTexture && !this.isGeneratingTexture) {
             this.isGeneratingTexture = true;
+            long requestedVersion = currentMapVersion;
+            ChunkPos requestedCenter = idealCenterChunk;
+            int requestedSize = this.zoomLevel * 2;
             new Thread(() -> {
-                Chunk newTexture = WaypointUtils.createMapTexture(idealCenterChunk, this.zoomLevel * 2);
-                this.nextMapTextureData = new MapTextureData(newTexture, idealCenterChunk);
+                Chunk newTexture = WaypointUtils.createMapTexture(requestedCenter, requestedSize);
+                this.nextMapTextureData = new MapTextureData(newTexture, requestedCenter, requestedVersion);
             }).start();
         }
 

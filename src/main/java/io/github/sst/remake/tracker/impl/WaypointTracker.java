@@ -91,6 +91,10 @@ public final class WaypointTracker extends Tracker implements IMinecraft {
     public void onTick(ClientPlayerTickEvent event) {
         if (client.world != null) {
             if (this.mapRegionIdentifier != null) {
+                if (client.player.age % 120 == 0) {
+                    WaypointUtils.processedChunks.clear();
+                }
+
                 if (client.player.age % 140 == 0) {
                     RegionPos playerRegion = RegionPos.fromChunkPos(client.world.getChunk(client.player.getBlockPos()).getPos());
                     Iterator<Map.Entry<Long, MapRegion>> regionIterator = WaypointUtils.regionCache.entrySet().iterator();
@@ -150,10 +154,12 @@ public final class WaypointTracker extends Tracker implements IMinecraft {
                                     RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());
                                     MapRegion mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
                                     ByteBuffer chunkMap = WaypointUtils.generateChunkMap(chunk, WaypointUtils.areNeighborsLoaded(chunk));
+                                    boolean updated = false;
                                     if (mapRegion != null) {
                                         synchronized (mapRegion) {
                                             mapRegion.setChunkData(chunkMap, chunk.getPos());
                                         }
+                                        updated = true;
                                     } else if (!regionFile.exists()) {
                                         mapRegion = new MapRegion(regionPos.x, regionPos.z);
                                         synchronized (mapRegion) {
@@ -161,11 +167,17 @@ public final class WaypointTracker extends Tracker implements IMinecraft {
                                         }
                                         WaypointUtils.regionCache.put(regionPos.toLong(), mapRegion);
                                         WaypointUtils.missingRegionFiles.clear();
+                                        updated = true;
                                     } else if (WaypointUtils.loadRegionFromFile(regionPos)) {
                                         mapRegion = WaypointUtils.regionCache.get(regionPos.toLong());
                                         synchronized (mapRegion) {
                                             mapRegion.setChunkData(chunkMap, chunk.getPos());
                                         }
+                                        updated = true;
+                                    }
+
+                                    if (updated) {
+                                        WaypointUtils.markMapDataDirty();
                                     }
 
                                     this.pendingChunkSaveCount++;

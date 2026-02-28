@@ -23,6 +23,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,8 +33,17 @@ public class WaypointUtils implements IMinecraft {
     public static final List<ChunkPos> processedChunks = new CopyOnWriteArrayList<>();
     public static final List<ChunkPos> borderChunks = new CopyOnWriteArrayList<>();
     public static final List<RegionPos> missingRegionFiles = new CopyOnWriteArrayList<>();
+    private static final AtomicLong mapDataVersion = new AtomicLong(0L);
 
     public static ByteBuffer defaultChunkBuffer = BufferUtils.createByteBuffer(10 * 16 * 10 * 16 * 3);
+
+    public static void markMapDataDirty() {
+        mapDataVersion.incrementAndGet();
+    }
+
+    public static long getMapDataVersion() {
+        return mapDataVersion.get();
+    }
 
     public static String getRegionFilePath(String baseDir, WorldChunk chunk) {
         RegionPos regionPos = RegionPos.fromChunkPos(chunk.getPos());

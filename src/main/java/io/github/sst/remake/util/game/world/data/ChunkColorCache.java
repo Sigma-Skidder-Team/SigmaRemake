@@ -50,6 +50,19 @@ public class ChunkColorCache implements IMinecraft {
         }
     }
 
+    public void checkAndUpdateBuffer(int tick) {
+        boolean neighboringChunksLoaded = this.areNeighboringChunksLoaded();
+        if (!this.isBufferUpdated && neighboringChunksLoaded) {
+            this.updateChunkBuffer();
+            return;
+        }
+
+        int refreshSlot = Math.floorMod(this.chunk.getPos().x * 31 + this.chunk.getPos().z, 20);
+        if (neighboringChunksLoaded && Math.floorMod(tick, 20) == refreshSlot) {
+            this.updateChunkBuffer();
+        }
+    }
+
     private boolean areNeighboringChunksLoaded() {
         WorldChunk chunkNorth = client.world.getChunk(this.chunk.getPos().x, this.chunk.getPos().z + 1);
         WorldChunk chunkSouth = client.world.getChunk(this.chunk.getPos().x, this.chunk.getPos().z - 1);

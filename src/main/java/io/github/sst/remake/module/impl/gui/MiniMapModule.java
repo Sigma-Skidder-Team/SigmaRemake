@@ -44,10 +44,16 @@ public class MiniMapModule extends Module {
     @Subscribe
     public void onWorldLoad(LoadWorldEvent ignoredEvent) {
         trackedChunks.clear();
+        minimapBuffer = null;
+        tickCounter = 0;
     }
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent ignoredEvent) {
+        if (client.player == null || client.world == null) {
+            return;
+        }
+
         tickCounter++;
 
         if (smoothedPlayerY < client.player.getY() && client.player.isOnGround()) {
@@ -55,11 +61,6 @@ public class MiniMapModule extends Module {
         } else if (smoothedPlayerY > client.player.getY() && client.player.isOnGround()) {
             smoothedPlayerY -= 0.5F;
         }
-
-        if (tickCounter < 1) {
-            return;
-        }
-
 
         Iterator<ChunkColorCache> iterator = trackedChunks.iterator();
         while (iterator.hasNext()) {
@@ -90,8 +91,13 @@ public class MiniMapModule extends Module {
             }
         }
 
+        boolean forceRefresh = tickCounter % 120 == 0;
         for (ChunkColorCache cache : trackedChunks) {
-            cache.checkAndUpdateBuffer();
+            if (forceRefresh) {
+                cache.updateChunkBuffer();
+            } else {
+                cache.checkAndUpdateBuffer(tickCounter);
+            }
         }
 
         playerChunkOffsetX =
@@ -100,7 +106,6 @@ public class MiniMapModule extends Module {
                 (client.player.getZ() - client.player.chunkZ * 16.0) / 16.0;
 
         minimapBuffer = buildMinimapBuffer();
-        tickCounter = 0;
     }
 
     @Subscribe(priority = Priority.HIGH)
