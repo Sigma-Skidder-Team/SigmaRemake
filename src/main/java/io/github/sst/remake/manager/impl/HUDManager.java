@@ -21,10 +21,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderEffect;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.texture.Texture;
 
 import java.io.IOException;
 
@@ -39,7 +41,7 @@ public final class HUDManager extends Manager implements IMinecraft {
     private static int blurWidth = client.getFramebuffer().viewportWidth;
     private static int blurHeight = client.getFramebuffer().viewportHeight;
 
-    @Subscribe(priority = Priority.HIGHEST)
+    @Subscribe(priority = Priority.HIGH)
     public void onRender(Render2DEvent event) {
         RenderSystem.pushMatrix();
 
@@ -61,34 +63,25 @@ public final class HUDManager extends Manager implements IMinecraft {
                 x = client.getWindow().getWidth() / 2 - imageWidth / 2;
             }
 
-            if (!(Client.INSTANCE.screenManager.scaleFactor > 1.0F)) {
-                client.getTextureManager().bindTexture(Resources.WATERMARK);
-            } else {
-                client.getTextureManager().bindTexture(Resources.WATERMARK_2X);
-            }
+            GL11.glAlphaFunc(519, 0.0F);
 
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            DrawableHelper.drawTexture(new MatrixStack(), x, y, 0, 0, (int) 170.0F, (int) 104.0F, (int) 170.0F, (int) 104.0F);
-
-            RenderSystem.disableBlend();
+            RenderUtils.drawImage((float) x, y, 170.0F, 104.0F,
+                    !(Client.INSTANCE.screenManager.scaleFactor > 1.0F) ? Resources.WATERMARK
+                            : Resources.WATERMARK_2X);
 
             new RenderClient2DEvent().call();
         }
 
-        RenderUtils.resetHudGlState();
-
         if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
-            RenderUtils.resetHudGlState();
             Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
-            RenderUtils.resetHudGlState();
         }
 
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
         RenderSystem.enableAlphaTest();
         GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+
+        client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
         RenderSystem.popMatrix();
     }

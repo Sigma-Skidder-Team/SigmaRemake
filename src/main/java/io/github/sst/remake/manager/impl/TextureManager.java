@@ -24,7 +24,7 @@ public final class TextureManager extends Manager {
         textures.add(texture);
     }
 
-    @Subscribe(priority = Priority.HIGH)
+    @Subscribe(priority = Priority.HIGHEST)
     public void onRender(Render2DEvent event) {
         if (!textures.isEmpty()) {
             try {

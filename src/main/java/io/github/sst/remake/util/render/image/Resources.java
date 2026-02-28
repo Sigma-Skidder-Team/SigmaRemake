@@ -1,7 +1,6 @@
 package io.github.sst.remake.util.render.image;
 
 import io.github.sst.remake.Client;
-import net.minecraft.util.Identifier;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureLoader;
 import org.lwjgl.opengl.GL11;
@@ -15,8 +14,8 @@ import java.io.InputStream;
 
 public class Resources {
     ///         WATERMARK         ///
-    public static final Identifier WATERMARK = new Identifier("sigma", "jello/jello_watermark.png");
-    public static final Identifier WATERMARK_2X = new Identifier("sigma", "jello/jello_watermark2x.png");
+    public static final Texture WATERMARK = loadTexture("jello/jello_watermark.png");
+    public static final Texture WATERMARK_2X = loadTexture("jello/jello_watermark2x.png");
 
     ///         MENU         ///
     public static final Texture MENU_FOREGROUND = loadTexture("jello/menu/foreground.png");
