@@ -15,6 +15,7 @@ import io.github.sst.remake.util.system.io.GsonUtils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -211,7 +212,7 @@ public final class ConfigManager extends Manager implements IMinecraft {
 
     public void saveAlts() {
         JsonArray jsonArray = new JsonArray();
-        List<Account> uniqueAccounts = new java.util.ArrayList<>();
+        List<Account> uniqueAccounts = new ArrayList<>();
         for (Account account : Client.INSTANCE.accountManager.accounts) {
             if (account == null) continue;
 
