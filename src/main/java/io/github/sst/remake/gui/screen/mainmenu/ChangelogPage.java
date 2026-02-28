@@ -141,7 +141,7 @@ public class ChangelogPage extends GuiComponent {
 
         try {
             HttpEntity entity = NetUtils.getHttpClient()
-                    .execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=1.0.0remake"))
+                    .execute(new HttpGet("https://jelloconnect.sigmaclient.cloud/changelog.php?v=" + Client.VERSION + "remake"))
                     .getEntity();
 
             if (entity == null) {
