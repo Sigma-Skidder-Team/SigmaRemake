@@ -211,8 +211,24 @@ public final class ConfigManager extends Manager implements IMinecraft {
 
     public void saveAlts() {
         JsonArray jsonArray = new JsonArray();
-
+        List<Account> uniqueAccounts = new java.util.ArrayList<>();
         for (Account account : Client.INSTANCE.accountManager.accounts) {
+            if (account == null) continue;
+
+            boolean duplicate = false;
+            for (Account existing : uniqueAccounts) {
+                if (Client.INSTANCE.accountManager.isSameAccount(existing, account)) {
+                    duplicate = true;
+                    break;
+                }
+            }
+
+            if (!duplicate) {
+                uniqueAccounts.add(account);
+            }
+        }
+
+        for (Account account : uniqueAccounts) {
             JsonObject altJson = new JsonParser().parse(account.toJson()).getAsJsonObject();
             if (altJson.has("token")) {
                 String token = altJson.get("token").getAsString();
@@ -246,7 +262,7 @@ public final class ConfigManager extends Manager implements IMinecraft {
                         }
                         Account account = Account.fromJson(altJson.toString());
                         if (account != null) {
-                            Client.INSTANCE.accountManager.accounts.add(account);
+                            Client.INSTANCE.accountManager.add(account);
                         }
                     }
                 }

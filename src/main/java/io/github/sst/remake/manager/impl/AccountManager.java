@@ -27,14 +27,45 @@ public final class AccountManager extends Manager {
     }
 
     public boolean has(Account account) {
-        return this.accounts.contains(account);
+        return this.accounts.stream().anyMatch(existing -> isSameAccount(existing, account));
     }
 
     public void add(Account account) {
+        if (account == null || has(account)) {
+            return;
+        }
         this.accounts.add(account);
     }
 
     public void remove(Account account) {
         this.accounts.remove(account);
+    }
+
+    public boolean isSameAccount(Account first, Account second) {
+        if (first == second) return true;
+        if (first == null || second == null) return false;
+
+        String firstUuid = normalized(first.uuid);
+        String secondUuid = normalized(second.uuid);
+        boolean firstCracked = firstUuid.equals(normalized(Account.STEVE_UUID));
+        boolean secondCracked = secondUuid.equals(normalized(Account.STEVE_UUID));
+
+        if (!firstUuid.isEmpty() && !secondUuid.isEmpty() && !firstCracked && !secondCracked) {
+            return firstUuid.equals(secondUuid);
+        }
+
+        String firstName = normalized(first.name);
+        String secondName = normalized(second.name);
+        if (!firstName.isEmpty() && !secondName.isEmpty()) {
+            return firstName.equals(secondName);
+        }
+
+        String firstToken = normalized(first.token);
+        String secondToken = normalized(second.token);
+        return !firstToken.isEmpty() && firstToken.equals(secondToken);
+    }
+
+    private static String normalized(String value) {
+        return value == null ? "" : value.trim().toLowerCase();
     }
 }
