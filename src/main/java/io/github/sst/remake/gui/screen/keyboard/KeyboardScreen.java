@@ -13,6 +13,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,128 +21,139 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class KeyboardScreen extends Screen implements IMinecraft {
-    public Date field20955;
-    public KeybindsPopOver field20956;
-    public Keyboard field20957;
-    public ActionSelectionPanel field20960;
-    public int field20961;
+    public Date openTime;
+    public KeybindsPopOver pendingPopover;
+    public Keyboard keyboard;
+    public ActionSelectionPanel actionSelectionPanel;
+    public int lastPopoverKeyCode;
 
     public KeyboardScreen() {
         super("KeybindManager");
-        this.field20955 = new Date();
-        this.addToList(this.field20957 = new Keyboard(this, "keyboard", (this.width - 1060) / 2, (this.height - 357) / 2));
-        this.field20957.setScale(0.4F, 0.4F);
-        this.field20957
-                .onPress(interactiveWidget -> {
-                            boolean popOver = false;
 
-                            for (GuiComponent child : this.getChildren()) {
-                                if (child instanceof KeybindsPopOver) {
-                                    popOver = true;
-                                    break;
-                                }
-                            }
+        this.openTime = new Date();
 
-                            if (this.field20957.field20696 == this.field20961 && popOver) {
-                                this.method13333();
-                            } else {
-                                int[] var8 = this.field20957.method13105(this.field20957.field20696);
-                                String bind = BindUtils.getKeyName(this.field20957.field20696);
-                                this.field20956 = new KeybindsPopOver(
-                                        this, "popover", this.field20957.getX() + var8[0], this.field20957.getY() + var8[1], this.field20957.field20696, bind
-                                );
-                                this.field20956.onPress(interactiveWidget1 -> this.method13329(this.field20957));
-                                this.field20956.addAddButtonListener(pop -> {
-                                    pop.setReAddChildren(false);
-                                    this.method13331();
-                                });
-                                this.field20961 = this.field20957.field20696;
-                            }
-                        }
-                );
+        this.keyboard = new Keyboard(this, "keyboard", (this.width - 1060) / 2, (this.height - 357) / 2);
+        this.addToList(this.keyboard);
+        this.keyboard.setScale(0.4F, 0.4F);
+
+        this.keyboard.onPress(widget -> {
+            boolean popoverOpen = hasOpenPopover();
+
+            if (this.keyboard.selectedKeyCode == this.lastPopoverKeyCode && popoverOpen) {
+                closePopoverAndOverlays();
+                return;
+            }
+
+            int[] anchor = this.keyboard.getKeyAnchorPosition(this.keyboard.selectedKeyCode);
+            String keyName = BindUtils.getKeyName(this.keyboard.selectedKeyCode);
+
+            KeybindsPopOver popover = new KeybindsPopOver(
+                    this,
+                    "popover",
+                    this.keyboard.getX() + anchor[0],
+                    this.keyboard.getY() + anchor[1],
+                    this.keyboard.selectedKeyCode,
+                    keyName
+            );
+
+            popover.onPress(ignored -> scheduleKeyboardReset(this.keyboard));
+            popover.addAddButtonListener(pop -> {
+                pop.setReAddChildren(false);
+                openActionSelectionPanel();
+            });
+
+            this.pendingPopover = popover;
+            this.lastPopoverKeyCode = this.keyboard.selectedKeyCode;
+        });
+
         ShaderUtils.applyBlurShader();
     }
 
     public static List<BindableAction> getBindableActions() {
-        List<BindableAction> var2 = new ArrayList<>();
+        List<BindableAction> actions = new ArrayList<>();
 
-        for (Module var4 : Client.INSTANCE.moduleManager.modules) {
-            var2.add(new BindableAction(var4));
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            actions.add(new BindableAction(module));
         }
 
-        for (Entry var6 : ScreenUtils.screenToScreenName.entrySet()) {
-            var2.add(new BindableAction((Class<? extends net.minecraft.client.gui.screen.Screen>) var6.getKey()));
+        for (Entry<Class<? extends net.minecraft.client.gui.screen.Screen>, String> entry : ScreenUtils.screenToScreenName.entrySet()) {
+            actions.add(new BindableAction(entry.getKey()));
         }
 
-        return var2;
+        return actions;
     }
 
-    private void method13329(Keyboard var1) {
-        this.addRunnable(var1::method13104);
-    }
-
-    private void method13330() {
-        this.addRunnable(() -> {
-            for (GuiComponent child : this.getChildren()) {
-                if (child instanceof KeybindsPopOver) {
-                    KeybindsPopOver pop = (KeybindsPopOver) child;
-                    pop.method13712();
-                }
+    private boolean hasOpenPopover() {
+        for (GuiComponent child : this.getChildren()) {
+            if (child instanceof KeybindsPopOver) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
-    private void method13331() {
+    private void scheduleKeyboardReset(Keyboard keyboard) {
+        this.addRunnable(keyboard::resetKeyButtonStates);
+    }
+
+    private void openActionSelectionPanel() {
         this.addRunnable(() -> {
-            this.addToList(this.field20960 = new ActionSelectionPanel(this, "mods", 0, 0, width, height));
-            this.field20960.addBindableActionSelectedListener((panel, action) -> {
+            this.actionSelectionPanel = new ActionSelectionPanel(this, "mods", 0, 0, width, height);
+            this.addToList(this.actionSelectionPanel);
+
+            this.actionSelectionPanel.addBindableActionSelectedListener((panel, action) -> {
                 if (action != null) {
-                    action.setBind(this.field20957.field20696);
+                    action.setBind(this.keyboard.selectedKeyCode);
                 }
-
-                this.method13332();
+                refreshPopoverAndCloseSelection();
             });
-            this.field20960.setReAddChildren(true);
+
+            this.actionSelectionPanel.setReAddChildren(true);
         });
     }
 
-    public void method13332() {
+    public void refreshPopoverAndCloseSelection() {
         this.addRunnable(() -> {
             for (GuiComponent child : this.getChildren()) {
-                if (child instanceof KeybindsPopOver) {
-                    KeybindsPopOver pop = (KeybindsPopOver) child;
-                    pop.method13712();
-                    this.field20957.method13104();
-                    pop.setReAddChildren(true);
-                    pop.requestFocus();
-                    this.queueChildRemoval(this.field20960);
+                if (!(child instanceof KeybindsPopOver)) {
+                    continue;
                 }
+
+                KeybindsPopOver popover = (KeybindsPopOver) child;
+                popover.refreshEntries();
+
+                this.keyboard.resetKeyButtonStates();
+
+                popover.setReAddChildren(true);
+                popover.requestFocus();
+
+                this.queueChildRemoval(this.actionSelectionPanel);
             }
         });
     }
 
-    private void method13333() {
+    private void closePopoverAndOverlays() {
         this.addRunnable(() -> {
-            this.field20957.requestFocus();
+            this.keyboard.requestFocus();
             this.clearChildren();
-            this.field20961 = 0;
+            this.lastPopoverKeyCode = 0;
         });
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         if (this.isMouseDownOverComponent()) {
-            this.field20957.requestFocus();
+            this.keyboard.requestFocus();
             this.clearChildren();
-            this.field20961 = 0;
-            this.field20956 = null;
+            this.lastPopoverKeyCode = 0;
+            this.pendingPopover = null;
         }
 
-        if (this.field20956 != null) {
-            this.field20957.requestFocus();
+        if (this.pendingPopover != null) {
+            this.keyboard.requestFocus();
             this.clearChildren();
-            this.addToList(this.field20956);
-            this.field20956 = null;
+            this.addToList(this.pendingPopover);
+            this.pendingPopover = null;
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -156,7 +168,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 256) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             ShaderUtils.resetShader();
             client.openScreen(null);
         }
@@ -164,18 +176,22 @@ public class KeyboardScreen extends Screen implements IMinecraft {
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = (float) Math.min(200L, new Date().getTime() - this.field20955.getTime()) / 200.0F;
-        float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        float var5 = 0.25F * partialTicks;
+        float introProgress = (float) Math.min(200L, new Date().getTime() - this.openTime.getTime()) / 200.0F;
+
+        float eased = EasingFunctions.easeOutBack(introProgress, 0.0F, 1.0F, 1.0F);
+        this.setScale(0.8F + eased * 0.2F, 0.8F + eased * 0.2F);
+
+        float overlayAlpha = 0.25F * introProgress;
         RenderUtils.drawRoundedRect(
                 (float) this.x,
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), var5)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), overlayAlpha)
         );
+
         super.applyScaleTransforms();
+
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_40,
                 (float) ((this.width - 1060) / 2),
@@ -183,6 +199,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                 "Keybind Manager",
                 ClientColors.LIGHT_GREYISH_BLUE.getColor()
         );
-        super.draw(partialTicks);
+
+        super.draw(introProgress);
     }
 }

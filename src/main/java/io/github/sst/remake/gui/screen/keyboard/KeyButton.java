@@ -9,33 +9,40 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class KeyButton extends InteractiveWidget {
-    public final int field20690;
-    private float field20691;
-    private boolean field20692 = false;
-    private boolean field20693 = false;
+    public final int keyCode;
+    private float hoverProgress;
+    private boolean isKeyDown = false;
+    private boolean isBound = false;
 
-    public KeyButton(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, String var7, int var8) {
-        super(var1, var2, var3, var4, var5, var6, ColorHelper.DEFAULT_COLOR, var7, false);
-        this.field20690 = var8;
-        this.method13102();
+    public KeyButton(GuiComponent parent,
+                     String id,
+                     int x,
+                     int y,
+                     int width,
+                     int height,
+                     String label,
+                     int keyCode) {
+        super(parent, id, x, y, width, height, ColorHelper.DEFAULT_COLOR, label, false);
+        this.keyCode = keyCode;
+        this.refreshBoundState();
     }
 
-    public void method13102() {
-        for (BindableAction var4 : KeyboardScreen.getBindableActions()) {
-            int var5 = var4.getBind();
-            if (var5 == this.field20690) {
-                this.field20693 = true;
+    public void refreshBoundState() {
+        for (BindableAction action : KeyboardScreen.getBindableActions()) {
+            if (action.getBind() == this.keyCode) {
+                this.isBound = true;
                 return;
             }
         }
-
-        this.field20693 = false;
+        this.isBound = false;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.field20691 = Math.max(0.0F, Math.min(1.0F, this.field20691 + 0.2F * (float) (!this.isMouseDownOverComponent() && !this.field20692 ? -1 : 1)));
+
+        float direction = (!this.isMouseDownOverComponent() && !this.isKeyDown) ? -1.0F : 1.0F;
+        this.hoverProgress = Math.max(0.0F, Math.min(1.0F, this.hoverProgress + 0.2F * direction));
     }
 
     @Override
@@ -46,143 +53,164 @@ public class KeyButton extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 8.0F,
-                ColorHelper.shiftTowardsOther(-3092272, -2171170, this.field20691)
+                ColorHelper.shiftTowardsOther(-3092272, -2171170, this.hoverProgress)
         );
+
         RenderUtils.drawRoundedButton(
-                (float) this.x, (float) this.y + 3.0F * this.field20691, (float) this.width, (float) this.height, 8.0F, -986896
+                (float) this.x,
+                (float) (this.y + 3.0F * this.hoverProgress),
+                (float) this.width,
+                (float) this.height,
+                8.0F,
+                -986896
         );
-        TrueTypeFont var4 = FontUtils.HELVETICA_LIGHT_20;
+
         if (this.text.contains("Lock")) {
             RenderUtils.drawCircle(
                     (float) (this.x + 14),
-                    (float) (this.y + 11) + 3.0F * this.field20691,
+                    (float) (this.y + 11) + 3.0F * this.hoverProgress,
                     10.0F,
-                    ColorHelper.applyAlpha(ClientColors.DARK_SLATE_GREY.getColor(), this.field20691)
+                    ColorHelper.applyAlpha(ClientColors.DARK_SLATE_GREY.getColor(), this.hoverProgress)
             );
         }
 
-        if (!this.text.equals("Return")) {
-            if (!this.text.equals("Back")) {
-                if (!this.text.equals("Meta")) {
-                    if (!this.text.equals("Menu")) {
-                        if (!this.text.equals("Space")) {
-                            if (this.field20693) {
-                                var4 = FontUtils.REGULAR_20;
-                            }
-
-                            RenderUtils.drawString(
-                                    var4,
-                                    (float) (this.x + (this.width - var4.getWidth(this.text)) / 2),
-                                    (float) (this.y + 19) + 3.0F * this.field20691,
-                                    this.text,
-                                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.4F + (!this.field20693 ? 0.0F : 0.2F))
-                            );
-                        }
-                    } else {
-                        int var5 = this.x + 25;
-                        int var6 = this.y + 25 + (int) (3.0F * this.field20691);
-                        RenderUtils.drawRoundedRect3(
-                                (float) var5,
-                                (float) var6,
-                                (float) (var5 + 14),
-                                (float) (var6 + 3),
-                                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                        );
-                        RenderUtils.drawRoundedRect(
-                                (float) var5,
-                                (float) (var6 + 4),
-                                (float) (var5 + 14),
-                                (float) (var6 + 7),
-                                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                        );
-                        RenderUtils.drawRoundedRect3(
-                                (float) var5,
-                                (float) (var6 + 8),
-                                (float) (var5 + 14),
-                                (float) (var6 + 11),
-                                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                        );
-                        RenderUtils.drawRoundedRect3(
-                                (float) var5,
-                                (float) (var6 + 12),
-                                (float) (var5 + 14),
-                                (float) (var6 + 15),
-                                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                        );
-                    }
-                } else {
-                    int var7 = this.x + 32;
-                    int var10 = this.y + 32 + (int) (3.0F * this.field20691);
-                    RenderUtils.drawCircle(
-                            (float) var7, (float) var10, 14.0F, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                    );
-                }
-            } else {
-                int var8 = this.x + 43;
-                int var11 = this.y + 33 + (int) (3.0F * this.field20691);
-                RenderUtils.drawTriangle(
-                        (float) var8,
-                        (float) var11,
-                        (float) (var8 + 6),
-                        (float) (var11 - 3),
-                        (float) (var8 + 6),
-                        (float) (var11 + 3),
-                        ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                );
-                RenderUtils.drawRoundedRect(
-                        (float) (var8 + 6),
-                        (float) (var11 - 1),
-                        (float) (var8 + 27),
-                        (float) (var11 + 1),
-                        ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-                );
-            }
-        } else {
-            int var9 = this.x + 50;
-            int var12 = this.y + 33 + (int) (3.0F * this.field20691);
-            RenderUtils.drawTriangle(
-                    (float) var9,
-                    (float) var12,
-                    (float) (var9 + 6),
-                    (float) (var12 - 3),
-                    (float) (var9 + 6),
-                    (float) (var12 + 3),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-            );
-            RenderUtils.drawRoundedRect(
-                    (float) (var9 + 6),
-                    (float) (var12 - 1),
-                    (float) (var9 + 27),
-                    (float) (var12 + 1),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-            );
-            RenderUtils.drawRoundedRect(
-                    (float) (var9 + 25),
-                    (float) (var12 - 8),
-                    (float) (var9 + 27),
-                    (float) (var12 - 1),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + (!this.field20693 ? 0.0F : 0.2F))
-            );
-        }
+        drawKeyContent();
 
         super.draw(partialTicks);
     }
 
+    private void drawKeyContent() {
+        switch (this.text) {
+            case "Return":
+                drawReturnIcon();
+                return;
+            case "Back":
+                drawBackIcon();
+                return;
+            case "Meta":
+                drawMetaIcon();
+                return;
+            case "Menu":
+                drawMenuIcon();
+                return;
+            case "Space":
+                return;
+            default:
+                drawLabel();
+        }
+    }
+
+    private void drawLabel() {
+        TrueTypeFont font = this.isBound ? FontUtils.REGULAR_20 : FontUtils.HELVETICA_LIGHT_20;
+
+        RenderUtils.drawString(
+                font,
+                (float) (this.x + (this.width - font.getWidth(this.text)) / 2),
+                (float) (this.y + 19) + 3.0F * this.hoverProgress,
+                this.text,
+                ColorHelper.applyAlpha(
+                        ClientColors.DEEP_TEAL.getColor(),
+                        0.4F + (this.isBound ? 0.2F : 0.0F)
+                )
+        );
+    }
+
+    private int getIconColor() {
+        return ColorHelper.applyAlpha(
+                ClientColors.DEEP_TEAL.getColor(),
+                0.3F + (this.isBound ? 0.2F : 0.0F)
+        );
+    }
+
+    private void drawMenuIcon() {
+        int x = this.x + 25;
+        int y = this.y + 25 + (int) (3.0F * this.hoverProgress);
+        int color = getIconColor();
+
+        RenderUtils.drawRoundedRect3((float) x, (float) y, (float) (x + 14), (float) (y + 3), color);
+        RenderUtils.drawRoundedRect((float) x, (float) (y + 4), (float) (x + 14), (float) (y + 7), color);
+        RenderUtils.drawRoundedRect3((float) x, (float) (y + 8), (float) (x + 14), (float) (y + 11), color);
+        RenderUtils.drawRoundedRect3((float) x, (float) (y + 12), (float) (x + 14), (float) (y + 15), color);
+    }
+
+    private void drawMetaIcon() {
+        int centerX = this.x + 32;
+        int centerY = this.y + 32 + (int) (3.0F * this.hoverProgress);
+
+        RenderUtils.drawCircle(
+                (float) centerX,
+                (float) centerY,
+                14.0F,
+                getIconColor()
+        );
+    }
+
+    private void drawBackIcon() {
+        int x = this.x + 43;
+        int y = this.y + 33 + (int) (3.0F * this.hoverProgress);
+        int color = getIconColor();
+
+        RenderUtils.drawTriangle(
+                (float) x,
+                (float) y,
+                (float) (x + 6),
+                (float) (y - 3),
+                (float) (x + 6),
+                (float) (y + 3),
+                color
+        );
+        RenderUtils.drawRoundedRect(
+                (float) (x + 6),
+                (float) (y - 1),
+                (float) (x + 27),
+                (float) (y + 1),
+                color
+        );
+    }
+
+    private void drawReturnIcon() {
+        int x = this.x + 50;
+        int y = this.y + 33 + (int) (3.0F * this.hoverProgress);
+        int color = getIconColor();
+
+        RenderUtils.drawTriangle(
+                (float) x,
+                (float) y,
+                (float) (x + 6),
+                (float) (y - 3),
+                (float) (x + 6),
+                (float) (y + 3),
+                color
+        );
+        RenderUtils.drawRoundedRect(
+                (float) (x + 6),
+                (float) (y - 1),
+                (float) (x + 27),
+                (float) (y + 1),
+                color
+        );
+        RenderUtils.drawRoundedRect(
+                (float) (x + 25),
+                (float) (y - 8),
+                (float) (x + 27),
+                (float) (y - 1),
+                color
+        );
+    }
+
     @Override
     public void keyPressed(int keyCode) {
-        if (keyCode == this.field20690) {
-            this.field20692 = true;
+        if (keyCode == this.keyCode) {
+            this.isKeyDown = true;
         }
-
         super.keyPressed(keyCode);
     }
 
     @Override
     public void modifierPressed(int modifier) {
-        if (modifier == this.field20690) {
-            this.field20692 = false;
+        if (modifier == this.keyCode) {
+            this.isKeyDown = false;
         }
-
         super.modifierPressed(modifier);
     }
 }

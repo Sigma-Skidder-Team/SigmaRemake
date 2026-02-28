@@ -27,174 +27,244 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class ActionSelectionPanel extends InteractiveWidget {
-    public AnimationUtils field21302;
-    public int field21303;
-    public int field21304;
-    public int field21305;
-    public int field21306;
-    public String field21307;
-    public ScrollablePanel field21308;
+    public AnimationUtils openCloseAnimation;
+    public int panelX;
+    public int panelY;
+    public int panelWidth;
+    public int panelHeight;
+    public String searchText;
+    public ScrollablePanel listPanel;
     public BindableAction selectedBindableAction;
-    public boolean field21311 = false;
+    public boolean closing = false;
     private final List<BindableActionListener> bindableActionListeners = new ArrayList<>();
 
-    public ActionSelectionPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.field21305 = 500;
-        this.field21306 = 600;
-        this.field21304 = (var5 - this.field21305) / 2;
-        this.field21303 = (var6 - this.field21306) / 2;
-        TextField var10;
-        this.addToList(
-                var10 = new TextField(
-                        this, "search", this.field21304 + 30, this.field21303 + 30 + 50, this.field21305 - 30 * 2, 60, TextField.DEFAULT_COLORS, "", "Search..."
-                )
+    public ActionSelectionPanel(GuiComponent parent, String id, int x, int y, int width, int height) {
+        super(parent, id, x, y, width, height, false);
+
+        this.panelWidth = 500;
+        this.panelHeight = 600;
+
+        this.panelX = (width - this.panelWidth) / 2;
+        this.panelY = (height - this.panelHeight) / 2;
+
+        TextField searchField = new TextField(
+                this,
+                "search",
+                this.panelX + 30,
+                this.panelY + 30 + 50,
+                this.panelWidth - 60,
+                60,
+                TextField.DEFAULT_COLORS,
+                "",
+                "Search..."
         );
-        var10.addChangeListener(var2x -> {
-            this.field21307 = var10.getText();
-            this.field21308.setScrollOffset(0);
+        this.addToList(searchField);
+
+        searchField.addChangeListener(ignored -> {
+            this.searchText = searchField.getText();
+            this.listPanel.setScrollOffset(0);
         });
-        var10.requestFocus();
-        this.addToList(
-                this.field21308 = new ScrollablePanel(
-                        this, "mods", this.field21304 + 30, this.field21303 + 30 + 120, this.field21305 - 30 * 2, this.field21306 - 30 * 2 - 120
-                )
+        searchField.requestFocus();
+
+        this.listPanel = new ScrollablePanel(
+                this,
+                "mods",
+                this.panelX + 30,
+                this.panelY + 30 + 120,
+                this.panelWidth - 60,
+                this.panelHeight - 60 - 120
         );
-        int var11 = 10;
+        this.addToList(this.listPanel);
 
-        for (Entry var13 : ScreenUtils.screenToScreenName.entrySet()) {
-            BindableAction var14 = new BindableAction((Class<? extends Screen>) var13.getKey());
-            ColorHelper var15 = new ColorHelper(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.02F), -986896)
-                    .setTextColor(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F))
+        int yIndex = 10;
+
+        for (Entry<Class<? extends Screen>, String> entry : ScreenUtils.screenToScreenName.entrySet()) {
+            BindableAction screenAction = new BindableAction(entry.getKey());
+
+            ColorHelper style = new ColorHelper(
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.02F),
+                    -986896
+            ).setTextColor(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F))
                     .setWidthAlignment(FontAlignment.CENTER);
-            Button var16;
-            this.field21308
-                    .addToList(
-                            var16 = new Button(this.field21308, var14.getName(), 0, var11++ * 55, this.field21308.getWidth(), 55, var15, var14.getName())
-                    );
-            var16.onClick((parent, mouseButton) -> {
-                for (Entry<Class<? extends Screen>, String> entry : ScreenUtils.screenToScreenName.entrySet()) {
-                    BindableAction action = new BindableAction(entry.getKey());
-                    if (action.getName().equals(var16.getName()) && !this.field21311) {
-                        this.selectedBindableAction = action;
-                        this.field21311 = true;
-                        break;
-                    }
+
+            Button button = new Button(
+                    this.listPanel,
+                    screenAction.getName(),
+                    0,
+                    yIndex++ * 55,
+                    this.listPanel.getWidth(),
+                    55,
+                    style,
+                    screenAction.getName()
+            );
+            this.listPanel.addToList(button);
+
+            button.onClick((clicked, mouseButton) -> {
+                if (!this.closing) {
+                    this.selectedBindableAction = new BindableAction(entry.getKey());
+                    this.closing = true;
                 }
             });
         }
 
-        var11 += 50;
+        yIndex += 50;
 
-        for (Module mod : Client.INSTANCE.moduleManager.modules) {
-            ColorHelper var20 = new ColorHelper(16777215, -986896).setTextColor(ClientColors.DEEP_TEAL.getColor()).setWidthAlignment(FontAlignment.LEFT);
-            Button var21;
-            this.field21308
-                    .addToList(
-                            var21 = new Button(
-                                    this.field21308, mod.getName(), 0, var11++ * 40, this.field21308.getWidth(), 40, var20, new BindableAction(mod).getName()
-                            )
-                    );
-            var21.setTextOffsetX(10);
-            var21.onClick((parent, mouseButton) -> {
-                for (Module mod2 : Client.INSTANCE.moduleManager.modules) {
-                    if (mod2.getName().equals(var21.getText()) && !this.field21311) {
-                        this.selectedBindableAction = new BindableAction(mod2);
-                        this.field21311 = true;
-                        break;
-                    }
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            ColorHelper style = new ColorHelper(16777215, -986896)
+                    .setTextColor(ClientColors.DEEP_TEAL.getColor())
+                    .setWidthAlignment(FontAlignment.LEFT);
+
+            Button button = new Button(
+                    this.listPanel,
+                    module.getName(),
+                    0,
+                    yIndex++ * 40,
+                    this.listPanel.getWidth(),
+                    40,
+                    style,
+                    new BindableAction(module).getName()
+            );
+            this.listPanel.addToList(button);
+
+            button.setTextOffsetX(10);
+
+            button.onClick((clicked, mouseButton) -> {
+                if (!this.closing) {
+                    this.selectedBindableAction = new BindableAction(module);
+                    this.closing = true;
                 }
             });
         }
 
-        this.field21302 = new AnimationUtils(200, 120);
+        this.openCloseAnimation = new AnimationUtils(200, 120);
         this.setListening(false);
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (this.isMouseDownOverComponent()
-                && (mouseX < this.field21304 || mouseY < this.field21303 || mouseX > this.field21304 + this.field21305 || mouseY > this.field21303 + this.field21306)) {
-            this.field21311 = true;
+        if (this.isMouseDownOverComponent() && isClickOutsidePanel(mouseX, mouseY)) {
+            this.closing = true;
         }
 
-        this.field21302.changeDirection(this.field21311 ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
-        Map<String, Button> var5 = new TreeMap();
-        Map<String, Button> var6 = new TreeMap();
-        Map<String, Button> var7 = new TreeMap();
-        List<Button> var8 = new ArrayList();
+        this.openCloseAnimation.changeDirection(
+                this.closing ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS
+        );
 
-        for (GuiComponent var10 : this.field21308.getChildren()) {
-            if (!(var10 instanceof VerticalScrollBar)) {
-                for (GuiComponent var12 : var10.getChildren()) {
-                    if (var12 instanceof Button) {
-                        Button var13 = (Button) var12;
-                        boolean var14 = var13.getHeight() != 40;
-                        if (!var14 || this.field21307 != null && (this.field21307 == null || this.field21307.length() != 0)) {
-                            if (!var14 && this.method13622(this.field21307, var13.getText())) {
-                                var6.put(var13.getText(), var13);
-                            } else if (!var14 && this.method13621(this.field21307, var13.getText())) {
-                                var7.put(var13.getText(), var13);
-                            } else {
-                                var8.add(var13);
-                            }
-                        } else {
-                            var5.put(var13.getText(), var13);
-                        }
-                    }
-                }
-            }
-        }
-
-        int var15 = var5.size() <= 0 ? 0 : 10;
-
-        for (Button var20 : var5.values()) {
-            var20.setSelfVisible(true);
-            var20.setY(var15);
-            var15 += var20.getHeight();
-        }
-
-        if (var5.size() > 0) {
-            var15 += 10;
-        }
-
-        for (Button var21 : var6.values()) {
-            var21.setSelfVisible(true);
-            var21.setY(var15);
-            var15 += var21.getHeight();
-        }
-
-        for (Button var22 : var7.values()) {
-            var22.setSelfVisible(true);
-            var22.setY(var15);
-            var15 += var22.getHeight();
-        }
-
-        for (Button var23 : var8) {
-            var23.setSelfVisible(false);
-        }
+        applySearchFilterAndRelayout();
 
         super.updatePanelDimensions(mouseX, mouseY);
     }
 
-    private boolean method13621(String var1, String var2) {
-        return var1 == null || var1 == "" || var2 == null || var2.toLowerCase().contains(var1.toLowerCase());
+    private boolean isClickOutsidePanel(int mouseX, int mouseY) {
+        return mouseX < this.panelX
+                || mouseY < this.panelY
+                || mouseX > this.panelX + this.panelWidth
+                || mouseY > this.panelY + this.panelHeight;
     }
 
-    private boolean method13622(String var1, String var2) {
-        return var1 == null || var1 == "" || var2 == null || var2.toLowerCase().startsWith(var1.toLowerCase());
+    private void applySearchFilterAndRelayout() {
+        Map<String, Button> visibleAll = new TreeMap<>();
+        Map<String, Button> visibleStartsWith = new TreeMap<>();
+        Map<String, Button> visibleContains = new TreeMap<>();
+        List<Button> hidden = new ArrayList<>();
+
+        for (GuiComponent child : this.listPanel.getChildren()) {
+            if (child instanceof VerticalScrollBar) {
+                continue;
+            }
+
+            for (GuiComponent inner : child.getChildren()) {
+                if (!(inner instanceof Button)) {
+                    continue;
+                }
+
+                Button button = (Button) inner;
+                boolean isModuleButton = button.getHeight() == 40;
+
+                if (isEmptySearch(this.searchText)) {
+                    if (isModuleButton) {
+                        visibleAll.put(button.getText(), button);
+                    } else {
+                        hidden.add(button);
+                    }
+                    continue;
+                }
+
+                if (!isModuleButton) {
+                    // TODO: clarify intended search behavior for screen buttons; keeping them visible when searching.
+                    visibleAll.put(button.getText(), button);
+                    continue;
+                }
+
+                if (startsWithIgnoreCase(this.searchText, button.getText())) {
+                    visibleStartsWith.put(button.getText(), button);
+                } else if (containsIgnoreCase(this.searchText, button.getText())) {
+                    visibleContains.put(button.getText(), button);
+                } else {
+                    hidden.add(button);
+                }
+            }
+        }
+
+        int y = visibleAll.isEmpty() ? 0 : 10;
+
+        for (Button button : visibleAll.values()) {
+            button.setSelfVisible(true);
+            button.setY(y);
+            y += button.getHeight();
+        }
+
+        if (!visibleAll.isEmpty()) {
+            y += 10;
+        }
+
+        for (Button button : visibleStartsWith.values()) {
+            button.setSelfVisible(true);
+            button.setY(y);
+            y += button.getHeight();
+        }
+
+        for (Button button : visibleContains.values()) {
+            button.setSelfVisible(true);
+            button.setY(y);
+            y += button.getHeight();
+        }
+
+        for (Button button : hidden) {
+            button.setSelfVisible(false);
+        }
+    }
+
+    private boolean isEmptySearch(String query) {
+        return query == null || query.length() == 0;
+    }
+
+    private boolean containsIgnoreCase(String query, String text) {
+        return query == null
+                || query.length() == 0
+                || text == null
+                || text.toLowerCase().contains(query.toLowerCase());
+    }
+
+    private boolean startsWithIgnoreCase(String query, String text) {
+        return query == null
+                || query.length() == 0
+                || text == null
+                || text.toLowerCase().startsWith(query.toLowerCase());
     }
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = this.field21302.calcPercent();
-        float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        if (this.field21311) {
-            var4 = QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F);
+        float anim = this.openCloseAnimation.calcPercent();
+
+        float eased = EasingFunctions.easeOutBack(anim, 0.0F, 1.0F, 1.0F);
+        if (this.closing) {
+            eased = QuadraticEasing.easeOutQuad(anim, 0.0F, 1.0F, 1.0F);
         }
 
-        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        if (partialTicks == 0.0F && this.field21311) {
+        this.setScale(0.8F + eased * 0.2F, 0.8F + eased * 0.2F);
+
+        if (anim == 0.0F && this.closing) {
             this.notifyBindableActionSelected(this.selectedBindableAction);
         }
 
@@ -203,32 +273,36 @@ public class ActionSelectionPanel extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F * anim)
         );
+
         super.applyScaleTransforms();
+
         RenderUtils.drawRoundedRect(
-                (float) this.field21304,
-                (float) this.field21303,
-                (float) this.field21305,
-                (float) this.field21306,
+                (float) this.panelX,
+                (float) this.panelY,
+                (float) this.panelWidth,
+                (float) this.panelHeight,
                 10.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), anim)
         );
+
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_36,
-                (float) (30 + this.field21304),
-                (float) (30 + this.field21303),
+                (float) (30 + this.panelX),
+                (float) (30 + this.panelY),
                 "Select mod to bind",
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.7F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), anim * 0.7F)
         );
-        super.draw(partialTicks);
+
+        super.draw(anim);
     }
 
-    public final void addBindableActionSelectedListener(BindableActionListener listener) {
+    public void addBindableActionSelectedListener(BindableActionListener listener) {
         this.bindableActionListeners.add(listener);
     }
 
-    public final void notifyBindableActionSelected(BindableAction action) {
+    public void notifyBindableActionSelected(BindableAction action) {
         for (BindableActionListener listener : this.bindableActionListeners) {
             listener.onBindableActionSelected(this, action);
         }

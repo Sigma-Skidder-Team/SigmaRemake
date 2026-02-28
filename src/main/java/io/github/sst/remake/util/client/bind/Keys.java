@@ -82,11 +82,11 @@ public enum Keys {
         this.row = row;
     }
 
-    public int method9026() {
+    public int getRowY() {
         return 74 * (this.row - 1);
     }
 
-    public int method9029() {
+    public int getHeight() {
         return 63;
     }
 }

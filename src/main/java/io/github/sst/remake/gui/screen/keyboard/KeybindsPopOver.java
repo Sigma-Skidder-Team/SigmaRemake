@@ -14,56 +14,54 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
 
 public class KeybindsPopOver extends InteractiveWidget {
-    private final int field21376;
-    private final AnimationUtils field21377;
-    private boolean field21378 = false;
-    private final List<AddButtonListener> addButtonListeners = new ArrayList<AddButtonListener>();
+    private final int selectedKeyCode;
+    private final AnimationUtils openAnimation;
+    private boolean openToLeft = false;
+    private final List<AddButtonListener> addButtonListeners = new ArrayList<>();
 
-    public KeybindsPopOver(GuiComponent var1, String var2, int var3, int var4, int var5, String var6) {
-        super(var1, var2, var3 - 125, var4, 250, 330, ColorHelper.DEFAULT_COLOR, var6, false);
+    public KeybindsPopOver(GuiComponent parent, String id, int mouseX, int mouseY, int keyCode, String keyName) {
+        super(parent, id, mouseX - 125, mouseY, 250, 330, ColorHelper.DEFAULT_COLOR, keyName, false);
+
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
             this.y += 10;
         } else {
             this.y -= 400;
-            this.field21378 = true;
+            this.openToLeft = true;
         }
 
-        this.field21376 = var5;
-        this.field21377 = new AnimationUtils(250, 0);
+        this.selectedKeyCode = keyCode;
+        this.openAnimation = new AnimationUtils(250, 0);
+
         this.setReAddChildren(true);
         this.setListening(false);
-        this.method13712();
-        TextButton var9;
-        this.addToList(
-                var9 = new TextButton(
-                        this,
-                        "addButton",
-                        this.width - 70,
-                        this.height - 70,
-                        FontUtils.HELVETICA_LIGHT_25.getWidth("Add"),
-                        70,
-                        ColorHelper.DEFAULT_COLOR,
-                        "Add",
-                        FontUtils.HELVETICA_LIGHT_25
-                )
+
+        this.refreshEntries();
+
+        TextButton addButton = new TextButton(
+                this,
+                "addButton",
+                this.width - 70,
+                this.height - 70,
+                FontUtils.HELVETICA_LIGHT_25.getWidth("Add"),
+                70,
+                ColorHelper.DEFAULT_COLOR,
+                "Add",
+                FontUtils.HELVETICA_LIGHT_25
         );
-        var9.onClick((parent, mouseButton) -> this.notifyAddButtonListeners());
+        this.addToList(addButton);
+        addButton.onClick((clicked, mouseButton) -> this.notifyAddButtonListeners());
     }
 
-    public void method13712() {
-        int var3 = 1;
-        List<String> children = new ArrayList<>();
+    public void refreshEntries() {
+        int index = 1;
 
+        List<String> existingNames = new ArrayList<>();
         for (GuiComponent child : this.getChildren()) {
             if (child.getHeight() != 0) {
-                children.add(child.getName());
+                existingNames.add(child.getName());
             }
         }
 
@@ -71,37 +69,52 @@ public class KeybindsPopOver extends InteractiveWidget {
         this.setFocused(true);
         this.clearChildren();
 
-        for (BindableAction var10 : KeyboardScreen.getBindableActions()) {
-            int var7 = var10.getBind();
-            if (var7 == this.field21376) {
-                BindableActionEntry var8;
-                this.addToList(var8 = new BindableActionEntry(this, var10.getName(), 0, 20 + 55 * var3, this.width, 55, var10, var3++));
-                var8.onPress(interactiveWidget -> {
-                    var10.setBind(0);
-                    this.firePressHandlers();
-                });
-                if (!children.isEmpty() && !children.contains(var10.getName())) {
-                    var8.startHeightAnimation();
-                }
+        for (BindableAction action : KeyboardScreen.getBindableActions()) {
+            if (action.getBind() != this.selectedKeyCode) {
+                continue;
+            }
+
+            BindableActionEntry entry = new BindableActionEntry(
+                    this,
+                    action.getName(),
+                    0,
+                    20 + 55 * index,
+                    this.width,
+                    55,
+                    action,
+                    index
+            );
+            this.addToList(entry);
+
+            int currentIndex = index;
+            index++;
+
+            entry.onPress(widget -> {
+                action.setBind(0);
+                this.firePressHandlers();
+            });
+
+            if (!existingNames.isEmpty() && !existingNames.contains(action.getName())) {
+                entry.startHeightAnimation();
             }
         }
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        Map<Integer, BindableActionEntry> var5 = new HashMap<>();
+        Map<Integer, BindableActionEntry> entriesByIndex = new TreeMap<>();
 
         for (GuiComponent child : this.getChildren()) {
             if (child instanceof BindableActionEntry) {
-                var5.put(((BindableActionEntry) child).entryIndex, (BindableActionEntry) child);
+                BindableActionEntry entry = (BindableActionEntry) child;
+                entriesByIndex.put(entry.entryIndex, entry);
             }
         }
 
-        int var9 = 75;
-
-        for (Entry<Integer, BindableActionEntry> var11 : var5.entrySet()) {
-            var11.getValue().setY(var9);
-            var9 += var11.getValue().getHeight();
+        int y = 75;
+        for (BindableActionEntry entry : entriesByIndex.values()) {
+            entry.setY(y);
+            y += entry.getHeight();
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -109,63 +122,86 @@ public class KeybindsPopOver extends InteractiveWidget {
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = this.field21377.calcPercent();
-        float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field21378 ? 1 : -1));
+        float anim = this.openAnimation.calcPercent();
+
+        float eased = EasingFunctions.easeOutBack(anim, 0.0F, 1.0F, 1.0F);
+        this.setScale(0.8F + eased * 0.2F, 0.8F + eased * 0.2F);
+
+        int slideDirection = this.openToLeft ? -1 : 1;
+        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - eased)) * slideDirection);
+
         super.applyScaleTransforms();
-        int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
+
+        int bgColor = ColorHelper.applyAlpha(
+                -723724,
+                QuadraticEasing.easeOutQuad(anim, 0.0F, 1.0F, 1.0F)
+        );
+
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 10 / 2),
                 (float) (this.y + 10 / 2),
                 (float) (this.width - 10),
                 (float) (this.height - 10),
                 35.0F,
-                partialTicks
+                anim
         );
+
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 10 / 2),
                 (float) (this.y + 10 / 2),
                 (float) (this.x - 10 / 2 + this.width),
                 (float) (this.y - 10 / 2 + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.25F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), anim * 0.25F)
         );
-        RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) 10, var6);
+
+        RenderUtils.drawRoundedRect(
+                (float) this.x,
+                (float) this.y,
+                (float) this.width,
+                (float) this.height,
+                10.0F,
+                bgColor
+        );
+
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.x, (float) this.y, 0.0F);
-        GL11.glRotatef(!this.field21378 ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(!this.openToLeft ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef((float) (-this.x), (float) (-this.y), 0.0F);
+
         RenderUtils.drawImage(
-                (float) (this.x + (!this.field21378 ? 0 : this.height)),
-                (float) this.y + (float) ((this.width - 47) / 2) * (!this.field21378 ? 1.0F : -1.5F),
+                (float) (this.x + (!this.openToLeft ? 0 : this.height)),
+                (float) this.y + (float) ((this.width - 47) / 2) * (!this.openToLeft ? 1.0F : -1.5F),
                 18.0F,
                 47.0F,
                 Resources.SELECTED_ICON,
-                var6
+                bgColor
         );
         GL11.glPopMatrix();
+
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_25,
                 (float) (this.x + 25),
                 (float) (this.y + 20),
                 this.text + " Key",
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F * anim)
         );
+
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 25),
                 (float) (this.y + 68),
                 (float) (this.x + this.width - 25),
                 (float) (this.y + 69),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * anim)
         );
-        super.draw(partialTicks);
+
+        super.draw(anim);
     }
 
-    public final void addAddButtonListener(AddButtonListener listener) {
+    public void addAddButtonListener(AddButtonListener listener) {
         this.addButtonListeners.add(listener);
     }
 
-    public final void notifyAddButtonListeners() {
+    public void notifyAddButtonListeners() {
         for (AddButtonListener listener : this.addButtonListeners) {
             listener.onAddButtonClicked(this);
         }
