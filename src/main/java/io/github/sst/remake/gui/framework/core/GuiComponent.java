@@ -496,7 +496,7 @@ public class GuiComponent implements InputListener {
         }
     }
 
-    public JsonObject toConfigWithExtra(JsonObject config) {
+    public JsonObject toPersistedConfig(JsonObject config) {
         if (this.isListening()) {
             config.addProperty("id", this.getName());
             config.addProperty("x", this.getX());
@@ -518,7 +518,7 @@ public class GuiComponent implements InputListener {
 
         for (GuiComponent child : this.children) {
             if (child.isListening()) {
-                JsonObject json = child.toConfigWithExtra(new JsonObject());
+                JsonObject json = child.toPersistedConfig(new JsonObject());
                 if (json.size() != 0) {
                     children.add(json);
                 }
@@ -529,7 +529,7 @@ public class GuiComponent implements InputListener {
         return base;
     }
 
-    public void loadConfig(JsonObject config) {
+    public void loadPersistedConfig(JsonObject config) {
         if (this.isListening()) {
             this.x = GsonUtils.getIntOrDefault(config, "x", this.x);
             this.y = GsonUtils.getIntOrDefault(config, "y", this.y);
@@ -556,7 +556,7 @@ public class GuiComponent implements InputListener {
 
                     for (GuiComponent child : childrenArray) {
                         if (child.getName().equals(id)) {
-                            child.loadConfig(childJson);
+                            child.loadPersistedConfig(childJson);
                             if (index >= 0) {
                                 this.children.remove(child);
                                 if (index > this.children.size()) {
