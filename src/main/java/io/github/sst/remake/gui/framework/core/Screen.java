@@ -13,8 +13,8 @@ public abstract class Screen extends GuiComponent implements IMinecraft {
     }
 
     @Override
-    public void loadConfig(JsonObject config) {
-        super.loadConfig(config);
+    public void loadPersistedConfig(JsonObject config) {
+        super.loadPersistedConfig(config);
         this.setWidth(client.getWindow().getWidth());
         this.setHeight(client.getWindow().getHeight());
     }

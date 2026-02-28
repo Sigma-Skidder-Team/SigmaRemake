@@ -31,8 +31,7 @@ public class DropdownMenu extends InteractiveWidget {
 
         for (String value : this.values) {
             Button button;
-            this.addToList(
-                    button = new Button(
+            this.addToList(button = new Button(
                             this,
                             value,
                             0,

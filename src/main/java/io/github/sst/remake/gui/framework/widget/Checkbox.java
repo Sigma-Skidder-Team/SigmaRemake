@@ -13,8 +13,8 @@ public class Checkbox extends InteractiveWidget {
     public boolean value;
     public AnimationUtils animation = new AnimationUtils(70, 90);
 
-    public Checkbox(GuiComponent parent, String var2, int var3, int var4, int var5, int var6) {
-        super(parent, var2, var3, var4, var5, var6, false);
+    public Checkbox(GuiComponent parent, String label, int x, int y, int width, int height) {
+        super(parent, label, x, y, width, height, false);
     }
 
     public boolean getValue() {
