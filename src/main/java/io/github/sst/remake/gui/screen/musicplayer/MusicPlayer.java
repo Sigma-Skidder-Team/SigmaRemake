@@ -171,8 +171,8 @@ public class MusicPlayer extends Widget {
     }
 
     @Override
-    public void loadConfig(JsonObject config) {
-        super.loadConfig(config);
+    public void loadPersistedConfig(JsonObject config) {
+        super.loadPersistedConfig(config);
 
         this.setDragging(false);
         this.isAnimatingBack = false;

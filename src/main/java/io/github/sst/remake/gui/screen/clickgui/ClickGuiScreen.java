@@ -202,9 +202,9 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     }
 
     @Override
-    public JsonObject toConfigWithExtra(JsonObject config) {
+    public JsonObject toPersistedConfig(JsonObject config) {
         ShaderUtils.resetShader();
-        return super.toConfigWithExtra(config);
+        return super.toPersistedConfig(config);
     }
 
     private void handleAnimationCompletion(boolean started) {

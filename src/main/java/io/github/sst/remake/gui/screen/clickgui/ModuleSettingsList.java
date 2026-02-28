@@ -145,12 +145,12 @@ public class ModuleSettingsList extends ScrollablePanel {
                 setting.addListener(sett -> {
                     DropdownSetting updated = (DropdownSetting) sett;
                     int newIdx = updated.getModeIndex();
-                    if (dropdown.getIndex() != newIdx) dropdown.setIndex(newIdx);
+                    if (dropdown.getSelectedIndex() != newIdx) dropdown.setSelectedIndex(newIdx);
                 });
 
                 dropdown.onPress(w -> {
-                    s.setModeByIndex(((Dropdown) w).getIndex());
-                    dropdown.setIndex(s.getModeIndex());
+                    s.setModeByIndex(((Dropdown) w).getSelectedIndex());
+                    dropdown.setSelectedIndex(s.getModeIndex());
                 });
 
                 dropdown.addWidthSetter((c1, c2) -> c1.setX(panel.getWidth() - W - offset));

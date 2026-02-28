@@ -162,7 +162,7 @@ public final class ConfigManager extends Manager implements IMinecraft {
     public void saveScreenConfig(boolean hard) {
         Screen currentScreen = Client.INSTANCE.screenManager.currentScreen;
         if (currentScreen != null) {
-            JsonObject currentScreenConfig = currentScreen.toConfigWithExtra(new JsonObject());
+            JsonObject currentScreenConfig = currentScreen.toPersistedConfig(new JsonObject());
             if (currentScreenConfig.size() != 0) {
                 this.screenConfig.add(currentScreen.getName(), currentScreenConfig);
             }
@@ -205,7 +205,7 @@ public final class ConfigManager extends Manager implements IMinecraft {
                 }
             }
 
-            currentScreen.loadConfig(configForScreen != null ? configForScreen : new JsonObject());
+            currentScreen.loadPersistedConfig(configForScreen != null ? configForScreen : new JsonObject());
         }
     }
 

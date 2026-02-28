@@ -115,10 +115,10 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 );
         Dropdown filterDropdown = new Dropdown(this, "drop", (int) ((float) client.getWindow().getWidth() * this.leftPaneRatio) - 220, 44, 200, 32, sortingOptions, 0);
         filterDropdown.addSubMenu(servers, 1);
-        filterDropdown.setIndex(2);
+        filterDropdown.setSelectedIndex(2);
         this.addToList(filterDropdown);
         filterDropdown.onPress(interactiveWidget -> {
-            switch (filterDropdown.getIndex()) {
+            switch (filterDropdown.getSelectedIndex()) {
                 case 0:
                     this.accountSortType = AccountCompareType.ALPHABETICAL;
                     break;
@@ -454,13 +454,13 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     }
 
     @Override
-    public JsonObject toConfigWithExtra(JsonObject config) {
+    public JsonObject toPersistedConfig(JsonObject config) {
         Client.INSTANCE.accountManager.shutdown();
         return config;
     }
 
     @Override
-    public void loadConfig(JsonObject config) {
+    public void loadPersistedConfig(JsonObject config) {
         for (GuiComponent var5 : this.accountListPanel.getChildren()) {
             if (!(var5 instanceof VerticalScrollBar)) {
                 for (GuiComponent var7 : var5.getChildren()) {
