@@ -7,36 +7,43 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ColorHelper;
 
 public class WaypointColorSelector extends InteractiveWidget {
-    public int field21296;
+    public int selectedColor;
 
-    public WaypointColorSelector(GuiComponent var1, String var2, int var3, int var4) {
-        super(var1, var2, var3, var4, 200, 18, ColorHelper.DEFAULT_COLOR, false);
-        int offset = 0;
-        boolean var7 = true;
+    public WaypointColorSelector(GuiComponent parent, String id, int x, int y) {
+        super(parent, id, x, y, 200, 18, ColorHelper.DEFAULT_COLOR, false);
 
-        for (WaypointColors var11 : WaypointColors.values()) {
-            String var10004 = "badge" + var11.name;
-            offset += 25;
-            WaypointColorBadge var12;
-            this.addToList(var12 = new WaypointColorBadge(this, var10004, offset, 0, var11));
-            if (var7) {
-                var12.field20598 = true;
-                this.field21296 = var11.color;
+        int xOffset = 0;
+        boolean selectFirst = true;
+
+        for (WaypointColors waypointColor : WaypointColors.values()) {
+            String badgeId = "badge" + waypointColor.name;
+
+            xOffset += 25;
+
+            WaypointColorBadge badge = new WaypointColorBadge(this, badgeId, xOffset, 0, waypointColor);
+            this.addToList(badge);
+
+            if (selectFirst) {
+                badge.isSelected = true;
+                this.selectedColor = waypointColor.color;
+                selectFirst = false;
             }
 
-            var12.onClick((parent, mouseButton) -> {
-                for (GuiComponent var6 : parent.getParent().getChildren()) {
-                    if (var6 instanceof WaypointColorBadge) {
-                        ((WaypointColorBadge) var6).field20598 = false;
-                        ((WaypointColorBadge) var6).field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
+            badge.onClick((clickedBadge, mouseButton) -> {
+                for (GuiComponent child : clickedBadge.getParent().getChildren()) {
+                    if (child instanceof WaypointColorBadge) {
+                        WaypointColorBadge otherBadge = (WaypointColorBadge) child;
+                        otherBadge.isSelected = false;
+                        otherBadge.selectionAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
                     }
                 }
 
-                ((WaypointColorBadge) parent).field20598 = true;
-                ((WaypointColorBadge) parent).field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
-                this.field21296 = ((WaypointColorBadge) parent).color.color;
+                WaypointColorBadge selectedBadge = (WaypointColorBadge) clickedBadge;
+                selectedBadge.isSelected = true;
+                selectedBadge.selectionAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+
+                this.selectedColor = selectedBadge.color.color;
             });
-            var7 = false;
         }
     }
 }

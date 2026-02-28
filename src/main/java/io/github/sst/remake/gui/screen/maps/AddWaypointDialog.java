@@ -2,7 +2,6 @@ package io.github.sst.remake.gui.screen.maps;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
-import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.gui.framework.widget.TextButton;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -22,137 +21,190 @@ import java.util.Date;
 import java.util.List;
 
 public class AddWaypointDialog extends InteractiveWidget {
-    private final List<Button> field20723 = new ArrayList<Button>();
-    private final Date field20724;
-    private boolean field20725 = false;
-    private Date field20726;
-    public Vec3i field20727;
-    public TextField field20728;
-    public TextField field20729;
-    public WaypointColorSelector field20730;
-    private final List<Class9073> field20731 = new ArrayList<>();
+    private final Date openAnimationStart;
+    private Date closeAnimationStart;
 
-    public AddWaypointDialog(GuiComponent var1, String var2, int var3, int var4, Vec3i var5) {
-        super(var1, var2, var3 - 107, var4 + 10, 214, 170, ColorHelper.DEFAULT_COLOR, "", false);
-        this.field20727 = var5;
+    private boolean openToLeft = false;
+
+    public Vec3i defaultCoords;
+    public TextField coordsField;
+    public TextField nameField;
+    public WaypointColorSelector colorSelector;
+
+    private final List<WaypointAddListener> addListeners = new ArrayList<>();
+
+    public AddWaypointDialog(GuiComponent parent, String id, int x, int y, Vec3i initialCoords) {
+        super(parent, id, x - 107, y + 10, 214, 170, ColorHelper.DEFAULT_COLOR, "", false);
+
+        this.defaultCoords = initialCoords;
+
         if (this.y + this.height <= MinecraftClient.getInstance().getWindow().getHeight()) {
             this.y += 10;
         } else {
             this.y = this.y - (this.height + 27);
-            this.field20725 = true;
+            this.openToLeft = true;
         }
 
-        this.field20724 = new Date();
+        this.openAnimationStart = new Date();
+
         this.setReAddChildren(true);
         this.setListening(false);
-        TextButton var8;
-        this.addToList(
-                var8 = new TextButton(
-                        this,
-                        "addButton",
-                        this.width - 66,
-                        this.height - 60,
-                        FontUtils.HELVETICA_LIGHT_25.getWidth("Add"),
-                        50,
-                        ColorHelper.DEFAULT_COLOR,
-                        "Add",
-                        FontUtils.HELVETICA_LIGHT_25
-                )
+
+        TextButton addButton = new TextButton(
+                this,
+                "addButton",
+                this.width - 66,
+                this.height - 60,
+                FontUtils.HELVETICA_LIGHT_25.getWidth("Add"),
+                50,
+                ColorHelper.DEFAULT_COLOR,
+                "Add",
+                FontUtils.HELVETICA_LIGHT_25
         );
-        var8.onClick((parent, mouseButton) -> this.method13132(this.field20729.getText(), this.method13130(), this.field20730.field21296));
-        this.addToList(this.field20729 = new TextField(this, "Name", 20, 7, this.width - 40, 60, TextField.DEFAULT_COLORS, "My waypoint", "My waypoint"));
-        this.field20729.startFocus();
-        this.field20729.setUnderlineEnabled(false);
-        this.addToList(this.field20730 = new WaypointColorSelector(this, "badgeSelect", 0, 86));
-        this.addToList(
-                this.field20728 = new TextField(
-                        this,
-                        "Coords",
-                        20,
-                        this.height - 44,
-                        this.width - 100,
-                        20,
-                        TextField.DEFAULT_COLORS,
-                        var5.getX() + " " + var5.getZ(),
-                        var5.getX() + " " + var5.getZ()
-                )
+        this.addToList(addButton);
+
+        addButton.onClick((widget, mouseButton) ->
+                this.fireWaypointAdded(this.nameField.getText(), this.parseCoordsOrDefault(), this.colorSelector.selectedColor)
         );
-        this.field20728.setUnderlineEnabled(false);
-        this.field20728.setFont(FontUtils.HELVETICA_LIGHT_18);
+
+        this.nameField = new TextField(
+                this,
+                "Name",
+                20,
+                7,
+                this.width - 40,
+                60,
+                TextField.DEFAULT_COLORS,
+                "My waypoint",
+                "My waypoint"
+        );
+        this.addToList(this.nameField);
+
+        this.nameField.startFocus();
+        this.nameField.setUnderlineEnabled(false);
+
+        this.colorSelector = new WaypointColorSelector(this, "badgeSelect", 0, 86);
+        this.addToList(this.colorSelector);
+
+        String defaultCoordsText = initialCoords.getX() + " " + initialCoords.getZ();
+        this.coordsField = new TextField(
+                this,
+                "Coords",
+                20,
+                this.height - 44,
+                this.width - 100,
+                20,
+                TextField.DEFAULT_COLORS,
+                defaultCoordsText,
+                defaultCoordsText
+        );
+        this.addToList(this.coordsField);
+
+        this.coordsField.setUnderlineEnabled(false);
+        this.coordsField.setFont(FontUtils.HELVETICA_LIGHT_18);
     }
 
-    public Vec3i method13130() {
-        if (this.field20728.getText() != null && this.field20728.getText().contains(" ")) {
-            String[] var3 = this.field20728.getText().split(" ");
-            if (var3.length == 2 && var3[0].matches("-?\\d+") && var3[1].matches("-?\\d+")) {
-                int var4 = Integer.parseInt(var3[0]);
-                int var5 = Integer.parseInt(var3[1]);
-                return new Vec3i(var4, 0, var5);
+    public Vec3i parseCoordsOrDefault() {
+        String text = this.coordsField.getText();
+        if (text != null && text.contains(" ")) {
+            String[] parts = text.split(" ");
+            if (parts.length == 2 && parts[0].matches("-?\\d+") && parts[1].matches("-?\\d+")) {
+                int x = Integer.parseInt(parts[0]);
+                int z = Integer.parseInt(parts[1]);
+                return new Vec3i(x, 0, z);
             }
         }
-
-        return this.field20727;
+        return this.defaultCoords;
     }
 
     @Override
     public void draw(float partialTicks) {
-        partialTicks = AnimationUtils.calculateProgressWithReverse(this.field20724, this.field20726, 250.0F, 120.0F);
-        float var4 = EasingFunctions.easeOutBack(partialTicks, 0.0F, 1.0F, 1.0F);
-        this.setScale(0.8F + var4 * 0.2F, 0.8F + var4 * 0.2F);
-        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - var4)) * (!this.field20725 ? 1 : -1));
+        float animProgress = AnimationUtils.calculateProgressWithReverse(
+                this.openAnimationStart,
+                this.closeAnimationStart,
+                250.0F,
+                120.0F
+        );
+
+        float eased = EasingFunctions.easeOutBack(animProgress, 0.0F, 1.0F, 1.0F);
+
+        this.setScale(0.8F + eased * 0.2F, 0.8F + eased * 0.2F);
+
+        int slideDirection = this.openToLeft ? -1 : 1;
+        this.setTranslateX((int) ((float) this.width * 0.2F * (1.0F - eased)) * slideDirection);
+
         super.applyScaleTransforms();
-        int var5 = 10;
-        int var6 = ColorHelper.applyAlpha(-723724, QuadraticEasing.easeOutQuad(partialTicks, 0.0F, 1.0F, 1.0F));
+
+        int padding = 10;
+
+        int bgColor = ColorHelper.applyAlpha(
+                -723724,
+                QuadraticEasing.easeOutQuad(animProgress, 0.0F, 1.0F, 1.0F)
+        );
+
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var5 / 2),
-                (float) (this.y + var5 / 2),
-                (float) (this.width - var5),
-                (float) (this.height - var5),
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.width - padding),
+                (float) (this.height - padding),
                 35.0F,
-                partialTicks
+                animProgress
         );
+
         RenderUtils.drawRoundedRect(
-                (float) (this.x + var5 / 2),
-                (float) (this.y + var5 / 2),
-                (float) (this.x - var5 / 2 + this.width),
-                (float) (this.y - var5 / 2 + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.25F)
+                (float) (this.x + padding / 2),
+                (float) (this.y + padding / 2),
+                (float) (this.x - padding / 2 + this.width),
+                (float) (this.y - padding / 2 + this.height),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), animProgress * 0.25F)
         );
-        RenderUtils.drawRoundedRect((float) this.x, (float) this.y, (float) this.width, (float) this.height, (float) var5, var6);
+
+        RenderUtils.drawRoundedRect(
+                (float) this.x,
+                (float) this.y,
+                (float) this.width,
+                (float) this.height,
+                (float) padding,
+                bgColor
+        );
+
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.x, (float) this.y, 0.0F);
-        GL11.glRotatef(!this.field20725 ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(!this.openToLeft ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef((float) (-this.x), (float) (-this.y), 0.0F);
+
         RenderUtils.drawImage(
-                (float) (this.x + (!this.field20725 ? 0 : this.height)),
-                (float) this.y + (float) ((this.width - 47) / 2) * (!this.field20725 ? 1.0F : -1.58F),
+                (float) (this.x + (!this.openToLeft ? 0 : this.height)),
+                (float) this.y + (float) ((this.width - 47) / 2) * (!this.openToLeft ? 1.0F : -1.58F),
                 18.0F,
                 47.0F,
                 Resources.SELECTED_ICON,
-                var6
+                bgColor
         );
         GL11.glPopMatrix();
+
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 25),
                 (float) (this.y + 68),
                 (float) (this.x + this.width - 25),
                 (float) (this.y + 69),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * animProgress)
         );
-        super.draw(partialTicks);
+
+        super.draw(animProgress);
     }
 
-    public final void method13131(Class9073 var1) {
-        this.field20731.add(var1);
+    public void addWaypointAddListener(WaypointAddListener var1) {
+        this.addListeners.add(var1);
     }
 
-    public final void method13132(String var1, Vec3i var2, int var3) {
-        for (Class9073 var7 : this.field20731) {
-            var7.method33814(this, var1, var2, var3);
+    public void fireWaypointAdded(String name, Vec3i coords, int color) {
+        for (WaypointAddListener listener : this.addListeners) {
+            listener.onWaypointAdded(this, name, coords, color);
         }
     }
 
-    public interface Class9073 {
-        void method33814(AddWaypointDialog var1, String var2, Vec3i var3, int var4);
+    public interface WaypointAddListener {
+        void onWaypointAdded(AddWaypointDialog dialog, String name, Vec3i coords, int color);
     }
 }

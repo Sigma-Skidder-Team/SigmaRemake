@@ -12,47 +12,54 @@ import org.lwjgl.opengl.GL11;
 
 public class WaypointColorBadge extends Button {
     public final WaypointColors color;
-    public boolean field20598;
-    public AnimationUtils field20599;
+    public boolean isSelected;
+    public AnimationUtils selectionAnimation;
 
-    public WaypointColorBadge(GuiComponent var1, String var2, int var3, int var4, WaypointColors color) {
-        super(var1, var2, var3, var4, 18, 18);
+    public WaypointColorBadge(GuiComponent parent, String id, int x, int y, WaypointColors color) {
+        super(parent, id, x, y, 18, 18);
         this.color = color;
-        this.field20599 = new AnimationUtils(250, 250);
-        this.field20599.changeDirection(AnimationUtils.Direction.FORWARDS);
+
+        this.selectionAnimation = new AnimationUtils(250, 250);
+        this.selectionAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
     }
 
     @Override
     public void draw(float partialTicks) {
-        if (this.field20598 && partialTicks == 1.0F) {
-            this.field20599.changeDirection(AnimationUtils.Direction.BACKWARDS);
+        if (this.isSelected && partialTicks == 1.0F) {
+            this.selectionAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
         }
 
-        int var4 = (int) (EasingFunctions.easeInOutCustomBack(this.field20599.calcPercent(), 0.0F, 1.0F, 1.0F, 7.0F) * 3.0F);
+        float animPercent = this.selectionAnimation.calcPercent();
+        int pulse = (int) (EasingFunctions.easeInOutCustomBack(animPercent, 0.0F, 1.0F, 1.0F, 7.0F) * 3.0F);
+
+        float centerX = (float) (this.x + this.width / 2);
+        float centerY = (float) (this.y + this.height / 2);
+
         RenderUtils.drawCircle(
-                (float) (this.x + this.width / 2),
-                (float) (this.y + this.height / 2),
+                centerX,
+                centerY,
                 25.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.025F * partialTicks * this.field20599.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.025F * partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
-                (float) (this.x + this.width / 2),
-                (float) (this.y + this.height / 2),
+                centerX,
+                centerY,
                 23.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks * this.field20599.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
-                (float) (this.x + this.width / 2),
-                (float) (this.y + this.height / 2),
-                (float) (18 + var4),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * this.field20599.calcPercent())
+                centerX,
+                centerY,
+                (float) (18 + pulse),
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
-                (float) (this.x + this.width / 2),
-                (float) (this.y + this.height / 2),
-                (float) (18 - var4),
+                centerX,
+                centerY,
+                (float) (18 - pulse),
                 ColorHelper.applyAlpha(this.color.color, partialTicks)
         );
+
         GL11.glPushMatrix();
         super.drawChildren(partialTicks);
         GL11.glPopMatrix();
