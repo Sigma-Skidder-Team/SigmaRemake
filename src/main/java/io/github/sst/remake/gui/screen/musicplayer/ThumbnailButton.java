@@ -167,7 +167,7 @@ public class ThumbnailButton extends Widget {
 
         if (this.thumbnailTexture == null) {
             try {
-                this.thumbnailTexture = ImageUtils.createTexture("picture", this.thumbnailImage);
+                this.thumbnailTexture = ImageUtils.createTexture("picture-" + this.getName(), this.thumbnailImage);
             } catch (IOException e) {
                 Client.LOGGER.warn("Failed to get texture 'picture'", e);
             }
@@ -176,13 +176,14 @@ public class ThumbnailButton extends Widget {
         if (this.blurredThumbnailTexture == null && hoverPercent > 0.0F) {
             try {
                 this.blurredThumbnailTexture = ImageUtils.createTexture(
-                        "picture",
+                        "picture-blur-" + this.getName(),
                         ImageUtils.applyBlur(this.thumbnailImage, 14)
                 );
             } catch (IOException e) {
                 Client.LOGGER.warn("Failed to get texture 'picture'", e);
             }
         } else if (hoverPercent == 0.0F && this.blurredThumbnailTexture != null) {
+            this.blurredThumbnailTexture.release();
             this.blurredThumbnailTexture = null;
         }
 

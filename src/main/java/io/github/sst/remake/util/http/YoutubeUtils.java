@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YoutubeUtils {
-    private static final String GOOGLE_SEARCH_BASE_URL = "https://www.google.com/search?client=safari&num=21&gbv=1&tbm=vid&q=site:youtube.com/watch+music+";
+    private static final String YOUTUBE_SEARCH_BASE_URL = "https://www.youtube.com/results?search_query=";
     private static final String YOUTUBE_DEFAULT_FALLBACK_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
     public static String formatSecondsAsTimestamp(int totalSeconds) {
@@ -53,7 +53,10 @@ public class YoutubeUtils {
     }
 
     public static SongData[] getFromSearch(String search) {
-        return extractSearchYoutubeThumbnails(NetUtils.getStringFromURL(GOOGLE_SEARCH_BASE_URL + StringUtils.encode(search)));
+        String query = StringUtils.encode(search);
+        // "sp=EgIQAQ%3D%3D" filters to videos and avoids channel/playlist-only results.
+        String url = YOUTUBE_SEARCH_BASE_URL + query + "&sp=EgIQAQ%253D%253D";
+        return extractSearchYoutubeThumbnails(NetUtils.getStringFromURL(url));
     }
 
     private static SongData[] extractYoutubeThumbnails(String htmlContent) {
@@ -83,34 +86,49 @@ public class YoutubeUtils {
     private static SongData[] extractSearchYoutubeThumbnails(String htmlContent) {
         htmlContent = StringUtils.normalizeHtmlContent(htmlContent);
 
-        Pattern pattern = Pattern.compile
-                (
-                        "<a(.*?)watch%3Fv%3D(.{11})[\"&](.*?)><div (.*?)>(.{1,100}) - YouTube</div></h3>",
-                        Pattern.MULTILINE
-                );
-        Matcher matcher = pattern.matcher(htmlContent);
-
         List<SongData> videos = new ArrayList<>();
-        while (matcher.find()) {
-            String id = matcher.group(2);
-            String rawTitle = matcher.group(5);
+        Pattern rendererPattern = Pattern.compile("\"videoRenderer\":\\{(.*?)\"thumbnailOverlays\":\\[", Pattern.DOTALL);
+        Matcher rendererMatcher = rendererPattern.matcher(htmlContent);
 
-            if (rawTitle.contains("</")
-                    || rawTitle.isEmpty()
-                    || rawTitle.trim().isEmpty()
-                    || matcher.group(1).contains("play-all")) {
+        Pattern idPattern = Pattern.compile("\"videoId\":\"([A-Za-z0-9_-]{11})\"");
+        Pattern runsTitlePattern = Pattern.compile("\"title\":\\{\"runs\":\\[\\{\"text\":\"((?:\\\\.|[^\"\\\\]){1,200})\"");
+        Pattern simpleTitlePattern = Pattern.compile("\"title\":\\{\"simpleText\":\"((?:\\\\.|[^\"\\\\]){1,200})\"");
+
+        while (rendererMatcher.find()) {
+            String rendererChunk = rendererMatcher.group(1);
+
+            Matcher idMatcher = idPattern.matcher(rendererChunk);
+            if (!idMatcher.find()) {
                 continue;
             }
+            String id = idMatcher.group(1);
 
             if (containsVideo(videos, id)) {
                 continue;
             }
 
-            String title = StringUtils.decode(StringEscapeUtils.unescapeJava(rawTitle.replaceAll("<(.*?)>", "")));
-
-            if (!containsVideo(videos, id)) {
-                videos.add(new SongData(id, title));
+            String rawTitle = null;
+            Matcher runsTitleMatcher = runsTitlePattern.matcher(rendererChunk);
+            if (runsTitleMatcher.find()) {
+                rawTitle = runsTitleMatcher.group(1);
+            } else {
+                Matcher simpleTitleMatcher = simpleTitlePattern.matcher(rendererChunk);
+                if (simpleTitleMatcher.find()) {
+                    rawTitle = simpleTitleMatcher.group(1);
+                }
             }
+
+            if (rawTitle == null || rawTitle.trim().isEmpty()) {
+                continue;
+            }
+
+            String title = StringUtils.decode(StringEscapeUtils.unescapeJava(rawTitle));
+            if (title.isEmpty()) {
+                continue;
+            }
+
+            String fullUrl = "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg";
+            videos.add(new SongData(id, title, fullUrl));
         }
 
         return videos.toArray(new SongData[0]);
