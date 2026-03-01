@@ -94,8 +94,8 @@ public final class MusicManager extends Manager implements IMinecraft {
 
     public List<PlaylistData> playlists;
 
-    private List<double[]> visualizer;
-    private List<Double> amplitudes;
+    public List<double[]> visualizer;
+    public List<Double> amplitudes;
 
     @Override
     public void init() {

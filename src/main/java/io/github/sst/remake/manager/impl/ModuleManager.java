@@ -48,6 +48,7 @@ public final class ModuleManager extends Manager {
         modules.add(new CorrectMovementModule());
         modules.add(new BlockFlyModule());
         modules.add(new SafeWalkModule());
+        modules.add(new MusicParticlesModule());
 
         modules.forEach(Module::onInit);
         super.init();
