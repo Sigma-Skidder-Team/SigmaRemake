@@ -78,8 +78,8 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        for (GuiComponent var6 : this.bubbles) {
-            var6.updatePanelDimensions(mouseX, mouseY);
+        for (GuiComponent bubble : this.bubbles) {
+            bubble.updatePanelDimensions(mouseX, mouseY);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);

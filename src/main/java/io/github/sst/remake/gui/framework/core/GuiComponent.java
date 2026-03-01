@@ -394,7 +394,7 @@ public class GuiComponent implements InputListener {
             } else {
                 try {
                     this.children.add(child);
-                } catch (ConcurrentModificationException var6) {
+                } catch (ConcurrentModificationException e) {
                     this.childrenToAdd.add(child);
                 }
             }

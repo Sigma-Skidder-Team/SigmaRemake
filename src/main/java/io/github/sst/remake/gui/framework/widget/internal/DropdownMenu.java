@@ -106,8 +106,8 @@ public class DropdownMenu extends InteractiveWidget {
         return this.selectedIndex;
     }
 
-    public void setSelectedIndex(int var1) {
-        this.selectedIndex = var1;
+    public void setSelectedIndex(int index) {
+        this.selectedIndex = index;
     }
 
     @Override
