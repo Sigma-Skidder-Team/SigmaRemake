@@ -8,25 +8,54 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 
 public class ProfileEditPanel extends Widget {
-    public final int baseWidth;
+    private final int baseWidth;
 
-    public ProfileEditPanel(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.baseWidth = var5;
+    public ProfileEditPanel(
+            GuiComponent parent,
+            String id,
+            int x,
+            int y,
+            int width,
+            int height
+    ) {
+        super(parent, id, x, y, width, height, false);
+        this.baseWidth = width;
     }
 
     @Override
     public void draw(float partialTicks) {
-        if (this.getWidth() != 0) {
-            this.applyTranslationTransforms();
-            float var4 = 1.0F - Math.min(1.0F, Math.max((float) this.getWidth() / (float) this.baseWidth, 0.0F));
-            RenderUtils.drawRoundedRect2(
-                    (float) this.x, (float) this.y, (float) this.baseWidth, (float) this.height, ColorHelper.applyAlpha(-3254955, partialTicks)
-            );
-            super.draw(partialTicks * (1.0F - var4));
-            RenderUtils.drawImage(
-                    0.0F, 0.0F, 20.0F, (float) this.height, Resources.SHADOW_RIGHT, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var4 * partialTicks)
-            );
+        if (this.getWidth() == 0) {
+            return;
         }
+
+        this.applyTranslationTransforms();
+
+        float collapseProgress = 1.0F - Math.min(
+                1.0F,
+                Math.max((float) this.getWidth() / (float) this.baseWidth, 0.0F)
+        );
+
+        RenderUtils.drawRoundedRect2(
+                (float) this.x,
+                (float) this.y,
+                (float) this.baseWidth,
+                (float) this.height,
+                ColorHelper.applyAlpha(-3254955, partialTicks)
+        );
+
+        // Fade children based on open progress.
+        super.draw(partialTicks * (1.0F - collapseProgress));
+
+        RenderUtils.drawImage(
+                0.0F,
+                0.0F,
+                20.0F,
+                (float) this.height,
+                Resources.SHADOW_RIGHT,
+                ColorHelper.applyAlpha(
+                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        collapseProgress * partialTicks
+                )
+        );
     }
 }

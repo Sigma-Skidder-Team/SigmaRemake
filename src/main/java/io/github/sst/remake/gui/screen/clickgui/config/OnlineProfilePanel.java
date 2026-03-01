@@ -27,18 +27,39 @@ public class OnlineProfilePanel extends InteractiveWidget {
 
     public OnlineProfilePanel(GuiComponent parent, String name, int x, int y, int width, int height) {
         super(parent, name, x, y, width, 0, ColorHelper.DEFAULT_COLOR, false);
+
         this.maxHeight = height;
 
-        TextButton blankButton = new TextButton(this, "blankButton", 25, 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Blank"), 30, ColorHelper.DEFAULT_COLOR, "Blank", FontUtils.HELVETICA_LIGHT_20);
+        TextButton createBlankButton = new TextButton(
+                this,
+                "blankButton",
+                25,
+                0,
+                FontUtils.HELVETICA_LIGHT_20.getWidth("Blank"),
+                30,
+                ColorHelper.DEFAULT_COLOR,
+                "Blank",
+                FontUtils.HELVETICA_LIGHT_20
+        );
 
-        blankButton.onClick((parent2, mouseButton) -> {
+        createBlankButton.onClick((clickedParent, mouseButton) -> {
             ProfileScreen profileScreen = (ProfileScreen) this.getParent();
             profileScreen.createBlankProfile();
         });
 
-        TextButton duplicateButton = new TextButton(this, "dupeButton", width - 25 - FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 0, FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"), 30, ColorHelper.DEFAULT_COLOR, "Duplicate", FontUtils.HELVETICA_LIGHT_20);
+        TextButton duplicateButton = new TextButton(
+                this,
+                "dupeButton",
+                width - 25 - FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"),
+                0,
+                FontUtils.HELVETICA_LIGHT_20.getWidth("Duplicate"),
+                30,
+                ColorHelper.DEFAULT_COLOR,
+                "Duplicate",
+                FontUtils.HELVETICA_LIGHT_20
+        );
 
-        duplicateButton.onClick((parent2, mouseButton) -> {
+        duplicateButton.onClick((clickedParent, mouseButton) -> {
             ProfileScreen profileScreen = (ProfileScreen) this.getParent();
             profileScreen.duplicateSelectedProfile();
         });
@@ -46,28 +67,36 @@ public class OnlineProfilePanel extends InteractiveWidget {
         this.loadingIndicator = new LoadingIndicator(this, "loading", (width - 30) / 2, 100, 30, 30);
         this.profileList = new ScrollablePanel(this, "defaultProfiles", 0, 40, width, height - 40);
 
-        this.addToList(blankButton);
+        this.addToList(createBlankButton);
         this.addToList(duplicateButton);
-        this.addToList(loadingIndicator);
-        this.addToList(profileList);
+        this.addToList(this.loadingIndicator);
+        this.addToList(this.profileList);
 
         this.onlineProfileManager = new OnlineProfileManager();
-        this.onlineProfileManager.getOnlineProfileNames(profiles -> {
+        this.onlineProfileManager.getOnlineProfileNames(profileNames -> {
             ProfileScreen screen = (ProfileScreen) this.getParent();
             this.loadingIndicator.setSelfVisible(false);
 
-            for (String profile : profiles) {
-                Button profileButton;
-                this.profileList
-                        .addToList(
-                                profileButton = new Button(
-                                        this.profileList, "p_" + profile, 0, 0, width, 30, new ColorHelper(-723724, -2039584, 0), profile, FontUtils.HELVETICA_LIGHT_18
-                                )
-                        );
-                profileButton.onClick((parent2, mouseButton) -> {
+            for (String profileName : profileNames) {
+                Button profileButton = new Button(
+                        this.profileList,
+                        "p_" + profileName,
+                        0,
+                        0,
+                        width,
+                        30,
+                        new ColorHelper(-723724, -2039584, 0),
+                        profileName,
+                        FontUtils.HELVETICA_LIGHT_18
+                );
+
+                this.profileList.addToList(profileButton);
+
+                profileButton.onClick((clickedParent, mouseButton) -> {
                     this.setLoading(true);
+                    // TODO: shared executor instead of spawning raw threads.
                     new Thread(() -> {
-                        Profile onlineProfile = onlineProfileManager.downloadOnlineProfile(profile);
+                        Profile onlineProfile = onlineProfileManager.downloadOnlineProfile(profileName);
                         if (onlineProfile != null) {
                             screen.importProfile(onlineProfile);
                         }
@@ -90,44 +119,52 @@ public class OnlineProfilePanel extends InteractiveWidget {
     }
 
     @Override
-    public void updatePanelDimensions(int mouseX, int mouseY) {
-        super.updatePanelDimensions(mouseX, mouseY);
-    }
-
-    @Override
     public void draw(float partialTicks) {
-        float var4 = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
+        float heightPercent = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
         if (this.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-            var4 = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16);
+            heightPercent = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16);
         }
 
-        this.setHeight((int) ((float) this.maxHeight * var4));
-        if (this.expandAnimation.calcPercent() != 0.0F) {
-            RenderUtils.drawImage(
-                    (float) this.x,
-                    (float) (this.y + this.height),
-                    (float) this.width,
-                    50.0F,
-                    Resources.SHADOW_BOTTOM,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.expandAnimation.calcPercent() * partialTicks * 0.3F)
-            );
-            ScissorUtils.startScissor(this);
-            RenderUtils.drawRoundedRect2(
-                    (float) this.x, (float) this.y, (float) this.width, (float) this.height, ColorHelper.applyAlpha(-723724, partialTicks)
-            );
+        this.setHeight((int) ((float) this.maxHeight * heightPercent));
 
-            if (onlineProfileManager != null && onlineProfileManager.cachedProfileNames != null && onlineProfileManager.cachedProfileNames.isEmpty()) {
-                RenderUtils.drawString(
-                        FontUtils.HELVETICA_LIGHT_14,
-                        (float) (this.x + 40),
-                        (float) (this.y + 110),
-                        "No Default Profiles Available",
-                        ClientColors.MID_GREY.getColor()
-                );
-            }
-
-            super.draw(partialTicks);
-            ScissorUtils.restoreScissor();
+        if (this.expandAnimation.calcPercent() == 0.0F) {
+            return;
         }
+
+        RenderUtils.drawImage(
+                (float) this.x,
+                (float) (this.y + this.height),
+                (float) this.width,
+                50.0F,
+                Resources.SHADOW_BOTTOM,
+                ColorHelper.applyAlpha(
+                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        this.expandAnimation.calcPercent() * partialTicks * 0.3F
+                )
+        );
+
+        ScissorUtils.startScissor(this);
+
+        RenderUtils.drawRoundedRect2(
+                (float) this.x,
+                (float) this.y,
+                (float) this.width,
+                (float) this.height,
+                ColorHelper.applyAlpha(-723724, partialTicks)
+        );
+
+        if (this.onlineProfileManager != null && this.onlineProfileManager.cachedProfileNames.isEmpty()) {
+            RenderUtils.drawString(
+                    FontUtils.HELVETICA_LIGHT_14,
+                    (float) (this.x + 40),
+                    (float) (this.y + 110),
+                    "No Default Profiles Available",
+                    ClientColors.MID_GREY.getColor()
+            );
+        }
+
+        super.draw(partialTicks);
+
+        ScissorUtils.restoreScissor();
     }
 }
