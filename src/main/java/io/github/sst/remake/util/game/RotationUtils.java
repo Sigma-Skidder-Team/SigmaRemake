@@ -443,8 +443,10 @@ public class RotationUtils implements IMinecraft {
                 break;
             case UP:
                 offsetY += 0.0F;
+                break;
             case DOWN:
                 offsetY++;
+                break;
         }
 
         double dX = (double) blockPos.getX() + 0.5 - client.player.getX() + (double) offsetX;
