@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.http;
+package io.github.sst.remake.util.http.cookie;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

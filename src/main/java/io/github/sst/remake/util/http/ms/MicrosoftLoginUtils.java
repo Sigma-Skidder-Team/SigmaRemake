@@ -1,7 +1,8 @@
-package io.github.sst.remake.util.http;
+package io.github.sst.remake.util.http.ms;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpServer;
+import io.github.sst.remake.util.http.NetUtils;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public final class MicrosoftUtils {
+public final class MicrosoftLoginUtils {
     public static final RequestConfig REQUEST_CONFIG = RequestConfig
             .custom()
             .setConnectionRequestTimeout(30_000)
@@ -83,13 +84,13 @@ public final class MicrosoftUtils {
                         errorMsg.set(String.format("%s: %s", query.get("error"), query.get("error_description")));
                     }
 
-                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.html", MicrosoftUtils.class);
+                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.html", MicrosoftLoginUtils.class);
 
                     latch.countDown();
                 });
 
                 server.createContext("/callback.css", exchange -> {
-                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.css", MicrosoftUtils.class);
+                    NetUtils.sendClasspathResource(exchange, "/assets/sigma/callback.css", MicrosoftLoginUtils.class);
                 });
 
                 server.createContext("/assets/", exchange -> {
@@ -99,7 +100,7 @@ public final class MicrosoftUtils {
                         return;
                     }
 
-                    NetUtils.sendClasspathResource(exchange, path, MicrosoftUtils.class);
+                    NetUtils.sendClasspathResource(exchange, path, MicrosoftLoginUtils.class);
                 });
 
                 final URIBuilder uriBuilder = new URIBuilder("https://login.live.com/oauth20_authorize.srf")

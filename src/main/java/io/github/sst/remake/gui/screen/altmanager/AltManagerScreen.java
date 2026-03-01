@@ -12,8 +12,6 @@ import io.github.sst.remake.gui.framework.widget.internal.AlertComponent;
 import io.github.sst.remake.gui.framework.widget.internal.ComponentType;
 import io.github.sst.remake.gui.framework.widget.internal.DropdownMenu;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.http.CookieLoginUtils;
-import io.github.sst.remake.util.http.MicrosoftUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -21,17 +19,14 @@ import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
-import io.github.sst.remake.util.system.io.FileUtils;
 import io.github.sst.remake.util.system.io.audio.SoundUtils;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.ServerList;
+import org.lwjgl.glfw.GLFW;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class AltManagerScreen extends Screen implements IMinecraft {
     private int backgroundOffsetX;
@@ -159,8 +154,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         this.addToList(this.loginDialog = new Alert(this, "Add alt dialog", header,
                 new AlertComponent(ComponentType.FIRST_LINE, "Login with your minecraft", 15),
                 new AlertComponent(ComponentType.FIRST_LINE, "account here!", 25),
-                new AlertComponent(ComponentType.SECOND_LINE, "Username", 50),
-                new AlertComponent(ComponentType.BUTTON, "Cracked login", 50),
+                new AlertComponent(ComponentType.SECOND_LINE, "Username/Token", 50),
+                new AlertComponent(ComponentType.BUTTON, "Login", 50),
                 new AlertComponent(ComponentType.BUTTON, "Cookie login", 50),
                 new AlertComponent(ComponentType.BUTTON, "Web login", 50)));
 
@@ -169,14 +164,24 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             if (clicked == null) return;
 
             switch (clicked.getText()) {
-                case "Cracked login":
-                    processCrackedLogin();
+                case "Login":
+                    String parsedText = this.loginDialog.getInputMap().get("Username/Token");
+                    if (parsedText.startsWith("eyJra")) { //token
+                        if (Client.INSTANCE.accountManager.processTokenLogin(parsedText)) {
+                            updateAccountList(false);
+                        }
+                    } else {
+                        Client.INSTANCE.accountManager.processCrackedLogin(parsedText);
+                        updateAccountList(false);
+                    }
                     break;
                 case "Cookie login":
-                    processCookieLogin();
+                    if (Client.INSTANCE.accountManager.processCookieLogin()) {
+                        updateAccountList(false);
+                    }
                     break;
                 case "Web login":
-                    processWebLogin();
+                    Client.INSTANCE.accountManager.processWebLogin(() -> updateAccountList(false));
                     break;
             }
         });
@@ -186,74 +191,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 new AlertComponent(ComponentType.FIRST_LINE, "Are you sure you want", 15),
                 new AlertComponent(ComponentType.FIRST_LINE, "to delete this alt?", 40),
                 new AlertComponent(ComponentType.BUTTON, "Delete", 50)));
-    }
-
-    private void processCrackedLogin() {
-        String username = this.loginDialog.getInputMap().get("Username");
-        if (username != null && !username.isEmpty()) {
-            Account account = new Account(username, "0", Account.STEVE_UUID);
-            if (!Client.INSTANCE.accountManager.has(account)) {
-                Client.INSTANCE.accountManager.add(account);
-                Client.INSTANCE.configManager.saveAlts();
-            }
-        }
-        updateAccountList(false);
-    }
-
-    private void processCookieLogin() {
-        File file = FileUtils.openTxtFile();
-        if (file == null) return;
-
-        try {
-            CookieLoginUtils.LoginData session = CookieLoginUtils.loginWithCookie(file);
-            if (session == null) {
-                SoundUtils.play("error");
-                return;
-            }
-
-            Account account = new Account(session.username, session.playerID, session.token);
-            if (!Client.INSTANCE.accountManager.has(account)) {
-                Client.INSTANCE.accountManager.add(account);
-                Client.INSTANCE.configManager.saveAlts();
-            }
-
-            updateAccountList(false);
-        } catch (Exception e) {
-            SoundUtils.play("error");
-            updateAccountList(false);
-        }
-    }
-
-    private void processWebLogin() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        MicrosoftUtils.acquireMSAuthCode(executor)
-                .thenComposeAsync(code -> MicrosoftUtils.acquireMSAccessToken(code, executor), executor)
-                .thenComposeAsync(access -> MicrosoftUtils.acquireXboxAccessToken(access, executor), executor)
-                .thenComposeAsync(xbox -> MicrosoftUtils.acquireXboxXstsToken(xbox, executor), executor)
-                .thenComposeAsync(xsts -> MicrosoftUtils.acquireMCAccessToken(xsts.get("Token"), xsts.get("uhs"), executor), executor)
-                .thenComposeAsync(mc -> MicrosoftUtils.login(mc, executor), executor)
-                .thenAccept(session -> {
-                    try {
-                        Account account = new Account(session.getUsername(), session.getAccessToken(), session.getUuid());
-                        if (!Client.INSTANCE.accountManager.has(account)) {
-                            Client.INSTANCE.accountManager.add(account);
-                            Client.INSTANCE.configManager.saveAlts();
-                        }
-                        updateAccountList(false);
-                    } finally {
-                        executor.shutdown();
-                    }
-                })
-                .exceptionally(err -> {
-                    try {
-                        Client.LOGGER.error("Auth failed", err);
-                        SoundUtils.play("error");
-                        updateAccountList(false);
-                    } finally {
-                        executor.shutdown();
-                    }
-                    return null;
-                });
     }
 
     private void addAccountEntry(Account account, boolean animateIn) {
@@ -268,9 +205,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 account
         ));
 
-        // If you don't want the slide-in animation for a refresh, match old behavior.
         if (!animateIn) {
-            // Assumes your new AccountListEntry exposes this like the old one did.
             entry.slideAnim = new AnimationUtils(0, 0);
         }
 
@@ -279,10 +214,8 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         }
 
         entry.addMouseButtonCallback((screen, mouseButton) -> {
-            // Right click => delete
             if (mouseButton != 0) {
                 this.deleteAlert.onPress(w -> {
-                    // remove the entry account
                     Client.INSTANCE.accountManager.remove(entry.account);
                     this.accountDetailsPanel.handleSelectedAccount(null);
                     this.updateAccountList(false);
@@ -292,11 +225,9 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 return;
             }
 
-            // Left click => login + select
             this.loginToAccount(entry);
             this.accountDetailsPanel.handleSelectedAccount(entry.account);
 
-            // Clear selection
             for (GuiComponent container : this.accountListPanel.getChildren()) {
                 if (container instanceof VerticalScrollBar) continue;
                 for (GuiComponent child : container.getChildren()) {
@@ -309,7 +240,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
             entry.setSelected(true);
         });
 
-        // If currently logged in, keep it selected and show details
         if (Client.INSTANCE.accountManager.currentAccount == account) {
             this.accountDetailsPanel.handleSelectedAccount(entry.account);
             entry.setSelected(true, true);
@@ -467,7 +397,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 256) client.openScreen(new TitleScreen());
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) client.openScreen(new TitleScreen());
     }
 
     @Override
