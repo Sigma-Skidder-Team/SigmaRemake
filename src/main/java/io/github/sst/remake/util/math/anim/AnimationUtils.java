@@ -41,6 +41,17 @@ public class AnimationUtils {
         return time != null && (float) (new Date().getTime() - time.getTime()) > elapsed;
     }
 
+    public static float easeInOutQuad(float time, float startValue, float changeInValue, float duration) {
+        time /= duration / 2.0F;
+
+        if (time < 1.0F) {
+            return changeInValue / 2.0F * time * time + startValue;
+        }
+
+        time--;
+        return -changeInValue / 2.0F * (time * (time - 2.0F) - 1.0F) + startValue;
+    }
+
     public void changeDirection(final Direction direction) {
         if (this.direction == direction) {
             return;

@@ -28,4 +28,8 @@ public class RandomUtils {
         double scale = Math.pow(10.0, decimals);
         return (float) (Math.round(steppedValue * scale) / scale);
     }
+
+    public static float clamp01(float value) {
+        return Math.max(0.0F, Math.min(1.0F, value));
+    }
 }
