@@ -7,31 +7,35 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 
 public class ColorPreview extends InteractiveWidget {
-    public int colorValue;
+    public int previewColor;
 
-    public ColorPreview(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.colorValue = var7;
+    public ColorPreview(GuiComponent parent, String name, int x, int y, int width, int height, int initialColor) {
+        super(parent, name, x, y, width, height, false);
+        this.previewColor = initialColor;
     }
 
     @Override
     public void draw(float partialTicks) {
-        RenderUtils.drawCircle(
-                (float) this.x + (float) this.width / 2.0F,
-                (float) this.y + (float) this.width / 2.0F,
-                (float) this.width,
-                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(this.colorValue, ClientColors.DEEP_TEAL.getColor(), 0.8F), partialTicks)
+        float centerX = (float) this.x + (float) this.width / 2.0F;
+        float centerY = (float) this.y + (float) this.width / 2.0F;
+
+        int outerRingColor = ColorHelper.applyAlpha(
+                ColorHelper.shiftTowardsOther(this.previewColor, ClientColors.DEEP_TEAL.getColor(), 0.8F),
+                partialTicks
         );
+        RenderUtils.drawCircle(centerX, centerY, (float) this.width, outerRingColor);
+
         RenderUtils.drawCircle(
-                (float) this.x + (float) this.width / 2.0F,
-                (float) this.y + (float) this.width / 2.0F,
+                centerX,
+                centerY,
                 (float) (this.width - 2),
-                ColorHelper.applyAlpha(this.colorValue, partialTicks)
+                ColorHelper.applyAlpha(this.previewColor, partialTicks)
         );
+
         if (this.isMouseDownOverComponent()) {
             RenderUtils.drawCircle(
-                    (float) this.x + (float) this.width / 2.0F,
-                    (float) this.y + (float) this.width / 2.0F,
+                    centerX,
+                    centerY,
                     (float) (this.width - 2),
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.2F)
             );

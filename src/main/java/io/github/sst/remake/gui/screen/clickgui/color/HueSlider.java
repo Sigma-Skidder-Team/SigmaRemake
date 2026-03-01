@@ -12,16 +12,17 @@ public class HueSlider extends InteractiveWidget {
     private float hue;
     public boolean dragging = false;
 
-    public HueSlider(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, float var7) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.hue = var7;
+    public HueSlider(GuiComponent parent, String name, int x, int y, int width, int height, float initialHue) {
+        super(parent, name, x, y, width, height, false);
+        this.hue = initialHue;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        int var5 = this.getMouseX() - this.getAbsoluteX();
+        int localMouseX = this.getMouseX() - this.getAbsoluteX();
+
         if (this.dragging) {
-            this.setHueFromMouse((float) var5 / (float) this.getWidth());
+            this.setHueFromMouse((float) localMouseX / (float) this.getWidth());
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -29,14 +30,15 @@ public class HueSlider extends InteractiveWidget {
 
     @Override
     public void draw(float partialTicks) {
-        for (int var4 = 0; var4 < this.width; var4++) {
-            float var5 = (float) var4 / (float) this.width;
+        for (int pixelX = 0; pixelX < this.width; pixelX++) {
+            float pixelHue = (float) pixelX / (float) this.width;
+
             RenderUtils.drawRoundedRect2(
-                    (float) (this.x + var4),
+                    (float) (this.x + pixelX),
                     (float) this.y,
                     1.0F,
                     (float) this.height,
-                    ColorHelper.applyAlpha(Color.HSBtoRGB(var5, 1.0F, 1.0F), partialTicks)
+                    ColorHelper.applyAlpha(Color.HSBtoRGB(pixelHue, 1.0F, 1.0F), partialTicks)
             );
         }
 
@@ -47,9 +49,11 @@ public class HueSlider extends InteractiveWidget {
                 (float) (this.getY() + this.getHeight()),
                 ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.5F * partialTicks)
         );
-        ColorPicker.drawLayeredCircle(
-                this.x + Math.round((float) this.width * this.hue) + 1, this.y + 4, Color.HSBtoRGB(this.hue, 1.0F, 1.0F), partialTicks
-        );
+
+        int thumbX = this.x + Math.round((float) this.width * this.hue) + 1;
+        int thumbY = this.y + 4;
+        RenderUtils.drawLayeredCircle(thumbX, thumbY, Color.HSBtoRGB(this.hue, 1.0F, 1.0F), partialTicks);
+
         super.draw(partialTicks);
     }
 
@@ -68,15 +72,17 @@ public class HueSlider extends InteractiveWidget {
         return this.hue;
     }
 
-    public void setHueFromMouse(float var1) {
-        this.setHue(var1, true);
+    public void setHueFromMouse(float mousePercent) {
+        this.setHue(mousePercent, true);
     }
 
-    public void setHue(float var1, boolean var2) {
-        var1 = Math.min(Math.max(var1, 0.0F), 1.0F);
-        float var5 = this.hue;
-        this.hue = var1;
-        if (var2 && var5 != var1) {
+    public void setHue(float hue, boolean notify) {
+        float clampedHue = Math.min(Math.max(hue, 0.0F), 1.0F);
+
+        float previousHue = this.hue;
+        this.hue = clampedHue;
+
+        if (notify && previousHue != clampedHue) {
             this.firePressHandlers();
         }
     }

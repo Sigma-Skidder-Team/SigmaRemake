@@ -2,60 +2,113 @@ package io.github.sst.remake.gui.screen.clickgui.color;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
-import io.github.sst.remake.util.math.color.ClientColors;
-import io.github.sst.remake.util.math.color.ColorHelper;
-import io.github.sst.remake.util.render.RenderUtils;
 
 import java.awt.*;
 
 public class ColorPicker extends InteractiveWidget {
-    public int colorValue;
+    public int selectedColor;
     public boolean rainbowEnabled;
+
     public SaturationBrightnessPanel saturationBrightnessPanel;
     public HueSlider hueSlider;
     public ColorPreview preview;
 
-    public ColorPicker(GuiComponent var1, String var2, int var3, int var4, int var5, int var6, int var7, boolean var8) {
-        super(var1, var2, var3, var4, var5, var6, false);
-        this.colorValue = var7;
-        Color var11 = new Color(var7);
-        float[] var12 = Color.RGBtoHSB(var11.getRed(), var11.getGreen(), var11.getBlue(), null);
-        this.addToList(this.saturationBrightnessPanel = new SaturationBrightnessPanel(this, "block", 10, 10, var5 - 20, var6 - 50, var12[0], var12[1], var12[2]));
-        this.addToList(this.hueSlider = new HueSlider(this, "slider", 14, var6 - 25, var5 - 65, 8, var12[0]));
-        this.addToList(this.preview = new ColorPreview(this, "bubble", var5 - 40, var6 - 32, 25, 25, var11.getRGB()));
+    public ColorPicker(
+            GuiComponent parent,
+            String name,
+            int x,
+            int y,
+            int width,
+            int height,
+            int initialColor,
+            boolean rainbowEnabled
+    ) {
+        super(parent, name, x, y, width, height, false);
+
+        this.selectedColor = initialColor;
+
+        Color initialAwtColor = new Color(initialColor);
+        float[] hsb = Color.RGBtoHSB(
+                initialAwtColor.getRed(),
+                initialAwtColor.getGreen(),
+                initialAwtColor.getBlue(),
+                null
+        );
+
+        this.saturationBrightnessPanel = new SaturationBrightnessPanel(
+                this,
+                "block",
+                10,
+                10,
+                width - 20,
+                height - 50,
+                hsb[0],
+                hsb[1],
+                hsb[2]
+        );
+        this.addToList(this.saturationBrightnessPanel);
+
+        this.hueSlider = new HueSlider(
+                this,
+                "slider",
+                14,
+                height - 25,
+                width - 65,
+                8,
+                hsb[0]
+        );
+        this.addToList(this.hueSlider);
+
+        this.preview = new ColorPreview(
+                this,
+                "bubble",
+                width - 40,
+                height - 32,
+                25,
+                25,
+                initialAwtColor.getRGB()
+        );
+        this.addToList(this.preview);
+
         this.saturationBrightnessPanel.onPress(interactiveWidget -> this.updateColorAndNotify());
         this.hueSlider.onPress(interactiveWidget -> this.updateColorAndNotify());
-        this.preview.onClick((parent, mouseButton) -> this.toggleRainbow(!this.getRainbow()));
-        this.rainbowEnabled = var8;
+
+        // Clicking the preview toggles rainbow mode.
+        this.preview.onClick((clicked, mouseButton) -> this.toggleRainbow(!this.isRainbowEnabled()));
+
+        this.rainbowEnabled = rainbowEnabled;
     }
 
-    public void toggleRainbow(boolean var1) {
-        this.setRainbow(var1);
+    public void toggleRainbow(boolean enabled) {
+        this.setRainbowEnabled(enabled);
         this.firePressHandlers();
     }
 
-    public void setRainbow(boolean var1) {
-        this.rainbowEnabled = var1;
+    public void setRainbowEnabled(boolean enabled) {
+        this.rainbowEnabled = enabled;
     }
 
-    public boolean getRainbow() {
+    public boolean isRainbowEnabled() {
         return this.rainbowEnabled;
     }
 
-    public void setValue(int var1) {
-        if (var1 != this.colorValue) {
-            Color var4 = new Color(var1);
-            float[] var5 = Color.RGBtoHSB(var4.getRed(), var4.getGreen(), var4.getBlue(), null);
-            this.saturationBrightnessPanel.setHue(var5[0]);
-            this.saturationBrightnessPanel.setSaturation(var5[1], false);
-            this.saturationBrightnessPanel.setBrightness(var5[2], false);
-            this.hueSlider.setHue(var5[0], false);
-            this.preview.colorValue = var1;
+    public void setValue(int color) {
+        if (color != this.selectedColor) {
+            Color awtColor = new Color(color);
+            float[] hsb = Color.RGBtoHSB(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue(), null);
+
+            this.saturationBrightnessPanel.setHue(hsb[0]);
+            this.saturationBrightnessPanel.setSaturation(hsb[1], false);
+            this.saturationBrightnessPanel.setBrightness(hsb[2], false);
+
+            this.hueSlider.setHue(hsb[0], false);
+
+            this.preview.previewColor = color;
         }
     }
 
     public int getValue() {
-        return this.colorValue;
+        return this.selectedColor;
     }
 
     private void updateColorAndNotify() {
@@ -64,29 +117,19 @@ public class ColorPicker extends InteractiveWidget {
     }
 
     private void updateColorFromControls() {
-        float var3 = this.hueSlider.getHue();
-        this.saturationBrightnessPanel.setHue(var3);
-        this.colorValue = this.saturationBrightnessPanel.getColorRGB();
-        this.preview.colorValue = this.colorValue;
-    }
+        float hue = this.hueSlider.getHue();
 
-    public static void drawLayeredCircle(int var0, int var1, int var2, float var3) {
-        RenderUtils.drawCircle((float) var0, (float) var1, (float) 14, ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F * var3));
-        RenderUtils.drawCircle((float) var0, (float) var1, (float) (14 - 1), ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.14F * var3));
-        RenderUtils.drawCircle((float) var0, (float) var1, (float) (14 - 2), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), var3));
-        RenderUtils.drawCircle((float) var0, (float) var1, (float) (14 - 6), ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(var2, ClientColors.DEEP_TEAL.getColor(), 0.7F), var3));
-        RenderUtils.drawCircle((float) var0, (float) var1, (float) (14 - 7), ColorHelper.applyAlpha(var2, var3));
-    }
+        this.saturationBrightnessPanel.setHue(hue);
 
-    @Override
-    public void updatePanelDimensions(int mouseX, int mouseY) {
-        super.updatePanelDimensions(mouseX, mouseY);
+        this.selectedColor = this.saturationBrightnessPanel.getColorRGB();
+        this.preview.previewColor = this.selectedColor;
     }
 
     @Override
     public void draw(float partialTicks) {
         if (this.rainbowEnabled) {
-            this.hueSlider.setHue((float) (System.currentTimeMillis() % 4000L) / 4000.0F, false);
+            float hue = (float) (System.currentTimeMillis() % 4000L) / 4000.0F;
+            this.hueSlider.setHue(hue, false);
             this.updateColorFromControls();
         }
 

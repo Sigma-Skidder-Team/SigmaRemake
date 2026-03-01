@@ -57,7 +57,7 @@ public class SaturationBrightnessPanel extends InteractiveWidget {
                 var6,
                 var6
         );
-        ColorPicker.drawLayeredCircle(
+        RenderUtils.drawLayeredCircle(
                 this.x + Math.round((float) this.width * this.getSaturation()),
                 this.y + Math.round((float) this.height * (1.0F - this.getBrightness())),
                 Color.HSBtoRGB(this.hue, this.saturation, this.brightness),
