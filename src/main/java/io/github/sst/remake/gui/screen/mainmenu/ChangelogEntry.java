@@ -19,9 +19,6 @@ public class ChangelogEntry extends GuiComponent {
         super(var1, var2);
         this.setWidth(this.getParent().getWidth());
         int height = 0;
-        if (var3.has("deprecated")) {
-            GL11.glTexEnvi(8960, 8704, 260);
-        }
 
         String var7 = var3.get("title").getAsString();
         JsonArray var8 = var3.getAsJsonArray("changes");
