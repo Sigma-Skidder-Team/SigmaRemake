@@ -9,6 +9,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.ShaderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import org.lwjgl.glfw.GLFW;
 
 public class BirdGameScreen extends Screen implements IMinecraft {
     private final AnimationUtils introAnimation = new AnimationUtils(200, 0);
@@ -78,7 +79,7 @@ public class BirdGameScreen extends Screen implements IMinecraft {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 256) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             ShaderUtils.resetShader();
             client.openScreen(null);
         }

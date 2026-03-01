@@ -7,8 +7,8 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.texture.Texture;
 
 import java.util.Map.Entry;
 import java.util.Set;
@@ -56,7 +56,7 @@ public class BirdGameWidget extends Widget {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 32) {
+        if (keyCode == GLFW.GLFW_KEY_SPACE) {
             if (!this.gameOver) {
                 if (!this.hasStarted) {
                     this.hasStarted = true;

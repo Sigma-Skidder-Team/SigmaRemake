@@ -3,7 +3,6 @@ package io.github.sst.remake.gui.screen.mainmenu;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Screen;
-import io.github.sst.remake.gui.screen.loading.LoadingScreen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
@@ -13,6 +12,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -236,7 +236,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 256) { //escape key
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             this.hideChangelog();
         }
     }

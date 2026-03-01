@@ -2,6 +2,7 @@ package io.github.sst.remake.gui.screen.spotlight;
 
 import io.github.sst.remake.gui.framework.core.Screen;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.glfw.GLFW;
 
 public class SpotlightScreen extends Screen {
     public SearchDialog dialog;
@@ -16,7 +17,7 @@ public class SpotlightScreen extends Screen {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == 256) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             MinecraftClient.getInstance().openScreen(null);
         }
     }
