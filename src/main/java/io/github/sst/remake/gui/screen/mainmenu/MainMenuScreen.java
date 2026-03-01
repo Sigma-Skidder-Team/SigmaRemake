@@ -194,7 +194,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             }
 
             if (foregroundOpacity > 0.0F && !Client.INSTANCE.loaded) {
-                LoadingScreen.renderFadeOut(backgroundOpacity, 1.0F);
+                RenderUtils.renderFadeOut(backgroundOpacity, 1.0F);
                 Client.INSTANCE.loaded = true;
             }
 

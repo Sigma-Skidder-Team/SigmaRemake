@@ -80,9 +80,9 @@ public class ChangelogPage extends GuiComponent {
         if (this.isHovered() && this.isSelfVisible()) {
             for (GuiComponent child : this.changelogScrollPanel.getContent().getChildren()) {
                 ChangelogEntry entry = (ChangelogEntry) child;
-                entry.animation2.changeDirection(AnimationUtils.Direction.BACKWARDS);
+                entry.entryAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
 
-                if ((double) entry.animation2.calcPercent() < 0.5) {
+                if ((double) entry.entryAnimation.calcPercent() < 0.5) {
                     break;
                 }
             }
@@ -91,7 +91,7 @@ public class ChangelogPage extends GuiComponent {
 
         for (GuiComponent child : this.changelogScrollPanel.getContent().getChildren()) {
             ChangelogEntry entry = (ChangelogEntry) child;
-            entry.animation2.changeDirection(AnimationUtils.Direction.FORWARDS);
+            entry.entryAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
     }
 
