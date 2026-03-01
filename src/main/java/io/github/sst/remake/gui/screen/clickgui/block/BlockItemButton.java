@@ -6,29 +6,49 @@ import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.item.ItemStack;
 
 public class BlockItemButton extends InteractiveWidget {
-    public ItemStack stack;
+    public ItemStack itemStack;
     public boolean selected;
 
-    public BlockItemButton(GuiComponent parent, String var2, int var3, int var4, int var5, int var6, ItemStack var7) {
-        super(parent, var2, var3, var4, var5, var6, false);
-        this.stack = var7;
+    public BlockItemButton(
+            GuiComponent parent,
+            String name,
+            int x,
+            int y,
+            int width,
+            int height,
+            ItemStack itemStack
+    ) {
+        super(parent, name, x, y, width, height, false);
+        this.itemStack = itemStack;
     }
 
     @Override
     public void draw(float partialTicks) {
-        byte var4 = 5;
+        final int padding = 5;
+
         if (this.isSelected() || this.isHoveredInHierarchy()) {
+            float shadowAlpha = this.isSelected()
+                    ? 0.8F * partialTicks
+                    : 0.3F * partialTicks;
+
             RenderUtils.drawPanelShadow(
                     (float) this.x,
                     (float) this.y,
                     (float) this.width,
                     (float) this.height,
                     14.0F,
-                    !this.isSelected() ? 0.3F * partialTicks : 0.8F * partialTicks
+                    shadowAlpha
             );
         }
 
-        RenderUtils.renderItemStack(this.stack, this.x + var4, this.y + var4, this.width - var4 * 2, this.height - var4 * 2);
+        RenderUtils.renderItemStack(
+                this.itemStack,
+                this.x + padding,
+                this.y + padding,
+                this.width - padding * 2,
+                this.height - padding * 2
+        );
+
         super.draw(partialTicks);
     }
 
@@ -39,7 +59,10 @@ public class BlockItemButton extends InteractiveWidget {
     public void setSelected(boolean selected, boolean notify) {
         if (selected != this.isSelected()) {
             this.selected = selected;
-            this.firePressHandlers();
+
+            if (notify) {
+                this.firePressHandlers();
+            }
         }
     }
 
