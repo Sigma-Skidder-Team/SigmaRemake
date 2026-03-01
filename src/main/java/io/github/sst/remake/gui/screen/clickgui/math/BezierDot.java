@@ -8,17 +8,21 @@ import io.github.sst.remake.util.render.RenderUtils;
 public class BezierDot extends Widget {
     public BezierCurve curve;
 
-    public BezierDot(BezierCurve var1, int var2, String var3) {
-        super(var1, "bezierButton-" + var3, 0, 0, var2, var2, true);
+    public BezierDot(BezierCurve curve, int size, String idSuffix) {
+        super(curve, "bezierButton-" + idSuffix, 0, 0, size, size, true);
+
         this.setDraggable(true);
         this.enableImmediateDrag = true;
-        this.curve = var1;
+
+        this.curve = curve;
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
+
         int padding = this.curve.padding;
+
         int minX = padding - 5;
         int minY = padding - 5;
         int maxX = this.curve.getWidth() - padding - 5;
@@ -38,9 +42,9 @@ public class BezierDot extends Widget {
         }
     }
 
-    public void setPosition(float var1, float var2) {
-        this.x = (int) var1;
-        this.y = (int) var2;
+    public void setPosition(float x, float y) {
+        this.x = (int) x;
+        this.y = (int) y;
     }
 
     @Override
@@ -49,8 +53,12 @@ public class BezierDot extends Widget {
                 (float) (this.x + 5),
                 (float) (this.y + 5),
                 10.0F,
-                ColorHelper.applyAlpha(!this.isDragging() ? ClientColors.DARK_GREEN.getColor() : ClientColors.DARK_BLUE_GREY.getColor(), partialTicks)
+                ColorHelper.applyAlpha(
+                        !this.isDragging() ? ClientColors.DARK_GREEN.getColor() : ClientColors.DARK_BLUE_GREY.getColor(),
+                        partialTicks
+                )
         );
+
         super.draw(partialTicks);
     }
 }
