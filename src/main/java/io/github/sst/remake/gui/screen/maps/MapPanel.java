@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3i;
 import org.lwjgl.opengl.GL11;
 
 public class MapPanel extends InteractiveWidget {
-    public MapFrame mapFrame;
+    public WorldMapView worldMapView;
     public WaypointList waypointList;
     public int waypointListWidth;
 
@@ -34,7 +34,7 @@ public class MapPanel extends InteractiveWidget {
             );
         }
 
-        this.mapFrame = new MapFrame(
+        this.worldMapView = new WorldMapView(
                 this,
                 "mapFrame",
                 this.waypointListWidth,
@@ -42,7 +42,7 @@ public class MapPanel extends InteractiveWidget {
                 this.width - this.waypointListWidth,
                 this.height
         );
-        this.addToList(this.mapFrame);
+        this.addToList(this.worldMapView);
 
         this.setListening(false);
     }
@@ -63,10 +63,10 @@ public class MapPanel extends InteractiveWidget {
             return;
         }
 
-        if (this.mapFrame != null
-                && this.mapFrame.isSelfVisible()
-                && this.mapFrame.isMouseOverComponent(mouseX, mouseY)) {
-            this.mapFrame.onScroll(scroll);
+        if (this.worldMapView != null
+                && this.worldMapView.isSelfVisible()
+                && this.worldMapView.isMouseOverComponent(mouseX, mouseY)) {
+            this.worldMapView.onScroll(scroll);
         }
     }
 
@@ -121,7 +121,7 @@ public class MapPanel extends InteractiveWidget {
 
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
-        this.mapFrame.draw(partialTicks);
+        this.worldMapView.draw(partialTicks);
         GL11.glPopMatrix();
 
         StencilUtils.endStencil();

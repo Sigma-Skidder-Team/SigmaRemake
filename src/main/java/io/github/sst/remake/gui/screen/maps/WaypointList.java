@@ -16,109 +16,197 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WaypointList extends ScrollablePanel {
-    private final List<Waypoint> waypoints = new ArrayList<>();
-    public static final int WAYPOINT_HEIGHT = 70;
+    private static final int TRASHCAN_PADDING = 10;
+    private static final int TRASHCAN_HITBOX_SIZE = 40;
+    private static final int TRASHCAN_ICON_WIDTH = 22;
+    private static final int TRASHCAN_ICON_HEIGHT = 26;
+    private static final int TRASHCAN_ICON_OFFSET_X = 18;
+    private static final int TRASHCAN_ICON_OFFSET_Y = 46;
+    private static final int ROW_TOP_PADDING = 5;
+
+    private static final int WAYPOINT_HEIGHT = 70;
+
+    private final List<WaypointRow> waypointRows = new ArrayList<>();
+
     public AnimationUtils trashcanAnimation = new AnimationUtils(300, 300);
     public boolean isMouseOverTrashcan;
-    public Waypoint deletableWaypoint;
+    public WaypointRow pendingTrashcanDeleteRow;
 
-    public WaypointList(GuiComponent var1, String var2, int var3, int var4, int var5, int var6) {
-        super(var1, var2, var3, var4, var5, var6);
+    public WaypointList(GuiComponent parent, String name, int x, int y, int width, int height) {
+        super(parent, name, x, y, width, height);
         this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         this.allowBottomOverflow = true;
         this.setListening(false);
     }
 
-    public void addWaypoint(String name, Vec3i pos, int color) {
-        String waypointId = "waypoint x" + pos.getX() + " z" + pos.getZ();
-        if (this.content.getChildByName(waypointId) == null) {
-            Waypoint waypoint = new Waypoint(
-                    this, waypointId, this.x, this.getChildren().get(0).getChildren().size() * WAYPOINT_HEIGHT, this.width, WAYPOINT_HEIGHT, name, pos, color
-            );
-            waypoint.targetY = waypoint.getY();
-            this.waypoints.add(waypoint);
-            this.addToList(waypoint);
-            waypoint.onClick((parent, mouseButton) -> {
-                MapPanel mapPanel = (MapPanel) this.getParent();
-                mapPanel.mapFrame.centerOn(waypoint.waypointPos.getX(), waypoint.waypointPos.getZ());
-            });
-            waypoint.onPress(interactiveWidget -> {
-                        Client.INSTANCE.waypointTracker.getWaypoints().remove(new io.github.sst.remake.util.client.waypoint.Waypoint(waypoint.waypointName, waypoint.waypointPos.getX(), waypoint.waypointPos.getZ(), waypoint.waypointColor));
-                        Client.INSTANCE.waypointTracker.save();
-                        this.content.removeChildByName(waypoint.name);
-                        this.waypoints.remove(interactiveWidget);
-                    }
-            );
+    public void addWaypoint(String displayName, Vec3i position, int color) {
+        String waypointRowId = buildWaypointRowId(position);
+        if (this.content.getChildByName(waypointRowId) != null) {
+            return;
         }
+
+        int rowY = this.getChildren().get(0).getChildren().size() * WAYPOINT_HEIGHT;
+        WaypointRow waypointRow = new WaypointRow(
+                this,
+                waypointRowId,
+                this.x,
+                rowY,
+                this.width,
+                WAYPOINT_HEIGHT,
+                displayName,
+                position,
+                color
+        );
+
+        waypointRow.targetY = waypointRow.getY();
+        this.waypointRows.add(waypointRow);
+        this.addToList(waypointRow);
+
+        waypointRow.onClick((rowParent, mouseButton) -> {
+            MapPanel mapPanel = (MapPanel) this.getParent();
+            mapPanel.worldMapView.centerOn(waypointRow.position.getX(), waypointRow.position.getZ());
+        });
+
+        waypointRow.onPress(interactiveWidget -> removeWaypointRow(waypointRow));
     }
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
-        this.waypoints.sort((w1, w2) -> w1.targetY < w2.targetY + w1.getHeight() / 2 ? -1 : 1);
-        int currentY = 0;
-        if (this.deletableWaypoint != null && !this.deletableWaypoint.isDragging() && this.isMouseOverTrashcan) {
-            this.deletableWaypoint.startDeleteAnimation();
-            this.deletableWaypoint = null;
+
+        this.waypointRows.sort((a, b) -> a.targetY < b.targetY + a.getHeight() / 2 ? -1 : 1);
+
+        if (shouldTriggerTrashcanDelete()) {
+            this.pendingTrashcanDeleteRow.startDeleteAnimation();
+            this.pendingTrashcanDeleteRow = null;
             this.isMouseOverTrashcan = false;
         }
 
-        for (Waypoint waypoint : this.waypoints) {
-            if (!waypoint.isDragging() && waypoint.deleteAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                waypoint.targetY = currentY + 5;
-            } else {
-                waypoint.targetY = waypoint.getY();
-            }
-            currentY += waypoint.getHeight();
-        }
-
-        for (Waypoint waypoint : this.waypoints) {
-            if (waypoint.isDragging()) {
-                this.trashcanAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
-                if (mouseX > this.getAbsoluteX() + 10
-                        && mouseX < this.getAbsoluteX() + 50
-                        && mouseY < this.getAbsoluteY() + this.getHeight() - 10
-                        && mouseY > this.getAbsoluteY() + this.getHeight() - 50) {
-                    this.isMouseOverTrashcan = true;
-                    this.deletableWaypoint = waypoint;
-                } else {
-                    this.isMouseOverTrashcan = false;
-                    this.deletableWaypoint = null;
-                }
-                break;
-            }
-
-            this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
-        }
+        layoutWaypointRows();
+        updateTrashcanState(mouseX, mouseY);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float animationSpeed = Math.min(1.0F, 0.21F * (60.0F / (float) MinecraftClient.currentFps));
-
-        for (Waypoint waypoint : this.waypoints) {
-            if (!waypoint.isDragging()) {
-                float deltaY = (float) (waypoint.getY() - waypoint.targetY) * animationSpeed;
-                if (Math.round(deltaY) == 0 && deltaY > 0.0F) {
-                    deltaY = 1.0F;
-                } else if (Math.round(deltaY) == 0 && deltaY < 0.0F) {
-                    deltaY = -1.0F;
-                }
-
-                waypoint.setY(Math.round((float) waypoint.getY() - deltaY));
-            }
-        }
+        animateNonDraggingRows();
 
         super.draw(partialTicks);
-        int trashcanOffset = Math.round(QuadraticEasing.easeInQuad(1.0F - this.trashcanAnimation.calcPercent(), 0.0F, 1.0F, 1.0F) * 30.0F);
+
+        int trashcanOffset = Math.round(
+                QuadraticEasing.easeInQuad(
+                        1.0F - this.trashcanAnimation.calcPercent(),
+                        0.0F,
+                        1.0F,
+                        1.0F
+                ) * 30.0F
+        );
+
         RenderUtils.drawImage(
-                (float) (this.x - trashcanOffset + 18),
-                (float) (this.height - 46),
-                22.0F,
-                26.0F,
+                (float) (this.x - trashcanOffset + TRASHCAN_ICON_OFFSET_X),
+                (float) (this.height - TRASHCAN_ICON_OFFSET_Y),
+                (float) TRASHCAN_ICON_WIDTH,
+                (float) TRASHCAN_ICON_HEIGHT,
                 Resources.TRASHCAN,
-                ColorHelper.applyAlpha(!this.isMouseOverTrashcan ? ClientColors.DEEP_TEAL.getColor() : ClientColors.PALE_YELLOW.getColor(), this.trashcanAnimation.calcPercent() * 0.5F),
+                ColorHelper.applyAlpha(
+                        !this.isMouseOverTrashcan
+                                ? ClientColors.DEEP_TEAL.getColor()
+                                : ClientColors.PALE_YELLOW.getColor(),
+                        this.trashcanAnimation.calcPercent() * 0.5F
+                ),
                 false
         );
+    }
+
+    private static String buildWaypointRowId(Vec3i position) {
+        return "waypoint x" + position.getX() + " z" + position.getZ();
+    }
+
+    private void removeWaypointRow(WaypointRow row) {
+        Client.INSTANCE.waypointTracker.getWaypoints().remove(
+                new io.github.sst.remake.util.client.waypoint.Waypoint(
+                        row.name,
+                        row.position.getX(),
+                        row.position.getZ(),
+                        row.color
+                )
+        );
+
+        Client.INSTANCE.waypointTracker.save();
+        this.content.removeChildByName(row.name);
+        this.waypointRows.remove(row);
+    }
+
+    private boolean shouldTriggerTrashcanDelete() {
+        return this.pendingTrashcanDeleteRow != null
+                && !this.pendingTrashcanDeleteRow.isDragging()
+                && this.isMouseOverTrashcan;
+    }
+
+    private void layoutWaypointRows() {
+        int currentY = 0;
+
+        for (WaypointRow row : this.waypointRows) {
+            if (!row.isDragging() && row.deleteSlideAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                row.targetY = currentY + ROW_TOP_PADDING;
+            } else {
+                row.targetY = row.getY();
+            }
+            currentY += row.getHeight();
+        }
+    }
+
+    private void updateTrashcanState(int mouseX, int mouseY) {
+        boolean draggingAnyRow = false;
+
+        for (WaypointRow row : this.waypointRows) {
+            if (!row.isDragging()) {
+                continue;
+            }
+
+            draggingAnyRow = true;
+            this.trashcanAnimation.changeDirection(AnimationUtils.Direction.BACKWARDS);
+
+            if (isMouseOverTrashcanArea(mouseX, mouseY)) {
+                this.isMouseOverTrashcan = true;
+                this.pendingTrashcanDeleteRow = row;
+            } else {
+                this.isMouseOverTrashcan = false;
+                this.pendingTrashcanDeleteRow = null;
+            }
+            break;
+        }
+
+        if (!draggingAnyRow) {
+            this.trashcanAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
+        }
+    }
+
+    private void animateNonDraggingRows() {
+        float animationSpeed = Math.min(1.0F, 0.21F * (60.0F / (float) MinecraftClient.currentFps));
+
+        for (WaypointRow row : this.waypointRows) {
+            if (row.isDragging()) {
+                continue;
+            }
+
+            float deltaY = (float) (row.getY() - row.targetY) * animationSpeed;
+            if (Math.round(deltaY) == 0 && deltaY > 0.0F) {
+                deltaY = 1.0F;
+            } else if (Math.round(deltaY) == 0 && deltaY < 0.0F) {
+                deltaY = -1.0F;
+            }
+
+            row.setY(Math.round((float) row.getY() - deltaY));
+        }
+    }
+
+    private boolean isMouseOverTrashcanArea(int mouseX, int mouseY) {
+        int left = this.getAbsoluteX() + TRASHCAN_PADDING;
+        int right = this.getAbsoluteX() + TRASHCAN_PADDING + TRASHCAN_HITBOX_SIZE;
+
+        int bottom = this.getAbsoluteY() + this.getHeight() - TRASHCAN_PADDING;
+        int top = bottom - TRASHCAN_HITBOX_SIZE;
+
+        return mouseX > left && mouseX < right && mouseY < bottom && mouseY > top;
     }
 }

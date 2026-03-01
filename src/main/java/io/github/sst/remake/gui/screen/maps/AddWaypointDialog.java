@@ -22,7 +22,6 @@ import java.util.List;
 
 public class AddWaypointDialog extends InteractiveWidget {
     private final Date openAnimationStart;
-    private Date closeAnimationStart;
 
     private boolean openToLeft = false;
 
@@ -121,7 +120,7 @@ public class AddWaypointDialog extends InteractiveWidget {
     public void draw(float partialTicks) {
         float animProgress = AnimationUtils.calculateProgressWithReverse(
                 this.openAnimationStart,
-                this.closeAnimationStart,
+                null,
                 250.0F,
                 120.0F
         );
@@ -194,8 +193,8 @@ public class AddWaypointDialog extends InteractiveWidget {
         super.draw(animProgress);
     }
 
-    public void addWaypointAddListener(WaypointAddListener var1) {
-        this.addListeners.add(var1);
+    public void addWaypointAddListener(WaypointAddListener listener) {
+        this.addListeners.add(listener);
     }
 
     public void fireWaypointAdded(String name, Vec3i coords, int color) {

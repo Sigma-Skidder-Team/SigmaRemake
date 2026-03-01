@@ -37,11 +37,11 @@ public class MapsScreen extends Screen implements IMinecraft {
         );
         this.addToList(this.mapPanel);
 
-        this.mapPanel.mapFrame.addRightClickListener((frame, mouseX, mouseY, worldPos) ->
+        this.mapPanel.worldMapView.addRightClickListener((frame, mouseX, mouseY, worldPos) ->
                 this.addRunnable(() -> this.openAddWaypointDialog(mouseX, mouseY, worldPos))
         );
 
-        this.mapPanel.mapFrame.addUpdateListener(ignored -> this.closeAddWaypointDialog());
+        this.mapPanel.worldMapView.addUpdateListener(ignored -> this.closeAddWaypointDialog());
 
         ShaderUtils.applyBlurShader();
     }
