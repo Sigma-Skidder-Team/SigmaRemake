@@ -1335,4 +1335,39 @@ public class RenderUtils implements IMinecraft {
         GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
     }
+
+    public static void drawLayeredCircle(int centerX, int centerY, int color, float alpha) {
+        final float baseRadius = 14.0F;
+
+        drawCircle(
+                (float) centerX,
+                (float) centerY,
+                baseRadius,
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F * alpha)
+        );
+        drawCircle(
+                (float) centerX,
+                (float) centerY,
+                baseRadius - 1.0F,
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.14F * alpha)
+        );
+        drawCircle(
+                (float) centerX,
+                (float) centerY,
+                baseRadius - 2.0F,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+        );
+        drawCircle(
+                (float) centerX,
+                (float) centerY,
+                baseRadius - 6.0F,
+                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(color, ClientColors.DEEP_TEAL.getColor(), 0.7F), alpha)
+        );
+        drawCircle(
+                (float) centerX,
+                (float) centerY,
+                baseRadius - 7.0F,
+                ColorHelper.applyAlpha(color, alpha)
+        );
+    }
 }
