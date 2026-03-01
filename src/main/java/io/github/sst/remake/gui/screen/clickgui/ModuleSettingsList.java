@@ -12,6 +12,7 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
 import io.github.sst.remake.setting.impl.*;
+import io.github.sst.remake.util.java.RandomUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -77,11 +78,10 @@ public class ModuleSettingsList extends ScrollablePanel {
                 SettingSlider slider = new SettingSlider(panel, sS.name + "slider", panel.getWidth() - 126 - offset, yOffset + 6, 126, 24);
                 slider.getHandle().setFont(FontUtils.HELVETICA_LIGHT_14);
                 slider.setText(Float.toString(sS.value));
-                slider.setValue(SettingSlider.normalizeValue(sS.min, sS.max, sS.value), false);
-                slider.setSnapValue(-1.0F);
+                slider.setValue(RandomUtils.normalizeValue(sS.min, sS.max, sS.value), false);
                 sS.addListener(sett -> {
                     SliderSetting updated = (SliderSetting) sett;
-                    float newValue = SettingSlider.denormalizeValue(
+                    float newValue = RandomUtils.denormalizeValue(
                             slider.getValue(),
                             updated.min,
                             updated.max,
@@ -90,12 +90,12 @@ public class ModuleSettingsList extends ScrollablePanel {
                     );
                     if (newValue != updated.value) {
                         slider.setText(Float.toString(updated.value));
-                        slider.setValue(SettingSlider.normalizeValue(updated.min, updated.max, updated.value), false);
+                        slider.setValue(RandomUtils.normalizeValue(updated.min, updated.max, updated.value), false);
                     }
                 });
                 slider.onPress(interactiveWidget -> {
                     float sliderValue = ((SettingSlider) interactiveWidget).getValue();
-                    float newValue = SettingSlider.denormalizeValue(sliderValue, sS.min, sS.max, sS.increment, sS.getPlaces());
+                    float newValue = RandomUtils.denormalizeValue(sliderValue, sS.min, sS.max, sS.increment, sS.getPlaces());
                     if (newValue != sS.value) {
                         slider.setText(Float.toString(newValue));
                         sS.setValue(newValue);
@@ -180,7 +180,7 @@ public class ModuleSettingsList extends ScrollablePanel {
                 Text blocksText = new Text(panel, bLS.name + "lbl", x, yOffset, LABEL_WIDTH, 200, Text.DEFAULT_TEXT_STYLE, bLS.name);
                 BlockPicker blockPicker = new BlockPicker(panel, bLS.name + "picker", panel.getWidth() - offset, yOffset + 5, 175, 200, bLS.enabled, bLS.value.toArray(new String[0]));
                 this.labelToSetting.put(blocksText, bLS);
-                blockPicker.onPress(interactiveWidget -> bLS.setValue(blockPicker.getSelectedValues()));
+                blockPicker.onPress(interactiveWidget -> bLS.setValue(blockPicker.getSelectedIds()));
                 blockPicker.addWidthSetter((comp1, comp2) -> comp1.setX(panel.getWidth() - 175 - offset));
                 panel.addToList(blocksText);
                 panel.addToList(blockPicker);
@@ -197,11 +197,11 @@ public class ModuleSettingsList extends ScrollablePanel {
                 cS.addListener(sett -> {
                     ColorSetting settC = (ColorSetting) setting;
                     picker.setValue(settC.value);
-                    picker.setRainbow(settC.rainbow);
+                    picker.setRainbowEnabled(settC.rainbow);
                 });
                 picker.onPress(interactiveWidget -> {
                     cS.setValue(((ColorPicker) interactiveWidget).getValue(), false);
-                    cS.rainbow = ((ColorPicker) interactiveWidget).getRainbow();
+                    cS.rainbow = ((ColorPicker) interactiveWidget).isRainbowEnabled();
                 });
                 panel.addToList(colorText);
                 panel.addToList(picker);
