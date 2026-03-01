@@ -239,7 +239,7 @@ public class ModuleSettingsList extends ScrollablePanel {
             int height = this.addSetting(container, setting, 20, 0, 20);
 
             container.setHeight(height);
-            container.addWidthSetter((var1x, var2x) -> var1x.setWidth(var2x.getWidth()));
+            container.addWidthSetter((forScreen, fromWidthOfThisScreen) -> forScreen.setWidth(fromWidthOfThisScreen.getWidth()));
 
             this.addToList(container);
 
