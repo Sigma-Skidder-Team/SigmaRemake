@@ -3,10 +3,11 @@
 Minecraft Sigma Client UI port & base remake for Fabric 1.16.5.
 
 ## TODO List
-- [ ] All other modules
-- [ ] Commands(+ base)
-- [ ] ViaVersion fixes
+- [ ] All other modules;
+- [ ] Commands(+ base);
+- [ ] ViaVersion fixes;
 - [ ] Add MS alt token refresher;
+- [ ] Waypoints module breaks Target ESP;
 - [ ] Separate managers into trackers, processors, storages...
 
 ## Screenshots
