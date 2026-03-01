@@ -4,9 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
@@ -20,10 +20,10 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
-import org.newdawn.slick.util.math.Color;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureImpl;
+import org.newdawn.slick.util.math.Color;
 
 import java.nio.ByteBuffer;
 
@@ -1369,5 +1369,76 @@ public class RenderUtils implements IMinecraft {
                 baseRadius - 7.0F,
                 ColorHelper.applyAlpha(color, alpha)
         );
+    }
+
+    public static void renderFadeOut(float backgroundOpacity, float progress) {
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+
+        float screenWidth = (float) client.getWindow().getWidth();
+        float screenHeight = (float) client.getWindow().getHeight();
+
+        // Background image + dark overlay
+        drawImage(0.0F, 0.0F, screenWidth, screenHeight, Resources.LOADING_SCREEN_BACKGROUND, backgroundOpacity);
+        drawRoundedRect2(0.0F, 0.0F, screenWidth, screenHeight, ColorHelper.applyAlpha(0, 0.75F));
+
+        // Centered logo layout
+        final int logoWidth = 455;
+        final int logoHeight = 78;
+
+        int logoX = (client.getWindow().getWidth() - logoWidth) / 2;
+        int logoY = Math.round(((client.getWindow().getHeight() - logoHeight) / 2.0F) - (14.0F * backgroundOpacity));
+
+        // Slight scale animation based on opacity
+        float logoScale = 0.75F + (float) (Math.pow(backgroundOpacity, 4.0) * 0.25F);
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(client.getWindow().getWidth() / 2.0F, client.getWindow().getHeight() / 2.0F, 0.0F);
+        GL11.glScalef(logoScale, logoScale, 0.0F);
+        GL11.glTranslatef(-client.getWindow().getWidth() / 2.0F, -client.getWindow().getHeight() / 2.0F, 0.0F);
+
+        drawImage(
+                (float) logoX,
+                (float) logoY,
+                (float) logoWidth,
+                (float) logoHeight,
+                Resources.LOGO,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), backgroundOpacity)
+        );
+
+        float clampedProgress = Math.min(1.0F, progress * 1.02F);
+        final float progressBarYOffset = 80.0F;
+
+        // Only draw the progress bar background when fully visible
+        if (backgroundOpacity == 1.0F) {
+            drawRoundedRect(
+                    (float) logoX,
+                    logoY + logoHeight + progressBarYOffset,
+                    (float) logoWidth,
+                    20.0F,
+                    10.0F,
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F * backgroundOpacity)
+            );
+            drawRoundedRect(
+                    (float) (logoX + 1),
+                    logoY + logoHeight + progressBarYOffset + 1,
+                    (float) (logoWidth - 2),
+                    18.0F,
+                    9.0F,
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), backgroundOpacity)
+            );
+        }
+
+        // Progress fill
+        drawRoundedRect(
+                (float) (logoX + 2),
+                logoY + logoHeight + progressBarYOffset + 2,
+                (float) ((int) ((float) (logoWidth - 4) * clampedProgress)),
+                16.0F,
+                8.0F,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.9F * backgroundOpacity)
+        );
+
+        GL11.glPopMatrix();
     }
 }
