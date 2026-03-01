@@ -2,6 +2,7 @@ package io.github.sst.remake.gui.screen.clickgui;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
+import io.github.sst.remake.gui.framework.layout.FullWidthResizer;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class CategoryPanel extends Widget {
     public final Category category;
-    public ModuleList moduleList;
+    public CategoryModuleList moduleList;
     public float expandProgress;
     public int expandedBaseX;
     public int expandedBaseY;
@@ -40,15 +41,15 @@ public class CategoryPanel extends Widget {
     public void rebuildModuleList() {
         this.addRunnable(() -> {
             this.removeChildren(this.moduleList);
-            this.addToList(this.moduleList = new ModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
+            this.addToList(this.moduleList = new CategoryModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category));
         });
     }
 
     private void initModuleList() {
-        this.moduleList = new ModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category);
+        this.moduleList = new CategoryModuleList(this, "modListView", 0, 60, this.getWidth(), this.getHeight() - 60, this.category);
         this.addToList(this.moduleList);
 
-        this.moduleList.addWidthSetter(new ModuleListResizer());
+        this.moduleList.addWidthSetter(new FullWidthResizer());
         this.moduleList.addWidthSetter((list, panel) -> {
             list.setY(60);
             list.setHeight(panel.getHeight() - 60);

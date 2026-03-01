@@ -16,6 +16,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.gui.BrainFreezeModule;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.java.RandomUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
@@ -29,6 +30,7 @@ import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import io.github.sst.remake.util.system.VersionUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,14 +38,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ClickGuiScreen extends Screen implements IMinecraft {
-    private static AnimationUtils openCloseAnimation;
-    private static boolean openState;
-    private static boolean animationActive;
+    private final AnimationUtils openCloseAnimation;
+    private boolean openState;
+    private boolean animationActive;
+
     private final Map<Category, CategoryPanel> categoryPanels = new HashMap<>();
     public MusicPlayer musicPlayer;
     public ProfileScreen profileScreen;
     public BrainFreezeOverlay brainFreeze;
-    public ModuleSettingsDialog moduleSettingsDialog;
+    public ModuleSettingsModal moduleSettingsModal;
     public CategoryPanel categoryPanel = null;
     public Alert dependencyAlert;
 
@@ -66,9 +69,9 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                     y += categoryPanel.getHeight() - 20;
                 }
 
-                categoryPanel.addModuleClickListener(var2 -> this.addRunnable(() -> {
-                    this.addToList(this.moduleSettingsDialog = new ModuleSettingsDialog(this, "settings", 0, 0, this.width, this.height, var2));
-                    this.moduleSettingsDialog.setReAddChildren(true);
+                categoryPanel.addModuleClickListener(clickedModule -> this.addRunnable(() -> {
+                    this.addToList(this.moduleSettingsModal = new ModuleSettingsModal(this, "settings", 0, 0, this.width, this.height, clickedModule));
+                    this.moduleSettingsModal.setReAddChildren(true);
                 }));
             }
         }
@@ -167,14 +170,14 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
             profileScreen = null;
         }
 
-        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS && moduleSettingsDialog != null && !moduleSettingsDialog.closing) {
-            moduleSettingsDialog.closing = true;
+        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS && moduleSettingsModal != null && !moduleSettingsModal.closing) {
+            moduleSettingsModal.closing = true;
         }
 
-        if (moduleSettingsDialog != null && moduleSettingsDialog.closing && moduleSettingsDialog.openScaleAnimation.calcPercent() == 0.0F) {
+        if (moduleSettingsModal != null && moduleSettingsModal.closing && moduleSettingsModal.scaleAnimation.calcPercent() == 0.0F) {
             addRunnable(() -> {
-                removeChildren(moduleSettingsDialog);
-                moduleSettingsDialog = null;
+                removeChildren(moduleSettingsModal);
+                moduleSettingsModal = null;
             });
         }
 
@@ -231,7 +234,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         if (keyCode == keyBindForClickGui && animationActive) {
             return;
         }
-        if (keyCode == 256 || keyCode == keyBindForClickGui && this.moduleSettingsDialog == null && !this.hasFocusedTextField()) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == keyBindForClickGui && this.moduleSettingsModal == null && !this.hasFocusedTextField()) {
             if (animationActive) {
                 openState = !openState;
             }
@@ -240,55 +243,70 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         }
     }
 
-    public float calcOpenEasing(float var1, float var2) {
+    public float computeOpenCloseEasing(float progress, float period) {
         return openCloseAnimation.getDirection() != AnimationUtils.Direction.FORWARDS
-                ? (float) (Math.pow(2.0, -10.0F * var1) * Math.sin((double) (var1 - var2 / 4.0F) * (Math.PI * 2) / (double) var2) + 1.0)
-                : QuadraticEasing.easeOutQuad(var1, 0.0F, 1.0F, 1.0F);
+                ? (float) (Math.pow(2.0, -10.0F * progress) * Math.sin((double) (progress - period / 4.0F) * (Math.PI * 2) / (double) period) + 1.0)
+                : QuadraticEasing.easeOutQuad(progress, 0.0F, 1.0F, 1.0F);
     }
 
     @Override
     public void draw(float partialTicks) {
-        float alphaFactor = animationActive && !openState
-                ? this.calcOpenEasing(openCloseAnimation.calcPercent(), 0.8F) * 0.5F + 0.5F
-                : (!animationActive ? 1.0F : this.calcOpenEasing(openCloseAnimation.calcPercent(), 1.0F));
-        float alpha = 0.2F * partialTicks * alphaFactor;
+        float openCloseProgress = openCloseAnimation.calcPercent();
+
+        float openCloseFactor = (animationActive && !openState)
+                ? this.computeOpenCloseEasing(openCloseProgress, 0.8F) * 0.5F + 0.5F
+                : (!animationActive ? 1.0F : this.computeOpenCloseEasing(openCloseProgress, 1.0F));
+
+        float backgroundAlpha = 0.2F * partialTicks * openCloseFactor;
+
         RenderUtils.drawRoundedRect(
                 (float) this.x,
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), alpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), backgroundAlpha)
         );
-        float fadeAmount = 1.0F;
-        if (this.moduleSettingsDialog != null) {
-            float var8 = EasingFunctions.easeOutBack(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
-            if (this.moduleSettingsDialog.fadeAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
-                var8 = AnimationUtils.easeInCubic(this.moduleSettingsDialog.fadeAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
+
+        float contentFadeMultiplier = 1.0F;
+
+        if (this.moduleSettingsModal != null) {
+            float modalFadeProgress = this.moduleSettingsModal.fadeAnimation.calcPercent();
+
+            float modalEasedScale = EasingFunctions.easeOutBack(modalFadeProgress, 0.0F, 1.0F, 1.0F);
+            if (this.moduleSettingsModal.fadeAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+                modalEasedScale = AnimationUtils.easeInCubic(modalFadeProgress, 0.0F, 1.0F, 1.0F);
             }
 
-            fadeAmount -= this.moduleSettingsDialog.fadeAnimation.calcPercent() * 0.1F;
-            alphaFactor *= 1.0F + var8 * 0.2F;
+            contentFadeMultiplier -= modalFadeProgress * 0.1F;
+            openCloseFactor *= 1.0F + modalEasedScale * 0.2F;
         }
 
         if (Client.INSTANCE.configManager.currentProfile != null && !Client.INSTANCE.notificationManager.isRendering()) {
-            String configName = Client.INSTANCE.configManager.currentProfile.name;
+            String profileName = Client.INSTANCE.configManager.currentProfile.name;
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_20,
-                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(configName) - 80),
+                    (float) (this.width - FontUtils.HELVETICA_LIGHT_20.getWidth(profileName) - 80),
                     (float) (this.height - 47),
-                    configName,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * Math.max(0.0F, Math.min(1.0F, alphaFactor)))
+                    profileName,
+                    ColorHelper.applyAlpha(
+                            ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                            0.5F * RandomUtils.clamp01(openCloseFactor)
+                    )
             );
         }
 
         for (GuiComponent child : this.getChildren()) {
-            float x = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2) * (1.0F - alphaFactor) * 0.5F;
-            float y = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2) * (1.0F - alphaFactor) * 0.5F;
-            child.setTranslate((int) x, (int) y);
-            child.setScale(1.5F - alphaFactor * 0.5F, 1.5F - alphaFactor * 0.5F);
+            float translateX = (float) (child.getX() + child.getWidth() / 2 - client.getWindow().getWidth() / 2)
+                    * (1.0F - openCloseFactor) * 0.5F;
+            float translateY = (float) (child.getY() + child.getHeight() / 2 - client.getWindow().getHeight() / 2)
+                    * (1.0F - openCloseFactor) * 0.5F;
+
+            child.setTranslate((int) translateX, (int) translateY);
+            child.setScale(1.5F - openCloseFactor * 0.5F, 1.5F - openCloseFactor * 0.5F);
         }
 
-        super.draw(partialTicks * Math.min(1.0F, alphaFactor) * fadeAmount);
+        super.draw(partialTicks * Math.min(1.0F, openCloseFactor) * contentFadeMultiplier);
+
         if (this.categoryPanel != null) {
             this.categoryPanel.setReAddChildren(false);
         }
