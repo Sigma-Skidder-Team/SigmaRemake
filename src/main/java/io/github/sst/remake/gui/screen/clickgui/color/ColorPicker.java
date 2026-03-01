@@ -9,7 +9,7 @@ public class ColorPicker extends InteractiveWidget {
     public int selectedColor;
     public boolean rainbowEnabled;
 
-    public SaturationBrightnessPanel saturationBrightnessPanel;
+    public SaturationValuePanel saturationValuePanel;
     public HueSlider hueSlider;
     public ColorPreview preview;
 
@@ -35,7 +35,7 @@ public class ColorPicker extends InteractiveWidget {
                 null
         );
 
-        this.saturationBrightnessPanel = new SaturationBrightnessPanel(
+        this.saturationValuePanel = new SaturationValuePanel(
                 this,
                 "block",
                 10,
@@ -46,7 +46,7 @@ public class ColorPicker extends InteractiveWidget {
                 hsb[1],
                 hsb[2]
         );
-        this.addToList(this.saturationBrightnessPanel);
+        this.addToList(this.saturationValuePanel);
 
         this.hueSlider = new HueSlider(
                 this,
@@ -70,7 +70,7 @@ public class ColorPicker extends InteractiveWidget {
         );
         this.addToList(this.preview);
 
-        this.saturationBrightnessPanel.onPress(interactiveWidget -> this.updateColorAndNotify());
+        this.saturationValuePanel.onPress(interactiveWidget -> this.updateColorAndNotify());
         this.hueSlider.onPress(interactiveWidget -> this.updateColorAndNotify());
 
         // Clicking the preview toggles rainbow mode.
@@ -97,9 +97,9 @@ public class ColorPicker extends InteractiveWidget {
             Color awtColor = new Color(color);
             float[] hsb = Color.RGBtoHSB(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue(), null);
 
-            this.saturationBrightnessPanel.setHue(hsb[0]);
-            this.saturationBrightnessPanel.setSaturation(hsb[1], false);
-            this.saturationBrightnessPanel.setBrightness(hsb[2], false);
+            this.saturationValuePanel.setHue(hsb[0]);
+            this.saturationValuePanel.setSaturation(hsb[1], false);
+            this.saturationValuePanel.setValue(hsb[2], false);
 
             this.hueSlider.setHue(hsb[0], false);
 
@@ -119,9 +119,9 @@ public class ColorPicker extends InteractiveWidget {
     private void updateColorFromControls() {
         float hue = this.hueSlider.getHue();
 
-        this.saturationBrightnessPanel.setHue(hue);
+        this.saturationValuePanel.setHue(hue);
 
-        this.selectedColor = this.saturationBrightnessPanel.getColorRGB();
+        this.selectedColor = this.saturationValuePanel.getColorRGB();
         this.preview.previewColor = this.selectedColor;
     }
 

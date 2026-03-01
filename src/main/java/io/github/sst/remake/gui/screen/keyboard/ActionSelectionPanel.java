@@ -191,7 +191,6 @@ public class ActionSelectionPanel extends InteractiveWidget {
                 }
 
                 if (!isModuleButton) {
-                    // TODO: clarify intended search behavior for screen buttons; keeping them visible when searching.
                     visibleAll.put(button.getText(), button);
                     continue;
                 }
