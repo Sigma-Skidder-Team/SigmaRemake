@@ -15,8 +15,8 @@ public class VolumeSlider extends InteractiveWidget {
     private boolean isDragging = false;
     private final List<VolumeChangeListener> volumeChangeListeners = new ArrayList<>();
 
-    public VolumeSlider(GuiComponent parent, String iconName, int xV, int yV, int width, int height) {
-        super(parent, iconName, xV, yV, width, height, false);
+    public VolumeSlider(GuiComponent parent, String iconName, int x, int y, int width, int height) {
+        super(parent, iconName, x, y, width, height, false);
     }
 
     @Override
@@ -48,15 +48,15 @@ public class VolumeSlider extends InteractiveWidget {
         }
     }
 
-    public float calculateVolumeFromMouseY(int var1) {
-        return (float) (var1 - this.getAbsoluteY()) / (float) this.height;
+    public float calculateVolumeFromMouseY(int mouseY) {
+        return (float) (mouseY - this.getAbsoluteY()) / (float) this.height;
     }
 
     @Override
-    public void updatePanelDimensions(int newHeight, int newWidth) {
-        super.updatePanelDimensions(newHeight, newWidth);
+    public void updatePanelDimensions(int mouseX, int mouseY) {
+        super.updatePanelDimensions(mouseX, mouseY);
         if (this.isDragging) {
-            this.setVolume(this.calculateVolumeFromMouseY(newWidth));
+            this.setVolume(this.calculateVolumeFromMouseY(mouseY));
             this.fireVolumeChange();
         }
     }
@@ -85,18 +85,18 @@ public class VolumeSlider extends InteractiveWidget {
         this.volume = Math.min(Math.max(value, 0.0F), 1.0F);
     }
 
-    public Widget addVolumeChangeListener(VolumeChangeListener var1) {
-        this.volumeChangeListeners.add(var1);
+    public Widget addVolumeChangeListener(VolumeChangeListener listener) {
+        this.volumeChangeListeners.add(listener);
         return this;
     }
 
     public void fireVolumeChange() {
-        for (VolumeChangeListener var4 : this.volumeChangeListeners) {
-            var4.onVolumeChanged(this);
+        for (VolumeChangeListener listener : this.volumeChangeListeners) {
+            listener.onVolumeChanged(this);
         }
     }
 
     public interface VolumeChangeListener{
-        void onVolumeChanged(VolumeSlider var1);
+        void onVolumeChanged(VolumeSlider slider);
     }
 }
