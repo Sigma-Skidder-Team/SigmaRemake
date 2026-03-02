@@ -7,13 +7,11 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.module.impl.combat.KillAuraModule;
+import io.github.sst.remake.module.impl.combat.*;
 import io.github.sst.remake.module.impl.gui.*;
-import io.github.sst.remake.module.impl.misc.TestModule;
-import io.github.sst.remake.module.impl.movement.BlockFlyModule;
-import io.github.sst.remake.module.impl.movement.CorrectMovementModule;
-import io.github.sst.remake.module.impl.movement.SafeWalkModule;
-import io.github.sst.remake.module.impl.render.WaypointsModule;
+import io.github.sst.remake.module.impl.misc.*;
+import io.github.sst.remake.module.impl.movement.*;
+import io.github.sst.remake.module.impl.render.*;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.tracker.impl.RotationTracker;
 
@@ -48,6 +46,7 @@ public final class ModuleManager extends Manager {
         modules.add(new CorrectMovementModule());
         modules.add(new BlockFlyModule());
         modules.add(new SafeWalkModule());
+        modules.add(new AntiLevitationModule());
         modules.add(new MusicParticlesModule());
 
         modules.forEach(Module::onInit);
