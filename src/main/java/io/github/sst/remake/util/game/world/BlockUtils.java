@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.game.world.data.PlacementPattern;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import io.github.sst.remake.util.java.ListUtils;
 import io.github.sst.remake.util.java.RandomUtils;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
@@ -14,6 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ public class BlockUtils implements IMinecraft {
 
     public static int getBlockStateIndex(BlockState state) {
         Block block = state.getBlock();
-        StateManager stateManager = block.getStateManager();
+        StateManager<Block, BlockState> stateManager = block.getStateManager();
         ImmutableList<?> states = stateManager.getStates();
         return states.indexOf(state);
     }
@@ -54,7 +56,7 @@ public class BlockUtils implements IMinecraft {
     }
 
     public static boolean hasAnySolidNeighbor(List<PositionFacing> placePath) {
-        if (placePath.size() <= 0) {
+        if (placePath.isEmpty()) {
             return false;
         }
 
@@ -78,16 +80,7 @@ public class BlockUtils implements IMinecraft {
         return false;
     }
 
-    public static List<PositionFacing> reversePath(List<PositionFacing> path) {
-        List<PositionFacing> reversed = new ArrayList<>();
-        for (int i = path.size() - 1; i >= 0; i--) {
-            reversed.add(path.get(i));
-        }
-
-        return reversed;
-    }
-
-    public static List<PositionFacing> findPlacementPath(Block expectedBlock, BlockPos startPos, int maxDepth) {
+    public static @NotNull List<PositionFacing> findPlacementPath(Block expectedBlock, BlockPos startPos, int maxDepth) {
         List<PositionFacing> path = new ArrayList<>();
 
         if (startPos == null || maxDepth < 0) {
@@ -118,9 +111,9 @@ public class BlockUtils implements IMinecraft {
             for (PositionFacing candidate : candidates) {
                 List<PositionFacing> childPath = findPlacementPath(expectedBlock, candidate.blockPos, depth);
 
-                if (hasAnySolidNeighbor(reversePath(childPath))) {
+                if (hasAnySolidNeighbor(ListUtils.reverse(childPath))) {
                     path.addAll(childPath);
-                    return path.size() <= 1 ? path : reversePath(path);
+                    return path.size() <= 1 ? path : ListUtils.reverse(path);
                 }
             }
         }
@@ -175,7 +168,7 @@ public class BlockUtils implements IMinecraft {
                 stepIndex = maxSteps;
             }
 
-            double yawRad = Math.toRadians((double) (yawDegrees + 90.0F));
+            double yawRad = Math.toRadians(yawDegrees + 90.0F);
 
             candidateX = startX + (forward * 0.45 * Math.cos(yawRad) + strafe * 0.45 * Math.sin(yawRad)) * stepIndex;
             candidateZ = startZ + (forward * 0.45 * Math.sin(yawRad) - strafe * 0.45 * Math.cos(yawRad)) * stepIndex;
