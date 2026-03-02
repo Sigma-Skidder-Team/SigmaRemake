@@ -18,19 +18,24 @@ import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class TabGuiModule extends Module {
 
-    private final static int HIGHTLIGHT_FILL = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0625f);
-    private final static int HIGHTLIGHT_SHADOW_TINT = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3f);
-    private final static int HQ_BLUR_BACKGROUND = ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.05f);
+    private static final int HIGHTLIGHT_FILL = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0625f);
+    private static final int HIGHTLIGHT_SHADOW_TINT = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3f);
+    private static final int HQ_BLUR_BACKGROUND = ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.05f);
 
-    private final static int ROW_HEIGHT = 30;
-    private final static int ROW_PADDING = 4;
+    private static final int ROW_HEIGHT = 30;
+    private static final int ROW_PADDING = 4;
+    private static final int MODULE_WIDTH = 170;
+    private static final int CATEGORY_WIDTH = 150;
+    private static final int INITIAL_X = 10;
 
     private final Map<Category, Float> categoryTextOffset = new HashMap<>();
     private final Map<Module, Float> moduleTextOffset = new HashMap<>();
@@ -39,7 +44,15 @@ public class TabGuiModule extends Module {
 
     private final List<TabGuiSelectionEffect> effects = new ArrayList<>();
 
-    private final List<Category> categories = Arrays.asList(Category.values());
+    private final List<Category> categories = Arrays.asList(
+            Category.MOVEMENT,
+            Category.PLAYER,
+            Category.COMBAT,
+            Category.ITEM,
+            Category.RENDER,
+            Category.WORLD,
+            Category.MISC
+    );
 
     private final Color[] catGradientTop = new Color[3];
     private final Color[] catGradientBottom = new Color[3];
@@ -47,9 +60,7 @@ public class TabGuiModule extends Module {
     private final Color[] modGradientBottom = new Color[3];
     private final Color[] modGradientMid = new Color[3];
 
-    private int x = 10;
     private int y = 90;
-    private int categoryWidth = 150;
     private int categoryHeight = 150;
 
     private int selectedCategoryIndex = 0;
@@ -61,10 +72,8 @@ public class TabGuiModule extends Module {
     private Category selectedCategory;
     private int modulePanelHeight = 0;
 
-    private int selectedModuleIndex = 0;
+    private int selectedModuleIndex;
     private Module selectedModule;
-
-    private final int moduleWidth = 170;
 
     private float categoryScrollOffset = 0.0F;
 
@@ -78,9 +87,12 @@ public class TabGuiModule extends Module {
         if (client.options.debugEnabled || client.options.hudHidden) return;
         if (!Client.INSTANCE.configManager.hqBlur) return;
 
-        HUDManager.registerBlurArea(x, y, categoryWidth, categoryHeight);
-        if (submenuOpen) {
-            HUDManager.registerBlurArea(moduleWidth, y, moduleWidth, modulePanelHeight);
+        HUDManager.registerBlurArea(INITIAL_X, y, CATEGORY_WIDTH, categoryHeight);
+        if (submenuOpen && selectedCategory != null) {
+            int selectedModulesHeight = getModulesForCategory(selectedCategory).size() * ROW_HEIGHT + ROW_PADDING;
+            if (selectedModulesHeight > ROW_PADDING) {
+                HUDManager.registerBlurArea(MODULE_WIDTH, y, MODULE_WIDTH, selectedModulesHeight);
+            }
         }
     }
 
@@ -99,26 +111,29 @@ public class TabGuiModule extends Module {
         }
 
         switch (event.key) {
-            case 257: // Enter
-                if (this.submenuOpen) {
+            case GLFW.GLFW_KEY_ENTER: // Enter
+                if (this.submenuOpen && this.selectedModule != null) {
                     this.selectedModule.toggle();
                     this.effects.add(new TabGuiSelectionEffect(this.submenuOpen));
                 }
                 break;
 
-            case 262: // Right
+            case GLFW.GLFW_KEY_RIGHT: // Right
                 this.effects.add(new TabGuiSelectionEffect(this.submenuOpen));
                 if (this.submenuOpen) {
-                    this.selectedModule.toggle();
+                    if (this.selectedModule != null) {
+                        this.selectedModule.toggle();
+                    }
+                } else if (this.selectedCategory != null && !this.getModulesForCategory(this.selectedCategory).isEmpty()) {
+                    this.submenuOpen = true;
                 }
-                this.submenuOpen = true;
                 break;
 
-            case 263: // Left
+            case GLFW.GLFW_KEY_LEFT: // Left
                 this.submenuOpen = false;
                 break;
 
-            case 264: // Down
+            case GLFW.GLFW_KEY_DOWN: // Down
                 if (!this.submenuOpen) {
                     this.selectedCategoryIndex++;
                     this.selectedModuleIndex = 0;
@@ -127,7 +142,7 @@ public class TabGuiModule extends Module {
                 }
                 break;
 
-            case 265: // Up
+            case GLFW.GLFW_KEY_UP: // Up
                 if (!this.submenuOpen) {
                     this.selectedCategoryIndex--;
                     this.selectedModuleIndex = 0;
@@ -143,16 +158,18 @@ public class TabGuiModule extends Module {
         // Wrap category selection.
         if (this.selectedCategoryIndex >= this.categories.size()) {
             this.selectedCategoryIndex = 0;
-            this.categorySelectorY = this.selectedCategoryIndex * ROW_HEIGHT - ROW_HEIGHT;
+            this.categorySelectorY = -ROW_HEIGHT;
         } else if (this.selectedCategoryIndex < 0) {
             this.selectedCategoryIndex = this.categories.size() - 1;
             this.categorySelectorY = this.selectedCategoryIndex * ROW_HEIGHT + ROW_HEIGHT;
         }
 
         // Clamp module selection to current category.
-        List<Module> modules = this.getModulesForCategory(this.selectedCategory);
+        List<Module> modules = this.selectedCategory == null
+                ? Collections.emptyList()
+                : this.getModulesForCategory(this.selectedCategory);
         if (this.selectedModuleIndex >= modules.size()) {
-            this.selectedModuleIndex = modules.size() - 1;
+            this.selectedModuleIndex = Math.max(modules.size() - 1, 0);
         } else if (this.selectedModuleIndex < 0) {
             this.selectedModuleIndex = 0;
         }
@@ -172,55 +189,58 @@ public class TabGuiModule extends Module {
                 + Math.min(delta, delta * 0.14F * animSpeed) * (scrollUp ? -1.0F : 1.0F);
 
         y = event.getOffset();
+        this.selectedCategory = this.categories.get(this.selectedCategoryIndex);
 
         drawPanelBackground(
-                x, y, categoryWidth, categoryHeight,
-                catGradientTop, null, catGradientBottom,
-                1.0F
+                INITIAL_X, y, CATEGORY_WIDTH, categoryHeight,
+                catGradientTop, null, catGradientBottom
         );
 
-        ScissorUtils.startScissor((float) x, (float) y, (float) categoryWidth, (float) categoryHeight);
+        ScissorUtils.startScissorRect((float) INITIAL_X, (float) y, (float) CATEGORY_WIDTH, (float) categoryHeight);
 
         drawSelector(
-                x,
+                INITIAL_X,
                 y - Math.round(categoryScrollOffset),
                 categories.size() * ROW_HEIGHT + ROW_PADDING,
-                categoryWidth,
+                CATEGORY_WIDTH,
                 selectedCategoryIndex,
-                false,
-                1.0F
+                false
         );
 
-        drawCategories(x, y - Math.round(categoryScrollOffset), categories);
+        drawCategories(y - Math.round(categoryScrollOffset), categories);
 
         ScissorUtils.restoreScissor();
 
         if (submenuOpen) {
             List<Module> modules = getModulesForCategory(selectedCategory);
-            modulePanelHeight = modules.size() * ROW_HEIGHT + ROW_PADDING;
+            if (modules.isEmpty()) {
+                submenuOpen = false;
+                modulePanelHeight = 0;
+                selectedModule = null;
+            } else {
+                modulePanelHeight = modules.size() * ROW_HEIGHT + ROW_PADDING;
 
-            drawPanelBackground(
-                    moduleWidth, y, moduleWidth, modulePanelHeight,
-                    modGradientTop, modGradientMid, modGradientBottom,
-                    1.0F
-            );
+                drawPanelBackground(
+                        MODULE_WIDTH, y, MODULE_WIDTH, modulePanelHeight,
+                        modGradientTop, modGradientMid, modGradientBottom
+                );
 
-            drawSelector(
-                    moduleWidth, y,
-                    modulePanelHeight,
-                    moduleWidth,
-                    selectedModuleIndex,
-                    true,
-                    1.0F
-            );
+                drawSelector(
+                        MODULE_WIDTH, y,
+                        modulePanelHeight,
+                        MODULE_WIDTH,
+                        selectedModuleIndex,
+                        true
+                );
 
-            drawModules(moduleWidth, y, modules);
+                drawModules(y, modules);
+            }
         }
 
         event.increment(categoryHeight + 10);
     }
 
-    private void drawCategories(int x, int y, List<Category> categories) {
+    private void drawCategories(int y, List<Category> categories) {
         int i = 0;
         for (Category category : categories) {
             if (selectedCategoryIndex == i) {
@@ -240,7 +260,7 @@ public class TabGuiModule extends Module {
 
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_20,
-                    (float) (x + 11) + categoryTextOffset.get(category),
+                    (float) (TabGuiModule.INITIAL_X + 11) + categoryTextOffset.get(category),
                     (float) (y + ROW_HEIGHT / 2 - FontUtils.HELVETICA_LIGHT_20.getHeight() / 2 + 2 + i * ROW_HEIGHT),
                     category.toString(),
                     -1
@@ -250,7 +270,12 @@ public class TabGuiModule extends Module {
         }
     }
 
-    private void drawModules(int x, int y, List<Module> modules) {
+    private void drawModules(int y, List<Module> modules) {
+        if (modules.isEmpty()) {
+            selectedModule = null;
+            return;
+        }
+
         int i = 0;
         for (Module module : modules) {
             if (selectedModuleIndex == i) {
@@ -270,7 +295,7 @@ public class TabGuiModule extends Module {
             if (module.isEnabled()) {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_20,
-                        (float) (x + 11) + moduleTextOffset.get(module),
+                        (float) (TabGuiModule.MODULE_WIDTH + 11) + moduleTextOffset.get(module),
                         (float) (y + ROW_HEIGHT / 2 - FontUtils.HELVETICA_MEDIUM_20.getHeight() / 2 + 3 + i * ROW_HEIGHT),
                         module.getName(),
                         ClientColors.LIGHT_GREYISH_BLUE.getColor()
@@ -278,7 +303,7 @@ public class TabGuiModule extends Module {
             } else {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_LIGHT_20,
-                        (float) (x + 11) + moduleTextOffset.get(module),
+                        (float) (TabGuiModule.MODULE_WIDTH + 11) + moduleTextOffset.get(module),
                         (float) (y + ROW_HEIGHT / 2 - FontUtils.HELVETICA_LIGHT_20.getHeight() / 2 + 2 + i * ROW_HEIGHT),
                         module.getName(),
                         ClientColors.LIGHT_GREYISH_BLUE.getColor()
@@ -289,7 +314,7 @@ public class TabGuiModule extends Module {
         }
     }
 
-    private void drawSelector(int x, int y, int contentHeight, int width, int selectedIndex, boolean submenu, float alpha) {
+    private void drawSelector(int x, int y, int contentHeight, int width, int selectedIndex, boolean submenu) {
         int selectorOffsetY;
 
         if (submenu) {
@@ -340,15 +365,12 @@ public class TabGuiModule extends Module {
             categorySelectorY = Math.max(categorySelectorY, 120 + Math.round(categoryScrollOffset));
         }
 
-        RenderUtils.drawRect(
-                (float) x,
-                selectorOffsetY >= 0 ? (float) (selectorOffsetY + y) : (float) y,
-                (float) (x + width),
-                selectorOffsetY + ROW_PADDING + ROW_HEIGHT <= contentHeight
-                        ? (float) (selectorOffsetY + y + ROW_HEIGHT + ROW_PADDING)
-                        : (float) (y + contentHeight + ROW_PADDING),
-                HIGHTLIGHT_FILL
-        );
+        float selectorY = selectorOffsetY >= 0 ? (float) (selectorOffsetY + y) : (float) y;
+        float selectorHeight = selectorOffsetY + ROW_PADDING + ROW_HEIGHT <= contentHeight
+                ? (float) (ROW_HEIGHT + ROW_PADDING)
+                : (float) (contentHeight + ROW_PADDING - selectorOffsetY);
+
+        RenderUtils.drawRect((float) x, selectorY, (float) width, Math.max(selectorHeight, 0.0F), HIGHTLIGHT_FILL);
 
         RenderUtils.drawImage(
                 (float) x,
@@ -414,11 +436,7 @@ public class TabGuiModule extends Module {
         return Client.INSTANCE.moduleManager.getModulesByCategory(category);
     }
 
-    private void drawPanelBackground(
-            int x, int y, int width, int height,
-            Color[] topColors, Color[] midColorsOrNull, Color[] bottomColors,
-            float alpha
-    ) {
+    private void drawPanelBackground(int x, int y, int width, int height, Color[] topColors, Color[] midColorsOrNull, Color[] bottomColors) {
         boolean hqBlur = Client.INSTANCE.configManager.hqBlur;
 
         int top = ColorHelper.averageColors(topColors).getRGB();
@@ -433,38 +451,34 @@ public class TabGuiModule extends Module {
         if (!hqBlur) {
             RenderUtils.drawVerticalGradientRect(x, y, x + width, y + height, top, bottom);
         } else {
-            ScissorUtils.startScissor((float) x, (float) y, (float) width, (float) height);
+            ScissorUtils.startScissorRect((float) x, (float) y, (float) width, (float) height);
             HUDManager.renderFinalBlur();
             ScissorUtils.restoreScissor();
 
-            RenderUtils.drawRect((float) x, (float) y, (float) (x + width), (float) (y + height), HQ_BLUR_BACKGROUND);
+            RenderUtils.drawRect((float) x, (float) y, (float) width, (float) height, HQ_BLUR_BACKGROUND);
         }
 
-        RenderUtils.drawRoundedRect((float) x, (float) y, (float) width, (float) height, 8.0F, 0.7F * alpha);
+        RenderUtils.drawRoundedRect((float) x, (float) y, (float) width, (float) height, 8.0F, 0.7f);
     }
 
     private void updateSampledPanelColors() {
-        if (Client.INSTANCE.configManager.hqBlur) {
-            return;
-        }
-        if (client.options.debugEnabled || client.options.hudHidden) {
-            return;
-        }
+        if (Client.INSTANCE.configManager.hqBlur) return;
+        if (client.options.debugEnabled || client.options.hudHidden) return;
 
         for (int i = 0; i < 3; i++) {
-            this.catGradientTop[i] = this.sampleScreenColor(this.x + this.categoryWidth / 3 * i, this.y, this.catGradientTop[i]);
-            this.catGradientBottom[i] = this.sampleScreenColor(this.x + this.categoryWidth / 3 * i, this.y + this.categoryHeight, this.catGradientBottom[i]);
+            catGradientTop[i] = sampleScreenColor(INITIAL_X + CATEGORY_WIDTH / 3 * i, y, catGradientTop[i]);
+            catGradientBottom[i] = sampleScreenColor(INITIAL_X + CATEGORY_WIDTH / 3 * i, y + categoryHeight, catGradientBottom[i]);
 
-            this.modGradientTop[i] = this.sampleScreenColor(this.x + this.categoryWidth + 56 * i, this.y, this.modGradientTop[i]);
-            this.modGradientBottom[i] = this.sampleScreenColor(this.x + this.categoryWidth + 56 * i, this.y + this.modulePanelHeight, this.modGradientBottom[i]);
-            this.modGradientMid[i] = this.sampleScreenColor(this.x + this.categoryWidth + 56 * i, this.y + this.modulePanelHeight / 2, this.modGradientMid[i]);
+            modGradientTop[i] = sampleScreenColor(INITIAL_X + CATEGORY_WIDTH + 56 * i, y, modGradientTop[i]);
+            modGradientBottom[i] = sampleScreenColor(INITIAL_X + CATEGORY_WIDTH + 56 * i, y + modulePanelHeight, modGradientBottom[i]);
+            modGradientMid[i] = sampleScreenColor(INITIAL_X + CATEGORY_WIDTH + 56 * i, y + modulePanelHeight / 2, modGradientMid[i]);
         }
     }
 
     private Color sampleScreenColor(int x, int y, Color previous) {
         Color sampled = ColorHelper.sampleScreenColor(x, y);
         if (previous != null) {
-            sampled = ColorHelper.blendColor(sampled, previous, 0.08F * this.animSpeed);
+            sampled = ColorHelper.blendColor(sampled, previous, 0.08f * animSpeed);
         }
         return sampled;
     }
