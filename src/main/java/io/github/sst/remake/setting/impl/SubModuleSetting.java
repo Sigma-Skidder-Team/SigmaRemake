@@ -50,6 +50,27 @@ public class SubModuleSetting extends Setting<SubModule> implements DropdownSett
     }
 
     @Override
+    public void setValue(SubModule value, boolean notify) {
+        SubModule previous = this.value;
+        super.setValue(value, false);
+
+        if (previous != null && previous != value && previous.isEnabled()) {
+            previous.setEnabled(false);
+        }
+
+        if (value != null
+                && value.getParent() != null
+                && value.getParent().isEnabled()
+                && !value.isEnabled()) {
+            value.setEnabled(true);
+        }
+
+        if (notify) {
+            notifyListeners();
+        }
+    }
+
+    @Override
     public JsonObject asJson(JsonObject jsonObject) {
         String savedName = GsonUtils.getStringOrDefault(jsonObject, "value", this.defaultValue.name);
 
