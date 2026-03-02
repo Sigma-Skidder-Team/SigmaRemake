@@ -1441,4 +1441,44 @@ public class RenderUtils implements IMinecraft {
 
         GL11.glPopMatrix();
     }
+
+    public static void drawVerticalGradientRect(int left, int top, int right, int bottom, int topColor, int bottomColor) {
+        float topA = (float) ((topColor >> 24) & 0xFF) / 255.0F;
+        float topR = (float) ((topColor >> 16) & 0xFF) / 255.0F;
+        float topG = (float) ((topColor >> 8) & 0xFF) / 255.0F;
+        float topB = (float) (topColor & 0xFF) / 255.0F;
+
+        float botA = (float) ((bottomColor >> 24) & 0xFF) / 255.0F;
+        float botR = (float) ((bottomColor >> 16) & 0xFF) / 255.0F;
+        float botG = (float) ((bottomColor >> 8) & 0xFF) / 255.0F;
+        float botB = (float) (bottomColor & 0xFF) / 255.0F;
+
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
+        );
+
+        // Smooth shading so the colors interpolate across the quad.
+        RenderSystem.shadeModel(7425); // GL_SMOOTH
+
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder buf = tess.getBuffer();
+        buf.begin(7, VertexFormats.POSITION_COLOR); // GL_QUADS
+
+        // Top edge uses topColor, bottom edge uses bottomColor.
+        buf.vertex(right, top, 0.0).color(topR, topG, topB, topA).next();
+        buf.vertex(left, top, 0.0).color(topR, topG, topB, topA).next();
+        buf.vertex(left, bottom, 0.0).color(botR, botG, botB, botA).next();
+        buf.vertex(right, bottom, 0.0).color(botR, botG, botB, botA).next();
+
+        tess.draw();
+
+        RenderSystem.shadeModel(7424); // GL_FLAT
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
+    }
 }

@@ -1,9 +1,13 @@
 package io.github.sst.remake.util.math.color;
 
+import io.github.sst.remake.Client;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import lombok.Getter;
+import net.minecraft.client.MinecraftClient;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.nio.ByteBuffer;
 
 @Getter
 public class ColorHelper {
@@ -181,5 +185,56 @@ public class ColorHelper {
         float blendedB = b1 * factor + b2 * inverseFactor;
 
         return ((int) blendedA << 24) | (((int) blendedR & 0xFF) << 16) | (((int) blendedG & 0xFF) << 8) | ((int) blendedB & 0xFF);
+    }
+
+    public static Color averageColors(Color... colors) {
+        if (colors == null || colors.length == 0) {
+            return Color.WHITE;
+        }
+
+        float weight = 1.0F / (float) colors.length;
+        float r = 0.0F;
+        float g = 0.0F;
+        float b = 0.0F;
+        float a = 0.0F;
+
+        for (Color c : colors) {
+            if (c == null) {
+                c = Color.BLACK;
+            }
+
+            r += c.getRed() * weight;
+            g += c.getGreen() * weight;
+            b += c.getBlue() * weight;
+            a += c.getAlpha() * weight;
+        }
+
+        return new Color(r / 255.0F, g / 255.0F, b / 255.0F, a / 255.0F);
+    }
+
+    public static java.awt.Color sampleScreenColor(int x, int y) {
+        x = (int) (x * Client.INSTANCE.screenManager.scaleFactor);
+        y = (int) (y * Client.INSTANCE.screenManager.scaleFactor);
+
+        ByteBuffer rgb = ByteBuffer.allocateDirect(3);
+
+        // GL_PACK_ALIGNMENT
+        GL11.glPixelStorei(3317, 1);
+
+        // Read 1x1 RGB pixel from the framebuffer. Y is flipped because OpenGL origin is bottom-left.
+        GL11.glReadPixels(
+                x,
+                MinecraftClient.getInstance().getWindow().getFramebufferHeight() - y,
+                1,
+                1,
+                6407,  // GL_RGB
+                5120,  // GL_UNSIGNED_BYTE
+                rgb
+        );
+
+        // Note: the original code multiplies channels by 2 and uses alpha=1 (not 255).
+        // TODO: Confirm whether "* 2" is intentional (brightness boost) or a decompiler artifact.
+        // TODO: Confirm whether alpha should be 255 instead of 1.
+        return new java.awt.Color(rgb.get(0) * 2, rgb.get(1) * 2, rgb.get(2) * 2, 1);
     }
 }
