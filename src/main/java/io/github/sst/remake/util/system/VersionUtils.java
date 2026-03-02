@@ -64,7 +64,7 @@ public class VersionUtils {
             int minor = Integer.parseInt(matcher.group(2));
 
             if (major > majorReq) return true;
-            if (major == majorReq && minor >= minorReq) return true;
+            return major == majorReq && minor >= minorReq;
         }
         return false;
     }
