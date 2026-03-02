@@ -183,9 +183,9 @@ public class ActionSelectionPanel extends InteractiveWidget {
 
                 if (isEmptySearch(this.searchText)) {
                     if (isModuleButton) {
-                        visibleAll.put(button.getText(), button);
+                        visibleStartsWith.put(button.getText(), button);
                     } else {
-                        hidden.add(button);
+                        visibleAll.put(button.getText(), button);
                     }
                     continue;
                 }
