@@ -48,6 +48,8 @@ public final class ModuleManager extends Manager {
         modules.add(new SafeWalkModule());
         modules.add(new AntiLevitationModule());
         modules.add(new MusicParticlesModule());
+        modules.add(new NickNameDetector());
+
 
         modules.forEach(Module::onInit);
         super.init();
