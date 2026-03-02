@@ -66,7 +66,7 @@ public class RotationUtils implements IMinecraft {
 
         return new Rotation(
                 client.player.yaw + normalizeYaw(targetYaw - client.player.yaw),
-                client.player.pitch + normalizePitch(targetPitch - client.player.pitch)
+                normalizePitch(targetPitch)
         );
     }
 
@@ -229,7 +229,7 @@ public class RotationUtils implements IMinecraft {
         float f = (float) (client.options.mouseSensitivity * 0.6f + 0.2f);
         float gcd = f * f * f * 1.2f;
 
-        float deltaYaw = targetYaw - currentYaw;
+        float deltaYaw = normalizeYaw(targetYaw - currentYaw);
         float deltaPitch = targetPitch - currentPitch;
 
         int stepsYaw = Math.round(deltaYaw / gcd);
@@ -420,7 +420,7 @@ public class RotationUtils implements IMinecraft {
         float targetPitch =
                 (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
 
-        return new Rotation(client.player.yaw + normalizeYaw(targetYaw - client.player.yaw), client.player.pitch + normalizePitch(targetPitch - client.player.pitch));
+        return new Rotation(client.player.yaw + normalizeYaw(targetYaw - client.player.yaw), normalizePitch(targetPitch));
     }
 
     public static Rotation getBlockPlacementRotations(BlockPos blockPos, Direction face) {
@@ -460,7 +460,7 @@ public class RotationUtils implements IMinecraft {
 
         return new Rotation(
                 client.player.yaw + normalizeYaw(yaw - client.player.yaw),
-                client.player.pitch + normalizePitch(pitch - client.player.pitch)
+                normalizePitch(pitch)
         );
     }
 }
