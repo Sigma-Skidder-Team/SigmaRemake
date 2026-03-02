@@ -190,7 +190,9 @@ public class BlockUtils implements IMinecraft {
 
     public static PositionFacing findPlaceableNeighbor(BlockPos pos, boolean disallowDownFace) {
         Vec3i[] baseOffsets = new Vec3i[]{
-                new Vec3i(0, 0, 0), new Vec3i(-1, 0, 0), new Vec3i(1, 0, 0), new Vec3i(0, 0, 1), new Vec3i(0, 0, -1)
+                new Vec3i(0, 0, 0), new Vec3i(-1, 0, 0),
+                new Vec3i(1, 0, 0), new Vec3i(0, 0, 1),
+                new Vec3i(0, 0, -1)
         };
         PlacementPattern[] searchPatterns = new PlacementPattern[]{
                 new PlacementPattern(1, 1, 1, false),

@@ -6,10 +6,10 @@ public class PlacementPattern {
     public int offsetZ;
     public boolean isAdditive;
 
-    public PlacementPattern(int var1, int var2, int var3, boolean var4) {
-        this.offsetX = var1;
-        this.offsetY = var2;
-        this.offsetZ = var3;
-        this.isAdditive = var4;
+    public PlacementPattern(int x, int y, int z, boolean additive) {
+        this.offsetX = x;
+        this.offsetY = y;
+        this.offsetZ = z;
+        this.isAdditive = additive;
     }
 }

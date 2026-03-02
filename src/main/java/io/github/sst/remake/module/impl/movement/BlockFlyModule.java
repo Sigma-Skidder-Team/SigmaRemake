@@ -9,10 +9,7 @@ import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.module.impl.movement.blockfly.AACBlockFly;
-import io.github.sst.remake.module.impl.movement.blockfly.HypixelBlockFly;
-import io.github.sst.remake.module.impl.movement.blockfly.NCPBlockFly;
-import io.github.sst.remake.module.impl.movement.blockfly.SmoothBlockFly;
+import io.github.sst.remake.module.impl.movement.blockfly.*;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
@@ -39,7 +36,11 @@ import org.lwjgl.opengl.GL11;
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
 
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode", new AACBlockFly(), new SmoothBlockFly(), new NCPBlockFly(), new HypixelBlockFly());
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode",
+            new AACBlockFly(), new SmoothBlockFly(),
+            new NCPBlockFly(), new HypixelBlockFly(),
+            new TellyBlockFly()
+    );
     public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
 
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
