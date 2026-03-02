@@ -187,7 +187,7 @@ public class TellyBlockFly extends SubModule implements Rotatable {
 
         if (pendingPlace == null) return;
 
-        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, 5.0f, event);
+        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, client.interactionManager.getReachDistance(), event);
         if (hit.getType() == HitResult.Type.MISS) {
             return;
         }
