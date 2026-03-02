@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class NotificationManager extends Manager implements IMinecraft {
-    private final static int SOME_OFFSET = 200;
+    private static final int SOME_OFFSET = 200;
     private List<Notification> notifications;
 
     @Override

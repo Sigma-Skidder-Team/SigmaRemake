@@ -31,9 +31,9 @@ public class MusicPlayer extends Widget {
     private final AnimationUtils edgeDockAnimation = new AnimationUtils(80, 150, AnimationUtils.Direction.FORWARDS);
     public boolean isAnimatingBack = false;
 
-    private final static int PLAYER_WIDTH = 250;
-    private final static int HEADER_HEIGHT = 64;
-    private final static int FOOTER_HEIGHT = 94;
+    private static final int PLAYER_WIDTH = 250;
+    private static final int HEADER_HEIGHT = 64;
+    private static final int FOOTER_HEIGHT = 94;
 
     private String currentPlaylistName = "Music Player";
     private final ScrollablePanel playlistTabsPanel;
