@@ -165,8 +165,7 @@ public class KillAuraModule extends Module implements Rotatable {
 
         if (Math.random() * 100 > hitChance.value) return;
 
-        if (clickMode.value.equals("1.9") && client.player.getAttackCooldownProgress(0) >= 1) {
-            attack(target);
+        if (clickMode.value.equals("1.9") && client.player.getAttackCooldownProgress(0.5f) < 1) {
             return;
         }
 
