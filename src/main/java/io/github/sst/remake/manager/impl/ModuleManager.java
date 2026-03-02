@@ -3,7 +3,6 @@ package io.github.sst.remake.manager.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.sst.remake.Client;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
@@ -15,7 +14,6 @@ import io.github.sst.remake.module.impl.render.*;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.tracker.impl.RotationTracker;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +46,7 @@ public final class ModuleManager extends Manager {
         modules.add(new SafeWalkModule());
         modules.add(new AntiLevitationModule());
         modules.add(new MusicParticlesModule());
-        modules.add(new NickNameDetector());
+        modules.add(new NickDetectorModule());
         modules.add(new TabGuiModule());
 
 
