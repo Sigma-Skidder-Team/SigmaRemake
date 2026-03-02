@@ -121,7 +121,15 @@ public abstract class Module implements IMinecraft {
 
             try {
                 SubModuleSetting setting = (SubModuleSetting) field.get(this);
-                setting.value.setEnabled(enabled);
+                if (enabled) {
+                    for (SubModule mode : setting.modes) {
+                        mode.setEnabled(mode == setting.value);
+                    }
+                } else {
+                    for (SubModule mode : setting.modes) {
+                        mode.setEnabled(false);
+                    }
+                }
             } catch (IllegalAccessException e) {
                 Client.LOGGER.error("Failed to access submodule setting field {}", field.getName(), e);
             }
