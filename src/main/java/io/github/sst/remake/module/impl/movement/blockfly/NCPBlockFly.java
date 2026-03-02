@@ -243,11 +243,10 @@ public class NCPBlockFly extends SubModule implements Rotatable {
 
     @Subscribe(priority = Priority.LOW)
     public void onMotion(MotionEvent event) {
-        if (!getParent().isEnabled()) return;
         if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        if (event.isPre()) {
+        if (!event.isPre()) {
             getParent().refillHotbarWithBlocks();
             handlePlace();
             if (getParent().countPlaceableBlocks() == 0) {
@@ -284,13 +283,6 @@ public class NCPBlockFly extends SubModule implements Rotatable {
 
     @Override
     public Rotation getRotations() {
-        if (!getParent().isEnabled()) {
-            pendingPlace = null;
-            targetYaw = NO_ROTATION_SENTINEL;
-            targetPitch = NO_ROTATION_SENTINEL;
-            return null;
-        }
-
         if (client.player == null) return null;
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
