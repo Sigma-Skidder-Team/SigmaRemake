@@ -23,6 +23,7 @@ public final class RotationTracker extends Tracker implements IMinecraft {
     private Rotatable currentRotatable;
 
     public Rotation rotations;
+    public Rotation tickRotation;
 
     private Rotation renderHeadPrevious;
     private Rotation renderHeadCurrent;
@@ -81,20 +82,6 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         event.yaw = rotations.yaw;
         event.pitch = rotations.pitch;
     }
-    public Rotation getUpcomingRotation() {
-        Rotatable rotatable = rotatables.stream()
-                .filter(Rotatable::isEnabled)
-                .max(Comparator.comparingInt(Rotatable::getPriority))
-                .orElse(null);
-
-        if (rotatable == null) return null;
-        Rotation target = rotatable.getRotations();
-        if (target == null) return null;
-
-        Rotation prev = renderHeadCurrent != null ? renderHeadCurrent : new Rotation(client.player.yaw, client.player.pitch);
-        return RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
-    }
-    public Rotation tickRotation;
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onPlayerTick(ClientPlayerTickEvent event) {
@@ -122,6 +109,7 @@ public final class RotationTracker extends Tracker implements IMinecraft {
 
         tickRotation = RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
     }
+
     @Subscribe(priority = Priority.HIGHEST)
     public void onLook(EntityLookEvent event) {
         if (rotations == null) return;
@@ -162,6 +150,24 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         event.yaw = MathHelper.wrapDegrees(headYaw - bodyYaw);
     }
 
+    public Rotation getUpcomingRotation() {
+        Rotatable rotatable = rotatables.stream()
+                .filter(Rotatable::isEnabled)
+                .max(Comparator.comparingInt(Rotatable::getPriority))
+                .orElse(null);
+
+        if (rotatable == null) return null;
+        Rotation target = rotatable.getRotations();
+        if (target == null) return null;
+
+        Rotation prev = renderHeadCurrent != null ? renderHeadCurrent : new Rotation(client.player.yaw, client.player.pitch);
+        return RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
+    }
+
+    public Rotatable getCurrentRotatable() {
+        return currentRotatable;
+    }
+
     private static float approachAngle(float from, float to) {
         float delta = MathHelper.wrapDegrees(to - from);
 
@@ -169,9 +175,5 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         if (delta < -BODY_TURN_SPEED) delta = -BODY_TURN_SPEED;
 
         return from + delta;
-    }
-
-    public Rotatable getCurrentRotatable() {
-        return currentRotatable;
     }
 }
