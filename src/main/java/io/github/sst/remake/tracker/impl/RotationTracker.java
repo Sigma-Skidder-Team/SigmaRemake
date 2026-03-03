@@ -4,6 +4,7 @@ import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.data.rotation.Rotatable;
 import io.github.sst.remake.data.rotation.Rotation;
+import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityRotationsEvent;
 import io.github.sst.remake.event.impl.game.world.EntityLookEvent;
@@ -54,56 +55,73 @@ public final class RotationTracker extends Tracker implements IMinecraft {
     public void onMotion(MotionEvent event) {
         if (!event.isPre()) return;
 
-        Rotatable module = rotatables.stream()
-                .filter(Rotatable::isEnabled)
-                .max(Comparator.comparingInt(Rotatable::getPriority))
-                .orElse(null);
-        currentRotatable = module;
-
-        Rotation target = module == null ? null : module.getRotations();
-        if (target == null) {
+        if (tickRotation == null) {
             active = false;
             currentRotatable = null;
             rotations = null;
-
             renderHeadPrevious = null;
             renderHeadCurrent = null;
-
             return;
         }
 
         if (!active || renderHeadCurrent == null) {
-            float currentYaw = client.player.yaw;
-            float currentPitch = client.player.pitch;
-
-            renderHeadPrevious = new Rotation(currentYaw, currentPitch);
-            renderHeadCurrent = new Rotation(currentYaw, currentPitch);
-
-            renderBodyPrevious = currentYaw;
-            renderBodyCurrent = currentYaw;
-
+            renderHeadPrevious = new Rotation(client.player.yaw, client.player.pitch);
+            renderHeadCurrent = new Rotation(client.player.yaw, client.player.pitch);
+            renderBodyPrevious = client.player.yaw;
+            renderBodyCurrent = client.player.yaw;
             active = true;
         }
 
         renderHeadPrevious = renderHeadCurrent;
         renderBodyPrevious = renderBodyCurrent;
+        renderHeadCurrent = tickRotation;
+        renderBodyCurrent = approachAngle(renderBodyPrevious, renderHeadCurrent.yaw);
 
-        renderHeadCurrent = target;
-
-        renderBodyCurrent = approachAngle(
-                renderBodyPrevious,
-                renderHeadCurrent.yaw
-        );
-
-        rotations = RotationUtils.applyGcdFix(
-                renderHeadPrevious.yaw, renderHeadPrevious.pitch,
-                renderHeadCurrent.yaw, renderHeadCurrent.pitch
-        );
-
+        rotations = tickRotation;
         event.yaw = rotations.yaw;
         event.pitch = rotations.pitch;
     }
+    public Rotation getUpcomingRotation() {
+        Rotatable rotatable = rotatables.stream()
+                .filter(Rotatable::isEnabled)
+                .max(Comparator.comparingInt(Rotatable::getPriority))
+                .orElse(null);
 
+        if (rotatable == null) return null;
+        Rotation target = rotatable.getRotations();
+        if (target == null) return null;
+
+        Rotation prev = renderHeadCurrent != null ? renderHeadCurrent : new Rotation(client.player.yaw, client.player.pitch);
+        return RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
+    }
+    public Rotation tickRotation;
+
+    @Subscribe(priority = Priority.HIGHEST)
+    public void onPlayerTick(ClientPlayerTickEvent event) {
+        if (!event.isPre()) return;
+
+        Rotatable rotatable = rotatables.stream()
+                .filter(Rotatable::isEnabled)
+                .max(Comparator.comparingInt(Rotatable::getPriority))
+                .orElse(null);
+
+        if (rotatable == null) {
+            tickRotation = null;
+            return;
+        }
+
+        Rotation target = rotatable.getRotations();
+        if (target == null) {
+            tickRotation = null;
+            return;
+        }
+
+        Rotation prev = renderHeadCurrent != null
+                ? renderHeadCurrent
+                : new Rotation(client.player.yaw, client.player.pitch);
+
+        tickRotation = RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
+    }
     @Subscribe(priority = Priority.HIGHEST)
     public void onLook(EntityLookEvent event) {
         if (rotations == null) return;

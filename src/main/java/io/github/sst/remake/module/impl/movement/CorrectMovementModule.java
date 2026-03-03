@@ -3,13 +3,18 @@ package io.github.sst.remake.module.impl.movement;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
+import io.github.sst.remake.data.rotation.Rotatable;
+import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.InputEvent;
 import io.github.sst.remake.event.impl.game.player.JumpEvent;
 import io.github.sst.remake.event.impl.game.player.VelocityYawEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.ModeSetting;
+import io.github.sst.remake.tracker.impl.RotationTracker;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Comparator;
 
 /**
  * @see <a href="https://github.com/Sumandora/tarasande/blob/1.20.4/src/main/kotlin/su/mandora/tarasande/feature/rotation/component/correctmovement/impl/Silent.kt">Silent mode</a>
@@ -25,27 +30,27 @@ public class CorrectMovementModule extends Module {
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onJump(JumpEvent event) {
-        if (Client.INSTANCE.moduleManager.rotationTracker.active
-                && Client.INSTANCE.moduleManager.rotationTracker.rotations != null
-                && event.entity == client.player) {
-            event.yaw = Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw;
+        if (event.entity != client.player) return;
+        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.tickRotation;
+        if (tick != null) {
+            event.yaw = tick.yaw;
         }
     }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onVelocity(VelocityYawEvent event) {
-        if (Client.INSTANCE.moduleManager.rotationTracker.active
-                && Client.INSTANCE.moduleManager.rotationTracker.rotations != null
-                && event.entity == client.player) {
-            event.yaw = Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw;
+        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.tickRotation;
+        if (tick != null && event.entity == client.player) {
+            event.yaw = tick.yaw;
         }
     }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onInput(InputEvent event) {
         if (!mode.value.equals("Silent")) return;
-        if (Client.INSTANCE.moduleManager.rotationTracker.active && Client.INSTANCE.moduleManager.rotationTracker.rotations != null) {
-            correctMovement(event, Client.INSTANCE.moduleManager.rotationTracker.rotations.yaw);
+        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.tickRotation;
+        if (tick != null) {
+            correctMovement(event, tick.yaw);
         }
     }
 
@@ -90,10 +95,10 @@ public class CorrectMovementModule extends Module {
                     closestStrafe = predictedStrafe;
                 }
             }
-
-            event.forward = closestForward;
-            event.strafe = closestStrafe;
         }
+
+        event.forward = closestForward;
+        event.strafe = closestStrafe;
     }
 
 }
