@@ -64,7 +64,7 @@ public class BasicBlockFly extends SubModule implements Rotatable {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
         targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
 
@@ -357,7 +357,7 @@ public class BasicBlockFly extends SubModule implements Rotatable {
     }
 
     private void placeWithDoItemUse() {
-        int previousSlot = client.player.inventory.selectedSlot;
+        int previousSlot = client.player.getInventory().selectedSlot;
 
         if (!getParent().itemSpoofMode.value.equals("None")) {
             getParent().selectPlaceableHotbarSlot();
@@ -367,7 +367,7 @@ public class BasicBlockFly extends SubModule implements Rotatable {
 
         String spoofMode = getParent().itemSpoofMode.value;
         if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = previousSlot;
+            client.player.getInventory().selectedSlot = previousSlot;
         }
     }
 }

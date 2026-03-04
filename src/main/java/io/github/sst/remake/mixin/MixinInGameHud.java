@@ -45,14 +45,14 @@ public class MixinInGameHud {
         RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
         RenderSystem.alphaFunc(519, 0.0F);
         RenderSystem.enableBlend();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(2896);
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
         new RenderHudEvent().call();
         RenderUtils.resetHudGlState();
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();

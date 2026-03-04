@@ -45,7 +45,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     return new LiteralText(ViaProtocols.getByIndex(index).name);
                 }
         );
-        versionSelectorWidget = addButton(versionSelector.createButton(client.options, width / 2 + 40, 7, 114));
+        versionSelectorWidget = addDrawable(versionSelector.createButton(client.options, width / 2 + 40, 7, 114));
     }
 
     @ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;drawCenteredText(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))

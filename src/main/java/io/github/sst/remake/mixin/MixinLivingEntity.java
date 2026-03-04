@@ -31,7 +31,7 @@ public abstract class MixinLivingEntity extends Entity {
         Vec3d current = self.getVelocity();
         Vec3d jumpVec = new Vec3d(current.x, (double) f, current.z);
 
-        JumpEvent event = new JumpEvent(self, jumpVec, self.yaw);
+        JumpEvent event = new JumpEvent(self, jumpVec, self.getYaw());
         event.call();
 
         if (event.cancelled) {

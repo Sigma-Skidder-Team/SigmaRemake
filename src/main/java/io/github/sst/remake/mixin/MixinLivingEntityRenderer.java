@@ -2,8 +2,8 @@ package io.github.sst.remake.mixin;
 
 import io.github.sst.remake.event.impl.game.render.RenderEntityRotationsEvent;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -23,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>>
         extends EntityRenderer<T> implements FeatureRendererContext<T, M> {
 
-    protected MixinLivingEntityRenderer(EntityRenderDispatcher dispatcher) {
+    protected MixinLivingEntityRenderer(EntityRendererFactory.Context dispatcher) {
         super(dispatcher);
     }
 
@@ -71,7 +70,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
             vanillaYaw = vanillaHeadYaw - vanillaBodyYaw;
         }
 
-        float vanillaPitch = MathHelper.lerp(tickDelta, entity.prevPitch, entity.pitch);
+        float vanillaPitch = MathHelper.lerp(tickDelta, entity.prevPitch, entity.getPitch());
 
         RenderEntityRotationsEvent event = new RenderEntityRotationsEvent(entity, vanillaYaw, vanillaPitch, vanillaBodyYaw, vanillaHeadYaw, tickDelta);
 

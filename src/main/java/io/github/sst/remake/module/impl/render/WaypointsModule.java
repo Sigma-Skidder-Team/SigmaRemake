@@ -16,7 +16,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
@@ -52,26 +52,25 @@ public class WaypointsModule extends Module {
 
         Object packet = event.packet;
 
-        if (packet instanceof EntitiesDestroyS2CPacket) {
-            EntitiesDestroyS2CPacket destroyPacket = (EntitiesDestroyS2CPacket) packet;
+        if (packet instanceof EntityDestroyS2CPacket) {
+            EntityDestroyS2CPacket destroyPacket = (EntityDestroyS2CPacket) packet;
 
-            for (int entityId : destroyPacket.getEntityIds()) {
-                Entity entity = client.world.getEntityById(entityId);
-                if (entity instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) entity;
+            Entity entity = client.world.getEntityById(destroyPacket.getEntityId());
 
-                    this.unspawnedWaypoints.remove(player.getUuid());
-                    this.unspawnedWaypoints.put(
-                            player.getUuid(),
-                            new Waypoint(
-                                    player.getName().getString() + " Unspawn",
-                                    (int) player.getX(),
-                                    (int) player.getY(),
-                                    (int) player.getZ(),
-                                    ClientColors.DARK_OLIVE.getColor()
-                            )
-                    );
-                }
+            if (entity instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) entity;
+
+                this.unspawnedWaypoints.remove(player.getUuid());
+                this.unspawnedWaypoints.put(
+                        player.getUuid(),
+                        new Waypoint(
+                                player.getName().getString() + " Unspawn",
+                                (int) player.getX(),
+                                (int) player.getY(),
+                                (int) player.getZ(),
+                                ClientColors.DARK_OLIVE.getColor()
+                        )
+                );
             }
             return;
         }

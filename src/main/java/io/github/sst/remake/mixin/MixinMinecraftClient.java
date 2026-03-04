@@ -15,7 +15,7 @@ import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
-import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.gui.screen.SplashOverlay;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
@@ -83,8 +83,8 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))
     private void redirectOverlay(MinecraftClient instance, Overlay value) {
-        if (value instanceof SplashScreen) {
-            SplashScreen splash = (SplashScreen) value;
+        if (value instanceof SplashOverlay) {
+            SplashOverlay splash = (SplashOverlay) value;
             value = new LoadingScreen(
                     splash.reload,
                     splash.exceptionHandler,
@@ -92,7 +92,7 @@ public abstract class MixinMinecraftClient {
             );
         }
 
-        instance.overlay = value;
+        instance.setOverlay(value);
     }
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))

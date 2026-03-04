@@ -31,6 +31,11 @@ public class JelloBlurJSON implements Resource {
     }
 
     @Override
+    public boolean hasMetadata() {
+        return false;
+    }
+
+    @Override
     public void close() {
     }
 }

@@ -31,7 +31,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         long nowMs = Util.getMeasuringTimeMs();
 
         if (this.isReloading
-                && (this.reloadMonitor.isPrepareStageComplete() || client.currentScreen != null)
+                && (this.reloadMonitor.isComplete() || client.currentScreen != null)
                 && this.prepareCompleteTimeMs == -1L) {
             this.prepareCompleteTimeMs = nowMs;
         }

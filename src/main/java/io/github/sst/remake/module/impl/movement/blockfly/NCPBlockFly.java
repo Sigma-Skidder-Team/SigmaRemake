@@ -56,7 +56,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
         targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
         if (client.options.keySneak.isPressed() && getParent().downwards.value) {
@@ -169,7 +169,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
                 break;
             case "Cubecraft":
                 double speed = 0.2;
-                float yaw = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+                float yaw = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.getYaw()));
 
                 if (client.options.keyJump.isPressed()) {
                     setTimer(1.0f);
@@ -306,7 +306,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
             return null;
         }
 
-        if (client.player.yaw != targetYaw || client.player.pitch != targetPitch) {
+        if (client.player.getYaw() != targetYaw || client.player.getPitch() != targetPitch) {
             rotationChangeTicks = 0;
         }
 

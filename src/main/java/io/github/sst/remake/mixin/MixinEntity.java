@@ -24,7 +24,7 @@ public abstract class MixinEntity {
     @Inject(method = "getRotationVec", at = @At("HEAD"), cancellable = true)
     private void injectGetRotationVec(float tickDelta, CallbackInfoReturnable<Vec3d> cir) {
         Entity entity = (Entity) (Object) this;
-        EntityLookEvent event = new EntityLookEvent(entity, tickDelta, entity.yaw, entity.pitch);
+        EntityLookEvent event = new EntityLookEvent(entity, tickDelta, entity.getYaw(), entity.getPitch());
         event.call();
 
         if (event.cancelled) {

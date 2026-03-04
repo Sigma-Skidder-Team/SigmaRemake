@@ -76,7 +76,7 @@ public class MovementUtils implements IMinecraft {
         double speed = 0.2873;
         float multiplier = 1.0F;
         EntityAttributeInstance attribute = client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-        multiplier = (float) ((double) multiplier * ((attribute.getValue() / (double) client.player.abilities.getWalkSpeed() + 1.0) / 2.0));
+        multiplier = (float) ((double) multiplier * ((attribute.getValue() / (double) client.player.getAbilities().getWalkSpeed() + 1.0) / 2.0));
         if (client.player.isSprinting()) {
             multiplier = (float) ((double) multiplier - 0.15);
         }
