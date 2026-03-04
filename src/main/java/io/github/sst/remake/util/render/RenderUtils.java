@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.font.FontAlignment;
@@ -138,7 +139,7 @@ public class RenderUtils implements IMinecraft {
         if (texture != null) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+            LaterVersionStuff.execute(() -> { GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F); });
 
             x = (float) Math.round(x);
             width = (float) Math.round(width);
@@ -175,22 +176,28 @@ public class RenderUtils implements IMinecraft {
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             }
 
-            GL11.glBegin(7);
-            GL11.glTexCoord2f(var21, var22);
-            GL11.glVertex2f(x, y);
+            final float finalX = x;
+            final float finalY = y;
+            final float finalHeight = height;
+            final float finalWidth = width;
+            LaterVersionStuff.execute(() -> {
+                GL11.glBegin(7);
+                GL11.glTexCoord2f(var21, var22);
+                GL11.glVertex2f(finalX, finalY);
 
-            GL11.glTexCoord2f(var21, var22 + var20);
-            GL11.glVertex2f(x, y + height);
+                GL11.glTexCoord2f(var21, var22 + var20);
+                GL11.glVertex2f(finalX, finalY + finalHeight);
 
-            GL11.glTexCoord2f(var21 + var19, var22 + var20);
-            GL11.glVertex2f(x + width, y + height);
+                GL11.glTexCoord2f(var21 + var19, var22 + var20);
+                GL11.glVertex2f(finalX + finalWidth, finalY + finalHeight);
 
-            GL11.glTexCoord2f(var21 + var19, var22);
-            GL11.glVertex2f(x + width, y);
-            GL11.glEnd();
+                GL11.glTexCoord2f(var21 + var19, var22);
+                GL11.glVertex2f(finalX + finalWidth, finalY);
+                GL11.glEnd();
 
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_BLEND);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glDisable(GL11.GL_BLEND);
+            });
 
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
