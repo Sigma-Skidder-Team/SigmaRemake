@@ -12,17 +12,17 @@ public class RenderHelper {
     private static final Vec3f GUI_3D_DIFFUSE_LIGHTING = Util.make(new Vec3f(-0.2F, -1.0F, 0.7F), Vec3f::normalize);
 
     public static void enableStandardItemLighting() {
-        RenderSystem.enableLighting();
-        RenderSystem.enableColorMaterial();
-        RenderSystem.colorMaterial(1032, 5634);
+        // TODO(version/1.17): RenderSystem.enableLighting(); - removed in 1.17+
+        // TODO(version/1.17): RenderSystem.enableColorMaterial(); - removed in 1.17+
+        // TODO(version/1.17): RenderSystem.colorMaterial(1032, 5634); - removed in 1.17+
     }
 
     /**
      * Disables the OpenGL lighting properties enabled by enableStandardItemLighting
      */
     public static void disableStandardItemLighting() {
-        RenderSystem.disableLighting();
-        RenderSystem.disableColorMaterial();
+        // TODO(version/1.17): RenderSystem.disableLighting(); - removed in 1.17+
+        // TODO(version/1.17): RenderSystem.disableColorMaterial(); - removed in 1.17+
     }
 
     public static void setupDiffuseGuiLighting(Matrix4f matrix) {

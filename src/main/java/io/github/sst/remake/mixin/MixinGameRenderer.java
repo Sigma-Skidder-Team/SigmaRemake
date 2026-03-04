@@ -38,15 +38,16 @@ public class MixinGameRenderer {
         new RenderLevelEvent(tickDelta, startTime).call();
     }
 
-    @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
-    private void injectBeforeUIRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-        new Render2DEvent(tickDelta, startTime, tick).call();
-    }
+    // TODO(version/1.17): injectBeforeUIRender mixin target no longer exists in render method
+    // @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
+    // private void injectBeforeUIRender(CallbackInfo ci) {
+    //     new Render2DEvent(0, 0, false).call();
+    // }
 
     @Inject(method = "renderWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
     private void injectBeforeRenderHand(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-        RenderSystem.pushMatrix();
-        RenderSystem.multMatrix(matrix.peek().getModel());
+        // TODO(version/1.17): RenderSystem.pushMatrix(); - use MatrixStack instead
+        // TODO(version/1.17): RenderSystem.multMatrix(matrix.peek().getModel()); - use MatrixStack instead
         if (client != null && client.world != null && client.player != null) {
             GL11.glTranslatef(0.0F, 0.0F, 0.0F);
             RenderSystem.disableDepthTest();
@@ -57,7 +58,7 @@ public class MixinGameRenderer {
             RenderSystem.depthMask(true);
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }
-        RenderSystem.popMatrix();
+        // TODO(version/1.17): RenderSystem.popMatrix(); - use MatrixStack instead
     }
 
     @WrapOperation(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 1, opcode = Opcodes.GETFIELD))

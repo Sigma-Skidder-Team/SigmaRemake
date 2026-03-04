@@ -42,8 +42,8 @@ public class MixinInGameHud {
         GL11.glDisable(2912);
 
         RenderSystem.disableDepthTest();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
-        RenderSystem.alphaFunc(519, 0.0F);
+        // TODO(version/1.17): RenderSystem.translatef(0.0F, 0.0F, 1000.0F); - use MatrixStack instead
+        // TODO(version/1.17): RenderSystem.alphaFunc(519, 0.0F); - use GL11.glAlphaFunc instead
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(2896);
@@ -56,7 +56,7 @@ public class MixinInGameHud {
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(518, 0.1F);
+        // TODO(version/1.17): RenderSystem.alphaFunc(518, 0.1F); - use GL11.glAlphaFunc instead
 
         GL11.glPopMatrix();
     }

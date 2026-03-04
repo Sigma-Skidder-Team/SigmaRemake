@@ -18,7 +18,7 @@ public class SpotlightScreen extends Screen {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            MinecraftClient.getInstance().openScreen(null);
+            MinecraftClient.getInstance().setScreen(null);
         }
     }
 }

@@ -16,12 +16,13 @@ import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntityDestroyS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.texture.TextureImpl;
 
 import java.util.ArrayList;
@@ -52,26 +53,28 @@ public class WaypointsModule extends Module {
 
         Object packet = event.packet;
 
-        if (packet instanceof EntityDestroyS2CPacket) {
-            EntityDestroyS2CPacket destroyPacket = (EntityDestroyS2CPacket) packet;
+        if (packet instanceof EntitiesDestroyS2CPacket) {
+            EntitiesDestroyS2CPacket destroyPacket = (EntitiesDestroyS2CPacket) packet;
+            for (int id : destroyPacket.getEntityIds()) {
+                Entity entity = client.world.getEntityById(id);
 
-            Entity entity = client.world.getEntityById(destroyPacket.getEntityId());
+                if (entity instanceof PlayerEntity) {
+                    PlayerEntity player = (PlayerEntity) entity;
 
-            if (entity instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) entity;
-
-                this.unspawnedWaypoints.remove(player.getUuid());
-                this.unspawnedWaypoints.put(
-                        player.getUuid(),
-                        new Waypoint(
-                                player.getName().getString() + " Unspawn",
-                                (int) player.getX(),
-                                (int) player.getY(),
-                                (int) player.getZ(),
-                                ClientColors.DARK_OLIVE.getColor()
-                        )
-                );
+                    this.unspawnedWaypoints.remove(player.getUuid());
+                    this.unspawnedWaypoints.put(
+                            player.getUuid(),
+                            new Waypoint(
+                                    player.getName().getString() + " Unspawn",
+                                    (int) player.getX(),
+                                    (int) player.getY(),
+                                    (int) player.getZ(),
+                                    ClientColors.DARK_OLIVE.getColor()
+                            )
+                    );
+                }
             }
+
             return;
         }
 
@@ -142,7 +145,8 @@ public class WaypointsModule extends Module {
                 }
             }
 
-            RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+            // TODO(version/1.17): RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F); - removed in 1.17+
+            GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
             TextureImpl.unbind();
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }

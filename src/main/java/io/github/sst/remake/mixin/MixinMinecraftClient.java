@@ -71,7 +71,7 @@ public abstract class MixinMinecraftClient {
         new WindowResizeEvent().call();
     }
 
-    @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
     private void injectOpenScreen(CallbackInfo ci) {
         new OpenScreenEvent().call();
     }
@@ -92,7 +92,10 @@ public abstract class MixinMinecraftClient {
             );
         }
 
-        instance.setOverlay(value);
+        // CatGPT tried to use setOverlay, but this redirects it,
+        // that would cause a stack overflow exception.
+        // daily reminder not to use AI!!!
+        instance.overlay = value;
     }
 
     @ModifyArg(method = "getWindowTitle", at = @At(value = "INVOKE_STRING", target = "Ljava/lang/StringBuilder;<init>(Ljava/lang/String;)V", args = "ldc=Minecraft"))
@@ -121,10 +124,11 @@ public abstract class MixinMinecraftClient {
         return true;
     }
 
-    @ModifyReturnValue(method = "isOnlineChatEnabled", at = @At("RETURN"))
-    private boolean modifyIsOnlineChatEnabled(boolean original) {
-        return true;
-    }
+    // TODO(version/1.17): isOnlineChatEnabled method doesn't exist in 1.17, this mixin is commented out
+    // @ModifyReturnValue(method = "isOnlineChatEnabled", at = @At("RETURN"))
+    // private boolean modifyIsOnlineChatEnabled(boolean original) {
+    //     return true;
+    // }
 
     @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))
     private int modifyFramerateLimit(int original) {

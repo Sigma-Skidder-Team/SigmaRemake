@@ -1,5 +1,6 @@
 package io.github.sst.remake.gui.screen.loading;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.gui.screen.Overlay;
@@ -49,7 +50,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         float rawProgress = this.reloadMonitor.getProgress();
         this.smoothedProgress = this.smoothedProgress * 0.95F + rawProgress * 0.050000012F;
 
-        GL11.glPushMatrix();
+        RenderSystem.recordRenderCall(GL11::glPushMatrix);
 
         float framebufferToWindowScale = 1111.0F;
         if (client.getWindow().getWidth() != 0) {
@@ -59,11 +60,11 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         float guiScale = (float) client.getWindow().calculateScaleFactor(client.options.guiScale, client.forcesUnicodeFont())
                 * framebufferToWindowScale;
 
-        GL11.glScalef(1.0F / guiScale, 1.0F / guiScale, 0.0F);
+        RenderSystem.recordRenderCall(() -> GL11.glScalef(1.0F / guiScale, 1.0F / guiScale, 0.0F));
 
         RenderUtils.renderFadeOut(backgroundOpacity, this.smoothedProgress);
 
-        GL11.glPopMatrix();
+        RenderSystem.recordRenderCall(GL11::glPopMatrix);
 
         if (secondsSinceApplyComplete >= 2.0F) {
             client.setOverlay(null);

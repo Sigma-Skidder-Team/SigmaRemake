@@ -1,6 +1,7 @@
 package io.github.sst.remake.module.impl.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
@@ -16,6 +17,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -47,7 +49,10 @@ public class ActiveModsModule extends Module {
     @Subscribe
     public void onRenderScoreboard(RenderScoreboardEvent event) {
         if (event.post) {
-            GlStateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F);
+            // TODO(version/1.17): GlStateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F); - use MatrixStack instead
+            MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.translate(0.0F, (float) (-this.totalHeight), 0.0F);
+            RenderSystem.applyModelViewMatrix();
             return;
         }
 
@@ -70,7 +75,10 @@ public class ActiveModsModule extends Module {
             this.totalHeight = 0;
         } else {
             this.totalHeight = (y - windowCenterY) / 2;
-            GlStateManager.translatef(0.0F, (float) this.totalHeight, 0.0F);
+            // TODO(version/1.17): GlStateManager.translatef(0.0F, (float) this.totalHeight, 0.0F); - use MatrixStack instead
+            MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.translate(0.0F, (float) this.totalHeight, 0.0F);
+            RenderSystem.applyModelViewMatrix();
         }
     }
 

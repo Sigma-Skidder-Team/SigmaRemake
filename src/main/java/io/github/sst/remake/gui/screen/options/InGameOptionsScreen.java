@@ -32,7 +32,7 @@ public class InGameOptionsScreen extends GameMenuScreen {
                 height - 45,
                 204, 20,
                 new LiteralText("Jello for Fabric Options"),
-                w -> client.openScreen(new OptionsHolder())
+                w -> client.setScreen(new OptionsHolder())
         ));
         super.init();
 

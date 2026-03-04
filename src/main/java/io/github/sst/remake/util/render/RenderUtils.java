@@ -406,9 +406,9 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
 
         Tessellator tesselator = Tessellator.getInstance();
         BufferBuilder buffer = tesselator.getBuffer();
@@ -420,9 +420,9 @@ public class RenderUtils implements IMinecraft {
         buffer.vertex(width, height, 0.0).color(red2, green2, blue2, alpha2).next();
         tesselator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        GL11.glShadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.enableTexture();
     }
 
@@ -866,8 +866,8 @@ public class RenderUtils implements IMinecraft {
             RenderHelper.setupGuiFlatDiffuseLighting();
             GL11.glLightModelfv(2899, new float[]{0.4F, 0.4F, 0.4F, 1.0F});
 
-            RenderSystem.enableColorMaterial();
-            RenderSystem.disableLighting();
+            // TODO(version/1.17): RenderSystem.enableColorMaterial(); - removed in 1.17+
+            // TODO(version/1.17): RenderSystem.disableLighting(); - removed in 1.17+
             RenderSystem.enableBlend();
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -876,10 +876,10 @@ public class RenderUtils implements IMinecraft {
             itemRenderer.renderInGui(stack, 0, 0);
 
             GL11.glDepthFunc(515);
-            RenderSystem.popMatrix();
+            // TODO(version/1.17): RenderSystem.popMatrix(); - removed in 1.17+, use MatrixStack instead
 
             GL11.glAlphaFunc(519, 0.0F);
-            RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+            // TODO(version/1.17): RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F); - removed in 1.17+
             RenderSystem.disableDepthTest();
             TextureImpl.unbind();
 
@@ -911,14 +911,14 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA,
                 GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SrcFactor.ONE,
                 GlStateManager.DstFactor.ZERO
         );
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -931,9 +931,9 @@ public class RenderUtils implements IMinecraft {
 
         tessellator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        GL11.glShadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.enableTexture();
     }
 
@@ -1265,7 +1265,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawAnimatedRing(java.awt.Color baseColor, boolean reverseGradient, float ringHeight, float ringRadius, float ringAlphaScale, float progressAlpha) {
-        RenderSystem.shadeModel(7425);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(32823);
         GL11.glDisable(2929);
         GL11.glBegin(5);
@@ -1306,7 +1306,7 @@ public class RenderUtils implements IMinecraft {
 
         GL11.glEnd();
         GL11.glEnable(2929);
-        RenderSystem.shadeModel(7424);
+        GL11.glShadeModel(GL11.GL_FLAT);
     }
 
     public static void resetHudGlState() {
@@ -1456,14 +1456,14 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        // TODO(version/1.17): RenderSystem.disableAlphaTest(); - removed in 1.17+
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
         );
 
         // Smooth shading so the colors interpolate across the quad.
-        RenderSystem.shadeModel(7425); // GL_SMOOTH
+        GL11.glShadeModel(GL11.GL_SMOOTH);
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
@@ -1477,9 +1477,9 @@ public class RenderUtils implements IMinecraft {
 
         tess.draw();
 
-        RenderSystem.shadeModel(7424); // GL_FLAT
+        GL11.glShadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.enableTexture();
     }
 }
