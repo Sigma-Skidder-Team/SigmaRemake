@@ -56,8 +56,8 @@ public class RenderUtils implements IMinecraft {
         float blue = (float) (color & 0xFF) / 255.0F;
         float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
 
-        Tessellator tesselator = Tessellator.getInstance();
-        BufferBuilder buffer = tesselator.getBuffer();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
@@ -69,7 +69,7 @@ public class RenderUtils implements IMinecraft {
         buffer.vertex(width, height, 0.0).next();
         buffer.vertex(width, y, 0.0).next();
         buffer.vertex(x, y, 0.0).next();
-        tesselator.draw();
+        tessellator.draw();
 
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
