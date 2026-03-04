@@ -1,5 +1,6 @@
 package io.github.sst.remake.module.impl.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
@@ -145,7 +146,7 @@ public class WaypointsModule extends Module {
                 }
             }
 
-            // TODO(version/1.17): RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F); - removed in 1.17+
+            GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
             GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
             TextureImpl.unbind();
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);

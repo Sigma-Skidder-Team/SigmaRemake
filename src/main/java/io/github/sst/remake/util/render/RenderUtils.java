@@ -873,8 +873,8 @@ public class RenderUtils implements IMinecraft {
             RenderHelper.setupGuiFlatDiffuseLighting();
             GL11.glLightModelfv(2899, new float[]{0.4F, 0.4F, 0.4F, 1.0F});
 
-            // TODO(version/1.17): RenderSystem.enableColorMaterial(); - removed in 1.17+
-            // TODO(version/1.17): RenderSystem.disableLighting(); - removed in 1.17+
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glDisable(GL11.GL_LIGHTING);
             RenderSystem.enableBlend();
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -883,10 +883,10 @@ public class RenderUtils implements IMinecraft {
             itemRenderer.renderInGui(stack, 0, 0);
 
             GL11.glDepthFunc(515);
-            // TODO(version/1.17): RenderSystem.popMatrix(); - removed in 1.17+, use MatrixStack instead
+            GL11.glPopMatrix();
 
             GL11.glAlphaFunc(519, 0.0F);
-            // TODO(version/1.17): RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F); - removed in 1.17+
+            GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
             RenderSystem.disableDepthTest();
             TextureImpl.unbind();
 
@@ -1463,7 +1463,7 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        // TODO(version/1.17): RenderSystem.disableAlphaTest(); - removed in 1.17+
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO

@@ -38,16 +38,15 @@ public class MixinGameRenderer {
         new RenderLevelEvent(tickDelta, startTime).call();
     }
 
-    // TODO(version/1.17): injectBeforeUIRender mixin target no longer exists in render method
-    // @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
-    // private void injectBeforeUIRender(CallbackInfo ci) {
-    //     new Render2DEvent(0, 0, false).call();
-    // }
+     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.INVOKEVIRTUAL))
+     private void injectBeforeUIRender(CallbackInfo ci) {
+         new Render2DEvent(0, 0, false).call();
+     }
 
     @Inject(method = "renderWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
     private void injectBeforeRenderHand(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-        // TODO(version/1.17): RenderSystem.pushMatrix(); - use MatrixStack instead
-        // TODO(version/1.17): RenderSystem.multMatrix(matrix.peek().getModel()); - use MatrixStack instead
+        matrix.push();
+        matrix.method_34425(matrix.peek().getModel());
         if (client != null && client.world != null && client.player != null) {
             GL11.glTranslatef(0.0F, 0.0F, 0.0F);
             RenderSystem.disableDepthTest();
@@ -58,7 +57,7 @@ public class MixinGameRenderer {
             RenderSystem.depthMask(true);
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }
-        // TODO(version/1.17): RenderSystem.popMatrix(); - use MatrixStack instead
+        matrix.pop();
     }
 
     @WrapOperation(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 1, opcode = Opcodes.GETFIELD))

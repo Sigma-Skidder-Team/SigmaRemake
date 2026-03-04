@@ -12,6 +12,7 @@ import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.impl.SigmaBlurShader;
 import io.github.sst.remake.util.render.ScissorUtils;
@@ -47,8 +48,10 @@ public final class HUDManager extends Manager implements IMinecraft {
         matrixStack.push();
 
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
-        GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
+        LaterVersionStuff.execute(() -> {
+            GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
+            GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
+        });
         RenderSystem.disableDepthTest();
         matrixStack.push();
         matrixStack.translate(0.0F, 0.0F, 1000.0F);
@@ -81,7 +84,9 @@ public final class HUDManager extends Manager implements IMinecraft {
         matrixStack.pop();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
-        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+        LaterVersionStuff.execute(() -> {
+            GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+        });
 
         client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
@@ -219,7 +224,8 @@ public final class HUDManager extends Manager implements IMinecraft {
         }
 
         GL11.glPushMatrix();
-        // TODO(version/1.17): blurFramebuffer.beginRead(); / bindRead() - no direct equivalent in 1.17
+        // TODO(version/1.17): maybe this will work
+        blurFramebuffer.initFbo(client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight, false);
         blurFramebuffer.draw(
                 client.getFramebuffer().viewportWidth,
                 client.getFramebuffer().viewportHeight

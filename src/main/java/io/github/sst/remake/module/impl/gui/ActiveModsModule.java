@@ -10,6 +10,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -49,7 +50,9 @@ public class ActiveModsModule extends Module {
     @Subscribe
     public void onRenderScoreboard(RenderScoreboardEvent event) {
         if (event.post) {
-            // TODO(version/1.17): GlStateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F); - use MatrixStack instead
+            LaterVersionStuff.execute(() -> {
+                GL11.glTranslatef(0.0F, (float) (-this.totalHeight), 0.0F);
+            });
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
             matrixStack.translate(0.0F, (float) (-this.totalHeight), 0.0F);
             RenderSystem.applyModelViewMatrix();
@@ -75,7 +78,9 @@ public class ActiveModsModule extends Module {
             this.totalHeight = 0;
         } else {
             this.totalHeight = (y - windowCenterY) / 2;
-            // TODO(version/1.17): GlStateManager.translatef(0.0F, (float) this.totalHeight, 0.0F); - use MatrixStack instead
+            LaterVersionStuff.execute(() -> {
+                GL11.glTranslatef(0.0F, (float) this.totalHeight, 0.0F);
+            });
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
             matrixStack.translate(0.0F, (float) this.totalHeight, 0.0F);
             RenderSystem.applyModelViewMatrix();

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.game.render.RenderHudEvent;
 import io.github.sst.remake.event.impl.game.render.RenderScoreboardEvent;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -42,8 +43,10 @@ public class MixinInGameHud {
         GL11.glDisable(2912);
 
         RenderSystem.disableDepthTest();
-        // TODO(version/1.17): RenderSystem.translatef(0.0F, 0.0F, 1000.0F); - use MatrixStack instead
-        // TODO(version/1.17): RenderSystem.alphaFunc(519, 0.0F); - use GL11.glAlphaFunc instead
+        LaterVersionStuff.execute(() -> {
+            GL11.glTranslatef(0.0F, 0.0F, 1000.0F);
+            GL11.glAlphaFunc(519, 0.0F);
+        });
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(2896);
@@ -56,7 +59,9 @@ public class MixinInGameHud {
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        // TODO(version/1.17): RenderSystem.alphaFunc(518, 0.1F); - use GL11.glAlphaFunc instead
+        LaterVersionStuff.execute(() -> {
+            GL11.glAlphaFunc(518, 0.1F);
+        });
 
         GL11.glPopMatrix();
     }
