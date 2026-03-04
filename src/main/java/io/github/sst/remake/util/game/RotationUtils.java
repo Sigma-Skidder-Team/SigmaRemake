@@ -238,7 +238,7 @@ public class RotationUtils implements IMinecraft {
         float fixedYaw = currentYaw + (stepsYaw * gcd);
         float fixedPitch = currentPitch + (stepsPitch * gcd);
 
-        return new Rotation(normalizeYaw(fixedYaw), normalizePitch(fixedPitch));
+        return new Rotation(fixedYaw, normalizePitch(fixedPitch));
     }
 
     public static float normalizeYaw(float yaw) {
