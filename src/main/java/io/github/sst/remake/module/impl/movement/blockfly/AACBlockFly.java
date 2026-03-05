@@ -54,9 +54,9 @@ public class AACBlockFly extends SubModule implements Rotatable {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
-        targetYaw = client.player.yaw;
-        targetPitch = client.player.pitch;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
+        targetYaw = client.player.getYaw();
+        targetPitch = client.player.getPitch();
 
         scaffoldYLevel = (int) client.player.getY();
         speedStage = -1;
@@ -70,8 +70,8 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
         getParent().handleDisableSlotSpoof(originalHotbarSlot);
         originalHotbarSlot = -1;
-        targetYaw = client.player.yaw;
-        targetPitch = client.player.pitch;
+        targetYaw = client.player.getYaw();
+        targetPitch = client.player.getPitch();
 
         setTimer(1.0f);
     }

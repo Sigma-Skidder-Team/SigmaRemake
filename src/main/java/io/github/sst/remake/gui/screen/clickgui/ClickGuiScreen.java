@@ -213,7 +213,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     private void handleAnimationCompletion(boolean started) {
         animationActive = false;
         if (!started) {
-            client.openScreen(null);
+            client.setScreen(null);
         }
     }
 

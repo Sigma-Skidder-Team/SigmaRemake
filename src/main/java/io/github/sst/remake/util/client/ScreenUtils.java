@@ -94,7 +94,7 @@ public class ScreenUtils implements IMinecraft {
     public static boolean isValid(net.minecraft.client.gui.screen.Screen screen) {
         if (screen instanceof GameMenuScreen && !(screen instanceof InGameOptionsScreen)) {
             client.currentScreen = null;
-            client.openScreen(new InGameOptionsScreen());
+            client.setScreen(new InGameOptionsScreen());
             return true;
         } else {
             return false;

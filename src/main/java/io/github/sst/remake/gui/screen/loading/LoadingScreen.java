@@ -1,6 +1,7 @@
 package io.github.sst.remake.gui.screen.loading;
 
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.util.math.MatrixStack;
@@ -31,7 +32,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         long nowMs = Util.getMeasuringTimeMs();
 
         if (this.isReloading
-                && (this.reloadMonitor.isPrepareStageComplete() || client.currentScreen != null)
+                && (this.reloadMonitor.isComplete() || client.currentScreen != null)
                 && this.prepareCompleteTimeMs == -1L) {
             this.prepareCompleteTimeMs = nowMs;
         }
@@ -49,7 +50,7 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         float rawProgress = this.reloadMonitor.getProgress();
         this.smoothedProgress = this.smoothedProgress * 0.95F + rawProgress * 0.050000012F;
 
-        GL11.glPushMatrix();
+        matrices.push();
 
         float framebufferToWindowScale = 1111.0F;
         if (client.getWindow().getWidth() != 0) {
@@ -59,11 +60,11 @@ public class LoadingScreen extends Overlay implements IMinecraft {
         float guiScale = (float) client.getWindow().calculateScaleFactor(client.options.guiScale, client.forcesUnicodeFont())
                 * framebufferToWindowScale;
 
-        GL11.glScalef(1.0F / guiScale, 1.0F / guiScale, 0.0F);
+        matrices.scale(1.0F / guiScale, 1.0F / guiScale, 0.0F);
 
         RenderUtils.renderFadeOut(backgroundOpacity, this.smoothedProgress);
 
-        GL11.glPopMatrix();
+        matrices.pop();
 
         if (secondsSinceApplyComplete >= 2.0F) {
             client.setOverlay(null);

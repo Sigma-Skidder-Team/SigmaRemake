@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.game.render.RenderHudEvent;
 import io.github.sst.remake.event.impl.game.render.RenderScoreboardEvent;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -42,21 +43,25 @@ public class MixinInGameHud {
         GL11.glDisable(2912);
 
         RenderSystem.disableDepthTest();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
-        RenderSystem.alphaFunc(519, 0.0F);
+        LaterVersionStuff.execute(() -> {
+            GL11.glTranslatef(0.0F, 0.0F, 1000.0F);
+            GL11.glAlphaFunc(519, 0.0F);
+        });
         RenderSystem.enableBlend();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(2896);
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
         new RenderHudEvent().call();
         RenderUtils.resetHudGlState();
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(518, 0.1F);
+        LaterVersionStuff.execute(() -> {
+            GL11.glAlphaFunc(518, 0.1F);
+        });
 
         GL11.glPopMatrix();
     }

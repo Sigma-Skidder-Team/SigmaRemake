@@ -151,7 +151,7 @@ public class BlockUtils implements IMinecraft {
 
         double forward = client.player.input.movementForward;
         double strafe = client.player.input.movementSideways;
-        float yawDegrees = client.player.yaw;
+        float yawDegrees = client.player.getYaw();
 
         BlockPos belowCandidate = new BlockPos(startX, client.player.getY() - 1.0, startZ);
 

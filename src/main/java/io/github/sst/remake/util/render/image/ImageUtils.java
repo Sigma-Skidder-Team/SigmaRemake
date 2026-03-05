@@ -189,7 +189,7 @@ public class ImageUtils {
 
         Framebuffer framebuffer = MinecraftClient.getInstance().getFramebuffer();
         if (framebuffer != null) {
-            framebuffer.beginRead();
+            framebuffer.beginWrite(false);
         }
 
         int prevReadBuffer = GL11.glGetInteger(GL11.GL_READ_BUFFER);

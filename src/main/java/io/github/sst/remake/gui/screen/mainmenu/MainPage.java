@@ -204,7 +204,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
     }
 
     private void openMinecraftScreen(net.minecraft.client.gui.screen.Screen screen) {
-        MinecraftClient.getInstance().openScreen(screen);
+        MinecraftClient.getInstance().setScreen(screen);
         this.playClickSound();
     }
 

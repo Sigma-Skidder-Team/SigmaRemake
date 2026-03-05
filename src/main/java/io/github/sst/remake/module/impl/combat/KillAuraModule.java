@@ -243,7 +243,7 @@ public class KillAuraModule extends Module implements Rotatable {
                     break;
 
                 case "Angle":
-                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.yaw);
+                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.getYaw());
                     double distSq = livingEntity.squaredDistanceTo(client.player);
                     metric = angle * 1_000_000.0 + distSq; // big weight to angle, distance breaks ties
                     break;
@@ -291,11 +291,11 @@ public class KillAuraModule extends Module implements Rotatable {
 
         switch (rotationMode.value) {
             case "None":
-                return new Rotation(client.player.yaw, client.player.pitch);
+                return new Rotation(client.player.getYaw(), client.player.getPitch());
 
             case "LockView":
-                client.player.pitch = rotations.pitch;
-                client.player.yaw = rotations.yaw;
+                client.player.setPitch(rotations.pitch);
+                client.player.setYaw(rotations.yaw);
                 return rotations;
 
             case "NCP":

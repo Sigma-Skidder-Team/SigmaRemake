@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -39,15 +38,15 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     protected abstract boolean isCamera();
 
     @Shadow
-    private double lastX;
+    public double lastX;
     @Shadow
-    private double lastBaseY;
+    public double lastBaseY;
     @Shadow
-    private double lastZ;
+    public double lastZ;
     @Shadow
-    private float lastYaw;
+    public float lastYaw;
     @Shadow
-    private float lastPitch;
+    public float lastPitch;
     @Shadow
     private int ticksSinceLastPositionPacketSent;
     @Shadow
@@ -99,7 +98,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     private void injectSendMovementPackets(CallbackInfo ci) {
         ci.cancel();
 
-        MotionEvent motionEvent = new MotionEvent(getX(), getY(), getZ(), yaw, pitch, onGround);
+        MotionEvent motionEvent = new MotionEvent(getX(), getY(), getZ(), getYaw(), getPitch(), onGround);
         motionEvent.call();
 
         boolean sneaking = this.isSneaking();
@@ -131,16 +130,16 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
             if (this.hasVehicle()) {
                 Vec3d vec3d = this.getVelocity();
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(vec3d.x, -999.0, vec3d.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(vec3d.x, -999.0, vec3d.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
                 moving = false;
             } else if (moving && looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
             } else if (moving) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionOnly(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.onGround));
             } else if (looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
             } else if (this.lastOnGround != motionEvent.onGround) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket(motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(motionEvent.onGround));
             }
 
             if (moving) {

@@ -66,10 +66,10 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         }
 
         if (!active || renderHeadCurrent == null) {
-            renderHeadPrevious = new Rotation(client.player.yaw, client.player.pitch);
-            renderHeadCurrent = new Rotation(client.player.yaw, client.player.pitch);
-            renderBodyPrevious = client.player.yaw;
-            renderBodyCurrent = client.player.yaw;
+            renderHeadPrevious = new Rotation(client.player.getYaw(), client.player.getPitch());
+            renderHeadCurrent = new Rotation(client.player.getYaw(), client.player.getPitch());
+            renderBodyPrevious = client.player.getYaw();
+            renderBodyCurrent = client.player.getYaw();
             active = true;
         }
 
@@ -105,7 +105,7 @@ public final class RotationTracker extends Tracker implements IMinecraft {
 
         Rotation prev = renderHeadCurrent != null
                 ? renderHeadCurrent
-                : new Rotation(client.player.yaw, client.player.pitch);
+                : new Rotation(client.player.getYaw(), client.player.getPitch());
 
         tickRotation = RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
     }

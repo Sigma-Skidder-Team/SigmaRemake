@@ -1,5 +1,6 @@
 package io.github.sst.remake.module.impl.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
@@ -22,6 +23,7 @@ import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.texture.TextureImpl;
 
 import java.util.ArrayList;
@@ -54,9 +56,9 @@ public class WaypointsModule extends Module {
 
         if (packet instanceof EntitiesDestroyS2CPacket) {
             EntitiesDestroyS2CPacket destroyPacket = (EntitiesDestroyS2CPacket) packet;
+            for (int id : destroyPacket.getEntityIds()) {
+                Entity entity = client.world.getEntityById(id);
 
-            for (int entityId : destroyPacket.getEntityIds()) {
-                Entity entity = client.world.getEntityById(entityId);
                 if (entity instanceof PlayerEntity) {
                     PlayerEntity player = (PlayerEntity) entity;
 
@@ -73,6 +75,7 @@ public class WaypointsModule extends Module {
                     );
                 }
             }
+
             return;
         }
 
@@ -143,7 +146,8 @@ public class WaypointsModule extends Module {
                 }
             }
 
-            RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+            GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+            GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
             TextureImpl.unbind();
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }

@@ -27,16 +27,17 @@ public class InGameOptionsScreen extends GameMenuScreen {
 
     @Override
     public void init() {
-        addButton(new ButtonWidget(
+        addDrawable(new ButtonWidget(
                 width / 2 - 102,
                 height - 45,
                 204, 20,
                 new LiteralText("Jello for Fabric Options"),
-                w -> client.openScreen(new OptionsHolder())
+                w -> client.setScreen(new OptionsHolder())
         ));
         super.init();
 
-        this.buttons.removeIf(widget -> widget.y == this.height / 4 + 72 - 16);
+        // TODO(version/1.17): how would I do this? anyway it's prob better done with mixins.
+//        this.drawables.removeIf(widget -> widget.y == this.height / 4 + 72 - 16);
     }
 
     @Override

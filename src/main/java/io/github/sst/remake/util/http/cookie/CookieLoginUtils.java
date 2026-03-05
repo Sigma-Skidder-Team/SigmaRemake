@@ -21,7 +21,7 @@ public class CookieLoginUtils {
 
     public static LoginData loginWithCookie(File cookieFile) throws Exception {
         try {
-            String[] cookiesText = FileUtils.readFileToString(cookieFile).split("\n");
+            String[] cookiesText = FileUtils.readFileToString(cookieFile, StandardCharsets.UTF_8).split("\n");
 
             StringBuilder sb = new StringBuilder();
 

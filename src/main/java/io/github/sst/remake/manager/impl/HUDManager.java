@@ -12,6 +12,7 @@ import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.manager.Manager;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.LaterVersionStuff;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.impl.SigmaBlurShader;
 import io.github.sst.remake.util.render.ScissorUtils;
@@ -20,13 +21,11 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderEffect;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.texture.Texture;
 
 import java.io.IOException;
 
@@ -43,17 +42,19 @@ public final class HUDManager extends Manager implements IMinecraft {
 
     @Subscribe(priority = Priority.HIGH)
     public void onRender(Render2DEvent event) {
-        RenderSystem.pushMatrix();
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
 
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
-        GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
+        matrixStack.scale((float)localScaleFactor, (float)localScaleFactor, 1.0f);
+        matrixStack.scale(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0f);
         RenderSystem.disableDepthTest();
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
+        matrixStack.push();
+        matrixStack.translate(0.0F, 0.0F, 1000.0F);
+        RenderSystem.applyModelViewMatrix();
 
         if (client.world != null) {
-            GL11.glDisable(GL11.GL_LIGHTING);
+            LaterVersionStuff.execute(() -> GL11.glDisable(GL11.GL_LIGHTING));
             int x = 0;
             int y = 0;
 
@@ -63,7 +64,7 @@ public final class HUDManager extends Manager implements IMinecraft {
                 x = client.getWindow().getWidth() / 2 - imageWidth / 2;
             }
 
-            GL11.glAlphaFunc(519, 0.0F);
+            LaterVersionStuff.execute(() -> GL11.glAlphaFunc(519, 0.0F));
 
             RenderUtils.drawImage((float) x, y, 170.0F, 104.0F,
                     !(Client.INSTANCE.screenManager.scaleFactor > 1.0F) ? Resources.WATERMARK
@@ -72,18 +73,22 @@ public final class HUDManager extends Manager implements IMinecraft {
             new RenderClient2DEvent().call();
         }
 
-        if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
+        if (Client.INSTANCE.screenManager.currentScreen != null) {
             Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
-        RenderSystem.enableAlphaTest();
-        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+        // TODO(version/1.17): idk anymore
+//        LaterVersionStuff.execute(() -> {
+//            GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+//        });
 
         client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
+        RenderSystem.applyModelViewMatrix();
     }
 
     @Subscribe
@@ -154,9 +159,13 @@ public final class HUDManager extends Manager implements IMinecraft {
             blurSwapFramebuffer.clear(true);
 
             RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-            RenderSystem.matrixMode(GL11.GL_PROJECTION);
-            RenderSystem.loadIdentity();
-            RenderSystem.ortho(
+            MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.push();
+            matrixStack.loadIdentity();
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            GL11.glPushMatrix();
+            GL11.glLoadIdentity();
+            GL11.glOrtho(
                     0.0,
                     client.getWindow().getFramebufferWidth() / client.getWindow().getScaleFactor(),
                     client.getWindow().getFramebufferHeight() / client.getWindow().getScaleFactor(),
@@ -164,10 +173,11 @@ public final class HUDManager extends Manager implements IMinecraft {
                     1000.0,
                     3000.0
             );
-
-            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-            RenderSystem.loadIdentity();
-            RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glPushMatrix();
+            GL11.glLoadIdentity();
+            matrixStack.translate(0.0F, 0.0F, -2000.0F);
+            RenderSystem.applyModelViewMatrix();
 
             GL11.glScaled(
                     1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
@@ -211,7 +221,8 @@ public final class HUDManager extends Manager implements IMinecraft {
         }
 
         GL11.glPushMatrix();
-        blurFramebuffer.beginRead();
+        // beginRead
+        blurFramebuffer.method_35610();
         blurFramebuffer.draw(
                 client.getFramebuffer().viewportWidth,
                 client.getFramebuffer().viewportHeight
@@ -219,9 +230,13 @@ public final class HUDManager extends Manager implements IMinecraft {
         GL11.glPopMatrix();
 
         RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-        RenderSystem.matrixMode(GL11.GL_PROJECTION);
-        RenderSystem.loadIdentity();
-        RenderSystem.ortho(
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
+        matrixStack.loadIdentity();
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        GL11.glOrtho(
                 0.0,
                 client.getWindow().getFramebufferWidth() / client.getWindow().getScaleFactor(),
                 client.getWindow().getFramebufferHeight() / client.getWindow().getScaleFactor(),
@@ -229,10 +244,11 @@ public final class HUDManager extends Manager implements IMinecraft {
                 1000.0,
                 3000.0
         );
-
-        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-        RenderSystem.loadIdentity();
-        RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
+        matrixStack.translate(0.0F, 0.0F, -2000.0F);
+        RenderSystem.applyModelViewMatrix();
 
         GL11.glScaled(
                 1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,

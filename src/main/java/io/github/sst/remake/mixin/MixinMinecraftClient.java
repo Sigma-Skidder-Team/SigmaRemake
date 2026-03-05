@@ -15,7 +15,7 @@ import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
-import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.gui.screen.SplashOverlay;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
@@ -71,7 +71,7 @@ public abstract class MixinMinecraftClient {
         new WindowResizeEvent().call();
     }
 
-    @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
     private void injectOpenScreen(CallbackInfo ci) {
         new OpenScreenEvent().call();
     }
@@ -83,8 +83,8 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))
     private void redirectOverlay(MinecraftClient instance, Overlay value) {
-        if (value instanceof SplashScreen) {
-            SplashScreen splash = (SplashScreen) value;
+        if (value instanceof SplashOverlay) {
+            SplashOverlay splash = (SplashOverlay) value;
             value = new LoadingScreen(
                     splash.reload,
                     splash.exceptionHandler,
@@ -92,6 +92,9 @@ public abstract class MixinMinecraftClient {
             );
         }
 
+        // CatGPT tried to use setOverlay, but this redirects it,
+        // that would cause a stack overflow exception.
+        // daily reminder not to use AI!!!
         instance.overlay = value;
     }
 
@@ -121,10 +124,11 @@ public abstract class MixinMinecraftClient {
         return true;
     }
 
-    @ModifyReturnValue(method = "isOnlineChatEnabled", at = @At("RETURN"))
-    private boolean modifyIsOnlineChatEnabled(boolean original) {
-        return true;
-    }
+    // TODO(version/1.17): isOnlineChatEnabled method doesn't exist in 1.17, this mixin is commented out
+    // @ModifyReturnValue(method = "isOnlineChatEnabled", at = @At("RETURN"))
+    // private boolean modifyIsOnlineChatEnabled(boolean original) {
+    //     return true;
+    // }
 
     @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))
     private int modifyFramerateLimit(int original) {

@@ -219,7 +219,7 @@ public class GuiComponent implements InputListener {
     }
 
     public void drawChildren(float partialTicks) {
-        GlStateManager.enableAlphaTest();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(519, 0.0F);
         GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
 
