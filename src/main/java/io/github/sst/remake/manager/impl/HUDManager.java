@@ -80,9 +80,10 @@ public final class HUDManager extends Manager implements IMinecraft {
         matrixStack.pop();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
-        LaterVersionStuff.execute(() -> {
-            GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
-        });
+        // TODO(version/1.17): idk anymore
+//        LaterVersionStuff.execute(() -> {
+//            GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+//        });
 
         client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 

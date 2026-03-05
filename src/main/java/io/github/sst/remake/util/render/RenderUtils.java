@@ -74,6 +74,7 @@ public class RenderUtils implements IMinecraft {
         buffer.vertex(width, height, 0.0).next();
         buffer.vertex(width, y, 0.0).next();
         buffer.vertex(x, y, 0.0).next();
+
         // TODO(version/1.17): `RenderSystem.getShader()` is null, crashes game.
         LaterVersionStuff.execute(tessellator::draw);
 
@@ -145,7 +146,6 @@ public class RenderUtils implements IMinecraft {
         if (texture != null) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
-            LaterVersionStuff.execute(() -> { GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F); });
 
             x = (float) Math.round(x);
             width = (float) Math.round(width);
@@ -187,20 +187,22 @@ public class RenderUtils implements IMinecraft {
             final float finalHeight = height;
             final float finalWidth = width;
             LaterVersionStuff.execute(() -> {
-                GL11.glBegin(7);
-                GL11.glTexCoord2f(var21, var22);
-                GL11.glVertex2f(finalX, finalY);
+                final BufferBuilder bb = Tessellator.getInstance().getBuffer();
+                bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+                // TODO(version/1.17): is this correct?
+                bb.texture(var21, var22).next();
+                bb.vertex(finalX, finalY, 0f).next();
 
-                GL11.glTexCoord2f(var21, var22 + var20);
-                GL11.glVertex2f(finalX, finalY + finalHeight);
+                bb.texture(var21, var22 + var20).next();
+                bb.vertex(finalX, finalY + finalHeight, 0f).next();
 
-                GL11.glTexCoord2f(var21 + var19, var22 + var20);
-                GL11.glVertex2f(finalX + finalWidth, finalY + finalHeight);
+                bb.texture(var21 + var19, var22 + var20).next();
+                bb.vertex(finalX + finalWidth, finalY + finalHeight, 0f).next();
 
-                GL11.glTexCoord2f(var21 + var19, var22);
-                GL11.glVertex2f(finalX + finalWidth, finalY);
-                GL11.glEnd();
+                bb.texture(var21 + var19, var22).next();
+                bb.vertex(finalX + finalWidth, finalY, 0f).next();
 
+                bb.end();
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glDisable(GL11.GL_BLEND);
             });
