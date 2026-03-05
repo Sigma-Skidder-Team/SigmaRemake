@@ -84,12 +84,12 @@ public class RotationUtils implements IMinecraft {
                 }
 
                 double targetX = target.getX();
-                double targetZ = target.getZ();
                 double targetY = target.getY() + yOffset + 0.05;
+                double targetZ = target.getZ();
 
                 double dX = targetX - client.player.getX();
-                double dZ = targetZ - client.player.getZ();
                 double dY = targetY - (double) client.player.getEyeHeight(client.player.getPose()) - 0.02 - client.player.getY();
+                double dZ = targetZ - client.player.getZ();
 
                 double dist = Math.hypot(dX, dZ);
 
@@ -187,10 +187,35 @@ public class RotationUtils implements IMinecraft {
         return getRotationsBetween(from, target);
     }
 
+    public static float[] getRotationsToEntityFrom(Entity target, double playerX, double playerY, double playerZ) {
+        double targetX = target.getX() + (target.getX() - target.lastRenderX) * client.getTickDelta();
+        double targetY = target.getY() + (target.getY() - target.lastRenderY) * client.getTickDelta();
+        double targetZ = target.getZ() + (target.getZ() - target.lastRenderZ) * client.getTickDelta();
+
+        double dX = targetX - playerX;
+        double dZ = targetZ - playerZ;
+        double dY = targetY - client.player.getEyeHeight(client.player.getPose()) - 0.02F + target.getEyeHeight(target.getPose()) - playerY;
+
+        double dist = Math.hypot(dX, dZ);
+
+        float yaw = clamp(
+                client.player.yaw,
+                (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0F,
+                360.0F
+        );
+        float pitch = clamp(
+                client.player.pitch,
+                (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI)),
+                360.0F
+        );
+
+        return new float[]{yaw, pitch};
+    }
+
     public static Rotation getRotationsBetween(Vec3d from, Vec3d to) {
         double dX = to.x - from.x;
-        double dZ = to.z - from.z;
         double dY = to.y - from.y;
+        double dZ = to.z - from.z;
 
         double horizontalDistance = Math.hypot(dX, dZ);
 

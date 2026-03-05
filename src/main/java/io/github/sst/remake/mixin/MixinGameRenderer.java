@@ -10,6 +10,7 @@ import io.github.sst.remake.event.impl.game.player.MovementFovEvent;
 import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.render.RenderLevelEvent;
+import io.github.sst.remake.module.impl.gui.RearViewModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -45,6 +46,10 @@ public class MixinGameRenderer {
 
     @Inject(method = "renderWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
     private void injectBeforeRenderHand(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
+        if (RearViewModule.RENDERING_REAR_VIEW) {
+            return;
+        }
+
         RenderSystem.pushMatrix();
         RenderSystem.multMatrix(matrix.peek().getModel());
         if (client != null && client.world != null && client.player != null) {
