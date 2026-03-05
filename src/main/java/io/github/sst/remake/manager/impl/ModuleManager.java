@@ -48,7 +48,7 @@ public final class ModuleManager extends Manager {
         modules.add(new MusicParticlesModule());
         modules.add(new NickDetectorModule());
         modules.add(new TabGuiModule());
-
+        modules.add(new RearViewModule());
 
         modules.forEach(Module::onInit);
         super.init();

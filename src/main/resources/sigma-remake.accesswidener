@@ -60,5 +60,8 @@ accessible field net/minecraft/client/network/ClientPlayerEntity lastPitch F
 accessible field net/minecraft/entity/LivingEntity jumping Z
 
 accessible method net/minecraft/entity/LivingEntity getJumpVelocity ()F
+
+accessible field net/minecraft/client/render/GameRenderer renderHand Z
+accessible field net/minecraft/client/render/WorldRenderer entityOutlinesFramebuffer Lnet/minecraft/client/gl/Framebuffer;
 accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
 accessible field net/minecraft/client/MinecraftClient overlay Lnet/minecraft/client/gui/screen/Overlay;

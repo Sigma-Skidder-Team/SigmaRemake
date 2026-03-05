@@ -150,20 +150,6 @@ public final class RotationTracker extends Tracker implements IMinecraft {
         event.yaw = MathHelper.wrapDegrees(headYaw - bodyYaw);
     }
 
-    public Rotation getUpcomingRotation() {
-        Rotatable rotatable = rotatables.stream()
-                .filter(Rotatable::isEnabled)
-                .max(Comparator.comparingInt(Rotatable::getPriority))
-                .orElse(null);
-
-        if (rotatable == null) return null;
-        Rotation target = rotatable.getRotations();
-        if (target == null) return null;
-
-        Rotation prev = renderHeadCurrent != null ? renderHeadCurrent : new Rotation(client.player.getYaw(), client.player.getPitch());
-        return RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
-    }
-
     public Rotatable getCurrentRotatable() {
         return currentRotatable;
     }
