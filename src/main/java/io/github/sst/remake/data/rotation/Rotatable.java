@@ -6,11 +6,10 @@ public interface Rotatable {
     int getPriority();
 
     default boolean canPerform() {
-        if (Client.INSTANCE == null || Client.INSTANCE.moduleManager == null
-                || Client.INSTANCE.moduleManager.rotationTracker == null) {
+        if (!Client.INSTANCE.moduleManager.rotationTracker.isActive()) {
             return false;
         }
-        return Client.INSTANCE.moduleManager.rotationTracker.getCurrentRotatable() == this;
+        return Client.INSTANCE.moduleManager.rotationTracker.getCurrent() == this;
     }
 
     boolean isEnabled();
@@ -18,6 +17,6 @@ public interface Rotatable {
     Rotation getRotations();
 
     default void registerRotatable() {
-        Client.INSTANCE.moduleManager.rotationTracker.rotatables.add(this);
+        Client.INSTANCE.moduleManager.rotationTracker.addRotatable(this);
     }
 }
