@@ -93,12 +93,14 @@ public final class RotationTracker extends Tracker implements IMinecraft {
                 .orElse(null);
 
         if (rotatable == null) {
+            currentRotatable = null;
             tickRotation = null;
             return;
         }
 
         Rotation target = rotatable.getRotations();
         if (target == null) {
+            currentRotatable = null;
             tickRotation = null;
             return;
         }
@@ -108,6 +110,7 @@ public final class RotationTracker extends Tracker implements IMinecraft {
                 : new Rotation(client.player.yaw, client.player.pitch);
 
         tickRotation = RotationUtils.applyGcdFix(prev.yaw, prev.pitch, target.yaw, target.pitch);
+        currentRotatable = rotatable;
     }
 
     @Subscribe(priority = Priority.HIGHEST)
