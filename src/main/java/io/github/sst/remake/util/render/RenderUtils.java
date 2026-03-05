@@ -188,6 +188,7 @@ public class RenderUtils implements IMinecraft {
             final float finalWidth = width;
             LaterVersionStuff.execute(() -> {
                 final BufferBuilder bb = Tessellator.getInstance().getBuffer();
+                if (bb.isBuilding()) bb.end();
                 bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                 // TODO(version/1.17): is this correct?
                 bb.texture(var21, var22).next();
