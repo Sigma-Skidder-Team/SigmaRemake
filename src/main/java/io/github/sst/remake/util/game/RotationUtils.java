@@ -270,6 +270,10 @@ public class RotationUtils implements IMinecraft {
         return MathHelper.wrapDegrees(yaw);
     }
 
+    public static double normalizeYaw(double yaw) {
+        return MathHelper.wrapDegrees(yaw);
+    }
+
     public static float normalizePitch(float pitch) {
         return MathHelper.clamp(pitch, -90.0f, 90.0f);
     }
@@ -318,7 +322,7 @@ public class RotationUtils implements IMinecraft {
         return yaw;
     }
 
-    public static float getDirection(float forward, float strafing, float yaw) {
+    public static float getDirectionYaw(float forward, float strafing, float yaw) {
         if (forward == 0.0f && strafing == 0.0f) {
             return yaw;
         }
@@ -337,11 +341,25 @@ public class RotationUtils implements IMinecraft {
         return yaw;
     }
 
-    public static float getDirection() {
-        return getDirection(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
+    public static double getDirectionRadians(float rotationYaw, final double moveForward, final double moveStrafing) {
+        if (moveForward < 0F) rotationYaw += 180F;
+
+        float forward = 1F;
+
+        if (moveForward < 0F) forward = -0.5F;
+        else if (moveForward > 0F) forward = 0.5F;
+
+        if (moveStrafing > 0F) rotationYaw -= 90F * forward;
+        if (moveStrafing < 0F) rotationYaw += 90F * forward;
+
+        return Math.toRadians(rotationYaw);
     }
 
-    public static float getDirection(float yaw) {
+    public static float getDirectionYaw() {
+        return getDirectionYaw(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
+    }
+
+    public static float getDirectionYaw(float yaw) {
         float directionDegrees = 0.0F;
 
         float strafe = client.player.sidewaysSpeed;

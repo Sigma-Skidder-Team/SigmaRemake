@@ -169,7 +169,7 @@ public class HypixelBlockFly extends SubModule implements Rotatable {
                 break;
             case "Cubecraft":
                 double speed = 0.2;
-                float dir = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+                float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
 
                 if (client.options.keyJump.isPressed()) {
                     setTimer(1.0f);

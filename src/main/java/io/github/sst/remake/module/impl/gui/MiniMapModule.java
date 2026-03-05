@@ -163,7 +163,7 @@ public class MiniMapModule extends Module {
         ScissorUtils.restoreScissor();
         GL11.glPopMatrix();
 
-        int direction = (int) RotationUtils.getDirection();
+        int direction = (int) RotationUtils.getDirectionYaw();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);

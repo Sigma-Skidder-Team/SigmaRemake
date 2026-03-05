@@ -169,7 +169,7 @@ public class NCPBlockFly extends SubModule implements Rotatable {
                 break;
             case "Cubecraft":
                 double speed = 0.2;
-                float yaw = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+                float yaw = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
 
                 if (client.options.keyJump.isPressed()) {
                     setTimer(1.0f);

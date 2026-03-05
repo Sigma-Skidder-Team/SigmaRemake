@@ -333,7 +333,7 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     private void handleCubecraftSpeed(MoveEvent event) {
         double speed = 0.2;
-        float dir = RotationUtils.getDirection(RotationUtils.normalizeYaw(client.player.yaw));
+        float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
 
         if (client.options.keyJump.isPressed()) {
             setTimer(1.0f);
