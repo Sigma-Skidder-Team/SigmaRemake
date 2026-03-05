@@ -8,9 +8,13 @@ import io.github.sst.remake.event.impl.game.EndTickEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.game.StartTickEvent;
+import io.github.sst.remake.event.impl.game.player.RotateEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.loading.LoadingScreen;
+import io.github.sst.remake.tracker.impl.RotationTracker;
+import io.github.sst.remake.util.game.Rotation;
+import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
@@ -160,5 +164,23 @@ public abstract class MixinMinecraftClient {
     @Inject(at = @At("RETURN"), method = "tick")
     private void injectTickReturn(CallbackInfo info) {
         new EndTickEvent().call();
+    }
+
+    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.GETFIELD, ordinal = 0, shift = At.Shift.BEFORE))
+    private void injectRotate(CallbackInfo ci) {
+        if (player != null) {
+            RotateEvent event = new RotateEvent(player.yaw, player.pitch);
+            event.call();
+
+            Rotation correct = RotationUtils.applyGcdFix(
+                    RotationTracker.yaw, RotationTracker.pitch,
+                    event.yaw, event.pitch
+            );
+
+            RotationTracker.lastYaw = RotationTracker.yaw;
+            RotationTracker.lastPitch = RotationTracker.pitch;
+            RotationTracker.yaw = correct.yaw;
+            RotationTracker.pitch = correct.pitch;
+        }
     }
 }

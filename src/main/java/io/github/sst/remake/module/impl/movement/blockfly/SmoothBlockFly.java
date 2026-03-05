@@ -2,17 +2,13 @@ package io.github.sst.remake.module.impl.movement.blockfly;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
-import io.github.sst.remake.data.rotation.Rotatable;
-import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
-import io.github.sst.remake.event.impl.game.player.JumpEvent;
-import io.github.sst.remake.event.impl.game.player.MotionEvent;
-import io.github.sst.remake.event.impl.game.player.MoveEvent;
-import io.github.sst.remake.event.impl.game.player.SafeWalkEvent;
+import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
 import io.github.sst.remake.util.game.MovementUtils;
+import io.github.sst.remake.util.game.Rotation;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
@@ -26,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 @SuppressWarnings({"unused", "DataFlowIssue"})
-public class SmoothBlockFly extends SubModule implements Rotatable {
+public class SmoothBlockFly extends SubModule {
     private static final float NO_ROTATION_SENTINEL = 999.0f;
 
     private float targetYaw;
@@ -43,7 +39,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     public SmoothBlockFly() {
         super("Smooth");
-        registerRotatable();
     }
 
     @Override
@@ -202,7 +197,6 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
 
     @Subscribe
     public void onMotion(MotionEvent event) {
-        if (!getParent().isEnabled()) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
         if (event.isPre()) {
@@ -210,25 +204,13 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
         }
     }
 
-    @Override
-    public int getPriority() {
-        return 80;
-    }
-
-    @Override
-    public Rotation getRotations() {
-        if (!getParent().isEnabled()) {
-            pendingPlace = null;
-            targetYaw = NO_ROTATION_SENTINEL;
-            targetPitch = NO_ROTATION_SENTINEL;
-            return null;
-        }
-
+    @Subscribe
+    public void onRotate(RotateEvent event) {
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
             targetYaw = NO_ROTATION_SENTINEL;
             targetPitch = NO_ROTATION_SENTINEL;
-            return null;
+            return;
         }
 
         updateTarget();
@@ -241,17 +223,17 @@ public class SmoothBlockFly extends SubModule implements Rotatable {
             }
         }
 
-        if (targetYaw == NO_ROTATION_SENTINEL) return null;
+        if (targetYaw == NO_ROTATION_SENTINEL) return;
 
         if (client.player.yaw != targetYaw || client.player.pitch != targetPitch) {
             rotationChangeTicks = 0;
         }
 
-        return new Rotation(targetYaw, targetPitch);
+        event.yaw = targetYaw;
+        event.pitch = targetPitch;
     }
 
     private void handlePlace(MotionEvent event) {
-        if (!canPerform()) return;
         if (targetYaw == NO_ROTATION_SENTINEL) return;
 
         getParent().refillHotbarWithBlocks();

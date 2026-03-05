@@ -3,13 +3,13 @@ package io.github.sst.remake.module.impl.movement;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
-import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.InputEvent;
 import io.github.sst.remake.event.impl.game.player.JumpEvent;
 import io.github.sst.remake.event.impl.game.player.VelocityYawEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.ModeSetting;
+import io.github.sst.remake.tracker.impl.RotationTracker;
 import io.github.sst.remake.util.game.RotationUtils;
 
 /**
@@ -25,29 +25,24 @@ public class CorrectMovementModule extends Module {
     }
 
     @Subscribe(priority = Priority.HIGHEST)
+    public void onInput(InputEvent event) {
+        if (!mode.value.equals("Silent")) return;
+
+        correctMovement(event, RotationTracker.yaw);
+    }
+
+    @Subscribe(priority = Priority.HIGHEST)
     public void onJump(JumpEvent event) {
         if (event.entity != client.player) return;
-        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.getRotations();
-        if (tick != null) {
-            event.yaw = tick.yaw;
-        }
+
+        event.yaw = RotationTracker.yaw;
     }
 
     @Subscribe(priority = Priority.HIGHEST)
     public void onVelocity(VelocityYawEvent event) {
-        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.getRotations();
-        if (tick != null && event.entity == client.player) {
-            event.yaw = tick.yaw;
-        }
-    }
+        if (event.entity != client.player) return;
 
-    @Subscribe(priority = Priority.HIGHEST)
-    public void onInput(InputEvent event) {
-        if (!mode.value.equals("Silent")) return;
-        Rotation tick = Client.INSTANCE.moduleManager.rotationTracker.getRotations();
-        if (tick != null) {
-            correctMovement(event, tick.yaw);
-        }
+        event.yaw = RotationTracker.yaw;
     }
 
     private static void correctMovement(InputEvent event, float yaw) {

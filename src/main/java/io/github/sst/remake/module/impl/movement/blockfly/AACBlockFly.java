@@ -3,8 +3,6 @@ package io.github.sst.remake.module.impl.movement.blockfly;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
-import io.github.sst.remake.data.rotation.Rotatable;
-import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.game.net.ReceivePacketEvent;
 import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
@@ -12,6 +10,7 @@ import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.util.game.MovementUtils;
+import io.github.sst.remake.util.game.Rotation;
 import io.github.sst.remake.util.game.RotationUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
@@ -28,7 +27,7 @@ import net.minecraft.util.math.Direction;
 import java.util.List;
 
 @SuppressWarnings({"DataFlowIssue", "unused"})
-public class AACBlockFly extends SubModule implements Rotatable {
+public class AACBlockFly extends SubModule{
     private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground", false);
 
     private float targetYaw;
@@ -42,7 +41,6 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
     public AACBlockFly() {
         super("AAC");
-        registerRotatable();
     }
 
     @Override
@@ -148,10 +146,6 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
     @Subscribe(priority = Priority.LOWEST)
     public void onMotion(MotionEvent event) {
-        if (!getParent().isEnabled()) {
-            return;
-        }
-
         if (!event.isPre()) {
             if (MovementUtils.isMoving()
                     && client.player.isOnGround()
@@ -173,17 +167,8 @@ public class AACBlockFly extends SubModule implements Rotatable {
         }
     }
 
-    @Override
-    public int getPriority() {
-        return 80;
-    }
-
-    @Override
-    public Rotation getRotations() {
-        if (!getParent().isEnabled()) {
-            return null;
-        }
-
+    @Subscribe
+    public void onRotate(RotateEvent event) {
         double y = client.player.getY();
         if (!client.player.jumping && haphe.value) {
             y = scaffoldYLevel;
@@ -198,12 +183,10 @@ public class AACBlockFly extends SubModule implements Rotatable {
 
             if (!currentHit.getBlockPos().equals(target.blockPos) || !currentHit.getSide().equals(target.direction)) {
                 Rotation rots = RotationUtils.getBlockRotations(target.blockPos, target.direction);
-                targetYaw = rots.yaw;
-                targetPitch = rots.pitch;
+                event.yaw = rots.yaw;
+                event.pitch = rots.pitch;
             }
         }
-
-        return new Rotation(targetYaw, targetPitch);
     }
 
     private static List<PositionFacing> getPlacementPath(BlockPos startPos) {

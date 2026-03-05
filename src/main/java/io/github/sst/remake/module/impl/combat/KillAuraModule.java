@@ -2,10 +2,9 @@ package io.github.sst.remake.module.impl.combat;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
-import io.github.sst.remake.data.rotation.Rotatable;
-import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
+import io.github.sst.remake.event.impl.game.player.RotateEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
@@ -15,11 +14,12 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
+import io.github.sst.remake.util.game.Rotation;
 import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.math.ClickDelayCalculator;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.timer.BasicTimer;
-import io.github.sst.remake.util.math.ClickDelayCalculator;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;
@@ -38,7 +38,7 @@ import java.util.*;
 import java.util.List;
 
 @SuppressWarnings({"ALL"})
-public class KillAuraModule extends Module implements Rotatable {
+public class KillAuraModule extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", "Attack mode", 0, "Single", "Switch", "Multi", "Multi2");
     private final ModeSetting sortMode = new ModeSetting("Sort mode", "Target sort mode", 0, "Range", "Health", "Angle", "Armor", "Prev Range");
     private final ModeSetting attackMode = new ModeSetting("Attack mode", "Attack mode", 0, "Mouse", "Packet");
@@ -80,7 +80,6 @@ public class KillAuraModule extends Module implements Rotatable {
 
     public KillAuraModule() {
         super("KillAura", "Attacks nearby entities.", Category.COMBAT);
-        registerRotatable();
 
         minCPS.addListener(setting -> cpsCalculator.setMinCPS(setting.value));
         maxCPS.addListener(setting -> cpsCalculator.setMaxCPS(setting.value));
@@ -269,38 +268,37 @@ public class KillAuraModule extends Module implements Rotatable {
         target = best;
     }
 
-    @Override
-    public int getPriority() {
-        return 100;
-    }
-
-    @Override
-    public Rotation getRotations() {
-        if (target == null) return null;
+    @Subscribe
+    public void onRotate(RotateEvent event) {
+        if (target == null) return;
 
         double maxRange = aimRange.value;
         if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
-            return null;
+            return;
         }
 
         if (!throughWalls.value && !client.player.canSee(target)) {
-            return null;
+            return;
         }
 
         Rotation rotations = RotationUtils.getRotationsSmart(target, raytrace.value);
 
         switch (rotationMode.value) {
             case "None":
-                return new Rotation(client.player.yaw, client.player.pitch);
+                break;
 
             case "LockView":
                 client.player.pitch = rotations.pitch;
                 client.player.yaw = rotations.yaw;
-                return rotations;
+                event.yaw = rotations.yaw;
+                event.pitch = rotations.pitch;
+                break;
 
             case "NCP":
             default:
-                return rotations;
+                event.yaw = rotations.yaw;
+                event.pitch = rotations.pitch;
+                break;
         }
     }
 

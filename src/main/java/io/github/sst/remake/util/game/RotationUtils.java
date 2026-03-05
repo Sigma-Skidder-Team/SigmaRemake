@@ -1,6 +1,5 @@
 package io.github.sst.remake.util.game;
 
-import io.github.sst.remake.data.rotation.Rotation;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import net.minecraft.client.input.Input;

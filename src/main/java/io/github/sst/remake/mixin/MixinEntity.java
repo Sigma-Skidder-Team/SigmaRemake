@@ -1,7 +1,8 @@
 package io.github.sst.remake.mixin;
 
 import io.github.sst.remake.event.impl.game.player.VelocityYawEvent;
-import io.github.sst.remake.event.impl.game.world.EntityLookEvent;
+import io.github.sst.remake.tracker.impl.RotationTracker;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +25,8 @@ public abstract class MixinEntity {
     @Inject(method = "getRotationVec", at = @At("HEAD"), cancellable = true)
     private void injectGetRotationVec(float tickDelta, CallbackInfoReturnable<Vec3d> cir) {
         Entity entity = (Entity) (Object) this;
-        EntityLookEvent event = new EntityLookEvent(entity, tickDelta, entity.yaw, entity.pitch);
-        event.call();
-
-        if (event.cancelled) {
-            cir.setReturnValue(getRotationVector(event.pitch, event.yaw));
+        if (entity instanceof ClientPlayerEntity) {
+            cir.setReturnValue(getRotationVector(RotationTracker.pitch, RotationTracker.yaw));
         }
     }
 

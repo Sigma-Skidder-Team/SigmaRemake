@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 
 public class MotionEvent extends Statable {
     public double x, y, z;
-    public float yaw, pitch;
+    public final float yaw, pitch;
     public boolean onGround;
     public boolean moving;
 

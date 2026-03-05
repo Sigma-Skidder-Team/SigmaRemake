@@ -5,6 +5,7 @@ import io.github.sst.remake.data.bus.State;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
+import io.github.sst.remake.tracker.impl.RotationTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -99,7 +100,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     private void injectSendMovementPackets(CallbackInfo ci) {
         ci.cancel();
 
-        MotionEvent motionEvent = new MotionEvent(getX(), getY(), getZ(), yaw, pitch, onGround);
+        MotionEvent motionEvent = new MotionEvent(getX(), getY(), getZ(), RotationTracker.yaw, RotationTracker.pitch, onGround);
         motionEvent.call();
 
         boolean sneaking = this.isSneaking();
@@ -121,8 +122,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
             double dX = motionEvent.x - this.lastX;
             double dY = motionEvent.y - this.lastBaseY;
             double dZ = motionEvent.z - this.lastZ;
-            double dYaw = motionEvent.yaw - this.lastYaw;
-            double dPitch = motionEvent.pitch - this.lastPitch;
+            double dYaw = RotationTracker.yaw - this.lastYaw;
+            double dPitch = RotationTracker.pitch - this.lastPitch;
 
             ++this.ticksSinceLastPositionPacketSent;
 
@@ -131,14 +132,14 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
             if (this.hasVehicle()) {
                 Vec3d vec3d = this.getVelocity();
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(vec3d.x, -999.0, vec3d.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(vec3d.x, -999.0, vec3d.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
                 moving = false;
             } else if (moving && looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(motionEvent.x, motionEvent.y, motionEvent.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
             } else if (moving) {
                 this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionOnly(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.onGround));
             } else if (looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(motionEvent.yaw, motionEvent.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
             } else if (this.lastOnGround != motionEvent.onGround) {
                 this.networkHandler.sendPacket(new PlayerMoveC2SPacket(motionEvent.onGround));
             }
@@ -151,8 +152,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
             }
 
             if (looking) {
-                this.lastYaw = motionEvent.yaw;
-                this.lastPitch = motionEvent.pitch;
+                this.lastYaw = RotationTracker.yaw;
+                this.lastPitch = RotationTracker.pitch;
             }
 
             this.lastOnGround = motionEvent.onGround;
