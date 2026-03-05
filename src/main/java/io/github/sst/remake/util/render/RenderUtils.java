@@ -60,6 +60,7 @@ public class RenderUtils implements IMinecraft {
         BufferBuilder buffer = tessellator.getBuffer();
         if (buffer.isBuilding()) {
             Client.LOGGER.error("why is buffer already building??? skipping ts");
+            new Exception().printStackTrace();
             return;
         }
 

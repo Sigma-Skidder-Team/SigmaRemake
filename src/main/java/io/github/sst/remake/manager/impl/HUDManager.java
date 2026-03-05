@@ -46,17 +46,15 @@ public final class HUDManager extends Manager implements IMinecraft {
         matrixStack.push();
 
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        LaterVersionStuff.execute(() -> {
-            GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
-            GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
-        });
+        matrixStack.scale((float)localScaleFactor, (float)localScaleFactor, 1.0f);
+        matrixStack.scale(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0f);
         RenderSystem.disableDepthTest();
         matrixStack.push();
         matrixStack.translate(0.0F, 0.0F, 1000.0F);
         RenderSystem.applyModelViewMatrix();
 
         if (client.world != null) {
-            GL11.glDisable(GL11.GL_LIGHTING);
+            LaterVersionStuff.execute(() -> GL11.glDisable(GL11.GL_LIGHTING));
             int x = 0;
             int y = 0;
 
@@ -66,7 +64,7 @@ public final class HUDManager extends Manager implements IMinecraft {
                 x = client.getWindow().getWidth() / 2 - imageWidth / 2;
             }
 
-            GL11.glAlphaFunc(519, 0.0F);
+            LaterVersionStuff.execute(() -> GL11.glAlphaFunc(519, 0.0F));
 
             RenderUtils.drawImage((float) x, y, 170.0F, 104.0F,
                     !(Client.INSTANCE.screenManager.scaleFactor > 1.0F) ? Resources.WATERMARK

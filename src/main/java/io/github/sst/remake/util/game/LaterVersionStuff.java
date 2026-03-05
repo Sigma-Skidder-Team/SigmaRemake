@@ -19,6 +19,7 @@ public final class LaterVersionStuff {
      * This is a wrapper around RenderSystem.recordRenderCall because in 1.21.5 they replace it with `mc.execute`
      **/
     public static void execute(RenderCall renderThread) {
+        if (RenderSystem.isOnRenderThreadOrInit()) renderThread.execute();
         // TODO(version/1.21.5): (I'm planning ahead) use `mc.execute`
         RenderSystem.recordRenderCall(renderThread);
     }
