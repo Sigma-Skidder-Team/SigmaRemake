@@ -21,13 +21,11 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderEffect;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.texture.Texture;
 
 import java.io.IOException;
 
@@ -224,8 +222,8 @@ public final class HUDManager extends Manager implements IMinecraft {
         }
 
         GL11.glPushMatrix();
-        // TODO(version/1.17): maybe this will work
-        blurFramebuffer.initFbo(client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight, false);
+        // beginRead
+        blurFramebuffer.method_35610();
         blurFramebuffer.draw(
                 client.getFramebuffer().viewportWidth,
                 client.getFramebuffer().viewportHeight
