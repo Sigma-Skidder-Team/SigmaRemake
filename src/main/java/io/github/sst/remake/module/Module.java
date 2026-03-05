@@ -106,7 +106,7 @@ public abstract class Module implements IMinecraft {
 
                 final SubModule owner = mode;
 
-                inner.hide(() -> sms.value != owner);
+                inner.hideOr(() -> sms.value != owner);
                 this.settings.add(inner);
             } catch (IllegalAccessException e) {
                 Client.LOGGER.error("Failed to access submodule inner setting field {}", field2.getName(), e);

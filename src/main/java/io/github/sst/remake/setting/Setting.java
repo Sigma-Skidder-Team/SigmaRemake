@@ -49,6 +49,13 @@ public abstract class Setting<T> {
         return (I) this;
     }
 
+    @SuppressWarnings("unchecked")
+    public <I extends Setting<?>> I hideOr(BooleanSupplier hidden) {
+        BooleanSupplier previousHidden = this.hidden;
+        this.hidden = () -> previousHidden.getAsBoolean() || hidden.getAsBoolean();
+        return (I) this;
+    }
+
     public boolean isHidden() {
         return hidden.getAsBoolean();
     }
