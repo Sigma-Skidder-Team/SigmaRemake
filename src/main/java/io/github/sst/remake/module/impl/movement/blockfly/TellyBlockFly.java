@@ -176,7 +176,7 @@ public class TellyBlockFly extends SubModule {
             );
         }
 
-        MouseUtils.placeBlock(hit);
+        getParent().spoofAndPlace(hit);
 
         pendingPlace = null;
     }

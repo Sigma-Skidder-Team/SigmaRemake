@@ -250,7 +250,7 @@ public class AACBlockFly extends SubModule{
             return;
         }
 
-        MouseUtils.placeBlock(hit);
+        getParent().spoofAndPlace(hit);
 
         if (hit.getSide() == Direction.UP) {
             scaffoldYLevel = hit.getBlockPos().getY() + 2;

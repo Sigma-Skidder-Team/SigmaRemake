@@ -23,6 +23,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
@@ -31,6 +32,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings({"unused", "DataFlowIssue"})
@@ -385,7 +387,21 @@ public class BlockFlyModule extends Module {
         return true;
     }
 
-    public ActionResult interactBlockWithSpoofing(Hand hand, BlockHitResult hit) {
+    public void spoofAndPlace(HitResult result) {
+        int previousSlot = client.player.inventory.selectedSlot;
+        if (!itemSpoofMode.value.equals("None")) {
+            selectPlaceableHotbarSlot();
+        }
+
+        MouseUtils.placeBlock(result);
+
+        String spoofMode = itemSpoofMode.value;
+        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
+            client.player.inventory.selectedSlot = previousSlot;
+        }
+    }
+
+    public void interactBlockWithSpoofing(Hand hand, BlockHitResult hit) {
         int previousSlot = client.player.inventory.selectedSlot;
         if (!itemSpoofMode.value.equals("None")) {
             selectPlaceableHotbarSlot();
@@ -397,8 +413,6 @@ public class BlockFlyModule extends Module {
         if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
             client.player.inventory.selectedSlot = previousSlot;
         }
-
-        return result;
     }
 
     private void swapSlotToHotbar(int sourceSlot, int hotbarIndex) {
