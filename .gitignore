@@ -39,3 +39,6 @@ replay_*.log
 *.hprof
 *.jfr
 *.java~
+
+# others
+.factorypath
