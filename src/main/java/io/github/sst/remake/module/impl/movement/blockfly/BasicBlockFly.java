@@ -18,6 +18,7 @@ import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
 import io.github.sst.remake.util.math.timer.BasicTimer;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -201,8 +202,7 @@ public class BasicBlockFly extends SubModule  {
                 false
         );
 
-        getParent().interactBlockWithSpoofing(Hand.MAIN_HAND, hit);
-        client.player.swingHand(Hand.MAIN_HAND);
+        MouseUtils.placeBlock(hit);
 
         pendingPlace = null;
     }
