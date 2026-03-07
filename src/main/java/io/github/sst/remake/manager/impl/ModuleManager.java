@@ -52,6 +52,7 @@ public final class ModuleManager extends Manager {
         modules.add(new RearViewModule());
         modules.add(new ChestStealerModule());
         modules.add(new FastBowModule());
+        modules.add(new ESPModule());
 
         modules.forEach(Module::onInit);
         super.init();

@@ -237,4 +237,20 @@ public class ColorHelper {
         // TODO: Confirm whether alpha should be 255 instead of 1.
         return new java.awt.Color(rgb.get(0) * 2, rgb.get(1) * 2, rgb.get(2) * 2, 1);
     }
+
+    public static int darkenColor(int argbColor, float factor) {
+        int alpha = argbColor >> 24 & 0xFF;
+        int red = argbColor >> 16 & 0xFF;
+        int green = argbColor >> 8 & 0xFF;
+        int blue = argbColor & 0xFF;
+
+        int newRed = (int) (red * (1.0F - factor));
+        int newGreen = (int) (green * (1.0F - factor));
+        int newBlue = (int) (blue * (1.0F - factor));
+
+        return alpha << 24
+                | (newRed & 0xFF) << 16
+                | (newGreen & 0xFF) << 8
+                | (newBlue & 0xFF);
+    }
 }
