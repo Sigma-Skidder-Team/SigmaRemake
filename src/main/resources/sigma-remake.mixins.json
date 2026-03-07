@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinClientConnection",
+    "MixinClientStatusC2SPacketMode",
     "MixinConfirmScreenActionC2SPacket",
     "MixinConfirmScreenActionS2CPacket",
     "MixinEntity",
