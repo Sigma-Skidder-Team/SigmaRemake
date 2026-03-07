@@ -6,4 +6,5 @@ import io.github.sst.remake.util.IMinecraft;
 public final class RotationTracker extends Tracker implements IMinecraft {
     public static float yaw, pitch;
     public static float lastYaw, lastPitch;
+    public static boolean renderingGui;
 }

@@ -22,6 +22,7 @@
     "MixinClientPlayNetworkHandler",
     "MixinGameRenderer",
     "MixinInGameHud",
+    "MixinInventoryScreen",
     "MixinKeyboard",
     "MixinKeyboardInput",
     "MixinLivingEntityRenderer",

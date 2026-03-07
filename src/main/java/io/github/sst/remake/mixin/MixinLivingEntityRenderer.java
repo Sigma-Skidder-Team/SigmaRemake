@@ -36,7 +36,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @ModifyArgs(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerpAngleDegrees(FFF)F", ordinal = 1))
     private void modifyYawArgs(Args args) {
-        if (captured instanceof ClientPlayerEntity) {
+        if (captured instanceof ClientPlayerEntity && !RotationTracker.renderingGui) {
             args.set(1, RotationTracker.lastYaw);
             args.set(2, RotationTracker.yaw);
         }
@@ -45,7 +45,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @ModifyArgs(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F", ordinal = 0))
     private void modifyPitchArgs(Args args) {
-        if (captured instanceof ClientPlayerEntity) {
+        if (captured instanceof ClientPlayerEntity && !RotationTracker.renderingGui) {
             args.set(1, RotationTracker.lastPitch);
             args.set(2, RotationTracker.pitch);
         }
