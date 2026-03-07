@@ -134,10 +134,6 @@ public class NCPBlockFly extends SubModule {
             lockedY = client.player.getY();
         }
 
-        if (getParent().noSprint.value) {
-            client.player.setSprinting(false);
-        }
-
         if (client.player.isOnGround()) {
             groundTicksSinceLeave = 0;
         } else if (groundTicksSinceLeave >= 0) {
@@ -219,7 +215,14 @@ public class NCPBlockFly extends SubModule {
                 break;
 
             case "Sneak":
-                client.options.keySneak.setPressed(true);
+                if (client.player.isOnGround()) {
+                    event.setX(event.getX() * 0.65);
+                    event.setZ(event.getZ() * 0.65);
+                } else {
+                    event.setX(event.getX() * 0.85);
+                    event.setZ(event.getZ() * 0.85);
+                }
+                break;
         }
 
         getParent().performTowering(event);
