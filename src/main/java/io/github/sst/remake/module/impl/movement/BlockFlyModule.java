@@ -56,7 +56,7 @@ public class BlockFlyModule extends Module {
     private final BooleanSetting showBlockAmount = new BooleanSetting("Show block amount", "Render available blocks in inventory", true);
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
 
-    public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false);
+    public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false).hide(() -> mode.value.name.equals("AAC"));
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     private int cachedBlockCount = 0;
@@ -73,7 +73,7 @@ public class BlockFlyModule extends Module {
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
-        if (noSprint.value) {
+        if (noSprint.value && !mode.value.name.equals("AAC")) {
             client.player.setSprinting(false);
             client.options.keySprint.setPressed(false);
         }

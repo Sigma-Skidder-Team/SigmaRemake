@@ -3,6 +3,7 @@ package io.github.sst.remake.module.impl.movement.blockfly;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
+import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.net.ReceivePacketEvent;
 import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
@@ -13,14 +14,12 @@ import io.github.sst.remake.util.game.player.MovementUtils;
 import io.github.sst.remake.util.game.combat.data.Rotation;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
-import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -28,6 +27,8 @@ import java.util.List;
 
 @SuppressWarnings({"DataFlowIssue", "unused"})
 public class AACBlockFly extends SubModule{
+    private static final float NO_ROTATION_SENTINEL = 999.0f;
+
     private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground", false);
 
     private float targetYaw;
@@ -35,6 +36,7 @@ public class AACBlockFly extends SubModule{
 
     private int scaffoldYLevel;
     private int originalHotbarSlot = 0;
+    private PositionFacing pendingPlace;
 
     private int hopTicks;
     private int speedStage;
@@ -53,11 +55,12 @@ public class AACBlockFly extends SubModule{
         if (client.player == null) return;
 
         originalHotbarSlot = client.player.inventory.selectedSlot;
-        targetYaw = client.player.yaw;
-        targetPitch = client.player.pitch;
+        targetYaw = NO_ROTATION_SENTINEL;
+        targetPitch = NO_ROTATION_SENTINEL;
 
         scaffoldYLevel = (int) client.player.getY();
         speedStage = -1;
+        pendingPlace = null;
 
         getParent().lastSpoofedSlot = -1;
     }
@@ -68,8 +71,9 @@ public class AACBlockFly extends SubModule{
 
         getParent().handleDisableSlotSpoof(originalHotbarSlot);
         originalHotbarSlot = -1;
-        targetYaw = client.player.yaw;
-        targetPitch = client.player.pitch;
+        targetYaw = NO_ROTATION_SENTINEL;
+        targetPitch = NO_ROTATION_SENTINEL;
+        pendingPlace = null;
 
         setTimer(1.0f);
     }
@@ -142,29 +146,44 @@ public class AACBlockFly extends SubModule{
 
     @Subscribe(priority = Priority.LOWEST)
     public void onMotion(MotionEvent event) {
-        if (!event.isPre()) {
-            if (MovementUtils.isMoving()
-                    && client.player.isOnGround()
-                    && haphe.value
-                    && !client.player.jumping) {
-                client.player.jump();
+        if (event.isPre()) {
+            getParent().refillHotbarWithBlocks();
+            if (getParent().countPlaceableBlocks() == 0) {
+                pendingPlace = null;
+                targetYaw = NO_ROTATION_SENTINEL;
+                targetPitch = NO_ROTATION_SENTINEL;
             }
-
-            if (!haphe.value) {
-                if (!tryPlaceBlockFromRayTrace()) {
-                    float offset = 0.0f;
-                    while (offset < 0.7 && !tryPlaceBlockFromRayTrace()) {
-                        offset += 0.1f;
-                    }
-                }
-            } else {
-                tryPlaceBlockFromRayTrace();
-            }
+            return;
         }
+
+        if (MovementUtils.isMoving()
+                && client.player.isOnGround()
+                && haphe.value
+                && !client.player.jumping) {
+            client.player.jump();
+        }
+    }
+
+    @Subscribe(priority = Priority.LOWEST)
+    public void onAction(ActionEvent event) {
+        if (client.player == null) return;
+        if (pendingPlace == null) return;
+        if (targetYaw == NO_ROTATION_SENTINEL) return;
+        if (getParent().countPlaceableBlocks() == 0) return;
+
+        tryPlaceBlock();
+        pendingPlace = null;
     }
 
     @Subscribe
     public void onRotate(RotateEvent event) {
+        if (getParent().countPlaceableBlocks() == 0) {
+            pendingPlace = null;
+            targetYaw = NO_ROTATION_SENTINEL;
+            targetPitch = NO_ROTATION_SENTINEL;
+            return;
+        }
+
         double y = client.player.getY();
         if (!client.player.jumping && haphe.value) {
             y = scaffoldYLevel;
@@ -172,17 +191,22 @@ public class AACBlockFly extends SubModule{
 
         BlockPos below = new BlockPos(client.player.getX(), (double) Math.round(y - 1.0), client.player.getZ());
         List<PositionFacing> targets = getPlacementPath(below);
+        pendingPlace = null;
 
         if (!targets.isEmpty()) {
             PositionFacing target = targets.get(targets.size() - 1);
-            BlockHitResult currentHit = RaytraceUtils.rayTraceBlocksFromLastTick(targetYaw, targetPitch, 5.0f);
-
-            if (!currentHit.getBlockPos().equals(target.blockPos) || !currentHit.getSide().equals(target.direction)) {
-                Rotation rots = RotationUtils.getBlockRotations(target.blockPos, target.direction);
-                event.yaw = rots.yaw;
-                event.pitch = rots.pitch;
-            }
+            pendingPlace = target;
+            Rotation rots = RotationUtils.getBlockPlacementRotations(target.blockPos, target.direction);
+            targetYaw = rots.yaw;
+            targetPitch = rots.pitch;
         }
+
+        if (targetYaw == NO_ROTATION_SENTINEL) {
+            return;
+        }
+
+        event.yaw = targetYaw;
+        event.pitch = targetPitch;
     }
 
     private static List<PositionFacing> getPlacementPath(BlockPos startPos) {
@@ -193,57 +217,43 @@ public class AACBlockFly extends SubModule{
         );
     }
 
-    private boolean tryPlaceBlockFromRayTrace() {
-        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromEye(
-                client.player.lastYaw,
-                client.player.lastPitch,
-                client.interactionManager.getReachDistance(),
-                0.0f
-        );
-
-        if (hit == null || hit.getType() != HitResult.Type.BLOCK) {
-            return false;
-        }
-
+    private void tryPlaceBlock() {
         if (getParent().itemSpoofMode.value.equals("None")) {
             if (!BlockUtils.isPlacableBlockItem(client.player.getStackInHand(Hand.MAIN_HAND).getItem())) {
-                return false;
+                return;
             }
         }
+
+        BlockHitResult hit = new BlockHitResult(
+                BlockUtils.getRandomizedHitVec(pendingPlace.blockPos, pendingPlace.direction),
+                pendingPlace.direction,
+                pendingPlace.blockPos,
+                false
+        );
 
         if (haphe.value && !client.player.jumping && !client.player.isOnGround()) {
             if (hit.getSide() == Direction.UP) {
-                return false;
+                return;
             }
             if (hit.getBlockPos().getY() != scaffoldYLevel - 1) {
-                return false;
+                return;
             }
         }
 
         if (hit.getSide() == Direction.UP
                 && (hit.getBlockPos().getY() + 2) > client.player.getY()
                 && BlockUtils.isValidBlockPosition(hit.getBlockPos())) {
-            return false;
+            return;
         }
 
         if (hit.getBlockPos().getY() == client.player.getY()) {
-            return false;
+            return;
         }
 
-        getParent().refillHotbarWithBlocks();
-
-        ActionResult result = getParent().interactBlockWithSpoofing(Hand.MAIN_HAND, hit);
-
-        if (result != ActionResult.SUCCESS) {
-            return false;
-        }
-
-        client.player.swingHand(Hand.MAIN_HAND);
+        MouseUtils.placeBlock(hit);
 
         if (hit.getSide() == Direction.UP) {
             scaffoldYLevel = hit.getBlockPos().getY() + 2;
         }
-
-        return true;
     }
 }
