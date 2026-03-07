@@ -1,6 +1,8 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.combat;
 
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.world.WorldUtils;
+import io.github.sst.remake.util.game.combat.data.Rotation;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import net.minecraft.client.input.Input;
 import net.minecraft.entity.Entity;

@@ -1,7 +1,6 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.world;
 
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.game.world.BlockUtils;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;

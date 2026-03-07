@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.combat.data;
 
 import lombok.AllArgsConstructor;
 

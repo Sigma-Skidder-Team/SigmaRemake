@@ -10,10 +10,10 @@ import io.github.sst.remake.module.impl.movement.BlockFlyModule;
 import io.github.sst.remake.module.impl.movement.SafeWalkModule;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
-import io.github.sst.remake.util.game.MovementUtils;
-import io.github.sst.remake.util.game.Rotation;
-import io.github.sst.remake.util.game.RotationUtils;
-import io.github.sst.remake.util.game.WorldUtils;
+import io.github.sst.remake.util.game.player.MovementUtils;
+import io.github.sst.remake.util.game.combat.data.Rotation;
+import io.github.sst.remake.util.game.combat.RotationUtils;
+import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
@@ -209,7 +209,6 @@ public class BasicBlockFly extends SubModule  {
 
     @Subscribe
     public void onRotate(RotateEvent event) {
-        if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
             targetYaw = NO_ROTATION_SENTINEL;

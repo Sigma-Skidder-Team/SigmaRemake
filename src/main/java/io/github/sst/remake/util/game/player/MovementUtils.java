@@ -1,7 +1,8 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.player;
 
 import io.github.sst.remake.event.impl.game.player.MoveEvent;
 import io.github.sst.remake.util.IMinecraft;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;

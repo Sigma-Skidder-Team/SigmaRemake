@@ -1,6 +1,5 @@
 package io.github.sst.remake.module.impl.movement;
 
-import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.InputEvent;
@@ -10,7 +9,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.tracker.impl.RotationTracker;
-import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 
 /**
  * @see <a href="https://github.com/Sumandora/tarasande/blob/1.20.4/src/main/kotlin/su/mandora/tarasande/feature/rotation/component/correctmovement/impl/Silent.kt">Silent mode</a>

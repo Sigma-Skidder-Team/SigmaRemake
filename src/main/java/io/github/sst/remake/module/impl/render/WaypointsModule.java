@@ -10,7 +10,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
-import io.github.sst.remake.util.game.EntityUtils;
+import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.texture.TextureManager;

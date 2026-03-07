@@ -10,7 +10,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
-import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.vec.VecUtils;
 import io.github.sst.remake.util.render.RenderUtils;

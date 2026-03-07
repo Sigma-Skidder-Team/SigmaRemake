@@ -7,7 +7,7 @@ import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
-import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.data.ChunkColorCache;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;

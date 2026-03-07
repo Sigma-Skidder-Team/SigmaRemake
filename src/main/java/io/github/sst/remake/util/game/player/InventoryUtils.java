@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.player;
 
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.item.BlockItem;

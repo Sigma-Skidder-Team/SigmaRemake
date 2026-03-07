@@ -1,4 +1,4 @@
-package io.github.sst.remake.util.game;
+package io.github.sst.remake.util.game.world;
 
 import io.github.sst.remake.util.IMinecraft;
 import net.minecraft.client.util.math.Vector3d;

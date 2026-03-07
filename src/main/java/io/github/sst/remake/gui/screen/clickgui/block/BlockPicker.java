@@ -5,7 +5,7 @@ import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.gui.framework.layout.FlowWrapLayoutVisitor;
 import io.github.sst.remake.gui.framework.widget.TextField;
 import io.github.sst.remake.gui.framework.widget.ScrollablePanel;
-import io.github.sst.remake.util.game.InventoryUtils;
+import io.github.sst.remake.util.game.player.InventoryUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;

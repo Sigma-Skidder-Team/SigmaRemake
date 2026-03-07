@@ -2,8 +2,7 @@ package io.github.sst.remake.util.game.world;
 
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
 import io.github.sst.remake.util.IMinecraft;
-import io.github.sst.remake.util.game.RotationUtils;
-import net.minecraft.entity.Entity;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
