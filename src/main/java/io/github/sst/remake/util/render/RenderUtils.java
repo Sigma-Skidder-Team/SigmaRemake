@@ -18,7 +18,6 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -135,31 +134,23 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
             RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
             GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-
             x = (float) Math.round(x);
             width = (float) Math.round(width);
             y = (float) Math.round(y);
             height = (float) Math.round(height);
-
             float red = (float) (color >> 16 & 0xFF) / 255.0F;
             float green = (float) (color >> 8 & 0xFF) / 255.0F;
             float blue = (float) (color & 0xFF) / 255.0F;
             float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
-
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();
-            RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-            RenderSystem.color4f(red, green, blue, alpha);
 
+            RenderSystem.color4f(red, green, blue, alpha);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-
             texture.bind();
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
             float var17 = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
             float var18 = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
@@ -167,7 +158,6 @@ public class RenderUtils implements IMinecraft {
             float var20 = siH / (float) texture.getImageHeight() * var18;
             float var21 = tlX / (float) texture.getImageWidth() * var17;
             float var22 = tlY / (float) texture.getImageHeight() * var18;
-
             if (!linearFiltering) {
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             } else {
