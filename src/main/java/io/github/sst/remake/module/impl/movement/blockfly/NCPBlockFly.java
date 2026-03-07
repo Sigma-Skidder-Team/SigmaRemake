@@ -17,6 +17,7 @@ import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -364,7 +365,12 @@ public class NCPBlockFly extends SubModule {
         );
 
         getParent().interactBlockWithSpoofing(placeHand, hit);
-        client.player.swingHand(placeHand);
+
+        if (!getParent().noSwing.value) {
+            client.player.swingHand(placeHand);
+        } else {
+            client.getNetworkHandler().sendPacket(new HandSwingC2SPacket(placeHand));
+        }
 
         pendingPlace = null;
     }

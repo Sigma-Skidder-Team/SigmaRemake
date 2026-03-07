@@ -14,6 +14,7 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
+import io.github.sst.remake.util.game.net.FakeInventoryHelper;
 import io.github.sst.remake.util.game.player.MovementUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.WorldUtils;
@@ -26,6 +27,7 @@ import io.github.sst.remake.util.render.image.Resources;
 import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -47,7 +49,7 @@ public class BlockFlyModule extends Module {
 
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
     public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
-    private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "OpenInv");
+    private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "FakeInv", "OpenInv");
 
     public final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
     public final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
@@ -59,6 +61,7 @@ public class BlockFlyModule extends Module {
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
 
     public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false).hide(() -> mode.value.name.equals("AAC"));
+    public final BooleanSetting noSwing = new BooleanSetting("NoSwing", "Removes the swing animation", true);
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     private int cachedBlockCount = 0;
@@ -250,6 +253,9 @@ public class BlockFlyModule extends Module {
             return;
         }
 
+        boolean isFakeInv = pickingMode.equals("FakeInv");
+        boolean notInInventory = !(client.currentScreen instanceof InventoryScreen);
+
         int targetContainerSlot = 43; // default hotbar slot (container index), preserved from original
         boolean hasBlocksInHotbar = hasPlaceableBlockInHotbar();
 
@@ -275,7 +281,17 @@ public class BlockFlyModule extends Module {
             }
 
             if (sourceSlot >= 0) {
+                if (isFakeInv && notInInventory) {
+                    addChatMessage("[FakeInv] Sending OPEN_INVENTORY packet (basic picker)");
+                    client.getNetworkHandler().sendPacket(FakeInventoryHelper.createOpenInventoryPacket());
+                }
+
                 swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
+
+                if (isFakeInv && notInInventory) {
+                    addChatMessage("[FakeInv] Sending CloseWindow packet (basic picker)");
+                    client.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(-1));
+                }
             }
 
             return;
@@ -312,7 +328,17 @@ public class BlockFlyModule extends Module {
         }
 
         if (targetContainerSlot >= 0 && client.player.playerScreenHandler.getSlot(targetContainerSlot).id != sourceSlot) {
+            if (isFakeInv && notInInventory) {
+                addChatMessage("[FakeInv] Sending OPEN_INVENTORY packet (smart picker)");
+                client.getNetworkHandler().sendPacket(FakeInventoryHelper.createOpenInventoryPacket());
+            }
+
             swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
+
+            if (isFakeInv && notInInventory) {
+                addChatMessage("[FakeInv] Sending CloseWindow packet (smart picker)");
+                client.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(-1));
+            }
         }
     }
 
