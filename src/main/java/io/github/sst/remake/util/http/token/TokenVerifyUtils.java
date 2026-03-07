@@ -16,6 +16,10 @@ public class TokenVerifyUtils {
     private static final Gson gson = new Gson();
 
     public static AuthResult authenticate(String token) {
+        if (isBlank(token)) {
+            return new AuthResult.Failure("Token is empty", true);
+        }
+
         HttpURLConnection connection = null;
 
         try {
@@ -44,19 +48,19 @@ public class TokenVerifyUtils {
                             && jsonResponse.has("name")) {
                         return new AuthResult.Success();
                     } else {
-                        return new AuthResult.Failure("Invalid response format");
+                        return new AuthResult.Failure("Invalid response format", false);
                     }
                 }
                 case 401:
-                    return new AuthResult.Failure("Invalid or expired token");
+                    return new AuthResult.Failure("Invalid or expired token", true);
                 case 404:
-                    return new AuthResult.Failure("No Minecraft profile found");
+                    return new AuthResult.Failure("No Minecraft profile found", true);
                 default:
-                    return new AuthResult.Failure("Authentication failed: " + statusCode);
+                    return new AuthResult.Failure("Authentication failed: " + statusCode, false);
             }
 
         } catch (Exception e) {
-            return new AuthResult.Failure("Connection error: " + e.getMessage());
+            return new AuthResult.Failure("Connection error: " + e.getMessage(), false);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -81,6 +85,10 @@ public class TokenVerifyUtils {
         return response.toString();
     }
 
+    private static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
     public static abstract class AuthResult {
         private AuthResult() {}
 
@@ -90,13 +98,19 @@ public class TokenVerifyUtils {
 
         public static final class Failure extends AuthResult {
             private final String message;
+            private final boolean tokenInvalid;
 
-            public Failure(String message) {
+            public Failure(String message, boolean tokenInvalid) {
                 this.message = message;
+                this.tokenInvalid = tokenInvalid;
             }
 
             public String getMessage() {
                 return message;
+            }
+
+            public boolean isTokenInvalid() {
+                return tokenInvalid;
             }
         }
     }

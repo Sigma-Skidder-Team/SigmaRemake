@@ -34,7 +34,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private boolean isBackgroundInitialized = true;
 
     private ScrollablePanel accountListPanel;
-    private final ScrollablePanel accountDetailPanelContainer;
     private final AccountDetailPanel accountDetailsPanel;
     private final TextField searchBox;
 
@@ -48,49 +47,47 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private AccountCompareType accountSortType = AccountCompareType.ADDED;
     private String accountFilter = "";
 
-    public static AltManagerScreen instance;
-
     public AltManagerScreen() {
         super("Alt Manager");
-        instance = this;
         this.setListening(false);
 
         List<String> sortingOptions = Arrays.asList("Alphabetical", "Bans", "Date Added", "Last Used", "Use count");
-        List<String> servers = fetchAvailableServers();
 
         setupDialogs();
 
         int width = client.getWindow().getWidth();
         int height = client.getWindow().getHeight();
 
-        this.addToList(this.accountListPanel =
-                new ScrollablePanel(this, "alts", 0, 114, (int) (width * leftPaneRatio) - 4, height - 119 - titleOffset));
+        this.accountListPanel = new ScrollablePanel(this, "alts", 0, 114, (int) (width * leftPaneRatio) - 4, height - 119 - titleOffset);
+        this.addToList(this.accountListPanel);
 
-        this.addToList(this.accountDetailPanelContainer =
-                new ScrollablePanel(this, "altView", (int) (width * leftPaneRatio), 114, (int) (width * rightPaneRatio) - titleOffset, height - 119 - titleOffset));
+        ScrollablePanel accountDetailPanelContainer = new ScrollablePanel(this, "altView", (int) (width * leftPaneRatio), 114, (int) (width * rightPaneRatio) - titleOffset, height - 119 - titleOffset);
+        this.addToList(accountDetailPanelContainer);
 
         this.accountListPanel.setListening(false);
-        this.accountDetailPanelContainer.setListening(false);
+        accountDetailPanelContainer.setListening(false);
         this.accountListPanel.setScissorEnabled(false);
 
-        this.accountDetailPanelContainer.addToList(this.accountDetailsPanel =
+        this.accountDetailsPanel =
                 new AccountDetailPanel(
-                        this.accountDetailPanelContainer,
+                        accountDetailPanelContainer,
                         "info",
                         (int) ((width * rightPaneRatio - (int) (width * rightPaneRatio)) / 2) - 10,
                         getDetailsPanelYOffset(),
                         (int) (width * rightPaneRatio),
                         500
-                ));
+                );
+
+        accountDetailPanelContainer.addToList(this.accountDetailsPanel);
 
         Dropdown filterDropdown = new Dropdown(this, "drop", (int) (width * leftPaneRatio) - 220, 44, 200, 32, sortingOptions, 0);
-        filterDropdown.addSubMenu(servers, 1);
+        filterDropdown.addSubMenu(fetchAvailableServers(), 1);
         filterDropdown.setSelectedIndex(2);
         filterDropdown.onPress(widget -> handleFilterChange(filterDropdown));
         this.addToList(filterDropdown);
 
-        this.addToList(this.searchBox =
-                new TextField(this, "textbox", (int) (width * leftPaneRatio), 44, 150, 32, TextField.DEFAULT_COLORS, "", "Search..."));
+        this.searchBox = new TextField(this, "textbox", (int) (width * leftPaneRatio), 44, 150, 32, TextField.DEFAULT_COLORS, "", "Search...");
+        this.addToList(this.searchBox);
         this.searchBox.setFont(FontUtils.HELVETICA_LIGHT_18);
         this.searchBox.addChangeListener(text -> updateAccountList(false));
 
@@ -100,7 +97,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         });
         this.addToList(addButton);
 
-        // Populate on open
         updateAccountList(true);
     }
 
@@ -118,7 +114,6 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private void handleFilterChange(Dropdown dropdown) {
         int index = dropdown.getSelectedIndex();
 
-        // Reset filter unless BANS is chosen
         if (index != 1) this.accountFilter = "";
 
         if (index == 1) {

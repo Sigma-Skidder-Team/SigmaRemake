@@ -29,6 +29,8 @@ public class Account {
     private transient Thread headUpdateThread;
     public transient BufferedImage skin;
     public transient Texture head;
+    public transient boolean invalidToken;
+    public transient String tokenValidationMessage;
 
     public Account(String name, String token, String uuid) {
         this.name = name;
@@ -104,5 +106,10 @@ public class Account {
 
     public Session toSession() {
         return new Session(this.name, this.uuid, this.token, Session.AccountType.LEGACY.name());
+    }
+
+    public void setTokenValidation(boolean invalidToken, String tokenValidationMessage) {
+        this.invalidToken = invalidToken;
+        this.tokenValidationMessage = tokenValidationMessage;
     }
 }

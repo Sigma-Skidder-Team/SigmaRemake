@@ -52,6 +52,33 @@ public final class AccountManager extends Manager {
         this.accounts.remove(account);
     }
 
+    public void verifyLoadedTokenAccounts() {
+        if (this.accounts == null || this.accounts.isEmpty()) {
+            return;
+        }
+
+        for (Account account : this.accounts) {
+            if (!shouldVerifyLoadedToken(account)) {
+                account.setTokenValidation(false, null);
+                continue;
+            }
+
+            TokenVerifyUtils.AuthResult result = TokenVerifyUtils.authenticate(account.token);
+            if (result instanceof TokenVerifyUtils.AuthResult.Failure) {
+                TokenVerifyUtils.AuthResult.Failure failure = (TokenVerifyUtils.AuthResult.Failure) result;
+                if (failure.isTokenInvalid()) {
+                    account.setTokenValidation(true, failure.getMessage());
+                    Client.LOGGER.warn("Saved alt '{}' has invalid token ({})", account.name, failure.getMessage());
+                } else {
+                    account.setTokenValidation(false, failure.getMessage());
+                    Client.LOGGER.warn("Token verification inconclusive for '{}' due to verification issue: {}", account.name, failure.getMessage());
+                }
+            } else {
+                account.setTokenValidation(false, null);
+            }
+        }
+    }
+
     public void processCrackedLogin(String username) {
         if (username == null || username.isEmpty()) {
             return;
@@ -179,5 +206,19 @@ public final class AccountManager extends Manager {
 
     private static String normalized(String value) {
         return value == null ? "" : value.trim().toLowerCase();
+    }
+
+    private static boolean shouldVerifyLoadedToken(Account account) {
+        if (account == null) {
+            return false;
+        }
+
+        String uuid = normalized(account.uuid);
+        if (uuid.isEmpty() || uuid.equals(normalized(Account.STEVE_UUID))) {
+            return false;
+        }
+
+        String token = account.token == null ? "" : account.token.trim();
+        return !token.isEmpty() && !"0".equals(token);
     }
 }

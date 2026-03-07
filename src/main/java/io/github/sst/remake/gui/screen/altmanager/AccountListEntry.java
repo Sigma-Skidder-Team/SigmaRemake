@@ -106,7 +106,13 @@ public class AccountListEntry extends Widget {
         float threshold = 20.0F;
         float blinkProgress = (this.errorBlinkTicks <= threshold) ? (this.errorBlinkTicks / threshold) : 1.0F; // Simplified logic
 
-        RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 42), 17.0F, 17.0F, Resources.X_ICON, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), blinkProgress * alphaScale));
+        float invalidTokenAlpha = this.account != null && this.account.invalidToken ? alphaScale : 0.0F;
+        float errorAlpha = Math.max(blinkProgress * alphaScale, invalidTokenAlpha);
+        int errorColor = this.account != null && this.account.invalidToken
+                ? ColorHelper.applyAlpha(ClientColors.PALE_RED.getColor(), errorAlpha)
+                : ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), errorAlpha);
+
+        RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 42), 17.0F, 17.0F, Resources.X_ICON, errorColor);
         RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 45), 17.0F, 13.0F, Resources.CHECKMARK_ICON, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.refreshFade * alphaScale));
     }
 

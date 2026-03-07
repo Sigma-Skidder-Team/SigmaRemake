@@ -266,6 +266,7 @@ public final class ConfigManager extends Manager implements IMinecraft {
                             Client.INSTANCE.accountManager.add(account);
                         }
                     }
+                    Client.INSTANCE.accountManager.verifyLoadedTokenAccounts();
                 }
             } catch (IOException | JsonParseException e) {
                 Client.LOGGER.error("Failed to load alts", e);
