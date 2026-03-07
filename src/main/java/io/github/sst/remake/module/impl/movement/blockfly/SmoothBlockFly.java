@@ -1,7 +1,9 @@
 package io.github.sst.remake.module.impl.movement.blockfly;
 
 import io.github.sst.remake.Client;
+import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
+import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
@@ -14,6 +16,7 @@ import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -115,10 +118,6 @@ public class SmoothBlockFly extends SubModule {
             lockedY = client.player.getY();
         }
 
-        if (getParent().noSprint.value) {
-            client.player.setSprinting(false);
-        }
-
         if (client.player.isOnGround()) {
             groundTicksSinceLeave = 0;
         } else if (groundTicksSinceLeave >= 0) {
@@ -162,8 +161,6 @@ public class SmoothBlockFly extends SubModule {
                 break;
 
             case "Sneak":
-                client.options.keySneak.setPressed(true);
-                /*
                 if (client.player.isOnGround()) {
                     event.setX(event.getX() * 0.65);
                     event.setZ(event.getZ() * 0.65);
@@ -171,7 +168,7 @@ public class SmoothBlockFly extends SubModule {
                     event.setX(event.getX() * 0.85);
                     event.setZ(event.getZ() * 0.85);
                 }
-                 */
+                break;
         }
 
         getParent().performTowering(event);
@@ -198,13 +195,24 @@ public class SmoothBlockFly extends SubModule {
     @Subscribe
     public void onMotion(MotionEvent event) {
         if (getParent().countPlaceableBlocks() == 0) return;
+        if (!event.isPre()) return;
 
-        if (event.isPre()) {
-            handlePlace(event);
-        }
+        getParent().refillHotbarWithBlocks();
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.LOWEST)
+    public void onAction(ActionEvent event) {
+        if (client.player == null) return;
+        if (pendingPlace == null) return;
+        if (targetYaw == NO_ROTATION_SENTINEL) return;
+        if (getParent().countPlaceableBlocks() == 0) return;
+
+        BlockHitResult hit = RaytraceUtils.rayTrace(targetYaw, targetPitch, 5.0f);
+        MouseUtils.placeBlock(hit);
+        pendingPlace = null;
+    }
+
+    @Subscribe(priority = Priority.HIGHEST)
     public void onRotate(RotateEvent event) {
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;
@@ -231,33 +239,6 @@ public class SmoothBlockFly extends SubModule {
 
         event.yaw = targetYaw;
         event.pitch = targetPitch;
-    }
-
-    private void handlePlace(MotionEvent event) {
-        if (targetYaw == NO_ROTATION_SENTINEL) return;
-
-        getParent().refillHotbarWithBlocks();
-
-        if (pendingPlace == null) return;
-
-        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, 5.0f, event);
-        if (hit.getType() == HitResult.Type.MISS) {
-            return;
-        }
-
-        if (hit.getSide() == Direction.UP
-                && (double) hit.getBlockPos().getY() <= client.player.getY() - 1.0
-                && client.player.isOnGround()) {
-            return;
-        }
-
-        new ItemUsageContext(client.player, Hand.MAIN_HAND, hit);
-
-        getParent().interactBlockWithSpoofing(placeHand, hit);
-
-        pendingPlace = null;
-
-        client.player.swingHand(Hand.MAIN_HAND);
     }
 
     private void updateTarget() {
