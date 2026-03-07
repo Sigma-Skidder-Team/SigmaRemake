@@ -22,6 +22,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.timer.BasicTimer;
 import io.github.sst.remake.util.render.RenderUtils;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -156,20 +157,18 @@ public class KillAuraModule extends Module {
         if (target == null) return;
 
         double maxRange = attackRange.value;
-        if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
-            return;
-        }
+        if (client.player.squaredDistanceTo(target) > maxRange * maxRange) return;
 
         if (!throughWalls.value && !client.player.canSee(target)) return;
 
         if (Math.random() * 100 > hitChance.value) return;
 
-        if (clickMode.value.equals("1.9") && client.player.getAttackCooldownProgress(0.5f) < 1) {
-            return;
-        }
+        if (clickMode.value.equals("1.9") && client.player.getAttackCooldownProgress(0.5f) < 1) return;
 
         if (attackTimer.hasElapsed(cpsCalculator.getClickDelay(), true)) {
-            attack(target);
+            MouseUtils.pressLeft();
+        } else {
+            MouseUtils.releaseLeft();
         }
     }
 
