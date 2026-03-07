@@ -208,7 +208,7 @@ public class SmoothBlockFly extends SubModule {
         if (getParent().countPlaceableBlocks() == 0) return;
 
         BlockHitResult hit = RaytraceUtils.rayTrace(targetYaw, targetPitch, 5.0f);
-        MouseUtils.placeBlock(hit);
+        getParent().spoofAndPlace(hit);
         pendingPlace = null;
     }
 

@@ -197,7 +197,7 @@ public class BasicBlockFly extends SubModule  {
                 false
         );
 
-        MouseUtils.placeBlock(hit);
+        getParent().spoofAndPlace(hit);
 
         pendingPlace = null;
     }
