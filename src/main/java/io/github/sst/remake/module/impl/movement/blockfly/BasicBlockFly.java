@@ -112,10 +112,6 @@ public class BasicBlockFly extends SubModule  {
             lockedY = client.player.getY();
         }
 
-        if (getParent().noSprint.value) {
-            client.player.setSprinting(false);
-        }
-
         boolean autoSneak = false;
         boolean handledSneak = false;
 
@@ -175,7 +171,6 @@ public class BasicBlockFly extends SubModule  {
 
     @Subscribe(priority = Priority.LOW)
     public void onMotion(MotionEvent event) {
-        if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
         if (event.isPre()) {
@@ -188,7 +183,7 @@ public class BasicBlockFly extends SubModule  {
         }
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.LOWEST)
     public void onAction(ActionEvent event) {
         if (client.player == null) return;
         if (pendingPlace == null) return;
@@ -207,7 +202,7 @@ public class BasicBlockFly extends SubModule  {
         pendingPlace = null;
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.HIGHEST)
     public void onRotate(RotateEvent event) {
         if (getParent().countPlaceableBlocks() == 0) {
             pendingPlace = null;

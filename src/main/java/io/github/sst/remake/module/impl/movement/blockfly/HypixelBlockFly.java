@@ -134,10 +134,6 @@ public class HypixelBlockFly extends SubModule {
             lockedY = client.player.getY();
         }
 
-        if (getParent().noSprint.value) {
-            client.player.setSprinting(false);
-        }
-
         if (client.player.isOnGround()) {
             groundTicksSinceLeave = 0;
         } else if (groundTicksSinceLeave >= 0) {

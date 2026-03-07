@@ -108,10 +108,6 @@ public class AACBlockFly extends SubModule{
 
     @Subscribe
     public void onMove(MoveEvent event) {
-        if (getParent().noSprint.value) {
-            client.player.setSprinting(false);
-        }
-
         if (!haphe.value) {
             client.options.keySprint.setPressed(false);
             client.player.setSprinting(false);

@@ -15,8 +15,8 @@ import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
 import io.github.sst.remake.util.game.player.MovementUtils;
-import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
+import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -73,6 +73,11 @@ public class BlockFlyModule extends Module {
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
+        if (noSprint.value) {
+            client.player.setSprinting(false);
+            client.options.keySprint.setPressed(false);
+        }
+
         if (showBlockAmount.value) {
             cachedBlockCount = countPlaceableBlocks();
         }
@@ -90,7 +95,6 @@ public class BlockFlyModule extends Module {
                     blockCountAnim.calcPercent());
         }
     }
-
 
     @Subscribe(priority = Priority.LOW)
     public void onSendPacket(SendPacketEvent event) {
