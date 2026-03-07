@@ -20,6 +20,7 @@ import io.github.sst.remake.util.game.world.data.PositionFacing;
 import io.github.sst.remake.util.math.timer.BasicTimer;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
@@ -193,7 +194,16 @@ public class BasicBlockFly extends SubModule  {
         if (targetYaw == NO_ROTATION_SENTINEL) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        placeWithDoItemUse();
+        BlockHitResult hit = new BlockHitResult(
+                BlockUtils.getRandomizedHitVec(pendingPlace.blockPos, pendingPlace.direction),
+                pendingPlace.direction,
+                pendingPlace.blockPos,
+                false
+        );
+
+        getParent().interactBlockWithSpoofing(Hand.MAIN_HAND, hit);
+        client.player.swingHand(Hand.MAIN_HAND);
+
         pendingPlace = null;
     }
 
@@ -343,20 +353,5 @@ public class BasicBlockFly extends SubModule  {
         vulcanHasLastPos = false;
         vulcanLastBlockX = 0;
         vulcanLastBlockZ = 0;
-    }
-
-    private void placeWithDoItemUse() {
-        int previousSlot = client.player.inventory.selectedSlot;
-
-        if (!getParent().itemSpoofMode.value.equals("None")) {
-            getParent().selectPlaceableHotbarSlot();
-        }
-
-        client.doItemUse();
-
-        String spoofMode = getParent().itemSpoofMode.value;
-        if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = previousSlot;
-        }
     }
 }
