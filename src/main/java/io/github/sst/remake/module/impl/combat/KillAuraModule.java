@@ -1,8 +1,9 @@
 package io.github.sst.remake.module.impl.combat;
 
 import io.github.sst.remake.Client;
+import io.github.sst.remake.data.bus.Priority;
 import io.github.sst.remake.data.bus.Subscribe;
-import io.github.sst.remake.event.impl.client.ActionEvent;
+import io.github.sst.remake.event.impl.game.RenderLoopEvent;
 import io.github.sst.remake.event.impl.game.player.ClientPlayerTickEvent;
 import io.github.sst.remake.event.impl.game.player.RotateEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
@@ -14,8 +15,8 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
-import io.github.sst.remake.util.game.Rotation;
-import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.game.combat.data.Rotation;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -24,11 +25,10 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
@@ -107,7 +107,7 @@ public class KillAuraModule extends Module {
         }
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.HIGHEST)
     public void onClientPlayerTick(ClientPlayerTickEvent event) {
         if (!client.player.isAlive() && deathToggle.value) {
             Client.INSTANCE.notificationManager.send(new Notification("Aura", "Aura disabled due to respawn"));
@@ -151,8 +151,8 @@ public class KillAuraModule extends Module {
         }
     }
 
-    @Subscribe
-    public void onAction(ActionEvent event) {
+    @Subscribe(priority = Priority.LOWEST)
+    public void onLoop(RenderLoopEvent event) {
         if (target == null) return;
 
         double maxRange = attackRange.value;
@@ -205,26 +205,21 @@ public class KillAuraModule extends Module {
                 entity -> entity != client.player
                         && entity.isAlive()
                         && entity.isAttackable()
+                        && !(entity instanceof ArmorStandEntity)
         );
 
         LivingEntity best = null;
         double bestMetric = Double.POSITIVE_INFINITY;
 
         for (LivingEntity livingEntity : entities) {
-            boolean eligible = false;
-
-            if (players.value && livingEntity instanceof PlayerEntity) {
-                eligible = true;
-            } else if (animals.value && (livingEntity instanceof AnimalEntity
-                    || livingEntity instanceof WaterCreatureEntity)) {
-                eligible = true;
-            } else if (monsters.value && (livingEntity instanceof MobEntity
-                    || livingEntity instanceof MerchantEntity
-                    || livingEntity instanceof Monster)) {
-                eligible = true;
-            } else if (invisibles.value && livingEntity.isInvisible()) {
-                eligible = true;
+            if (!invisibles.value && livingEntity.isInvisible()) {
+                continue;
             }
+
+            boolean eligible =
+                    (players.value && livingEntity instanceof PlayerEntity)
+                            || (animals.value && (livingEntity instanceof AnimalEntity || livingEntity instanceof WaterCreatureEntity))
+                            || (monsters.value && livingEntity instanceof Monster);
 
             if (!eligible) continue;
 
@@ -244,13 +239,12 @@ public class KillAuraModule extends Module {
                 case "Angle":
                     double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.yaw);
                     double distSq = livingEntity.squaredDistanceTo(client.player);
-                    metric = angle * 1_000_000.0 + distSq; // big weight to angle, distance breaks ties
+                    metric = angle * 1_000_000.0 + distSq;
                     break;
 
                 case "Prev Range":
                     Entity anchor = target != null ? target : client.player;
-                    float dist = anchor.distanceTo(livingEntity);
-                    metric = dist;
+                    metric = anchor.distanceTo(livingEntity);
                     break;
 
                 case "Range":
@@ -268,7 +262,7 @@ public class KillAuraModule extends Module {
         target = best;
     }
 
-    @Subscribe
+    @Subscribe(priority = Priority.HIGHEST)
     public void onRotate(RotateEvent event) {
         if (target == null) return;
 
