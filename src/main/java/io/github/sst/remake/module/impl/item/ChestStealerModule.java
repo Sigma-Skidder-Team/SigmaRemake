@@ -1,6 +1,5 @@
 package io.github.sst.remake.module.impl.item;
 
-import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.PreOpenScreenEvent;
 import io.github.sst.remake.event.impl.game.EndTickEvent;
@@ -14,6 +13,7 @@ import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.combat.data.Rotation;
+import io.github.sst.remake.util.game.player.InventoryUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.math.timer.TogglableTimer;
@@ -25,20 +25,16 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -91,26 +87,43 @@ public class ChestStealerModule extends Module {
         }
     }
 
-    private void resetHumanState() {
-        clickCount = 0;
-        lastDelay = 0;
-        lastClickX = -1;
-        lastClickY = -1;
+    @Subscribe
+    public void onRotate(RotateEvent event) {
+        if (aura.value && auraRotation != null) {
+            event.yaw = auraRotation.yaw;
+            event.pitch = auraRotation.pitch;
+        }
     }
 
-    private double computeSmartDelay(double dist) {
-        double indexOfDifficulty = Math.log(1.0 + (2.0 * dist / FITTS_W)) / Math.log(2);
-        double fitts = FITTS_A + FITTS_B * indexOfDifficulty;
+    @Subscribe
+    public void onLoadWorld(LoadWorldEvent event) {
+        if (!chests.isEmpty()) {
+            chests.clear();
+        }
+        silentStealing = false;
+    }
 
-        double noise = random.nextGaussian() * 0.025;
-        double hesitation = random.nextDouble() < 0.08 ? random.nextDouble() * 0.12 : 0.0;
-        double fatigue = Math.min(clickCount * 0.003, 0.06);
+    @Subscribe
+    public void onTick(EndTickEvent event) {
+        if (silent.value) {
+            handleSilentTick();
+        } else {
+            handleNormalTick();
+        }
+    }
 
-        double raw = Math.max(0.10, fitts + noise + hesitation + fatigue);
-        double smoothed = lastDelay == 0.0 ? raw : lastDelay * 0.35 + raw * 0.65;
-        lastDelay = smoothed;
-
-        return smoothed;
+    @Subscribe
+    public void onPreOpenScreen(PreOpenScreenEvent event) {
+        if (!silent.value) return;
+        if (event.screen instanceof GenericContainerScreen) {
+            event.cancel();
+            silentStealing = true;
+            stealingInProgress = true;
+            clickTimer.reset();
+            if (!clickTimer.isEnabled()) {
+                clickTimer.start();
+            }
+        }
     }
 
     @Subscribe
@@ -159,7 +172,7 @@ public class ChestStealerModule extends Module {
 
                 if (!stealingInProgress
                         && (targetChest == null || client.player.squaredDistanceTo(cx, cy, cz)
-                            > client.player.squaredDistanceTo(cx, cy, cz))
+                        > client.player.squaredDistanceTo(cx, cy, cz))
                         && !opened
                         && Math.sqrt(client.player.squaredDistanceTo(cx, cy, cz)) < 5.0
                         && auraTimer.getElapsedTime() > 1000L
@@ -188,45 +201,6 @@ public class ChestStealerModule extends Module {
         }
     }
 
-    @Subscribe
-    public void onRotate(RotateEvent event) {
-        if (aura.value && auraRotation != null) {
-            event.yaw = auraRotation.yaw;
-            event.pitch = auraRotation.pitch;
-        }
-    }
-
-    @Subscribe
-    public void onLoadWorld(LoadWorldEvent event) {
-        if (!chests.isEmpty()) {
-            chests.clear();
-        }
-        silentStealing = false;
-    }
-
-    @Subscribe
-    public void onPreOpenScreen(PreOpenScreenEvent event) {
-        if (!silent.value) return;
-        if (event.screen instanceof GenericContainerScreen) {
-            event.cancel();
-            silentStealing = true;
-            stealingInProgress = true;
-            clickTimer.reset();
-            if (!clickTimer.isEnabled()) {
-                clickTimer.start();
-            }
-        }
-    }
-
-    @Subscribe
-    public void onTick(EndTickEvent event) {
-        if (silent.value) {
-            handleSilentTick();
-        } else {
-            handleNormalTick();
-        }
-    }
-
     private void handleSilentTick() {
         if (!silentStealing) {
             clickTimer.stop();
@@ -250,7 +224,7 @@ public class ChestStealerModule extends Module {
         GenericContainerScreenHandler chestHandler = (GenericContainerScreenHandler) handler;
         int chestSlotCount = chestHandler.getRows() * 9;
 
-        if (hasAllSlotsFilled()) {
+        if (InventoryUtils.hasAllSlotsFilled()) {
             client.player.closeHandledScreen();
             silentStealing = false;
             stealingInProgress = false;
@@ -270,7 +244,7 @@ public class ChestStealerModule extends Module {
             if (slot.hasStack() && slot.id < chestSlotCount) {
                 ItemStack stack = slot.getStack();
 
-                if (isJunkItem(stack)) {
+                if (InventoryUtils.isJunkItem(stack, ignoreJunk.value)) {
                     continue;
                 }
 
@@ -312,7 +286,7 @@ public class ChestStealerModule extends Module {
             clickTimer.stop();
             clickTimer.reset();
             resetHumanState();
-            if (client.currentScreen == null && hasAllSlotsFilled()) {
+            if (client.currentScreen == null && InventoryUtils.hasAllSlotsFilled()) {
                 auraTimer.reset();
             }
         } else {
@@ -320,7 +294,7 @@ public class ChestStealerModule extends Module {
                 clickTimer.start();
             }
 
-            if (hasAllSlotsFilled()) {
+            if (InventoryUtils.hasAllSlotsFilled()) {
                 if (close.value) {
                     client.player.closeHandledScreen();
                 }
@@ -342,7 +316,7 @@ public class ChestStealerModule extends Module {
                 if (slot.hasStack() && slot.id < chestScreen.getScreenHandler().getRows() * 9) {
                     ItemStack stack = slot.getStack();
 
-                    if (isJunkItem(stack)) {
+                    if (InventoryUtils.isJunkItem(stack, ignoreJunk.value)) {
                         continue;
                     }
 
@@ -422,6 +396,28 @@ public class ChestStealerModule extends Module {
         }
     }
 
+    private void resetHumanState() {
+        clickCount = 0;
+        lastDelay = 0;
+        lastClickX = -1;
+        lastClickY = -1;
+    }
+
+    private double computeSmartDelay(double dist) {
+        double indexOfDifficulty = Math.log(1.0 + (2.0 * dist / FITTS_W)) / Math.log(2);
+        double fitts = FITTS_A + FITTS_B * indexOfDifficulty;
+
+        double noise = random.nextGaussian() * 0.025;
+        double hesitation = random.nextDouble() < 0.08 ? random.nextDouble() * 0.12 : 0.0;
+        double fatigue = Math.min(clickCount * 0.003, 0.06);
+
+        double raw = Math.max(0.10, fitts + noise + hesitation + fatigue);
+        double smoothed = lastDelay == 0.0 ? raw : lastDelay * 0.35 + raw * 0.65;
+        lastDelay = smoothed;
+
+        return smoothed;
+    }
+
     private boolean shouldSteal(GenericContainerScreen chestScreen) {
         if (client.player == null || client.world == null) return false;
 
@@ -440,171 +436,6 @@ public class ChestStealerModule extends Module {
         }
 
         return false;
-    }
-
-    private boolean isJunkItem(ItemStack itemStack) {
-        Item item = itemStack.getItem();
-
-        if (!ignoreJunk.value) {
-            return false;
-        }
-
-        if (item instanceof SwordItem) {
-            return !isBestSword(itemStack);
-        } else if (item instanceof PickaxeItem) {
-            return !isBestPickaxe(itemStack);
-        } else if (item instanceof AxeItem) {
-            return !isBestAxe(itemStack);
-        } else if (item instanceof HoeItem) {
-            return !isBestHoe(itemStack);
-        } else if (item instanceof PotionItem) {
-            return hasNegativePotionEffects(itemStack);
-        } else if (item instanceof BlockItem) {
-            return !BlockUtils.isPlacableBlockItem(item);
-        } else if (item instanceof ArrowItem) {
-            return true;
-        } else if (item instanceof BowItem) {
-            return true;
-        } else {
-            List<Item> junkItems = new ArrayList<>(Arrays.asList(
-                    Items.COMPASS,
-                    Items.FEATHER,
-                    Items.FLINT,
-                    Items.EGG,
-                    Items.STRING,
-                    Items.STICK,
-                    Items.TNT,
-                    Items.BUCKET,
-                    Items.LAVA_BUCKET,
-                    Items.WATER_BUCKET,
-                    Items.SNOW,
-                    Items.ENCHANTED_BOOK,
-                    Items.EXPERIENCE_BOTTLE,
-                    Items.SHEARS,
-                    Items.ANVIL,
-                    Items.TORCH,
-                    Items.BEETROOT_SEEDS,
-                    Items.MELON_SEEDS,
-                    Items.PUMPKIN_SEEDS,
-                    Items.WHEAT_SEEDS,
-                    Items.LEATHER,
-                    Items.GLASS_BOTTLE,
-                    Items.PISTON,
-                    Items.SNOWBALL,
-                    Items.FISHING_ROD
-            ));
-
-            return junkItems.contains(item) || item.getName().getString().toLowerCase().contains("seed");
-        }
-    }
-
-    // --- Inventory comparison helpers (ported from InvManager) ---
-
-    private boolean isBestSword(ItemStack stack) {
-        float stackDamage = calculateItemDamage(stack);
-
-        for (int i = 9; i < 45; i++) {
-            Slot slot = client.player.playerScreenHandler.getSlot(i);
-            if (!slot.hasStack()) continue;
-            ItemStack other = slot.getStack();
-            if (other.getItem() instanceof SwordItem) {
-                if (calculateItemDamage(other) > stackDamage) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isBestPickaxe(ItemStack stack) {
-        float stackEfficiency = getToolEfficiency(stack);
-
-        for (int i = 9; i < 45; i++) {
-            Slot slot = client.player.playerScreenHandler.getSlot(i);
-            if (!slot.hasStack()) continue;
-            ItemStack other = slot.getStack();
-            if (other.getItem() instanceof PickaxeItem) {
-                if (getToolEfficiency(other) > stackEfficiency) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isBestAxe(ItemStack stack) {
-        float stackEfficiency = getToolEfficiency(stack);
-
-        for (int i = 9; i < 45; i++) {
-            Slot slot = client.player.playerScreenHandler.getSlot(i);
-            if (!slot.hasStack()) continue;
-            ItemStack other = slot.getStack();
-            if (other.getItem() instanceof AxeItem) {
-                if (getToolEfficiency(other) > stackEfficiency) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isBestHoe(ItemStack stack) {
-        float stackEfficiency = getToolEfficiency(stack);
-
-        for (int i = 9; i < 45; i++) {
-            Slot slot = client.player.playerScreenHandler.getSlot(i);
-            if (!slot.hasStack()) continue;
-            ItemStack other = slot.getStack();
-            if (other.getItem() instanceof HoeItem) {
-                if (getToolEfficiency(other) > stackEfficiency) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private float calculateItemDamage(ItemStack stack) {
-        if (stack.getItem() instanceof SwordItem) {
-            return ((SwordItem) stack.getItem()).getAttackDamage();
-        } else if (stack.getItem() instanceof ToolItem) {
-            return ((ToolItem) stack.getItem()).getMaterial().getAttackDamage();
-        }
-        return 0;
-    }
-
-    private float getToolEfficiency(ItemStack stack) {
-        if (stack.getItem() instanceof ToolItem) {
-            return ((ToolItem) stack.getItem()).getMaterial().getMiningSpeedMultiplier();
-        }
-        return 0;
-    }
-
-    private boolean hasNegativePotionEffects(ItemStack stack) {
-        if (stack.getItem() instanceof PotionItem) {
-            for (StatusEffectInstance effect : PotionUtil.getPotionEffects(stack)) {
-                if (effect.getEffectType() == StatusEffects.POISON
-                        || effect.getEffectType() == StatusEffects.INSTANT_DAMAGE
-                        || effect.getEffectType() == StatusEffects.SLOWNESS
-                        || effect.getEffectType() == StatusEffects.WEAKNESS) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasAllSlotsFilled() {
-        for (Slot slot : client.player.playerScreenHandler.slots) {
-            if (!slot.hasStack() && slot.id > 8 && slot.id < 45) {
-                return false;
-            }
-        }
-        return true;
     }
 
     // --- Aura: scan world for chest tile entities ---
