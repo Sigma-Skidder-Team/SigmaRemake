@@ -5,6 +5,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.State;
 import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.EndTickEvent;
+import io.github.sst.remake.event.impl.game.RenderLoopEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
 import io.github.sst.remake.event.impl.game.StartTickEvent;
@@ -13,8 +14,8 @@ import io.github.sst.remake.event.impl.window.WindowResizeEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.gui.screen.loading.LoadingScreen;
 import io.github.sst.remake.tracker.impl.RotationTracker;
-import io.github.sst.remake.util.game.Rotation;
-import io.github.sst.remake.util.game.RotationUtils;
+import io.github.sst.remake.util.game.combat.data.Rotation;
+import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
@@ -155,6 +156,12 @@ public abstract class MixinMinecraftClient {
 
         AttackOrderUtils.sendConditionalSwing(this.crosshairTarget, Hand.MAIN_HAND);
     }
+
+    @Inject(at = @At("HEAD"), method = "render")
+    private void injectRender(CallbackInfo info) {
+        new RenderLoopEvent().call();
+    }
+
 
     @Inject(at = @At("HEAD"), method = "tick")
     private void injectTick(CallbackInfo info) {
