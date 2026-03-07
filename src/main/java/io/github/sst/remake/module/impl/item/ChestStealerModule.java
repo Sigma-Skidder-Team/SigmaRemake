@@ -5,6 +5,7 @@ import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.PreOpenScreenEvent;
 import io.github.sst.remake.event.impl.game.EndTickEvent;
 import io.github.sst.remake.event.impl.game.player.MotionEvent;
+import io.github.sst.remake.event.impl.game.player.RotateEvent;
 import io.github.sst.remake.event.impl.game.world.LoadWorldEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
@@ -62,6 +63,7 @@ public class ChestStealerModule extends Module {
     private final TogglableTimer clickTimer = new TogglableTimer();
     private final TogglableTimer auraTimer = new TogglableTimer();
     private ChestBlockEntity targetChest;
+    private Rotation auraRotation;
 
     // Smart mode fields (Fitts' Law model)
     private double lastClickX = -1;
@@ -80,6 +82,7 @@ public class ChestStealerModule extends Module {
     @Override
     public void onEnable() {
         targetChest = null;
+        auraRotation = null;
         stealingInProgress = false;
         silentStealing = false;
         resetHumanState();
@@ -171,8 +174,7 @@ public class ChestStealerModule extends Module {
                             && hitResult.getBlockPos().getY() == chest.getPos().getY()
                             && hitResult.getBlockPos().getZ() == chest.getPos().getZ()) {
                         targetChest = chest;
-                        event.yaw = rot.yaw;
-                        event.pitch = rot.pitch;
+                        auraRotation = rot;
                         rotated = true;
                     }
                 }
@@ -181,7 +183,16 @@ public class ChestStealerModule extends Module {
             if (!rotated && client.currentScreen == null && !silentStealing && targetChest != null) {
                 chests.put(targetChest, true);
                 targetChest = null;
+                auraRotation = null;
             }
+        }
+    }
+
+    @Subscribe
+    public void onRotate(RotateEvent event) {
+        if (aura.value && auraRotation != null) {
+            event.yaw = auraRotation.yaw;
+            event.pitch = auraRotation.pitch;
         }
     }
 
