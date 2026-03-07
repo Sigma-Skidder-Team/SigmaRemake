@@ -1,7 +1,5 @@
 package io.github.sst.remake.util.system.io;
 
-import io.github.sst.remake.Client;
-import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import tv.wunderbox.nfd.FileDialog;
 import tv.wunderbox.nfd.FileDialogResult;
 import tv.wunderbox.nfd.nfd.NfdFileDialog;
