@@ -80,7 +80,7 @@ public abstract class Setting<T> {
     }
 
     public void loadFromJson(JsonElement element) {
-        this.value = GsonUtils.GSON.fromJson(element, this.getValueClass());
+        this.setValue(GsonUtils.GSON.fromJson(element, this.getValueClass()));
     }
 
     @SuppressWarnings("unchecked")

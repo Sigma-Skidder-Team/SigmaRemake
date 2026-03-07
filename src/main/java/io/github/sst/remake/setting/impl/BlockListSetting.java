@@ -55,9 +55,9 @@ public class BlockListSetting extends Setting<List<String>> {
             for (JsonElement e : array) {
                 list.add(e.getAsString());
             }
-            this.value = list;
+            this.setValue(list);
         } else {
-            this.value = new ArrayList<>();
+            this.setValue(new ArrayList<>());
         }
     }
 

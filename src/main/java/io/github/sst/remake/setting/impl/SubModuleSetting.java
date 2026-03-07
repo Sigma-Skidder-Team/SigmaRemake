@@ -115,6 +115,6 @@ public class SubModuleSetting extends Setting<SubModule> implements DropdownSett
             }
         }
 
-        this.setValue(resolved, false);
+        this.setValue(resolved, true);
     }
 }

@@ -41,7 +41,7 @@ public class CurveSetting extends Setting<CurveSetting.Curve> {
     @Override
     public void loadFromJson(com.google.gson.JsonElement element) {
         if (element.isJsonArray()) {
-            this.value = new Curve(element.getAsJsonArray());
+            this.setValue(new Curve(element.getAsJsonArray()));
         }
     }
 
