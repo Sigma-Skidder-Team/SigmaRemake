@@ -13,13 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@SuppressWarnings({"rawtypes", "DataFlowIssue"})
 public abstract class Module implements IMinecraft {
-
     public final List<Setting<?>> settings = new ArrayList<>();
     public final String name, description;
     public final Category category;
 
     public Module(String name, String description, Category category) {
+        if (name.contains(" ")) {
+            Client.LOGGER.warn("{} has a space in the module name!", name);
+            name = name.trim();
+        }
+
+        if (!description.endsWith(".")) {
+            Client.LOGGER.warn("{} doesn't have a period in its description!", name);
+            description += ".";
+        }
+
         this.name = name;
         this.description = description;
         this.category = category;
@@ -73,7 +83,6 @@ public abstract class Module implements IMinecraft {
         setEnabled(!enabled);
     }
 
-    @SuppressWarnings("rawtypes")
     private void findSettings() {
         for (Field field : this.getClass().getDeclaredFields()) {
             if (!Setting.class.isAssignableFrom(field.getType())) continue;
