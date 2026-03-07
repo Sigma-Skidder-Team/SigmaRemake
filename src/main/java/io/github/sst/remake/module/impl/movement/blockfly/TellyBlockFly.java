@@ -12,6 +12,7 @@ import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
+import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -169,29 +170,13 @@ public class TellyBlockFly extends SubModule {
         if (pendingPlace == null) return;
 
         BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, client.interactionManager.getReachDistance(), event);
-        if (hit.getType() == HitResult.Type.MISS) {
-            return;
-        }
 
-        if (hit.getSide() == Direction.UP) {
-            assert client.player != null;
-            if (hit.getBlockPos().getY() <= client.player.getBlockPos().getY() - 1.0
-                    && client.player.isOnGround()) {
-                return;
-            }
-        }
-
-        assert client.player != null;
-
-        getParent().interactBlockWithSpoofing(placeHand, hit);
+        MouseUtils.placeBlock(hit);
 
         pendingPlace = null;
-
-        client.player.swingHand(Hand.MAIN_HAND);
     }
 
     private void updateTarget() {
-
         placeHand = Hand.MAIN_HAND;
         assert client.player != null;
         if (BlockUtils.isPlacableBlockItem(client.player.getStackInHand(Hand.OFF_HAND).getItem())
@@ -205,12 +190,6 @@ public class TellyBlockFly extends SubModule {
         double targetX = bp.getX();
         double targetZ = bp.getZ();
         double targetY = bp.getY();
-
-        if (!client.player.horizontalCollision && !client.options.keyJump.isPressed()) {
-            double[] extended = BlockUtils.getSafeExtendedXZ(getParent().extend.value);
-            targetX = extended[0];
-            targetZ = extended[1];
-        }
 
         if (!client.options.keyJump.isPressed()) {
             targetY = lockedY;
