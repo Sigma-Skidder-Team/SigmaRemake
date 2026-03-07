@@ -260,7 +260,6 @@ public final class ConfigManager extends Manager implements IMinecraft {
                         if (altJson.has("token")) {
                             String token = altJson.get("token").getAsString();
                             altJson.addProperty("token", StringUtils.deobfuscateToken(token));
-                            System.out.println(altJson.get("token").getAsString());
                         }
                         Account account = Account.fromJson(altJson.toString());
                         if (account != null) {
