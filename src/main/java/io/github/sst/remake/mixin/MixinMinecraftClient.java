@@ -8,6 +8,7 @@ import io.github.sst.remake.event.impl.game.EndTickEvent;
 import io.github.sst.remake.event.impl.game.RenderLoopEvent;
 import io.github.sst.remake.event.impl.game.RunLoopEvent;
 import io.github.sst.remake.event.impl.OpenScreenEvent;
+import io.github.sst.remake.event.impl.PreOpenScreenEvent;
 import io.github.sst.remake.event.impl.game.StartTickEvent;
 import io.github.sst.remake.event.impl.game.player.RotateEvent;
 import io.github.sst.remake.event.impl.window.WindowResizeEvent;
@@ -20,6 +21,7 @@ import io.github.sst.remake.util.viaversion.ViaInstance;
 import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SplashScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
@@ -74,6 +76,15 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "onResolutionChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;resize(Lnet/minecraft/client/MinecraftClient;II)V", shift = At.Shift.AFTER))
     private void injectResolutionChange(CallbackInfo ci) {
         new WindowResizeEvent().call();
+    }
+
+    @Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
+    private void injectOpenScreenHead(Screen screen, CallbackInfo ci) {
+        PreOpenScreenEvent event = new PreOpenScreenEvent(screen);
+        event.call();
+        if (event.cancelled) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "openScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))

@@ -8,6 +8,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.combat.*;
 import io.github.sst.remake.module.impl.gui.*;
+import io.github.sst.remake.module.impl.item.*;
 import io.github.sst.remake.module.impl.misc.*;
 import io.github.sst.remake.module.impl.movement.*;
 import io.github.sst.remake.module.impl.render.*;
@@ -49,6 +50,7 @@ public final class ModuleManager extends Manager {
         modules.add(new NickDetectorModule());
         modules.add(new TabGuiModule());
         modules.add(new RearViewModule());
+        modules.add(new ChestStealerModule());
 
         modules.forEach(Module::onInit);
         super.init();

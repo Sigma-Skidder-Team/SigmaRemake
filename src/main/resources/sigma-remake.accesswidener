@@ -65,3 +65,6 @@ accessible field net/minecraft/client/render/GameRenderer renderHand Z
 accessible field net/minecraft/client/render/WorldRenderer entityOutlinesFramebuffer Lnet/minecraft/client/gl/Framebuffer;
 
 accessible field net/minecraft/client/option/KeyBinding timesPressed I
+
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
