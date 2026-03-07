@@ -16,6 +16,7 @@ import io.github.sst.remake.util.game.world.data.PositionFacing;
 import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
 public class TellyBlockFly extends SubModule {
@@ -49,10 +50,10 @@ public class TellyBlockFly extends SubModule {
 
         getParent().lastSpoofedSlot = -1;
 
-        lockedY = -1;
+        lockedY = -1.0;
 
         if (client.player.isOnGround()) {
-            lockedY = client.player.getBlockPos().getY();
+            lockedY = client.player.getY();
         }
 
         groundTicksSinceLeave = -1;
@@ -104,9 +105,7 @@ public class TellyBlockFly extends SubModule {
             event.setZ(client.player.getVelocity().z);
         }
 
-        if (client.player.isOnGround()) {
-            lockedY = client.player.getBlockPos().getY();
-        }
+        if (client.player.isOnGround()) lockedY = client.player.getY();
 
         if (client.player.isOnGround()) {
             groundTicksSinceLeave = 0;
@@ -165,6 +164,17 @@ public class TellyBlockFly extends SubModule {
         if (pendingPlace == null) return;
 
         BlockHitResult hit = RaytraceUtils.rayTrace(targetYaw, targetPitch, client.interactionManager.getReachDistance());
+        if (hit == null
+                || hit.getType() != HitResult.Type.BLOCK
+                || !hit.getBlockPos().equals(pendingPlace.blockPos)
+                || hit.getSide() != pendingPlace.direction) {
+            hit = new BlockHitResult(
+                    BlockUtils.getRandomizedHitVec(pendingPlace.blockPos, pendingPlace.direction),
+                    pendingPlace.direction,
+                    pendingPlace.blockPos,
+                    false
+            );
+        }
 
         MouseUtils.placeBlock(hit);
 
@@ -180,17 +190,15 @@ public class TellyBlockFly extends SubModule {
             placeHand = Hand.OFF_HAND;
         }
 
-        final BlockPos bp = client.player.getBlockPos();
-
-        double targetX = bp.getX();
-        double targetZ = bp.getZ();
-        double targetY = bp.getY();
+        double targetX = client.player.getX();
+        double targetZ = client.player.getZ();
+        double targetY = client.player.getY();
 
         if (!client.options.keyJump.isPressed()) {
             targetY = lockedY;
         }
 
-        BlockPos belowTarget = new BlockPos(targetX, targetY, targetZ);
+        BlockPos belowTarget = new BlockPos(targetX, targetY - 1.0, targetZ);
         if (!BlockUtils.isValidBlockPosition(belowTarget)
                 && getParent().canPlaceWithHand(placeHand)) {
 
