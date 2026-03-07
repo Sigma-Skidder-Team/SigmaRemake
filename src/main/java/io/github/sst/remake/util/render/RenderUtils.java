@@ -1119,6 +1119,8 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawWaypointIndicator(float x, float y, float z, String label, int color, float scale) {
+        boolean lightingWasEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
+
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(3042);
         GL11.glEnable(2848);
@@ -1196,7 +1198,11 @@ public class RenderUtils implements IMinecraft {
 
         GL11.glEnable(3553);
         GL11.glEnable(2929);
-        GL11.glEnable(2896);
+        if (lightingWasEnabled) {
+            GL11.glEnable(2896);
+        } else {
+            GL11.glDisable(2896);
+        }
         GL11.glDisable(2848);
         GL11.glDepthMask(true);
         GL11.glDisable(3042);
@@ -1210,6 +1216,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glPushMatrix();
         GL11.glEnable(2848);
         GL11.glDisable(3553);
+        GL11.glDisable(2896);
         GL11.glEnable(32925);
         GL11.glEnable(2929);
         GL11.glLineWidth(1.4F);
@@ -1247,6 +1254,9 @@ public class RenderUtils implements IMinecraft {
                 client.gameRenderer.getCamera().getPos().getY(),
                 client.gameRenderer.getCamera().getPos().getZ());
         GL11.glPopMatrix();
+        GL11.glDisable(32823);
+        GL11.glDisable(3008);
+
         GL11.glEnable(3553);
         GL11.glDisable(32925);
         GL11.glDisable(2848);
