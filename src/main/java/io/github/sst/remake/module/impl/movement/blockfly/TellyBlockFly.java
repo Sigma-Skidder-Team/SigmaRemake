@@ -2,6 +2,7 @@ package io.github.sst.remake.module.impl.movement.blockfly;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
+import io.github.sst.remake.event.impl.client.ActionEvent;
 import io.github.sst.remake.event.impl.game.player.*;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.movement.BlockFlyModule;
@@ -15,12 +16,8 @@ import io.github.sst.remake.util.game.world.data.PositionFacing;
 import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
-// TODO: why does it not stay on the same Y position?
-// TODO: all block fly modes seem to flag air place when towering? and movement correction is broken sometimes ig.
 public class TellyBlockFly extends SubModule {
     private static final float NO_ROTATION_SENTINEL = 999.0f;
 
@@ -33,7 +30,7 @@ public class TellyBlockFly extends SubModule {
     private double lockedY;
 
     public TellyBlockFly() {
-        super("(Broken) Telly");
+        super("Telly");
     }
 
     @Override
@@ -121,12 +118,10 @@ public class TellyBlockFly extends SubModule {
     }
 
     @Subscribe
-    public void onMotion(MotionEvent event) {
+    public void onAction(ActionEvent event) {
         if (getParent().countPlaceableBlocks() == 0) return;
 
-        if (event.isPre()) {
-            handlePlace(event);
-        }
+        handlePlace();
     }
 
     private boolean needsToRotate() {
@@ -162,14 +157,14 @@ public class TellyBlockFly extends SubModule {
         event.pitch = targetPitch;
     }
 
-    private void handlePlace(MotionEvent event) {
+    private void handlePlace() {
         if (targetYaw == NO_ROTATION_SENTINEL) return;
 
         getParent().refillHotbarWithBlocks();
 
         if (pendingPlace == null) return;
 
-        BlockHitResult hit = RaytraceUtils.rayTraceBlocksFromRotations(targetYaw, targetPitch, client.interactionManager.getReachDistance(), event);
+        BlockHitResult hit = RaytraceUtils.rayTrace(targetYaw, targetPitch, client.interactionManager.getReachDistance());
 
         MouseUtils.placeBlock(hit);
 
