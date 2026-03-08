@@ -33,7 +33,7 @@ public final class ModuleManager extends Manager {
         rotationTracker.enable();
 
         modules = new ArrayList<>();
-
+        modules.add(new FullBrightModule());
         modules.add(new ActiveModsModule());
         modules.add(new BrainFreezeModule());
         modules.add(new WaypointsModule());
