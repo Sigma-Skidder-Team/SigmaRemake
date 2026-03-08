@@ -12,6 +12,7 @@ import io.github.sst.remake.module.impl.item.*;
 import io.github.sst.remake.module.impl.misc.*;
 import io.github.sst.remake.module.impl.movement.*;
 import io.github.sst.remake.module.impl.render.*;
+import io.github.sst.remake.module.impl.world.TimerModule;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.tracker.impl.RotationTracker;
 
@@ -54,6 +55,7 @@ public final class ModuleManager extends Manager {
         modules.add(new FastBowModule());
         modules.add(new ESPModule());
         modules.add(new NametagsModule());
+        modules.add(new TimerModule());
 
         modules.forEach(Module::onInit);
         super.init();
