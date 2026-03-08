@@ -35,6 +35,7 @@ import net.minecraft.network.packet.s2c.play.ScreenHandlerPropertyUpdateS2CPacke
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
@@ -198,7 +199,7 @@ public class NametagsModule extends Module {
                 scale = (float) Math.max(1.0, Math.sqrt(entity.squaredDistanceTo(client.player) / 30.0));
             }
 
-            Vector3d pos = EntityUtils.getEntityPosition(entity);
+            Vec3d pos = EntityUtils.getEntityPosition(entity);
             this.drawNametag(
                     pos.x,
                     pos.y + (double) entity.getHeight(),
@@ -247,7 +248,7 @@ public class NametagsModule extends Module {
                                         Math.sqrt(entity.squaredDistanceTo(client.player) / 30.0));
                             }
 
-                            Vector3d pos = EntityUtils.getEntityPosition(entity);
+                            Vec3d pos = EntityUtils.getEntityPosition(entity);
                             this.drawNametag(
                                     pos.x,
                                     pos.y + (double) entity.getHeight(),
