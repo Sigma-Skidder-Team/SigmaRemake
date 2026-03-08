@@ -8,16 +8,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 public class FullBrightModule extends Module {
-    public float currentGamma = 1.0F;
+    private float currentGamma = 1.0f;
 
     public FullBrightModule() {
         super("FullBright", "Helps you see in the dark.", Category.RENDER);
     }
 
-
     @Override
-    public void onEnable() {
-        client.options.gamma = 999.0;
+    public void onDisable() {
+        client.options.gamma = 1.0;
+        currentGamma = 1.0f;
     }
 
     @Subscribe
@@ -41,17 +41,11 @@ public class FullBrightModule extends Module {
                 lightAdjustment -= client.world.getLightLevel(playerPos);
             }
 
-            this.currentGamma += (lightAdjustment - this.currentGamma) * 0.2F;
+            currentGamma += (lightAdjustment - currentGamma) * 0.2f;
 
-            if (this.currentGamma >= 1.5F) {
-                client.options.gamma = Math.min(Math.max(1.0F, this.currentGamma), 10.0F);
+            if (currentGamma >= 1.5F) {
+                client.options.gamma = Math.min(Math.max(1.0F, currentGamma), 10.0f);
             }
         }
-    }
-
-    @Override
-    public void onDisable() {
-        client.options.gamma = 1.0;
-        this.currentGamma = 1.0F;
     }
 }
