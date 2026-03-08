@@ -280,16 +280,9 @@ public class KillAuraModule extends Module {
         double bestMetric = Double.POSITIVE_INFINITY;
 
         for (LivingEntity livingEntity : entities) {
-            if (!invisibles.value && livingEntity.isInvisible()) {
+            if (!isValidTarget(livingEntity)) {
                 continue;
             }
-
-            boolean eligible =
-                    (players.value && livingEntity instanceof PlayerEntity && !BotTracker.isBot((PlayerEntity) livingEntity))
-                            || (animals.value && (livingEntity instanceof AnimalEntity || livingEntity instanceof WaterCreatureEntity))
-                            || (monsters.value && livingEntity instanceof Monster);
-
-            if (!eligible) continue;
 
             targets.add(livingEntity);
 
