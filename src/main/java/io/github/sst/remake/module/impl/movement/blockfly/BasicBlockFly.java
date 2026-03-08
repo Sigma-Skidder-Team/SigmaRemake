@@ -117,7 +117,7 @@ public class BasicBlockFly extends SubModule  {
 
         switch (movementMode.value) {
             case "Jump":
-                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking()) {
+                if (client.player.isOnGround() && MovementUtils.isMoving() && !client.player.isSneaking() && !client.options.keyJump.isPressed()) {
                     allowJumpCancel = false;
                     client.player.jump();
                     allowJumpCancel = true;
