@@ -61,7 +61,7 @@ public class BlockFlyModule extends Module {
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
 
     public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false).hide(() -> mode.value.name.equals("AAC"));
-    public final BooleanSetting noSwing = new BooleanSetting("NoSwing", "Removes the swing animation", true);
+    public final BooleanSetting noSwing = new BooleanSetting("No swing", "Removes the swing animation", false);
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
     private int cachedBlockCount = 0;
@@ -282,14 +282,12 @@ public class BlockFlyModule extends Module {
 
             if (sourceSlot >= 0) {
                 if (isFakeInv && notInInventory) {
-                    addChatMessage("[FakeInv] Sending OPEN_INVENTORY packet (basic picker)");
                     client.getNetworkHandler().sendPacket(FakeInventoryHelper.createOpenInventoryPacket());
                 }
 
                 swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
 
                 if (isFakeInv && notInInventory) {
-                    addChatMessage("[FakeInv] Sending CloseWindow packet (basic picker)");
                     client.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(-1));
                 }
             }
@@ -329,14 +327,12 @@ public class BlockFlyModule extends Module {
 
         if (targetContainerSlot >= 0 && client.player.playerScreenHandler.getSlot(targetContainerSlot).id != sourceSlot) {
             if (isFakeInv && notInInventory) {
-                addChatMessage("[FakeInv] Sending OPEN_INVENTORY packet (smart picker)");
                 client.getNetworkHandler().sendPacket(FakeInventoryHelper.createOpenInventoryPacket());
             }
 
             swapSlotToHotbar(sourceSlot, targetContainerSlot - 36);
 
             if (isFakeInv && notInInventory) {
-                addChatMessage("[FakeInv] Sending CloseWindow packet (smart picker)");
                 client.getNetworkHandler().sendPacket(new CloseHandledScreenC2SPacket(-1));
             }
         }
