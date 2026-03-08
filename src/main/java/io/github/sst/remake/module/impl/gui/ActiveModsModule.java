@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class ActiveModsModule extends Module {
     private final HashMap<Module, AnimationUtils> scaleInAnimations = new HashMap<>();
     private final List<Module> activeModules = new ArrayList<>();
@@ -44,8 +45,42 @@ public class ActiveModsModule extends Module {
     private TrueTypeFont font = FontUtils.HELVETICA_LIGHT_20;
     private int totalHeight;
 
+    @Override
+    public void onEnable() {
+        setFontSize();
+    }
+
+    @Override
+    public void onInit() {
+        super.onInit();
+
+        for (Module module : Client.INSTANCE.moduleManager.modules) {
+            if (module.getCategory() != Category.GUI) {
+                this.activeModules.add(module);
+                this.scaleInAnimations.put(module, new AnimationUtils(150, 150, AnimationUtils.Direction.FORWARDS));
+
+                if (!this.animations.value) {
+                    continue;
+                }
+                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+            }
+        }
+
+        this.activeModules.sort((a, b) -> {
+            int aLength = FontUtils.HELVETICA_LIGHT_20.getWidth(a.name);
+            int bLength = FontUtils.HELVETICA_LIGHT_20.getWidth(b.name);
+            if (aLength <= bLength) {
+                return aLength != bLength ? 1 : 0;
+            } else {
+                return -1;
+            }
+        });
+    }
+
     @Subscribe
     public void onRenderScoreboard(RenderScoreboardEvent event) {
+        if (client.world == null) return;
+
         if (event.post) {
             GlStateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F);
             return;
@@ -143,36 +178,6 @@ public class ActiveModsModule extends Module {
             GL11.glPopMatrix();
             screenHeight = (int) ((float) screenHeight + (this.font.getHeight() + scale) * QuadraticEasing.easeInOutQuad(transparency, 0.0F, 1.0F, 1.0F));
         }
-    }
-
-    @Override
-    public void onEnable() {
-        setFontSize();
-    }
-
-    @Override
-    public void onInit() {
-        for (Module module : Client.INSTANCE.moduleManager.modules) {
-            if (module.getCategory() != Category.GUI) {
-                this.activeModules.add(module);
-                this.scaleInAnimations.put(module, new AnimationUtils(150, 150, AnimationUtils.Direction.FORWARDS));
-
-                if (!this.animations.value) {
-                    continue;
-                }
-                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
-            }
-        }
-
-        this.activeModules.sort((a, b) -> {
-            int aLength = FontUtils.HELVETICA_LIGHT_20.getWidth(a.name);
-            int bLength = FontUtils.HELVETICA_LIGHT_20.getWidth(b.name);
-            if (aLength <= bLength) {
-                return aLength != bLength ? 1 : 0;
-            } else {
-                return -1;
-            }
-        });
     }
 
     private void setFontSize() {

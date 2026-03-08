@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class KeyStrokesModule extends Module {
-
     private final ArrayList<KeyAnimationData> animations = new ArrayList<>();
 
     public KeyStrokesModule() {

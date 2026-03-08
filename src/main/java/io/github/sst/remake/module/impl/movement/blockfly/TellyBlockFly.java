@@ -13,7 +13,6 @@ import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.RaytraceUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
-import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -27,7 +26,6 @@ public class TellyBlockFly extends SubModule {
     private PositionFacing pendingPlace;
     private int originalHotbarSlot = -1;
     private int groundTicksSinceLeave;
-    private Hand placeHand;
     private double lockedY;
 
     public TellyBlockFly() {
@@ -182,7 +180,7 @@ public class TellyBlockFly extends SubModule {
     }
 
     private void updateTarget() {
-        placeHand = Hand.MAIN_HAND;
+        Hand placeHand = Hand.MAIN_HAND;
         assert client.player != null;
         if (BlockUtils.isPlacableBlockItem(client.player.getStackInHand(Hand.OFF_HAND).getItem())
                 && (client.player.getStackInHand(placeHand).isEmpty()

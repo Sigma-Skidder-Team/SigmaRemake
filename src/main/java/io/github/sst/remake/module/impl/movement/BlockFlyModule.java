@@ -39,12 +39,12 @@ import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
-
     private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode",
             new AACBlockFly(), new SmoothBlockFly(),
             new BasicBlockFly(), new NCPBlockFly(),
             new HypixelBlockFly(), new TellyBlockFly()
     );
+
     public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
 
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");

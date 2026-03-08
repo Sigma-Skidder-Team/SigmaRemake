@@ -25,8 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MiniMapModule extends Module {
-
-    private static float smoothedPlayerY = 64.0F;
+    private float smoothedPlayerY = 64.0F;
 
     private ByteBuffer minimapBuffer;
     private final List<ChunkColorCache> trackedChunks = new ArrayList<>();
@@ -39,6 +38,11 @@ public class MiniMapModule extends Module {
 
     public MiniMapModule() {
         super(Category.GUI, "MiniMap", "Shows a mini map");
+    }
+
+    @Override
+    public void onDisable() {
+        trackedChunks.clear();
     }
 
     @Subscribe
@@ -200,11 +204,6 @@ public class MiniMapModule extends Module {
         RenderUtils.drawRoundedRect(mapX, yOffset, mapSize, mapSize, 8.0F, 0.7F);
 
         event.increment(mapSize + 10);
-    }
-
-    @Override
-    public void onDisable() {
-        trackedChunks.clear();
     }
 
     private List<WorldChunk> collectNearbyChunks() {

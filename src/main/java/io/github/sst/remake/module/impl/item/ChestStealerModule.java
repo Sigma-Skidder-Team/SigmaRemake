@@ -41,16 +41,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class ChestStealerModule extends Module {
-
     private final ModeSetting mode = new ModeSetting("Mode", "Stealer mode", 0, "Normal", "Smart");
     private final BooleanSetting silent = new BooleanSetting("Silent", "Steals without showing the chest GUI.", false);
     private final BooleanSetting aura = new BooleanSetting("Aura", "Automatically open chests near you.", false);
-    private final BooleanSetting ignoreJunk = new BooleanSetting("Ignore Junk", "Ignores useless items.", true);
+    private final BooleanSetting ignoreJunk = new BooleanSetting("Ignore junk", "Ignores useless items.", true);
     private final BooleanSetting close = new BooleanSetting("Close", "Automatically closes the chest when done", true)
             .hide(() -> silent.value);
     private final SliderSetting delay = new SliderSetting("Delay", "Click delay", 0.2f, 0.0f, 1.0f, 0.01f)
             .hide(() -> mode.value.equals("Smart"));
-    private final SliderSetting firstItem = new SliderSetting("First Item", "Tick delay before grabbing first item", 0.2f, 0.0f, 1.0f, 0.01f)
+    private final SliderSetting firstItem = new SliderSetting("First item delay", "Tick delay before grabbing first item", 0.2f, 0.0f, 1.0f, 0.01f)
             .hide(() -> mode.value.equals("Smart"));
 
     public boolean stealingInProgress;

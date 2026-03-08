@@ -26,7 +26,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class TabGuiModule extends Module {
-
     private static final int HIGHTLIGHT_FILL = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0625f);
     private static final int HIGHTLIGHT_SHADOW_TINT = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3f);
     private static final int HQ_BLUR_BACKGROUND = ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.05f);
@@ -82,6 +81,14 @@ public class TabGuiModule extends Module {
     }
 
     @Subscribe
+    private void onTick3D(Render3DEvent event) {
+        if (client.player == null) return;
+
+        this.updateSampledPanelColors();
+        this.animSpeed = (float) Math.max(Math.round(6.0F - (float) MinecraftClient.currentFps / 10.0F), 1);
+    }
+
+    @Subscribe
     public void onRender(RenderLevelEvent event) {
         if (client.player == null) return;
         if (client.options.debugEnabled || client.options.hudHidden) return;
@@ -94,14 +101,6 @@ public class TabGuiModule extends Module {
                 HUDManager.registerBlurArea(MODULE_WIDTH, y, MODULE_WIDTH, selectedModulesHeight);
             }
         }
-    }
-
-    @Subscribe
-    private void onTick3D(Render3DEvent event) {
-        if (client.player == null) return;
-
-        this.updateSampledPanelColors();
-        this.animSpeed = (float) Math.max(Math.round(6.0F - (float) MinecraftClient.currentFps / 10.0F), 1);
     }
 
     @Subscribe

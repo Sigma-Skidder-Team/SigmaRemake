@@ -2,13 +2,11 @@ package io.github.sst.remake.module.impl.render.esp;
 
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
-import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.render.ESPModule;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;

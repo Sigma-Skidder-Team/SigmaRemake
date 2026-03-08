@@ -7,6 +7,7 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.setting.impl.*;
 import io.github.sst.remake.util.render.image.Resources;
 
+@SuppressWarnings("unused")
 public class TestModule extends Module {
     private final ModeSetting dropdown = new ModeSetting("Dropdown", "A test mode setting.", 0, "Mode1", "Mode2", "Mode3");
     private final ColorSetting color = new ColorSetting("Color", "A color thingamabob", -1);

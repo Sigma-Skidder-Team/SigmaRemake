@@ -27,6 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class RearViewModule extends Module {
     public static boolean RENDERING_REAR_VIEW = false;
 
@@ -283,5 +284,4 @@ public class RearViewModule extends Module {
         );
         rearViewFramebuffer.setClearColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
-
 }

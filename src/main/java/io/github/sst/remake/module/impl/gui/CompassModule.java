@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CompassModule extends Module {
-
-    private static final Map<String, String> directions = new HashMap<String, String>() {{
+    private static final Map<String, String> DIRECTIONS = new HashMap<String, String>() {{
         put("0", "S");
         put("90", "W");
         put("180", "N");
@@ -71,7 +70,7 @@ public class CompassModule extends Module {
     }
 
     private void renderCompassMarker(int x, int y, int width, int angle, float alpha) {
-        String label = directions.getOrDefault(angle + "", angle + "");
+        String label = DIRECTIONS.getOrDefault(angle + "", angle + "");
 
         if (!label.matches(".*\\d+.*")) {
             if (label.length() != 1) {

@@ -16,7 +16,6 @@ import io.github.sst.remake.util.game.combat.RotationUtils;
  * @see <a href="https://github.com/Sumandora/tarasande/blob/1.20.4/src/main/kotlin/su/mandora/tarasande/feature/rotation/component/correctmovement/impl/Direct.kt">Direct mode</a>
  */
 public class CorrectMovementModule extends Module {
-
     private final ModeSetting mode = new ModeSetting("Mode", "Movement correction mode", 0, "Silent", "Direct");
 
     public CorrectMovementModule() {

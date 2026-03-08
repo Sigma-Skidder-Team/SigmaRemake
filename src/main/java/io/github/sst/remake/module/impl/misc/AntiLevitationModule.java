@@ -6,9 +6,10 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import net.minecraft.entity.effect.StatusEffects;
 
+@SuppressWarnings("unused")
 public class AntiLevitationModule extends Module {
     public AntiLevitationModule() {
-        super("AntiLevitation", "Removes levitation effects.", Category.MISC);
+        super("AntiLevitation", "Removes levitation effect.", Category.MISC);
     }
 
     @Subscribe

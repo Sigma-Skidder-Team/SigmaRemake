@@ -6,9 +6,10 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import net.minecraft.entity.player.PlayerEntity;
 
+@SuppressWarnings("unused")
 public class NickDetectorModule extends Module {
     public NickDetectorModule() {
-        super("NickDetector", "Detect if a player has a custom name", Category.MISC);
+        super("NickDetector", "Detects if players have custom names.", Category.MISC);
     }
 
     @Subscribe

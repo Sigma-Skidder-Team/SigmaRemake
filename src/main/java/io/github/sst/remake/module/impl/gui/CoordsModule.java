@@ -16,6 +16,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class CoordsModule extends Module {
     private final AnimationUtils coordinateAnimation = new AnimationUtils(1500, 1500, AnimationUtils.Direction.FORWARDS);
     private double playerX, playerY, playerZ;
@@ -25,7 +26,7 @@ public class CoordsModule extends Module {
     }
 
     @Subscribe
-    public void onPlayerTick(ClientPlayerTickEvent ignoredEvent) {
+    public void onPlayerTick(ClientPlayerTickEvent event) {
         boolean hasMoved = playerX != client.player.getX() || playerY != client.player.getY() || playerZ != client.player.getZ();
         playerX = client.player.getX();
         playerY = client.player.getY();
@@ -74,5 +75,4 @@ public class CoordsModule extends Module {
 
         RenderSystem.popMatrix();
     }
-
 }

@@ -11,6 +11,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.render.nametags.FurnaceTracker;
 import io.github.sst.remake.setting.impl.BooleanSetting;
+import io.github.sst.remake.util.game.player.PlayerUtils;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -19,7 +20,6 @@ import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.block.FurnaceBlock;
 import net.minecraft.client.gui.screen.ingame.FurnaceScreen;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,45 +33,74 @@ import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerPropertyUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.scoreboard.AbstractTeam;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.awt.*;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
+@SuppressWarnings("unused")
 public class NameTagsModule extends Module {
+    private static final int BACKGROUND_COLOR = ColorHelper.applyAlpha(
+            ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 75.0F), 0.5F);
 
     private final BooleanSetting magnify = new BooleanSetting("Magnify", "Scales nametags to keep them readable", true);
     private final BooleanSetting furnaces = new BooleanSetting("Furnaces", "Shows furnaces info once open", true);
     private final BooleanSetting mobOwners = new BooleanSetting("Mob Owners", "Shows mob owners", true);
 
-    public int backgroundColor = ColorHelper.applyAlpha(
-            ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 75.0F), 0.5F);
-
-    public final HashMap<BlockPos, FurnaceTracker> furnaceTrackers = new HashMap<>();
-    public BlockPos currentBlockPos;
-    public final List<Entity> entities = new ArrayList<>();
-    public boolean trackFurnaces = false;
-    public final HashMap<UUID, String> mobOwnerNames = new HashMap<>();
+    private final HashMap<BlockPos, FurnaceTracker> furnaceTrackers = new HashMap<>();
+    private final HashMap<UUID, String> mobOwnerNames = new HashMap<>();
+    private final List<Entity> entities = new ArrayList<>();
+    private BlockPos currentBlockPos;
 
     public NameTagsModule() {
-        super(Category.RENDER, "NameTags", "Render better name tags");
+        super(Category.RENDER, "NameTags", "Render better name tags.");
     }
 
     @Subscribe
-    public void onTick(MotionEvent event) {
+    public void onRenderNameTag(RenderNameTagEvent event) {
+        if (event.entity instanceof PlayerEntity) {
+            event.cancelled = true;
+        }
+    }
+
+    @Subscribe
+    public void onSendPacket(SendPacketEvent event) {
+        if (client.world == null) return;
+
+        if (event.packet instanceof PlayerInteractBlockC2SPacket) {
+            PlayerInteractBlockC2SPacket packet = (PlayerInteractBlockC2SPacket) event.packet;
+            BlockPos pos = packet.getBlockHitResult().getBlockPos();
+            if (client.world.getBlockState(pos).getBlock() instanceof FurnaceBlock) {
+                this.currentBlockPos = pos;
+            }
+        }
+
+        if (event.packet instanceof ClickSlotC2SPacket) {
+            ClickSlotC2SPacket clickPacket = (ClickSlotC2SPacket) event.packet;
+            FurnaceTracker tracker = this.getFurnaceTrackerByWindowId(clickPacket.getSyncId());
+            if (tracker == null) {
+                return;
+            }
+
+            if (client.currentScreen instanceof FurnaceScreen) {
+                FurnaceScreen furnaceScreen = (FurnaceScreen) client.currentScreen;
+                tracker.inputStack = furnaceScreen.getScreenHandler().getSlot(0).getStack().copy();
+                tracker.fuelStack = furnaceScreen.getScreenHandler().getSlot(1).getStack().copy();
+                tracker.outputStack = furnaceScreen.getScreenHandler().getSlot(2).getStack().copy();
+            }
+        }
+    }
+
+    @Subscribe
+    @SuppressWarnings("DataFlowIssue")
+    public void onMotion(MotionEvent event) {
         if (!event.isPre()) return;
 
-        this.trackFurnaces = this.furnaces.value;
-        if (!this.trackFurnaces) {
+        if (!furnaces.value) {
             this.furnaceTrackers.clear();
         } else {
             Iterator<Entry<BlockPos, FurnaceTracker>> iterator = this.furnaceTrackers.entrySet().iterator();
@@ -99,32 +128,6 @@ public class NameTagsModule extends Module {
             if (entity != client.player
                     && !entity.isInvisible()) {
                 this.entities.add(entity);
-            }
-        }
-    }
-
-    @Subscribe
-    public void onSendPacket(SendPacketEvent event) {
-        if (event.packet instanceof PlayerInteractBlockC2SPacket) {
-            PlayerInteractBlockC2SPacket packet = (PlayerInteractBlockC2SPacket) event.packet;
-            BlockPos pos = packet.getBlockHitResult().getBlockPos();
-            if (client.world.getBlockState(pos).getBlock() instanceof FurnaceBlock) {
-                this.currentBlockPos = pos;
-            }
-        }
-
-        if (event.packet instanceof ClickSlotC2SPacket) {
-            ClickSlotC2SPacket clickPacket = (ClickSlotC2SPacket) event.packet;
-            FurnaceTracker tracker = this.getFurnaceTrackerByWindowId(clickPacket.getSyncId());
-            if (tracker == null) {
-                return;
-            }
-
-            if (client.currentScreen instanceof FurnaceScreen) {
-                FurnaceScreen furnaceScreen = (FurnaceScreen) client.currentScreen;
-                tracker.inputStack = furnaceScreen.getScreenHandler().getSlot(0).getStack().copy();
-                tracker.fuelStack = furnaceScreen.getScreenHandler().getSlot(1).getStack().copy();
-                tracker.outputStack = furnaceScreen.getScreenHandler().getSlot(2).getStack().copy();
             }
         }
     }
@@ -180,17 +183,11 @@ public class NameTagsModule extends Module {
         }
     }
 
-    public FurnaceTracker getFurnaceTrackerByWindowId(int windowId) {
-        for (Entry<BlockPos, FurnaceTracker> entry : this.furnaceTrackers.entrySet()) {
-            if (entry.getValue().windowId == windowId) {
-                return entry.getValue();
-            }
-        }
-        return null;
-    }
-
     @Subscribe
+    @SuppressWarnings("deprecation")
     public void on3D(Render3DEvent event) {
+        if (client.world == null) return;
+
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
         boolean shouldMagnify = this.magnify.value;
 
@@ -233,7 +230,7 @@ public class NameTagsModule extends Module {
 
                             new Thread(() -> {
                                 try {
-                                    String name = resolvePlayerName(uuid);
+                                    String name = PlayerUtils.resolvePlayerName(uuid);
                                     if (name != null) {
                                         this.mobOwnerNames.put(uuid, name);
                                     }
@@ -266,10 +263,18 @@ public class NameTagsModule extends Module {
 
         GL11.glDisable(GL11.GL_LIGHTING);
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-        client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
     }
 
-    public void drawFurnaceNametag(BlockPos furnacePos, FurnaceTracker furnace, float partialTicks) {
+    private FurnaceTracker getFurnaceTrackerByWindowId(int windowId) {
+        for (Entry<BlockPos, FurnaceTracker> entry : this.furnaceTrackers.entrySet()) {
+            if (entry.getValue().windowId == windowId) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    private void drawFurnaceNametag(BlockPos furnacePos, FurnaceTracker furnace, float partialTicks) {
         TrueTypeFont font = FontUtils.HELVETICA_LIGHT_25;
         Camera camera = client.gameRenderer.getCamera();
 
@@ -310,9 +315,9 @@ public class NameTagsModule extends Module {
         int boxWidth = 51 + nameplateWidth + padding * 2;
         int boxHeight = 85 + padding * 2;
 
-        GL11.glTranslated(-boxWidth / 2, -boxHeight / 2, 0.0);
+        GL11.glTranslated(-boxWidth / 2d, -boxHeight / 2d, 0.0);
 
-        RenderUtils.drawRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, this.backgroundColor);
+        RenderUtils.drawRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, BACKGROUND_COLOR);
         RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, 20.0F, 0.5F);
 
         RenderUtils.drawString(font, padding, (float) (padding - 5), "Furnace", ClientColors.LIGHT_GREYISH_BLUE.getColor());
@@ -349,11 +354,11 @@ public class NameTagsModule extends Module {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawNametag(double x, double y, double z, Entity entity, float scale, String overrideName) {
+    private void drawNametag(double x, double y, double z, Entity entity, float scale, String overrideName) {
         TrueTypeFont font = FontUtils.HELVETICA_LIGHT_25;
         String name = overrideName == null ? entity.getName().getString().replaceAll("§.", "") : overrideName;
 
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             return;
         }
 
@@ -379,13 +384,11 @@ public class NameTagsModule extends Module {
         GL11.glRotatef(camera.getPitch(), 1.0F, 0.0F, 0.0F);
         GL11.glScalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
 
-        int bgColor = this.backgroundColor;
-
         // Team color for health bar
         int teamColor = ColorHelper.applyAlpha(
                 !(entity instanceof PlayerEntity)
                         ? ClientColors.LIGHT_GREYISH_BLUE.getColor()
-                        : new Color(getTeamColor((PlayerEntity) entity)).getRGB(),
+                        : new Color(PlayerUtils.getTeamColor((PlayerEntity) entity)).getRGB(),
                 0.5F);
 
         int halfWidth = font.getWidth(name) / 2;
@@ -396,7 +399,7 @@ public class NameTagsModule extends Module {
         // Rebase drawRect uses (x1, y1, x2, y2) but Remake uses (x, y, width, height)
         // Background: x1=-halfWidth-10, y1=-25, x2=halfWidth+10, y2=fontHeight+2
         RenderUtils.drawRect((float) (-halfWidth - 10), -25.0F, (float) (halfWidth * 2 + 20),
-                (float) (font.getHeight() + 27), bgColor);
+                (float) (font.getHeight() + 27), BACKGROUND_COLOR);
 
         // Health bar: x1=-halfWidth-10, y1=fontHeight-1-hurtTime/3, x2=clamped, y2=fontHeight+2
         float healthBarX1 = (float) (-halfWidth - 10);
@@ -406,7 +409,7 @@ public class NameTagsModule extends Module {
                 healthBarX2 - healthBarX1,
                 (float) (font.getHeight() + 2) - healthBarY1, teamColor);
 
-        GL11.glTranslated(-font.getWidth(name) / 2, 0.0, 0.0);
+        GL11.glTranslated(-font.getWidth(name) / 2d, 0.0, 0.0);
         int healthLabelWidth = FontUtils.HELVETICA_LIGHT_14.getWidth("Health: 20.0");
         String healthPrefix = "Health: ";
         int nameWidth = font.getWidth(name);
@@ -426,64 +429,5 @@ public class NameTagsModule extends Module {
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
-    }
-
-    @Subscribe
-    public void onRenderNameTag(RenderNameTagEvent event) {
-        if (event.entity instanceof PlayerEntity) {
-            event.cancelled = true;
-        }
-    }
-
-    /**
-     * Gets the team color for a player, or white (0xFFFFFF) if not on a team.
-     */
-    private static int getTeamColor(PlayerEntity player) {
-        AbstractTeam team = player.getScoreboardTeam();
-        if (team != null) {
-            Formatting formatting = team.getColor();
-            if (formatting.getColorValue() != null) {
-                return formatting.getColorValue();
-            }
-        }
-        return 0xFFFFFF;
-    }
-
-    /**
-     * Resolves a UUID to a player name using the Mojang sessionserver API.
-     */
-    private static String resolvePlayerName(UUID uuid) {
-        try {
-            String uuidStr = uuid.toString().replace("-", "");
-            URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuidStr);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
-            if (connection.getResponseCode() == 200) {
-                InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-                StringBuilder sb = new StringBuilder();
-                int ch;
-                while ((ch = reader.read()) != -1) {
-                    sb.append((char) ch);
-                }
-                reader.close();
-
-                // Simple JSON parsing — extract "name" field
-                String json = sb.toString();
-                int nameIndex = json.indexOf("\"name\"");
-                if (nameIndex != -1) {
-                    int colonIndex = json.indexOf(":", nameIndex);
-                    int quoteStart = json.indexOf("\"", colonIndex + 1);
-                    int quoteEnd = json.indexOf("\"", quoteStart + 1);
-                    if (quoteStart != -1 && quoteEnd != -1) {
-                        return json.substring(quoteStart + 1, quoteEnd);
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
-        return null;
     }
 }

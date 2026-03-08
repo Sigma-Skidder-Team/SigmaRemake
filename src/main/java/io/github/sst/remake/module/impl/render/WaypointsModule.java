@@ -13,30 +13,34 @@ import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.render.RenderUtils;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
-import org.newdawn.slick.opengl.texture.TextureImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class WaypointsModule extends Module {
-
-    private final BooleanSetting unspawn = new BooleanSetting("Unspawn Positions", "Adds a waypoint when a player unspawns", false);
+    private final BooleanSetting unspawn = new BooleanSetting("Death positions", "Adds a waypoint when a player dies", false);
 
     private final HashMap<UUID, Waypoint> unspawnedWaypoints = new HashMap<>();
 
     public WaypointsModule() {
-        super(Category.RENDER, "Waypoints", "Renders waypoints you added in Jello maps");
+        super(Category.RENDER, "Waypoints", "Renders waypoints you added in Jello maps.");
+    }
+
+    @Override
+    public void onDisable() {
+        this.unspawnedWaypoints.clear();
     }
 
     @Subscribe
@@ -46,11 +50,9 @@ public class WaypointsModule extends Module {
 
     @Subscribe
     public void onPacket(ReceivePacketEvent event) {
-        if (client.world == null) {
-            return;
-        }
+        if (client.world == null) return;
 
-        Object packet = event.packet;
+        Packet<?> packet = event.packet;
 
         if (packet instanceof EntitiesDestroyS2CPacket) {
             EntitiesDestroyS2CPacket destroyPacket = (EntitiesDestroyS2CPacket) packet;
@@ -96,62 +98,58 @@ public class WaypointsModule extends Module {
 
     @Subscribe
     public void onRender(Render3DEvent ignoredEvent) {
-        if (this.isEnabled()) {
-            for (Waypoint var5 : collectAndSortWaypointsByDistance()) {
-                BlockPos var6 = new BlockPos(
-                        var5.x - (var5.x <= 0 ? 1 : 0), var5.y,
-                        var5.z - (var5.z <= 0 ? 1 : 0));
-                double var7 = Math.sqrt(EntityUtils.calculateDistanceSquared(var6));
-                if (!(var7 > 300.0)) {
-                    if (client.world.getChunk(var6) != null && var5.config) {
-                        int var9 = var6.getX() % 16;
-                        int var10 = var6.getZ() % 16;
-                        if (var10 < 0) {
-                            var10 += 16;
-                        }
+        if (client.world == null) return;
 
-                        if (var9 < 0) {
-                            var9 += 16;
-                        }
+        for (Waypoint waypoint : collectAndSortWaypointsByDistance()) {
+            BlockPos pos = new BlockPos(
+                    waypoint.x - (waypoint.x <= 0 ? 1 : 0), waypoint.y,
+                    waypoint.z - (waypoint.z <= 0 ? 1 : 0));
+            double distance = Math.sqrt(EntityUtils.calculateDistanceSquared(pos));
 
-                        int var11 = client.world.getChunk(var6).getHeightmap(Heightmap.Type.WORLD_SURFACE).get(var9, var10);
-                        if (var11 == 0) {
-                            var11 = 64;
-                        }
+            if (!(distance > 300.0)) {
+                if (client.world.getChunk(pos) != null && waypoint.config) {
+                    int x = pos.getX() % 16;
+                    int z = pos.getZ() % 16;
 
-                        if ((float) var11 != var5.y) {
-                            var5.y = var5.y + ((float) var11 - var5.y) * 0.1F;
-                        }
+                    if (z < 0) {
+                        z += 16;
                     }
 
-                    float var13 = (float) ((double) var5.y
-                            - client.gameRenderer.getCamera().getPos().getY());
-                    float var14 = (float) ((double) var5.x
-                            - client.gameRenderer.getCamera().getPos().getX());
-                    float var15 = (float) ((double) var5.z
-                            - client.gameRenderer.getCamera().getPos().getZ());
-                    if (var5.x < 0) {
-                        var14--;
+                    if (x < 0) {
+                        x += 16;
                     }
 
-                    if (var5.z < 0) {
-                        var15--;
+                    int height = client.world.getChunk(pos).getHeightmap(Heightmap.Type.WORLD_SURFACE).get(x, z);
+                    if (height == 0) {
+                        height = 64;
                     }
 
-                    float var12 = (float) Math.max(1.0, Math.sqrt(EntityUtils.calculateDistanceSquared(var6) / 30.0));
-                    RenderUtils.drawWaypointIndicator(var14, var13, var15, var5.name, var5.color, var12);
+                    if ((float) height != waypoint.y) {
+                        waypoint.y = waypoint.y + ((float) height - waypoint.y) * 0.1F;
+                    }
                 }
+
+                float x = (float) ((double) waypoint.x
+                        - client.gameRenderer.getCamera().getPos().getX());
+                float y = (float) ((double) waypoint.y
+                        - client.gameRenderer.getCamera().getPos().getY());
+                float z = (float) ((double) waypoint.z
+                        - client.gameRenderer.getCamera().getPos().getZ());
+
+                if (waypoint.x < 0) {
+                    x--;
+                }
+
+                if (waypoint.z < 0) {
+                    z--;
+                }
+
+                float scale = (float) Math.max(1.0, Math.sqrt(EntityUtils.calculateDistanceSquared(pos) / 30.0));
+                RenderUtils.drawWaypointIndicator(x, y, z, waypoint.name, waypoint.color, scale);
             }
-
-            RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-            TextureImpl.unbind();
-            client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }
-    }
 
-    @Override
-    public void onDisable() {
-        this.unspawnedWaypoints.clear();
+        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
     private List<Waypoint> collectAndSortWaypointsByDistance() {
@@ -169,5 +167,4 @@ public class WaypointsModule extends Module {
 
         return waypoints;
     }
-
 }
