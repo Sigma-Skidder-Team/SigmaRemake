@@ -2,12 +2,12 @@ package io.github.sst.remake.mixin;
 
 import io.github.sst.remake.util.client.TimerSpeedAccess;
 import net.minecraft.client.render.RenderTickCounter;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(RenderTickCounter.class)
 public class MixinRenderTickCounter implements TimerSpeedAccess {
@@ -26,8 +26,15 @@ public class MixinRenderTickCounter implements TimerSpeedAccess {
         timerSpeed = speed;
     }
 
-    @Inject(method = "beginRenderTick(J)I", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;lastFrameDuration:F", opcode = org.objectweb.asm.Opcodes.PUTFIELD))
-    private void injectBeginRenderTick(long timeMillis, CallbackInfoReturnable<Integer> cir) {
-        this.lastFrameDuration *= this.timerSpeed;
+    @Redirect(
+            method = "beginRenderTick",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/RenderTickCounter;lastFrameDuration:F",
+                    opcode = Opcodes.PUTFIELD
+            )
+    )
+    private void redirectLastFrameDuration(RenderTickCounter instance, float value) {
+        instance.lastFrameDuration = value * timerSpeed;
     }
 }
