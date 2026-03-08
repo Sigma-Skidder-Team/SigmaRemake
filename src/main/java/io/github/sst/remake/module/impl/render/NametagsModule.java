@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @SuppressWarnings("unused")
-public class NameTagsModule extends Module {
+public class NametagsModule extends Module {
     private static final int BACKGROUND_COLOR = ColorHelper.applyAlpha(
             ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 75.0F), 0.5F);
 
@@ -56,8 +56,8 @@ public class NameTagsModule extends Module {
     private final List<Entity> entities = new ArrayList<>();
     private BlockPos currentBlockPos;
 
-    public NameTagsModule() {
-        super(Category.RENDER, "NameTags", "Render better name tags.");
+    public NametagsModule() {
+        super(Category.RENDER, "Nametags", "Highlight player names above them.");
     }
 
     @Subscribe
