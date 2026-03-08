@@ -21,6 +21,7 @@
     "MixinClientBrandRetriever",
     "MixinClientPlayerEntity",
     "MixinClientPlayNetworkHandler",
+    "MixinEntityRenderer",
     "MixinGameRenderer",
     "MixinInGameHud",
     "MixinInventoryScreen",
