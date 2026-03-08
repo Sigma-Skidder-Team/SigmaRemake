@@ -851,7 +851,7 @@ public final class MusicManager extends Manager implements IMinecraft {
                 float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
                 RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE.getColor());
             }
-            StencilUtils.beginStencilRead();
+            StencilUtils.configureStencilTest();
             if (notification != null && songThumbnail != null) {
                 // Use linear filtering on the fullscreen blurred strip to avoid nearest-neighbor artifacts.
                 RenderUtils.drawImage(

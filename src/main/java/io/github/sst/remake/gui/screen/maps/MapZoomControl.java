@@ -117,7 +117,7 @@ public class MapZoomControl extends InteractiveWidget {
                         ClientColors.LIGHT_GREYISH_BLUE.getColor()
                 );
 
-                StencilUtils.beginStencilRead();
+                StencilUtils.configureStencilTest();
 
                 RenderUtils.drawTexture(
                         (float) (this.x - 1),

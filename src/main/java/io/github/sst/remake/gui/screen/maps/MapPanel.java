@@ -112,7 +112,7 @@ public class MapPanel extends InteractiveWidget {
                 14.0F,
                 ClientColors.LIGHT_GREYISH_BLUE.getColor()
         );
-        StencilUtils.beginStencilRead();
+        StencilUtils.configureStencilTest();
 
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);

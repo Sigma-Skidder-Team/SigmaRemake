@@ -2,8 +2,7 @@ package io.github.sst.remake.util.render.shader;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
-import org.lwjgl.opengl.EXTFramebufferObject;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
 
 public class StencilUtils {
     public static void beginStencilWrite() {
@@ -18,7 +17,14 @@ public class StencilUtils {
         GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
     }
 
-    public static void beginStencilRead() {
+    public static void configureStencilTest(RenderShapeMode mode) {
+        GL11.glColorMask(true, true, true, true);
+        GL11.glDepthMask(true);
+        GL11.glStencilMask(0);
+        GL11.glStencilFunc(mode == RenderShapeMode.FILLED ? GL11.GL_EQUAL : GL11.GL_NOTEQUAL, 1, 1);
+    }
+
+    public static void configureStencilTest() {
         GL11.glColorMask(true, true, true, true);
         GL11.glDepthMask(true);
         GL11.glStencilMask(0);
@@ -35,15 +41,15 @@ public class StencilUtils {
         EXTFramebufferObject.glDeleteRenderbuffersEXT(framebuffer.depthAttachment);
 
         int depthBufferId = EXTFramebufferObject.glGenRenderbuffersEXT();
-        EXTFramebufferObject.glBindRenderbufferEXT(36161, depthBufferId);
+        EXTFramebufferObject.glBindRenderbufferEXT(GL30.GL_RENDERBUFFER, depthBufferId);
         EXTFramebufferObject.glRenderbufferStorageEXT(
-                36161,
-                34041,
+                GL30.GL_RENDERBUFFER,
+                GL30.GL_DEPTH_STENCIL,
                 MinecraftClient.getInstance().getWindow().getFramebufferWidth(),
                 MinecraftClient.getInstance().getWindow().getFramebufferHeight()
         );
-        EXTFramebufferObject.glFramebufferRenderbufferEXT(36160, 36128, 36161, depthBufferId);
-        EXTFramebufferObject.glFramebufferRenderbufferEXT(36160, 36096, 36161, depthBufferId);
+        EXTFramebufferObject.glFramebufferRenderbufferEXT(GL30.GL_FRAMEBUFFER, GL30.GL_STENCIL_ATTACHMENT, GL30.GL_RENDERBUFFER, depthBufferId);
+        EXTFramebufferObject.glFramebufferRenderbufferEXT(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER, depthBufferId);
     }
 
     private static void resetFramebufferDepth() {
@@ -53,5 +59,10 @@ public class StencilUtils {
             recreateFramebufferDepth(framebuffer);
             framebuffer.depthAttachment = -1;
         }
+    }
+
+    public enum RenderShapeMode {
+        FILLED,
+        OUTLINE
     }
 }
