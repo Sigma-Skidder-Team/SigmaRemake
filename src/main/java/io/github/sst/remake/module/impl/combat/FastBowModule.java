@@ -20,7 +20,7 @@ public class FastBowModule extends Module {
     public void onTick(ClientPlayerTickEvent event) {
         if (client.player.getMainHandStack() == null) return;
         if (!(client.player.getMainHandStack().getItem() instanceof BowItem)) return;
-        if (!client.player.isOnGround()) return;
+        if (!client.player.isOnGround() || !client.player.isUsingItem()) return;
 
         for (int i = 0; i < 25; i++) {
             client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket(true));
