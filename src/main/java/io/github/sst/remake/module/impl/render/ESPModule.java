@@ -2,6 +2,7 @@ package io.github.sst.remake.module.impl.render;
 
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.render.esp.ShadowESP;
 import io.github.sst.remake.module.impl.render.esp.SimsESP;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ESPModule extends Module {
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "ESP mode", new SimsESP());
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "ESP mode", new SimsESP(), new ShadowESP());
     private final BooleanSetting showPlayers = new BooleanSetting("Show players", "Outline players?", true);
     private final BooleanSetting showMonsters = new BooleanSetting("Show monsters", "Outline monsters?", false);
     private final BooleanSetting showAnimals = new BooleanSetting("Show animals", "Outline animals/passive mobs?", false);
