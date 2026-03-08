@@ -8,7 +8,6 @@ import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.render.ESPModule;
-import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -30,8 +29,6 @@ import org.lwjgl.opengl.GL13;
 
 @SuppressWarnings("unused")
 public class ShadowESP extends SubModule {
-    private final ColorSetting color = new ColorSetting("Color", "ESP color", ClientColors.LIGHT_GREYISH_BLUE.getColor());
-
     private final VertexConsumerProvider.Immediate renderBuffer = VertexConsumerProvider.immediate(client.getBufferBuilders().entityBuilders, new BufferBuilder(256));
     private RenderState currentRenderMode = RenderState.DEFAULT;
 
@@ -62,7 +59,7 @@ public class ShadowESP extends SubModule {
     public void onRender3D(Render3DEvent event) {
         if (client.world == null) return;
 
-        setup();
+        getParent().setup();
         StencilUtils.beginStencilWrite();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -70,7 +67,7 @@ public class ShadowESP extends SubModule {
         StencilUtils.configureStencilTest(StencilUtils.RenderShapeMode.OUTLINE);
         GL11.glLineWidth(1.0f);
 
-        renderShadowSprites();
+        getParent().renderShadowSprites();
         applyRenderMode(RenderState.OUTLINE);
 
         RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.0f);
@@ -95,7 +92,7 @@ public class ShadowESP extends SubModule {
         client.worldRenderer.entityRenderDispatcher.render(entity, x - offsetX, y - offsetY, z - offsetZ, yaw, partialTicks, matrixStack, typeBuffer, 238);
     }
 
-    private void reset() {
+    public void reset() {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -106,50 +103,11 @@ public class ShadowESP extends SubModule {
         currentRenderMode = RenderState.DEFAULT;
     }
 
-    private void setup() {
-        GL11.glLineWidth(3.0f);
-        GL11.glPointSize(3.0f);
-        GL11.glEnable(GL11.GL_POINT_SMOOTH);
-        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        client.gameRenderer.getLightmapTextureManager().enable();
-    }
-
-    private void renderShadowSprites() {
-        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8f);
-        getParent().getTargets().forEach(entity -> {
-            Vec3d pos = EntityUtils.getRelativePosition(entity);
-            GL11.glPushMatrix();
-            GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0f);
-            GL11.glTranslated(pos.x, pos.y, pos.z);
-            GL11.glTranslatef(0.0f, entity.getHeight(), 0.0f);
-            GL11.glTranslatef(0.0f, 0.1f, 0.0f);
-            GL11.glRotatef(client.gameRenderer.getCamera().getYaw(), 0.0f, -1.0f, 0.0f);
-            GL11.glScalef(-0.11f, -0.11f, -0.11f);
-            RenderUtils.drawImage(
-                    -entity.getWidth() * 22.0f,
-                    -entity.getHeight() * 5.5f,
-                    entity.getWidth() * 44.0f,
-                    entity.getHeight() * 21.0f,
-                    Resources.SHADOW,
-                    color,
-                    false);
-            Resources.SHOUT_ICON.bind();
-            GL11.glPopMatrix();
-        });
-    }
-
     private void applyRenderMode(RenderState renderState) {
         GL11.glDepthFunc(GL11.GL_ALWAYS);
         currentRenderMode = renderState;
 
-        int color = this.color.getValue();
+        int color = getParent().color.getValue();
         float alpha = (float) (color >> 24 & 0xFF) / 255.0f;
         float red = (float) (color >> 16 & 0xFF) / 255.0f;
         float green = (float) (color >> 8 & 0xFF) / 255.0f;
@@ -214,11 +172,5 @@ public class ShadowESP extends SubModule {
 
         currentRenderMode = RenderState.DEFAULT;
         GL11.glDepthFunc(GL11.GL_LEQUAL);
-    }
-
-    private enum RenderState {
-        DEFAULT,
-        PRE_RENDER,
-        OUTLINE
     }
 }

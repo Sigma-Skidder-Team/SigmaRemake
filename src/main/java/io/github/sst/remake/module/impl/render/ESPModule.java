@@ -2,22 +2,33 @@ package io.github.sst.remake.module.impl.render;
 
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.module.impl.render.esp.BoxOutlineESP;
 import io.github.sst.remake.module.impl.render.esp.ShadowESP;
 import io.github.sst.remake.module.impl.render.esp.SimsESP;
+import io.github.sst.remake.module.impl.render.esp.VanillaESP;
 import io.github.sst.remake.setting.impl.BooleanSetting;
+import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
 import io.github.sst.remake.tracker.impl.BotTracker;
+import io.github.sst.remake.util.game.world.EntityUtils;
+import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.render.RenderUtils;
+import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ESPModule extends Module {
-    private final SubModuleSetting mode = new SubModuleSetting("Mode", "ESP mode", new SimsESP(), new ShadowESP());
+    private final SubModuleSetting mode = new SubModuleSetting("Mode", "ESP mode", new SimsESP(), new ShadowESP(), new VanillaESP(), new BoxOutlineESP());
+    public final ColorSetting color = new ColorSetting("Color", "ESP color", ClientColors.LIGHT_GREYISH_BLUE.getColor()).hide(() -> !mode.value.name.equals("Shadow") && !mode.value.name.equals("Box Outline"));
     private final BooleanSetting showPlayers = new BooleanSetting("Show players", "Outline players?", true);
     private final BooleanSetting showMonsters = new BooleanSetting("Show monsters", "Outline monsters?", false);
     private final BooleanSetting showAnimals = new BooleanSetting("Show animals", "Outline animals/passive mobs?", false);
@@ -25,6 +36,44 @@ public class ESPModule extends Module {
 
     public ESPModule() {
         super("ESP", "Helps you see entities.", Category.RENDER);
+    }
+
+    public void setup() {
+        GL11.glLineWidth(3.0f);
+        GL11.glPointSize(3.0f);
+        GL11.glEnable(GL11.GL_POINT_SMOOTH);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        client.gameRenderer.getLightmapTextureManager().enable();
+    }
+
+    public void renderShadowSprites() {
+        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8f);
+        getTargets().forEach(entity -> {
+            Vec3d pos = EntityUtils.getRelativePosition(entity);
+            GL11.glPushMatrix();
+            GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0f);
+            GL11.glTranslated(pos.x, pos.y, pos.z);
+            GL11.glTranslatef(0.0f, entity.getHeight(), 0.0f);
+            GL11.glTranslatef(0.0f, 0.1f, 0.0f);
+            GL11.glRotatef(client.gameRenderer.getCamera().getYaw(), 0.0f, -1.0f, 0.0f);
+            GL11.glScalef(-0.11f, -0.11f, -0.11f);
+            RenderUtils.drawImage(
+                    -entity.getWidth() * 22.0f,
+                    -entity.getHeight() * 5.5f,
+                    entity.getWidth() * 44.0f,
+                    entity.getHeight() * 21.0f,
+                    Resources.SHADOW,
+                    color,
+                    false);
+            GL11.glPopMatrix();
+        });
     }
 
     public List<LivingEntity> getTargets() {
