@@ -11,6 +11,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.render.nametags.FurnaceTracker;
 import io.github.sst.remake.setting.impl.BooleanSetting;
+import io.github.sst.remake.tracker.impl.BotTracker;
 import io.github.sst.remake.util.game.player.PlayerUtils;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -189,11 +190,11 @@ public class NametagsModule extends Module {
         if (client.world == null) return;
 
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-        boolean shouldMagnify = this.magnify.value;
-
         for (Entity entity : this.entities) {
+            if (entity instanceof PlayerEntity && BotTracker.isBot((PlayerEntity) entity)) continue;
+
             float scale = 1.0F;
-            if (shouldMagnify) {
+            if (magnify.value) {
                 scale = (float) Math.max(1.0, Math.sqrt(entity.squaredDistanceTo(client.player) / 30.0));
             }
 
@@ -210,7 +211,7 @@ public class NametagsModule extends Module {
 
         for (Entry<BlockPos, FurnaceTracker> entry : this.furnaceTrackers.entrySet()) {
             float scale = 1.0F;
-            if (shouldMagnify) {
+            if (magnify.value) {
                 scale = (float) Math.max(0.8F,
                         Math.sqrt(EntityUtils.calculateDistanceSquared(entry.getKey()) / 30.0));
             }
@@ -241,7 +242,7 @@ public class NametagsModule extends Module {
 
                         if (this.mobOwnerNames.get(uuid) != null) {
                             float scale = 1.0F;
-                            if (shouldMagnify) {
+                            if (magnify.value) {
                                 scale = (float) Math.max(1.0,
                                         Math.sqrt(entity.squaredDistanceTo(client.player) / 30.0));
                             }

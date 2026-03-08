@@ -6,6 +6,7 @@ import io.github.sst.remake.event.impl.game.EndTickEvent;
 import io.github.sst.remake.gui.screen.notifications.Notification;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
+import io.github.sst.remake.tracker.impl.BotTracker;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class NickDetectorModule extends Module {
 
         for (PlayerEntity player : client.world.getPlayers()) {
             if (player == client.player) continue;
-            //TODO: Bot check
+            if (BotTracker.isBot(player)) continue;
             if (player.age <= 30) continue;
             if (player.hasCustomName() && !knownNickedPlayers.contains(player)) {
                 int distance = (int) client.player.distanceTo(player);

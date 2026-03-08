@@ -56,6 +56,7 @@ public final class ModuleManager extends Manager {
         modules.add(new ESPModule());
         modules.add(new NametagsModule());
         modules.add(new TimerModule());
+        modules.add(new AntiBotModule());
 
         modules.forEach(Module::onInit);
         super.init();

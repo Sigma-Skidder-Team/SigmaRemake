@@ -5,6 +5,7 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.render.esp.SimsESP;
 import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.SubModuleSetting;
+import io.github.sst.remake.tracker.impl.BotTracker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.Monster;
@@ -32,6 +33,7 @@ public class ESPModule extends Module {
 
         if (showPlayers.value) {
             for (PlayerEntity player : client.world.getPlayers()) {
+                if (BotTracker.isBot(player)) continue;
                 if (player == client.player) continue;
                 if (!showInvisibles.value && player.isInvisible()) continue;
                 targets.add(player);

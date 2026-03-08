@@ -15,6 +15,7 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.setting.impl.ColorSetting;
 import io.github.sst.remake.setting.impl.ModeSetting;
 import io.github.sst.remake.setting.impl.SliderSetting;
+import io.github.sst.remake.tracker.impl.BotTracker;
 import io.github.sst.remake.util.game.combat.data.Rotation;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.math.ClickDelayCalculator;
@@ -172,6 +173,45 @@ public class KillAuraModule extends Module {
         }
     }
 
+    @Subscribe(priority = Priority.HIGHEST)
+    public void onRotate(RotateEvent event) {
+        if (target == null) return;
+
+        double maxRange = aimRange.value;
+        if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
+            return;
+        }
+
+        if (!throughWalls.value && !client.player.canSee(target)) {
+            return;
+        }
+
+        Rotation rotations = RotationUtils.getRotationsSmart(target, raytrace.value);
+
+        switch (rotationMode.value) {
+            case "None":
+                break;
+
+            case "LockView":
+                client.player.pitch = rotations.pitch;
+                client.player.yaw = rotations.yaw;
+                event.yaw = rotations.yaw;
+                event.pitch = rotations.pitch;
+                break;
+
+            case "NCP":
+            default:
+                event.yaw = rotations.yaw;
+                event.pitch = rotations.pitch;
+                break;
+        }
+    }
+
+    private void reset() {
+        target = null;
+        targets.clear();
+    }
+
     private void attack(Entity target) {
         switch (attackMode.value) {
             case "Packet":
@@ -182,7 +222,36 @@ public class KillAuraModule extends Module {
         }
     }
 
+    private boolean isValidTarget(Entity entity) {
+        if (!(entity instanceof LivingEntity)) return false;
+        LivingEntity living = (LivingEntity) entity;
+
+        if (!living.isAlive()) return false;
+
+        double range = searchRange.value;
+        if (client.player.squaredDistanceTo(living) > range * range) return false;
+
+        if (!invisibles.value && living.isInvisible()) return false;
+
+        if (!throughWalls.value && !client.player.canSee(living)) return false;
+
+        if (living instanceof ArmorStandEntity) return false;
+
+        boolean eligible =
+                (players.value && living instanceof PlayerEntity && !BotTracker.isBot((PlayerEntity) living))
+                        || (animals.value && (living instanceof AnimalEntity || living instanceof WaterCreatureEntity))
+                        || (monsters.value && living instanceof Monster);
+
+        return eligible;
+    }
+
     private void updateTargets() {
+        if (target != null && isValidTarget(target)) {
+            targets.clear();
+            targets.add((LivingEntity) target);
+            return;
+        }
+
         reset();
 
         if (client.player == null || client.world == null) return;
@@ -216,7 +285,7 @@ public class KillAuraModule extends Module {
             }
 
             boolean eligible =
-                    (players.value && livingEntity instanceof PlayerEntity)
+                    (players.value && livingEntity instanceof PlayerEntity && !BotTracker.isBot((PlayerEntity) livingEntity))
                             || (animals.value && (livingEntity instanceof AnimalEntity || livingEntity instanceof WaterCreatureEntity))
                             || (monsters.value && livingEntity instanceof Monster);
 
@@ -259,44 +328,5 @@ public class KillAuraModule extends Module {
         }
 
         target = best;
-    }
-
-    @Subscribe(priority = Priority.HIGHEST)
-    public void onRotate(RotateEvent event) {
-        if (target == null) return;
-
-        double maxRange = aimRange.value;
-        if (client.player.squaredDistanceTo(target) > (maxRange * maxRange)) {
-            return;
-        }
-
-        if (!throughWalls.value && !client.player.canSee(target)) {
-            return;
-        }
-
-        Rotation rotations = RotationUtils.getRotationsSmart(target, raytrace.value);
-
-        switch (rotationMode.value) {
-            case "None":
-                break;
-
-            case "LockView":
-                client.player.pitch = rotations.pitch;
-                client.player.yaw = rotations.yaw;
-                event.yaw = rotations.yaw;
-                event.pitch = rotations.pitch;
-                break;
-
-            case "NCP":
-            default:
-                event.yaw = rotations.yaw;
-                event.pitch = rotations.pitch;
-                break;
-        }
-    }
-
-    private void reset() {
-        target = null;
-        targets.clear();
     }
 }
