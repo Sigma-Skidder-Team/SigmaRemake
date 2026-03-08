@@ -40,7 +40,7 @@ public class RearViewModule extends Module {
     private final SliderSetting size = new SliderSetting("Size", "Width", 400, 120, 1000, 1);
 
     public RearViewModule() {
-        super("RearView", "Lets you see what's going on behind you", Category.GUI);
+        super("RearView", "Lets you see what's going on behind you.", Category.GUI);
     }
 
     @Override

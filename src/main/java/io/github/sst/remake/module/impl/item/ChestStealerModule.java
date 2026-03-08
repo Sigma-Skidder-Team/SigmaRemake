@@ -71,7 +71,7 @@ public class ChestStealerModule extends Module {
     private static final double FITTS_W = 32.0;
 
     public ChestStealerModule() {
-        super("ChestStealer", "Steals items from chest", Category.ITEM);
+        super("ChestStealer", "Steals items from chests.", Category.ITEM);
     }
 
     @Override

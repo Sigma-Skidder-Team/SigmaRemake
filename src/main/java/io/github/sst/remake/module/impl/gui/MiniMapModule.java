@@ -37,7 +37,7 @@ public class MiniMapModule extends Module {
     private double playerChunkOffsetZ;
 
     public MiniMapModule() {
-        super(Category.GUI, "MiniMap", "Shows a mini map");
+        super(Category.GUI, "MiniMap", "Shows a mini map.");
     }
 
     @Override

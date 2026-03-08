@@ -22,7 +22,7 @@ public class CoordsModule extends Module {
     private double playerX, playerY, playerZ;
 
     public CoordsModule() {
-        super(Category.GUI, "Coords", "Displays coordinates");
+        super(Category.GUI, "Coords", "Displays coordinates.");
     }
 
     @Subscribe

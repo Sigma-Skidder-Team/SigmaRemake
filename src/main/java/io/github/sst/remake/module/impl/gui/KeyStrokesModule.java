@@ -23,7 +23,7 @@ public class KeyStrokesModule extends Module {
     private final ArrayList<KeyAnimationData> animations = new ArrayList<>();
 
     public KeyStrokesModule() {
-        super(Category.GUI, "KeyStrokes", "Shows what keybind you are pressing");
+        super(Category.GUI, "KeyStrokes", "Highlights main action keys when pressed.");
     }
 
     @Subscribe

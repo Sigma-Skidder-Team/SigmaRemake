@@ -29,7 +29,7 @@ public class CompassModule extends Module {
     }};
 
     public CompassModule() {
-        super(Category.GUI, "Compass", "Fornite style directions");
+        super(Category.GUI, "Compass", "Self explanatory.");
     }
 
     @Subscribe

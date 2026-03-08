@@ -8,7 +8,7 @@ import io.github.sst.remake.module.Module;
 
 public class SafeWalkModule extends Module {
     public SafeWalkModule() {
-        super("SafeWalk", "Doesn't let you run off edges", Category.MOVEMENT);
+        super("SafeWalk", "Doesn't let you run off edges.", Category.MOVEMENT);
     }
 
     @Subscribe

@@ -20,7 +20,7 @@ public class MusicParticlesModule extends Module {
     public long lastRenderTime = 0L;
 
     public MusicParticlesModule() {
-        super("MusicParticles", "Shows nice particles when music is playing", Category.GUI);
+        super("MusicParticles", "Shows nice particles when music is playing.", Category.GUI);
     }
 
     @Override

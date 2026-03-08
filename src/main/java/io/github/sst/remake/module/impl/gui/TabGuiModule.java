@@ -77,7 +77,7 @@ public class TabGuiModule extends Module {
     private float categoryScrollOffset = 0.0F;
 
     public TabGuiModule() {
-        super("TabGui", "Interact with modules via the keyboard", Category.GUI);
+        super("TabGui", "Interact with modules via the keyboard.", Category.GUI);
     }
 
     @Subscribe

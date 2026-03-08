@@ -38,7 +38,7 @@ public class ActiveModsModule extends Module {
     public final BooleanSetting toggleSound = new BooleanSetting("Sound", "Toggle sound", true);
 
     public ActiveModsModule() {
-        super(Category.GUI, "ActiveMods", "Renders active mods");
+        super(Category.GUI, "ActiveMods", "Renders active modules.");
         fontSize.addListener(sett -> setFontSize());
     }
 
