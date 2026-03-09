@@ -57,6 +57,7 @@ public final class ModuleManager extends Manager {
         modules.add(new NametagsModule());
         modules.add(new TimerModule());
         modules.add(new AntiBotModule());
+        modules.add(new AimbotModule());
 
         modules.forEach(Module::onInit);
         super.init();

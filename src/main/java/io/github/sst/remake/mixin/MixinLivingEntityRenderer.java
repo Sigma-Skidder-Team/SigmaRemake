@@ -1,10 +1,7 @@
 package io.github.sst.remake.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.sst.remake.event.impl.game.render.HasLabelEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityEvent;
-import io.github.sst.remake.event.impl.game.render.RenderLevelEvent;
 import io.github.sst.remake.tracker.impl.RotationTracker;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
