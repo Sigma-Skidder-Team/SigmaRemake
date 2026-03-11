@@ -20,7 +20,9 @@
   "client": [
     "MixinClientBrandRetriever",
     "MixinClientPlayerEntity",
+    "MixinClientPlayerEntityCommand",
     "MixinClientPlayNetworkHandler",
+    "MixinCommandSuggestor",
     "MixinEntityRenderer",
     "MixinGameRenderer",
     "MixinInGameHud",

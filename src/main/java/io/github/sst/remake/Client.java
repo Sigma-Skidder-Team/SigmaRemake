@@ -19,6 +19,7 @@ public class Client implements IMinecraft {
     public final ConfigManager configManager = new ConfigManager();
     public final RPCManager rpcManager = new RPCManager();
     public final ModuleManager moduleManager = new ModuleManager();
+    public final CommandManager commandManager = new CommandManager();
     public final BindManager bindManager = new BindManager();
     public final AccountManager accountManager = new AccountManager();
     public final NotificationManager notificationManager = new NotificationManager();
@@ -38,6 +39,7 @@ public class Client implements IMinecraft {
         notificationManager.init();
 
         moduleManager.init();
+        commandManager.init();
         configManager.init();
         bindManager.init();
 
@@ -63,6 +65,7 @@ public class Client implements IMinecraft {
         notificationManager.shutdown();
 
         bindManager.shutdown();
+        commandManager.shutdown();
         moduleManager.shutdown();
 
         configManager.shutdown();

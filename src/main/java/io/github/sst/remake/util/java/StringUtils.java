@@ -150,11 +150,33 @@ public class StringUtils {
             return "";
         }
 
-        try {
-            return StringEscapeUtils.unescapeHtml4(URLDecoder.decode(url, "UTF-8")).trim();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("UTF-8 encoding not supported", e);
+        String decoded = url;
+        if (containsPercentEscape(url)) {
+            try {
+                decoded = URLDecoder.decode(url, "UTF-8");
+            } catch (IllegalArgumentException ignored) {
+                decoded = url;
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("UTF-8 encoding not supported", e);
+            }
         }
+
+        return StringEscapeUtils.unescapeHtml4(decoded).trim();
+    }
+
+    private static boolean containsPercentEscape(String value) {
+        for (int index = 0; index < value.length() - 2; index++) {
+            if (value.charAt(index) != '%') {
+                continue;
+            }
+
+            if (Character.digit(value.charAt(index + 1), 16) >= 0
+                    && Character.digit(value.charAt(index + 2), 16) >= 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static String encode(String value) {
