@@ -16,7 +16,7 @@ public class OldAACSpeed extends SubModule {
     private int airTicks = 0;
     private int groundState = 0;
     private float lastYaw = 0;
-    private int field23536 = 0; // local air counter (parity name)
+    private int localAirCounter = 0; 
 
     public OldAACSpeed() {
         super("OldAAC");
@@ -29,7 +29,7 @@ public class OldAACSpeed extends SubModule {
             this.groundState = client.player.isOnGround() ? 0 : 1;
             this.speedVal = MovementUtils.getSpeed();
             this.lastYaw = RotationUtils.getDirectionArray()[0];
-            this.field23536 = 0;
+            this.localAirCounter = 0;
         }
     }
 
@@ -51,7 +51,7 @@ public class OldAACSpeed extends SubModule {
             if (client.player.horizontalCollision) {
                 speedVal = MovementUtils.getSpeed();
             }
-            // MovementUtil.setMotion(event, speedVal, MovementUtil.getDirectionArray()[0], this.field23535, 45.0F)
+            // MovementUtil.setMotion(event, speedVal, MovementUtil.getDirectionArray()[0], this.lastYaw, 45.0F)
             // Remake: use setMotionWithTurnLimit to preserve turning behavior
             this.lastYaw = MovementUtils.setMotionWithTurnLimit(event, speedVal, RotationUtils.getDirectionArray()[0], this.lastYaw, 45.0F);
         } else {
@@ -89,7 +89,7 @@ public class OldAACSpeed extends SubModule {
         this.lastYaw = RotationUtils.getDirectionArray()[0];
         // set jump vertical and reset air counter
         event.velocity = new net.minecraft.util.math.Vec3d(event.velocity.x, 0.4 + MovementUtils.getJumpBoost() * 0.1, event.velocity.z);
-        this.field23536 = 0;
+        this.localAirCounter = 0;
     }
 
     @Subscribe

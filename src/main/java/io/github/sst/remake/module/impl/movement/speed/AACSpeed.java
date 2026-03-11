@@ -18,10 +18,10 @@ public class AACSpeed extends SubModule {
 
     private int jumpStage = -1;
     private int speedStage = 0;
-    private int field23400 = 0; // ground/above-block counter
-    private double field23403 = 0.0; // stored Y for fluid-fix rendering
-    private double field23401 = 0.0; // internal speed accumulator
-    private double field23402 = 0.0; // internal vertical motion temporary
+    private int aboveBlockCounter = 0;
+    private double storedY = 0.0;
+    private double internalSpeed = 0.0;
+    private double verticalMotionTemp = 0.0;
 
     public AACSpeed() {
         super("AAC");
@@ -32,16 +32,15 @@ public class AACSpeed extends SubModule {
         super.onEnable();
         jumpStage = -1;
         speedStage = 0;
-        field23400 = 0;
-        field23403 = -1.0;
-        field23401 = 0.0;
-        field23402 = 0.0;
+        aboveBlockCounter = 0;
+        storedY = -1.0;
+        internalSpeed = 0.0;
+        verticalMotionTemp = 0.0;
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        // restore any modified timers or motion if necessary
         setTimer(1.0f);
     }
 
@@ -50,7 +49,7 @@ public class AACSpeed extends SubModule {
         if (event.packet instanceof net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket) {
             this.speedStage = 0;
             this.jumpStage = -1;
-            this.field23400 = 0;
+            this.aboveBlockCounter = 0;
         }
     }
     @Subscribe
@@ -63,8 +62,8 @@ public class AACSpeed extends SubModule {
         // Full AAC parity: handle Basic, Fast1 and Fast2 modes
         // Handle above-bounds (fluid-like) state similar to Rebase
         if (WorldUtils.isAboveBounds(client.player, 0.01f)) {
-            if (this.field23400 <= 1) {
-                this.field23400++;
+            if (this.aboveBlockCounter <= 1) {
+                this.aboveBlockCounter++;
             } else {
                 this.speedStage = 0;
                 this.jumpStage = -1;
@@ -120,7 +119,7 @@ public class AACSpeed extends SubModule {
     @Subscribe
     public void onJump(JumpEvent event) {
         this.jumpStage = 0;
-        this.field23400 = 0;
+            this.aboveBlockCounter = 0;
         // update speedStage counts based on mode
         String selectedMode = aacMode.value;
         switch (selectedMode) {
@@ -148,12 +147,12 @@ public class AACSpeed extends SubModule {
             if (m.equals("Fast1")) limit = 11.0f;
             if (!(this.jumpStage > limit) && this.jumpStage >= 0) {
                 double cos = Math.cos(Math.toRadians((float) this.jumpStage / limit * 180.0F - 90.0F));
-                client.player.setPosition(client.player.getX(), this.field23403 + cos, client.player.getZ());
+                client.player.setPosition(client.player.getX(), this.storedY + cos, client.player.getZ());
                 client.player.prevHorizontalSpeed = 0; // best-effort to keep camera small; no exact analogue
             }
         } else {
             client.player.setPosition(client.player.getX(), client.player.getBoundingBox().minY, client.player.getZ());
-            this.field23403 = client.player.getY();
+            this.storedY = client.player.getY();
             this.jumpStage = -1;
         }
     }
@@ -179,29 +178,29 @@ public class AACSpeed extends SubModule {
             if (var1 != 0) {
                 if (var1 != 1) {
                     if (var1 == 10 && var5) {
-                        this.field23401 = var9[var2 - 1];
+                        this.internalSpeed = var9[var2 - 1];
                     } else if (var1 == 11 && var5) {
-                        this.field23401 = var10[var2 - 1];
+                        this.internalSpeed = var10[var2 - 1];
                     } else {
-                        this.field23401 = this.field23401 - var8[var2 - 1];
+                        this.internalSpeed = this.internalSpeed - var8[var2 - 1];
                     }
                 } else {
-                    this.field23401 = var7[var2 - 1];
+                        this.internalSpeed = var7[var2 - 1];
                 }
             } else {
-                this.field23401 = var6[var2 - 1];
+                        this.internalSpeed = var6[var2 - 1];
             }
 
             if (var2 == 1 && var1 == 2) {
-                this.field23401 -= 0.002;
+                this.internalSpeed -= 0.002;
             }
 
             if (var2 == 2 && (var1 == 2 || var1 == 3)) {
-                this.field23401 -= 0.001;
+                this.internalSpeed -= 0.001;
             }
         }
 
-        return this.field23401;
+        return this.internalSpeed;
     }
 
     private double method16014(int var1) {
@@ -236,38 +235,38 @@ public class AACSpeed extends SubModule {
             if (var1 != 0) {
                 if (var1 != 1) {
                     if (var1 == 9 && var5) {
-                        this.field23401 = var9[var2 - 1];
+                        this.internalSpeed = var9[var2 - 1];
                     } else if (var1 == 10 && var5) {
-                        this.field23401 = var10[var2 - 1];
+                        this.internalSpeed = var10[var2 - 1];
                     } else if (var1 == 12 && var5) {
-                        this.field23401 = var11[var2 - 1];
+                        this.internalSpeed = var11[var2 - 1];
                     } else if (var1 == 13 && var5) {
-                        this.field23401 = var12[var2 - 1];
+                        this.internalSpeed = var12[var2 - 1];
                     } else {
-                        this.field23401 = this.field23401 - var8[var2 - 1];
+                        this.internalSpeed = this.internalSpeed - var8[var2 - 1];
                     }
                 } else {
-                    this.field23401 = var7[var2 - 1];
+                    this.internalSpeed = var7[var2 - 1];
                 }
             } else {
-                this.field23401 = var6[var2 - 1];
+                this.internalSpeed = var6[var2 - 1];
             }
 
-            if (var2 == 1) {
+                if (var2 == 1) {
                 if (var1 != 2) {
                     if (var1 == 11) {
-                        this.field23401 -= 0.003;
+                        this.internalSpeed -= 0.003;
                     }
                 } else {
-                    this.field23401 -= 0.002;
+                    this.internalSpeed -= 0.002;
                 }
             }
 
             if (var2 == 2 && (var1 == 2 || var1 == 3)) {
-                this.field23401 -= 0.001;
+                this.internalSpeed -= 0.001;
             }
         }
 
-        return this.field23401;
+        return this.internalSpeed;
     }
 }
