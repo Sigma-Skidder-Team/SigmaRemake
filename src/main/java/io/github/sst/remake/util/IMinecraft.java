@@ -17,6 +17,8 @@ public interface IMinecraft {
     }
 
     default void addChatMessage(String text) {
+        text = "&7[&6Sigma&7] &7:: &r" + text;
+        text = text.replace('&', '§');
         client.inGameHud.getChatHud().addMessage(Text.of(text));
     }
 
