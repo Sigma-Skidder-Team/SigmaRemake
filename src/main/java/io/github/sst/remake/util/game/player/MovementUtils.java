@@ -17,6 +17,10 @@ public class MovementUtils implements IMinecraft {
     public static int getJumpBoost() {
         return !client.player.hasStatusEffect(StatusEffects.JUMP_BOOST) ? 0 : client.player.getStatusEffect(StatusEffects.JUMP_BOOST).getAmplifier() + 1;
     }
+    public static int getSpeedBoost() {
+        return !client.player.hasStatusEffect(StatusEffects.SPEED) ? 0 : client.player.getStatusEffect(StatusEffects.SPEED).getAmplifier() + 1;
+    }
+
 
     public static double getJumpValue() {
         return 0.42f + (double) getJumpBoost() * 0.1;

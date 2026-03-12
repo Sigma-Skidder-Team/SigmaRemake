@@ -1,11 +1,14 @@
 package io.github.sst.remake.event.impl.game.player;
 
+import io.github.sst.remake.data.bus.State;
 import io.github.sst.remake.event.Statable;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 
 public class MotionEvent extends Statable {
     public double x, y, z;
     public final float yaw, pitch;
+    @Setter
     public boolean onGround;
     public boolean moving;
 
@@ -17,4 +20,5 @@ public class MotionEvent extends Statable {
         this.pitch = pitch;
         this.onGround = onGround;
     }
+
 }

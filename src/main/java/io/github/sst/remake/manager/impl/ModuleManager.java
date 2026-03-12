@@ -46,6 +46,7 @@ public final class ModuleManager extends Manager {
         modules.add(new CorrectMovementModule());
         modules.add(new BlockFlyModule());
         modules.add(new SafeWalkModule());
+        modules.add(new SpeedModule());
         modules.add(new AntiLevitationModule());
         modules.add(new MusicParticlesModule());
         modules.add(new NickDetectorModule());
