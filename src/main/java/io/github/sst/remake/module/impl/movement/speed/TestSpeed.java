@@ -68,7 +68,7 @@ public class TestSpeed extends SubModule {
         this.tickCounter = 0;
         if (client.player != null) {
             // Use the exposed yaw field
-            this.strafeYaw = client.player.yaw;
+            this.strafeYaw = client.player.getYaw();
         }
         if (autoJump.value) client.options.keyJump.setPressed(true);
     }

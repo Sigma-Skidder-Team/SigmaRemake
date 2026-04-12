@@ -15,6 +15,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
+import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class CoordsModule extends Module {
@@ -60,10 +61,10 @@ public class CoordsModule extends Module {
             scaleFactor *= 0.9F + EasingFunctions.easeOutBack(Math.min(1.0F, this.coordinateAnimation.calcPercent() * 7.0F), 0.0F, 1.0F, 1.0F) * 0.1F;
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(textX, (float) (textY + 10), 0.0F);
-        RenderSystem.scalef(scaleFactor, scaleFactor, 1.0F);
-        RenderSystem.translatef(-textX, (float) (-textY - 10), 0.0F);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(textX, (float) (textY + 10), 0.0F);
+        GL11.glScalef(scaleFactor, scaleFactor, 1.0F);
+        GL11.glTranslatef(-textX, (float) (-textY - 10), 0.0F);
 
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, textX, textY, coordinatesText,
                 ColorHelper.applyAlpha(-16777216, 0.5F * animationScale),
@@ -73,6 +74,6 @@ public class CoordsModule extends Module {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F * animationScale),
                 FontAlignment.CENTER, FontAlignment.LEFT);
 
-        RenderSystem.popMatrix();
+        GL11.glPopMatrix();
     }
 }

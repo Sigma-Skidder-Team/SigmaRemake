@@ -440,7 +440,11 @@ public class ChestStealerModule extends Module {
     // --- Aura: scan world for chest tile entities ---
 
     private void scanForChests() {
-        List<BlockEntity> blockEntities = new ArrayList<>(client.world.blockEntities);
+        List<BlockEntity> blockEntities = new ArrayList<>(client.world
+                .getWorldChunk(client.player.getBlockPos())
+                .getBlockEntities()
+                .values()
+        );
         blockEntities.removeIf(be -> !(be instanceof ChestBlockEntity));
 
         for (BlockEntity be : blockEntities) {

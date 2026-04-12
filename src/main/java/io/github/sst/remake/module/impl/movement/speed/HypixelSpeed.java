@@ -132,7 +132,7 @@ public class HypixelSpeed extends SubModule {
                 this.legacyDownAccum = 0.0;
                 try {
                     // send a onGround-style packet to replicate legacy CPlayerPacket(true)
-                    client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket(true));
+                    client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
                 } catch (Throwable ignored) {
                 }
             }

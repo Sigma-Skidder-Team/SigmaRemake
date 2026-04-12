@@ -37,6 +37,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 import java.awt.*;
@@ -190,7 +191,7 @@ public class NametagsModule extends Module {
     public void on3D(Render3DEvent event) {
         if (client.world == null) return;
 
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
         for (Entity entity : this.entities) {
             if (entity instanceof PlayerEntity && BotTracker.isBot((PlayerEntity) entity)) continue;
 
@@ -264,7 +265,7 @@ public class NametagsModule extends Module {
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
     private FurnaceTracker getFurnaceTrackerByWindowId(int windowId) {

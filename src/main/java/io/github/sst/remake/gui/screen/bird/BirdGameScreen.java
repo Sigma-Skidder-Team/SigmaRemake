@@ -81,7 +81,7 @@ public class BirdGameScreen extends Screen implements IMinecraft {
         super.keyPressed(keyCode);
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             ShaderUtils.resetShader();
-            client.openScreen(null);
+            client.setScreen(null);
         }
     }
 }

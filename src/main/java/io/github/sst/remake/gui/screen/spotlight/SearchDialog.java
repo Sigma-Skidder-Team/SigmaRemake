@@ -127,7 +127,7 @@ public class SearchDialog extends InteractiveWidget {
                 matches.get(0).toggle();
             }
 
-            MinecraftClient.getInstance().openScreen(null);
+            MinecraftClient.getInstance().setScreen(null);
         }
     }
 

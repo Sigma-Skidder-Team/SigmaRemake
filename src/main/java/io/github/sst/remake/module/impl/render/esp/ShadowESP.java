@@ -66,8 +66,8 @@ public class ShadowESP extends SubModule {
         getParent().renderShadowSprites();
         applyRenderMode(RenderState.OUTLINE);
 
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.0f);
-        RenderSystem.enableAlphaTest();
+        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.0f);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
 
         GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
         GL11.glEnable(GL11.GL_BLEND);
@@ -83,7 +83,7 @@ public class ShadowESP extends SubModule {
         double x = MathHelper.lerp(partialTicks, entity.lastRenderX, entity.getX());
         double y = MathHelper.lerp(partialTicks, entity.lastRenderY, entity.getY());
         double z = MathHelper.lerp(partialTicks, entity.lastRenderZ, entity.getZ());
-        float yaw = MathHelper.lerp(partialTicks, entity.prevYaw, entity.yaw);
+        float yaw = MathHelper.lerp(partialTicks, entity.prevYaw, entity.getYaw());
 
         client.worldRenderer.entityRenderDispatcher.render(entity, x - offsetX, y - offsetY, z - offsetZ, yaw, partialTicks, matrixStack, typeBuffer, 238);
     }
@@ -93,7 +93,7 @@ public class ShadowESP extends SubModule {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
+        GL13.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
         GL11.glLightModelfv(GL11.GL_LIGHT_MODEL_AMBIENT, new float[]{0.4f, 0.4f, 0.4f, 1.0f});
         currentRenderMode = RenderState.DEFAULT;
@@ -112,7 +112,7 @@ public class ShadowESP extends SubModule {
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glLightModelfv(GL11.GL_LIGHT_MODEL_AMBIENT, new float[]{red, green, blue, alpha});
 
-        RenderSystem.enableLighting();
+        GL11.glEnable(GL11.GL_LIGHTING);
 
         if (currentRenderMode == RenderState.OUTLINE) {
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
@@ -134,8 +134,8 @@ public class ShadowESP extends SubModule {
             MatrixStack matrixStack = new MatrixStack();
             boolean previousShadowState = client.options.entityShadows;
 
-            RenderSystem.disableLighting();
-            GlStateManager.color4f(0.0f, 0.0f, 1.0f, 0.5f);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glColor4f(0.0f, 0.0f, 1.0f, 0.5f);
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
             RenderSystem.enableBlend();
 

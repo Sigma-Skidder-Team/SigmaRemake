@@ -49,7 +49,7 @@ public class SmoothBlockFly extends SubModule {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
 
         targetYaw = NO_ROTATION_SENTINEL;
         targetPitch = NO_ROTATION_SENTINEL;
@@ -229,7 +229,7 @@ public class SmoothBlockFly extends SubModule {
 
         if (targetYaw == NO_ROTATION_SENTINEL) return;
 
-        if (client.player.yaw != targetYaw || client.player.pitch != targetPitch) {
+        if (client.player.getYaw() != targetYaw || client.player.getPitch() != targetPitch) {
             rotationChangeTicks = 0;
         }
 
@@ -292,7 +292,7 @@ public class SmoothBlockFly extends SubModule {
 
     private void handleCubecraftSpeed(MoveEvent event) {
         double speed = 0.2;
-        float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
+        float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.getYaw()));
 
         if (client.options.keyJump.isPressed()) {
             setTimer(1.0f);

@@ -41,14 +41,14 @@ public final class HUDManager extends Manager implements IMinecraft {
 
     @Subscribe(priority = Priority.HIGH)
     public void onRender(Render2DEvent event) {
-        RenderSystem.pushMatrix();
+        GL11.glPushMatrix();
 
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
         GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
         GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
         RenderSystem.disableDepthTest();
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, 0.0F, 1000.0F);
 
         if (client.world != null) {
             GL11.glDisable(GL11.GL_LIGHTING);
@@ -70,18 +70,18 @@ public final class HUDManager extends Manager implements IMinecraft {
             new RenderClient2DEvent().call();
         }
 
-        if (Client.INSTANCE.screenManager.currentScreen != null && client.overlay == null) {
+        if (Client.INSTANCE.screenManager.currentScreen != null && client.getOverlay() == null) {
             Client.INSTANCE.screenManager.currentScreen.draw(1.0F);
         }
 
-        RenderSystem.popMatrix();
+        GL11.glPopMatrix();
         RenderSystem.enableDepthTest();
-        RenderSystem.enableAlphaTest();
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
 
         client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
-        RenderSystem.popMatrix();
+        GL11.glPopMatrix();
     }
 
     @Subscribe
@@ -152,9 +152,9 @@ public final class HUDManager extends Manager implements IMinecraft {
             blurSwapFramebuffer.clear(true);
 
             RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-            RenderSystem.matrixMode(GL11.GL_PROJECTION);
-            RenderSystem.loadIdentity();
-            RenderSystem.ortho(
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            GL11.glLoadIdentity();
+            GL11.glOrtho(
                     0.0,
                     client.getWindow().getFramebufferWidth() / client.getWindow().getScaleFactor(),
                     client.getWindow().getFramebufferHeight() / client.getWindow().getScaleFactor(),
@@ -163,9 +163,9 @@ public final class HUDManager extends Manager implements IMinecraft {
                     3000.0
             );
 
-            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-            RenderSystem.loadIdentity();
-            RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glLoadIdentity();
+            GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
 
             GL11.glScaled(
                     1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
@@ -209,7 +209,7 @@ public final class HUDManager extends Manager implements IMinecraft {
         }
 
         GL11.glPushMatrix();
-        blurFramebuffer.beginRead();
+        blurFramebuffer.method_35610/*beginRead*/();
         blurFramebuffer.draw(
                 client.getFramebuffer().viewportWidth,
                 client.getFramebuffer().viewportHeight
@@ -217,9 +217,9 @@ public final class HUDManager extends Manager implements IMinecraft {
         GL11.glPopMatrix();
 
         RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-        RenderSystem.matrixMode(GL11.GL_PROJECTION);
-        RenderSystem.loadIdentity();
-        RenderSystem.ortho(
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(
                 0.0,
                 client.getWindow().getFramebufferWidth() / client.getWindow().getScaleFactor(),
                 client.getWindow().getFramebufferHeight() / client.getWindow().getScaleFactor(),
@@ -228,9 +228,9 @@ public final class HUDManager extends Manager implements IMinecraft {
                 3000.0
         );
 
-        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-        RenderSystem.loadIdentity();
-        RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
 
         GL11.glScaled(
                 1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,

@@ -124,7 +124,7 @@ public class MineplexSpeed extends SubModule {
 
         // send held-item change packet if necessary to mirror legacy behavior
         try {
-            int current = client.player.inventory.selectedSlot;
+            int current = client.player.getInventory().selectedSlot;
             if (current != this.lastSelectedSlot) {
                 client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(current));
                 this.lastSelectedSlot = current;

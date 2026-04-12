@@ -12,6 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -26,9 +27,8 @@ public abstract class MixinLivingEntity extends Entity {
     @Redirect(
             method = "turnHead(FF)F",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/entity/LivingEntity;yaw:F",
-                    opcode = Opcodes.GETFIELD,
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;getYaw()F",
                     ordinal = 0
             )
     )
@@ -39,9 +39,8 @@ public abstract class MixinLivingEntity extends Entity {
     @Redirect(
             method = "turnHead(FF)F",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/entity/LivingEntity;yaw:F",
-                    opcode = Opcodes.GETFIELD,
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;getYaw()F",
                     ordinal = 1
             )
     )
@@ -49,11 +48,12 @@ public abstract class MixinLivingEntity extends Entity {
         return getTurnHeadYaw(instance);
     }
 
+    @Unique
     private float getTurnHeadYaw(Entity instance) {
         if (instance == MinecraftClient.getInstance().player) {
             return RotationTracker.yaw;
         }
-        return instance.yaw;
+        return instance.getYaw();
     }
 
     @Inject(method = "jump", at = @At("HEAD"), cancellable = true)
@@ -68,7 +68,7 @@ public abstract class MixinLivingEntity extends Entity {
         Vec3d current = self.getVelocity();
         Vec3d jumpVec = new Vec3d(current.x, (double) f, current.z);
 
-        JumpEvent event = new JumpEvent(self, jumpVec, self.yaw);
+        JumpEvent event = new JumpEvent(self, jumpVec, self.getYaw());
         event.call();
 
         if (event.cancelled) {

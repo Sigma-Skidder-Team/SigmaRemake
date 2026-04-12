@@ -23,7 +23,7 @@ public class FastBowModule extends Module {
         if (!client.player.isOnGround() || !client.player.isUsingItem()) return;
 
         for (int i = 0; i < 25; i++) {
-            client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket(true));
+            client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
         }
 
         client.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, Direction.DOWN));

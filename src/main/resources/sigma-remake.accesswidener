@@ -4,11 +4,9 @@ accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String
 
 accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
 
-accessible field net/minecraft/client/gui/screen/SplashScreen reload Lnet/minecraft/resource/ResourceReload;
-accessible field net/minecraft/client/gui/screen/SplashScreen exceptionHandler Ljava/util/function/Consumer;
-accessible field net/minecraft/client/gui/screen/SplashScreen reloading Z
-
-accessible method net/minecraft/client/gui/screen/Screen addButton (Lnet/minecraft/client/gui/widget/ClickableWidget;)Lnet/minecraft/client/gui/widget/ClickableWidget;
+accessible field net/minecraft/client/gui/screen/SplashOverlay reload Lnet/minecraft/resource/ResourceReload;
+accessible field net/minecraft/client/gui/screen/SplashOverlay exceptionHandler Ljava/util/function/Consumer;
+accessible field net/minecraft/client/gui/screen/SplashOverlay reloading Z
 
 accessible method net/minecraft/client/render/GameRenderer loadShader (Lnet/minecraft/util/Identifier;)V
 accessible field net/minecraft/client/gl/ShaderEffect passes Ljava/util/List;
@@ -75,3 +73,5 @@ accessible method net/minecraft/entity/Entity setFlag (IZ)V
 accessible field net/minecraft/client/render/BufferBuilderStorage entityBuilders Ljava/util/SortedMap;
 
 accessible field net/minecraft/client/render/WorldRenderer entityRenderDispatcher Lnet/minecraft/client/render/entity/EntityRenderDispatcher;
+accessible field net/minecraft/client/MinecraftClient overlay Lnet/minecraft/client/gui/screen/Overlay;
+mutable field net/minecraft/client/MinecraftClient overlay Lnet/minecraft/client/gui/screen/Overlay;

@@ -61,7 +61,7 @@ public class BasicBlockFly extends SubModule  {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
         targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
 

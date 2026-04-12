@@ -149,7 +149,7 @@ public final class BindManager extends Manager implements IMinecraft {
                                         .getDeclaredConstructor(Text.class)
                                         .newInstance(new LiteralText((ScreenUtils.screenToScreenName.get(bind.getScreenTarget()))));
                                 if (ScreenUtils.hasReplacement(sigmaScreen)) {
-                                    client.openScreen(sigmaScreen);
+                                    client.setScreen(sigmaScreen);
                                 }
                             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |
                                      NoSuchMethodException | SecurityException | InstantiationException e) {

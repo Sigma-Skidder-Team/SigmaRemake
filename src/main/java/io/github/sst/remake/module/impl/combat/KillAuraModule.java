@@ -193,8 +193,8 @@ public class KillAuraModule extends Module {
                 break;
 
             case "LockView":
-                client.player.pitch = rotations.pitch;
-                client.player.yaw = rotations.yaw;
+                client.player.setPitch(rotations.pitch);
+                client.player.setYaw(rotations.yaw);
                 event.yaw = rotations.yaw;
                 event.pitch = rotations.pitch;
                 break;
@@ -298,7 +298,7 @@ public class KillAuraModule extends Module {
                     break;
 
                 case "Angle":
-                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.yaw);
+                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.getYaw());
                     double distSq = livingEntity.squaredDistanceTo(client.player);
                     metric = angle * 1_000_000.0 + distSq;
                     break;

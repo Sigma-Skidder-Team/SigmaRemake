@@ -108,7 +108,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
         float deltaX = offsetY - (float) this.backgroundParallaxY;
         float deltaY = (float) (offsetX - this.backgroundParallaxX);
-        if (client.overlay != null) {
+        if (client.getOverlay() != null) {
             if (offsetY != (float) this.backgroundParallaxY) {
                 this.backgroundParallaxY = (int) ((float) this.backgroundParallaxY + deltaX * deltaTime);
             }

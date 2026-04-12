@@ -22,6 +22,7 @@ import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
+import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,7 @@ public class WaypointsModule extends Module {
             }
         }
 
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        GL13.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
     private List<Waypoint> collectAndSortWaypointsByDistance() {

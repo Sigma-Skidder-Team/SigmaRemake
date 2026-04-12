@@ -36,8 +36,8 @@ public class BoxOutlineESP extends SubModule {
         renderBox(false);
         StencilUtils.configureStencilTest(StencilUtils.RenderShapeMode.OUTLINE);
         GL11.glLineWidth(3.0f);
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.0F);
-        RenderSystem.enableAlphaTest();
+        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.0F);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         getParent().renderShadowSprites();
 
         GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
@@ -54,7 +54,7 @@ public class BoxOutlineESP extends SubModule {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
+        GL13.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
     }
 

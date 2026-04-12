@@ -39,7 +39,7 @@ public class OptionsScreen extends Screen {
         if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS
                 && openCloseAnimation.calcPercent() == 0.0F
                 && returnScreen != null) {
-            MinecraftClient.getInstance().openScreen(returnScreen);
+            MinecraftClient.getInstance().setScreen(returnScreen);
         }
 
         super.updatePanelDimensions(mouseX, mouseY);
@@ -84,7 +84,7 @@ public class OptionsScreen extends Screen {
         super.keyPressed(keyCode);
 
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            MinecraftClient.getInstance().openScreen(null);
+            MinecraftClient.getInstance().setScreen(null);
         }
     }
 }

@@ -5,8 +5,6 @@
   "mixins": [
     "MixinClientConnection",
     "MixinClientStatusC2SPacketMode",
-    "MixinConfirmScreenActionC2SPacket",
-    "MixinConfirmScreenActionS2CPacket",
     "MixinEntity",
     "MixinLivingEntity",
     "MixinPlayerEntity"
@@ -21,7 +19,6 @@
     "MixinClientBrandRetriever",
     "MixinClientPlayerEntity",
     "MixinClientPlayerEntityCommand",
-    "MixinClientPlayNetworkHandler",
     "MixinCommandSuggestor",
     "MixinEntityRenderer",
     "MixinGameRenderer",
