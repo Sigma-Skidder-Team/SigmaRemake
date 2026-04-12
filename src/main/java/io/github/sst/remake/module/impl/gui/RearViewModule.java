@@ -1,5 +1,6 @@
 package io.github.sst.remake.module.impl.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
@@ -248,7 +249,7 @@ public class RearViewModule extends Module {
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
         RenderSystem.enableColorMaterial();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         source.beginRead();
 

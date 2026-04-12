@@ -135,7 +135,7 @@ public class ShadowESP extends SubModule {
             boolean previousShadowState = client.options.entityShadows;
 
             RenderSystem.disableLighting();
-            RenderSystem.color4f(0.0f, 0.0f, 1.0f, 0.5f);
+            GlStateManager.color4f(0.0f, 0.0f, 1.0f, 0.5f);
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
             RenderSystem.enableBlend();
 
