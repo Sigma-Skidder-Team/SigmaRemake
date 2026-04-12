@@ -52,7 +52,7 @@ public class HypixelBlockFly extends SubModule {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
         targetYaw = targetPitch = NO_ROTATION_SENTINEL;
         getParent().lastSpoofedSlot = -1;
         if (client.options.keySneak.isPressed() && getParent().downwards.value) {
@@ -161,7 +161,7 @@ public class HypixelBlockFly extends SubModule {
                 break;
             case "Cubecraft":
                 double speed = 0.2;
-                float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
+                float dir = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.getYaw()));
 
                 if (client.options.keyJump.isPressed()) {
                     setTimer(1.0f);
@@ -290,7 +290,7 @@ public class HypixelBlockFly extends SubModule {
                         - (pendingPlace.blockPos.getZ() + 0.5 + pendingPlace.direction.getOffsetZ() / 2.0);
                 double dist = Math.hypot(dx, dz);
                 if (dist < 2.0) {
-                    rotations.yaw = client.player.yaw + 1.0f;
+                    rotations.yaw = client.player.getYaw() + 1.0f;
                     rotations.pitch = 90.0f;
                 }
             }
@@ -298,7 +298,7 @@ public class HypixelBlockFly extends SubModule {
             targetPitch = rotations.pitch;
         } else {
             if (getParent().keepRotations.value && targetPitch != NO_ROTATION_SENTINEL) {
-                targetYaw = client.player.yaw + 1.0f;
+                targetYaw = client.player.getYaw() + 1.0f;
                 targetPitch = 90.0f;
             } else {
                 targetYaw = NO_ROTATION_SENTINEL;
@@ -310,7 +310,7 @@ public class HypixelBlockFly extends SubModule {
             return;
         }
 
-        if (client.player.yaw != targetYaw && client.player.pitch != targetPitch) {
+        if (client.player.getYaw() != targetYaw && client.player.getPitch() != targetPitch) {
             rotationChangeTicks = 0;
         }
 

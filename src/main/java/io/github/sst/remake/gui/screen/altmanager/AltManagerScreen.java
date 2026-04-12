@@ -392,7 +392,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     @Override
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) client.openScreen(new TitleScreen());
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) client.setScreen(new TitleScreen());
     }
 
     @Override

@@ -76,7 +76,7 @@ public class CreditsScreen extends Screen {
     public void keyPressed(int keyCode) {
         super.keyPressed(keyCode);
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            MinecraftClient.getInstance().openScreen(new OptionsHolder());
+            MinecraftClient.getInstance().setScreen(new OptionsHolder());
         }
     }
 }

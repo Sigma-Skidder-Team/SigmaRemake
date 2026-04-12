@@ -41,7 +41,7 @@ public class TellyBlockFly extends SubModule {
     public void onEnable() {
         if (client.player == null) return;
 
-        originalHotbarSlot = client.player.inventory.selectedSlot;
+        originalHotbarSlot = client.player.getInventory().selectedSlot;
 
         targetYaw = NO_ROTATION_SENTINEL;
         targetPitch = NO_ROTATION_SENTINEL;

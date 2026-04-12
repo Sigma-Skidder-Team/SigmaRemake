@@ -66,7 +66,7 @@ public class RotationUtils implements IMinecraft {
         float targetPitch = (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
 
         return new Rotation(
-                client.player.yaw + normalizeYaw(targetYaw - client.player.yaw),
+                client.player.getYaw() + normalizeYaw(targetYaw - client.player.getYaw()),
                 normalizePitch(targetPitch)
         );
     }
@@ -95,12 +95,12 @@ public class RotationUtils implements IMinecraft {
                 double dist = Math.hypot(dX, dZ);
 
                 float yaw = clamp(
-                        client.player.yaw,
+                        client.player.getYaw(),
                         (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0f,
                         360f
                 );
                 float pitch = clamp(
-                        client.player.pitch,
+                        client.player.getPitch(),
                         (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI)),
                         360.0f
                 );
@@ -161,12 +161,12 @@ public class RotationUtils implements IMinecraft {
                     dist = Math.hypot(dX, dZ);
 
                     yaw = clamp(
-                            client.player.yaw,
+                            client.player.getYaw(),
                             (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0f,
                             360.0f
                     );
                     pitch = clamp(
-                            client.player.pitch,
+                            client.player.getPitch(),
                             (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI)),
                             360.0f
                     );
@@ -200,12 +200,12 @@ public class RotationUtils implements IMinecraft {
         double dist = Math.hypot(dX, dZ);
 
         float yaw = clamp(
-                client.player.yaw,
+                client.player.getYaw(),
                 (float) (Math.atan2(dZ, dX) * 180.0 / Math.PI) - 90.0F,
                 360.0F
         );
         float pitch = clamp(
-                client.player.pitch,
+                client.player.getPitch(),
                 (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI)),
                 360.0F
         );
@@ -226,7 +226,7 @@ public class RotationUtils implements IMinecraft {
                 360.0f
         );
         float pitch = clamp(
-                client.player.pitch,
+                client.player.getPitch(),
                 (float) (-(Math.atan2(dY, horizontalDistance) * 180.0 / Math.PI)),
                 360.0f
         );
@@ -296,7 +296,7 @@ public class RotationUtils implements IMinecraft {
     public static float getMovementDirectionYaw() {
         float forward = client.player.forwardSpeed;
         float strafe = client.player.sidewaysSpeed;
-        float yaw = client.player.yaw + 90.0f;
+        float yaw = client.player.getYaw() + 90.0f;
 
         if (forward > 0.0f && client.options.keyBack.isPressed()) {
             forward = -1.0f;
@@ -357,7 +357,7 @@ public class RotationUtils implements IMinecraft {
     }
 
     public static float getDirectionYaw() {
-        return getDirectionYaw(client.player.input.movementForward, client.player.input.movementSideways, client.player.yaw);
+        return getDirectionYaw(client.player.input.movementForward, client.player.input.movementSideways, client.player.getYaw());
     }
 
     public static float getDirectionYaw(float yaw) {
@@ -411,7 +411,7 @@ public class RotationUtils implements IMinecraft {
     }
 
     public static float[] getDirectionArray(float forward, float strafe) {
-        float yaw = client.player.yaw + 90.0f;
+        float yaw = client.player.getYaw() + 90.0f;
 
         if (forward != 0.0f) {
             if (!(strafe >= 1.0f)) {
@@ -464,7 +464,7 @@ public class RotationUtils implements IMinecraft {
         float targetPitch =
                 (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
 
-        return new Rotation(client.player.yaw + normalizeYaw(targetYaw - client.player.yaw), normalizePitch(targetPitch));
+        return new Rotation(client.player.getYaw() + normalizeYaw(targetYaw - client.player.getYaw()), normalizePitch(targetPitch));
     }
 
     public static Rotation getBlockPlacementRotations(BlockPos blockPos, Direction face) {
@@ -503,7 +503,7 @@ public class RotationUtils implements IMinecraft {
         float pitch = (float) (-(Math.atan2(dY, dist) * 180.0 / Math.PI));
 
         return new Rotation(
-                client.player.yaw + normalizeYaw(yaw - client.player.yaw),
+                client.player.getYaw() + normalizeYaw(yaw - client.player.getYaw()),
                 normalizePitch(pitch)
         );
     }

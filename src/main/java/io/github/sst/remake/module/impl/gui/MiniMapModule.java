@@ -70,7 +70,7 @@ public class MiniMapModule extends Module {
         while (iterator.hasNext()) {
             ChunkColorCache cache = iterator.next();
             int distance = cache.chunk.getPos()
-                    .method_24022(new ChunkPos(client.player.chunkX, client.player.chunkZ));
+                    .getChebyshevDistance(client.player.getChunkPos());
             if (distance > 7) {
                 iterator.remove();
             }
@@ -105,9 +105,9 @@ public class MiniMapModule extends Module {
         }
 
         playerChunkOffsetX =
-                (client.player.getX() - client.player.chunkX * 16.0) / 16.0;
+                (client.player.getX() - client.player.getChunkPos().x * 16.0) / 16.0;
         playerChunkOffsetZ =
-                (client.player.getZ() - client.player.chunkZ * 16.0) / 16.0;
+                (client.player.getZ() - client.player.getChunkPos().z * 16.0) / 16.0;
 
         minimapBuffer = buildMinimapBuffer();
     }
@@ -138,7 +138,7 @@ public class MiniMapModule extends Module {
         float offsetY = (float) (-chunkPixelSize * scale * playerChunkOffsetX);
 
         GL11.glTranslatef(mapX + mapSize / 2.0F, yOffset + mapSize / 2.0F, 0.0F);
-        GL11.glRotatef(90.0F - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(90.0F - client.player.getYaw(), 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-mapSize / 2.0F, -mapSize / 2.0F, 0.0F);
 
         float scaledWidth = mapSize * scale;
@@ -171,7 +171,7 @@ public class MiniMapModule extends Module {
 
         GL11.glPushMatrix();
         GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);
-        GL11.glRotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(direction - client.player.getYaw(), 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
 
         TrueTypeFont font = FontUtils.HELVETICA_MEDIUM_20;
@@ -188,7 +188,7 @@ public class MiniMapModule extends Module {
 
         GL11.glPushMatrix();
         GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F, 0.0F);
-        GL11.glRotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(direction - client.player.getYaw(), 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
 
         RenderUtils.drawString(
@@ -210,7 +210,7 @@ public class MiniMapModule extends Module {
         List<WorldChunk> chunks = new ArrayList<>();
         for (int x = -mapChunkRadius / 2; x < mapChunkRadius / 2; x++) {
             for (int z = -mapChunkRadius / 2; z < mapChunkRadius / 2; z++) {
-                chunks.add(client.world.getChunk(client.player.chunkX + x, client.player.chunkZ + z));
+                chunks.add(client.world.getChunk(client.player.getChunkPos().x + x, client.player.getChunkPos().z + z));
             }
         }
         return chunks;

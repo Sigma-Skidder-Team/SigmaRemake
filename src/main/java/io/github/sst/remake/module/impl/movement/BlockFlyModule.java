@@ -208,11 +208,11 @@ public class BlockFlyModule extends Module {
                 continue;
             }
 
-            if (client.player.inventory.selectedSlot == hotbarIndex) {
+            if (client.player.getInventory().selectedSlot == hotbarIndex) {
                 return;
             }
 
-            client.player.inventory.selectedSlot = hotbarIndex;
+            client.player.getInventory().selectedSlot = hotbarIndex;
 
             if (itemSpoofMode.value.equals("LiteSpoof")
                     && (lastSpoofedSlot < 0 || lastSpoofedSlot != hotbarIndex)) {
@@ -383,11 +383,11 @@ public class BlockFlyModule extends Module {
 
     public void handleDisableSlotSpoof(int originalHotbarSlot) {
         if (originalHotbarSlot != -1 && itemSpoofMode.value.equals("Switch")) {
-            client.player.inventory.selectedSlot = originalHotbarSlot;
+            client.player.getInventory().selectedSlot = originalHotbarSlot;
         }
 
         if (lastSpoofedSlot >= 0) {
-            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.inventory.selectedSlot));
+            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(client.player.getInventory().selectedSlot));
             lastSpoofedSlot = -1;
         }
     }
@@ -410,7 +410,7 @@ public class BlockFlyModule extends Module {
     }
 
     public void spoofAndPlace(HitResult result) {
-        int previousSlot = client.player.inventory.selectedSlot;
+        int previousSlot = client.player.getInventory().selectedSlot;
         if (!itemSpoofMode.value.equals("None")) {
             selectPlaceableHotbarSlot();
         }
@@ -419,12 +419,12 @@ public class BlockFlyModule extends Module {
 
         String spoofMode = itemSpoofMode.value;
         if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = previousSlot;
+            client.player.getInventory().selectedSlot = previousSlot;
         }
     }
 
     public void interactBlockWithSpoofing(Hand hand, BlockHitResult hit) {
-        int previousSlot = client.player.inventory.selectedSlot;
+        int previousSlot = client.player.getInventory().selectedSlot;
         if (!itemSpoofMode.value.equals("None")) {
             selectPlaceableHotbarSlot();
         }
@@ -433,7 +433,7 @@ public class BlockFlyModule extends Module {
 
         String spoofMode = itemSpoofMode.value;
         if (spoofMode.equals("Spoof") || spoofMode.equals("LiteSpoof")) {
-            client.player.inventory.selectedSlot = previousSlot;
+            client.player.getInventory().selectedSlot = previousSlot;
         }
     }
 

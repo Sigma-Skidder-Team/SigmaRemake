@@ -78,8 +78,8 @@ public class AimbotModule extends Module {
 
         switch (rotationMode.value) {
             default:
-                client.player.yaw = rotations.yaw;
-                client.player.pitch = rotations.pitch;
+                client.player.setYaw(rotations.yaw);
+                client.player.setYaw(rotations.pitch);
                 break;
         }
     }
@@ -163,7 +163,7 @@ public class AimbotModule extends Module {
                     break;
 
                 case "Angle":
-                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.yaw);
+                    double angle = RotationUtils.getAngleMetricToEntity(livingEntity, client.player.getYaw());
                     double distSq = livingEntity.squaredDistanceTo(client.player);
                     metric = angle * 1_000_000.0 + distSq;
                     break;

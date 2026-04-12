@@ -49,7 +49,7 @@ public class CorrectMovementModule extends Module {
         final float forward = event.forward;
         final float strafe = event.strafe;
 
-        final double angle = RotationUtils.normalizeYaw(Math.toDegrees(RotationUtils.getDirectionRadians(client.player.yaw, forward, strafe)));
+        final double angle = RotationUtils.normalizeYaw(Math.toDegrees(RotationUtils.getDirectionRadians(client.player.getYaw(), forward, strafe)));
 
         if (forward == 0 && strafe == 0) {
             return;
