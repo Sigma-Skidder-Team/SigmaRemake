@@ -1,6 +1,7 @@
 package io.github.sst.remake.gui.screen.clickgui.math;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import io.github.sst.remake.util.porting.StateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
@@ -134,7 +135,7 @@ public class BezierCurve extends InteractiveWidget {
 
         GL11.glEnable(2848);
 
-        GL11.glBegin(3); // GL_LINE_STRIP
+        GL11.glBegin(GL11.GL_LINE_STRIP); // GL_LINE_STRIP
         GL11.glVertex2f(0.0F, usableHeight);
 
         for (Vector2d p : sampledCurve) {

@@ -1,6 +1,7 @@
 package io.github.sst.remake.module.impl.render.esp;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import io.github.sst.remake.util.porting.StateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.render.HasLabelEvent;
@@ -8,11 +9,6 @@ import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.render.RenderEntityEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.render.ESPModule;
-import io.github.sst.remake.util.game.world.EntityUtils;
-import io.github.sst.remake.util.math.color.ClientColors;
-import io.github.sst.remake.util.math.color.ColorHelper;
-import io.github.sst.remake.util.render.RenderUtils;
-import io.github.sst.remake.util.render.image.Resources;
 import io.github.sst.remake.util.render.shader.StencilUtils;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;

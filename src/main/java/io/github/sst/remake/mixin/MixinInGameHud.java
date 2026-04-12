@@ -1,6 +1,7 @@
 package io.github.sst.remake.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import io.github.sst.remake.util.porting.StateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.event.impl.game.render.RenderHudEvent;

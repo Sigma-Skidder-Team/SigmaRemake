@@ -1,6 +1,8 @@
 plugins {
 	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
+//	nvm too lazy to make openrewrite recipes
+//	id("org.openrewrite.rewrite") version "7.23.0"
 }
 
 version = project.mod_version
@@ -17,6 +19,10 @@ repositories {
 loom {
     accessWidenerPath = file("src/main/resources/sigma-remake.accesswidener")
 }
+
+//rewrite {
+//
+//}
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

@@ -1,6 +1,6 @@
 package io.github.sst.remake.module.impl.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
@@ -82,7 +82,7 @@ public class ActiveModsModule extends Module {
         if (client.world == null) return;
 
         if (event.post) {
-            GlStateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F);
+            StateManager.translatef(0.0F, (float) (-this.totalHeight), 0.0F);
             return;
         }
 
@@ -105,7 +105,7 @@ public class ActiveModsModule extends Module {
             this.totalHeight = 0;
         } else {
             this.totalHeight = (y - windowCenterY) / 2;
-            GlStateManager.translatef(0.0F, (float) this.totalHeight, 0.0F);
+            StateManager.translatef(0.0F, (float) this.totalHeight, 0.0F);
         }
     }
 

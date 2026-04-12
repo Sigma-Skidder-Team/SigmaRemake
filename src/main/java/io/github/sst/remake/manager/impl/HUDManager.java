@@ -2,6 +2,7 @@ package io.github.sst.remake.manager.impl;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.platform.GlStateManager;
+import io.github.sst.remake.util.porting.StateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Priority;
@@ -20,13 +21,10 @@ import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderEffect;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.texture.Texture;
 
 import java.io.IOException;
 
