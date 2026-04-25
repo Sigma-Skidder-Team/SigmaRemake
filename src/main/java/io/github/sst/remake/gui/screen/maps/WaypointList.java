@@ -146,7 +146,7 @@ public class WaypointList extends ScrollablePanel {
         int currentY = 0;
 
         for (WaypointRow row : this.waypointRows) {
-            if (!row.isDragging() && row.deleteSlideAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            if (!row.isDragging() && row.deleteSlideAnimation.direction == AnimationUtils.Direction.FORWARDS) {
                 row.targetY = currentY + ROW_TOP_PADDING;
             } else {
                 row.targetY = row.getY();

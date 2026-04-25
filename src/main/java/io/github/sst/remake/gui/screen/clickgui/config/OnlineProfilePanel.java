@@ -121,7 +121,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
     @Override
     public void draw(float partialTicks) {
         float heightPercent = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.1, 0.81, 0.14, 1.0);
-        if (this.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.expandAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             heightPercent = VecUtils.interpolate(this.expandAnimation.calcPercent(), 0.61, 0.01, 0.87, 0.16);
         }
 

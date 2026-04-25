@@ -46,7 +46,7 @@ public class WaypointRow extends InteractiveWidget {
         boolean canDragNow = this.isDragging() || mouseX > this.getAbsoluteX() + this.getWidth() - 62;
         this.setDraggable(canDragNow);
 
-        if (this.deleteSlideAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (this.deleteSlideAnimation.direction == AnimationUtils.Direction.BACKWARDS) {
             this.setDraggable(false);
 
             this.setX(Math.round(

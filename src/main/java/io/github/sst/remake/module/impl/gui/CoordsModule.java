@@ -34,7 +34,7 @@ public class CoordsModule extends Module {
 
         boolean shouldAnimate = hasMoved || (!client.player.isOnGround()) || client.player.isSneaking();
         if (!shouldAnimate) {
-            if (this.coordinateAnimation.calcPercent() == 1.0F && this.coordinateAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (this.coordinateAnimation.calcPercent() == 1.0F && this.coordinateAnimation.direction == AnimationUtils.Direction.BACKWARDS) {
                 this.coordinateAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
             }
         } else {
@@ -54,7 +54,7 @@ public class CoordsModule extends Module {
         float textWidth = (float) FontUtils.HELVETICA_LIGHT_18.getWidth(coordinatesText);
         float scaleFactor = Math.min(1.0F, maxTextWidth / textWidth);
 
-        if (this.coordinateAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
+        if (this.coordinateAnimation.direction != AnimationUtils.Direction.BACKWARDS) {
             scaleFactor *= 0.9F + QuadraticEasing.easeInQuad(Math.min(1.0F, this.coordinateAnimation.calcPercent() * 8.0F), 0.0F, 1.0F, 1.0F) * 0.1F;
         } else {
             scaleFactor *= 0.9F + EasingFunctions.easeOutBack(Math.min(1.0F, this.coordinateAnimation.calcPercent() * 7.0F), 0.0F, 1.0F, 1.0F) * 0.1F;

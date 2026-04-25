@@ -107,13 +107,13 @@ public class ProfileScreen extends InteractiveWidget {
     public void close() {
         this.onlineProfilePanel.expandAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
 
-        if (this.openAnimation.getDirection() != AnimationUtils.Direction.FORWARDS) {
+        if (this.openAnimation.direction != AnimationUtils.Direction.FORWARDS) {
             this.openAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
         }
     }
 
     public boolean isClosed() {
-        return this.openAnimation.getDirection() == AnimationUtils.Direction.FORWARDS
+        return this.openAnimation.direction == AnimationUtils.Direction.FORWARDS
                 && this.openAnimation.calcPercent() == 0.0F;
     }
 
@@ -182,7 +182,7 @@ public class ProfileScreen extends InteractiveWidget {
         this.updatePositions();
 
         float scale = VecUtils.interpolate(openPercent, 0.37, 1.48, 0.17, 0.99);
-        if (this.openAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.openAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             scale = VecUtils.interpolate(openPercent, 0.38, 0.73, 0.0, 1.0);
         }
 
@@ -226,7 +226,7 @@ public class ProfileScreen extends InteractiveWidget {
 
         float onlinePanelPercent = this.onlineProfilePanel.expandAnimation.calcPercent();
         float listScale = 0.9F + (1.0F - VecUtils.interpolate(onlinePanelPercent, 0.0, 0.96, 0.69, 0.99)) * 0.1F;
-        if (this.onlineProfilePanel.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.onlineProfilePanel.expandAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             listScale = 0.9F + (1.0F - VecUtils.interpolate(onlinePanelPercent, 0.61, 0.01, 0.87, 0.16)) * 0.1F;
         }
 

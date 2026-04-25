@@ -36,7 +36,7 @@ public class OptionsScreen extends Screen {
 
     @Override
     public void updatePanelDimensions(int mouseX, int mouseY) {
-        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS
+        if (openCloseAnimation.direction == AnimationUtils.Direction.FORWARDS
                 && openCloseAnimation.calcPercent() == 0.0F
                 && returnScreen != null) {
             MinecraftClient.getInstance().openScreen(returnScreen);
@@ -50,7 +50,7 @@ public class OptionsScreen extends Screen {
         float scale = 1.3F - EasingFunctions.easeOutBack(openCloseAnimation.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
         float blend = 1.0F;
 
-        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (openCloseAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             scale = 0.7F + QuadraticEasing.easeOutQuad(openCloseAnimation.calcPercent(), 0.0F, 1.0F, 1.0F) * 0.3F;
             blend = openCloseAnimation.calcPercent();
         }

@@ -181,7 +181,7 @@ public class ProfileListEntry extends Widget {
         partialTicks *= 1.0F - this.deleteAnimation.calcPercent();
 
         float slidePercent = VecUtils.interpolate(this.slideAnimation.calcPercent(), 0.28, 1.26, 0.33, 1.04);
-        if (this.slideAnimation.getDirection().equals(AnimationUtils.Direction.FORWARDS)) {
+        if (this.slideAnimation.direction.equals(AnimationUtils.Direction.FORWARDS)) {
             slidePercent = AnimationUtils.easeInCubic(this.slideAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -192,7 +192,7 @@ public class ProfileListEntry extends Widget {
         ScissorUtils.startScissor(this);
 
         float pressedExtra = this.isMouseDownOverComponent()
-                && this.slideAnimation.getDirection().equals(AnimationUtils.Direction.FORWARDS)
+                && this.slideAnimation.direction.equals(AnimationUtils.Direction.FORWARDS)
                 ? 0.03F
                 : 0.0F;
 

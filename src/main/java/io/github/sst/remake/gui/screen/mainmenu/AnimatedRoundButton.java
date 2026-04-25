@@ -56,7 +56,7 @@ public class AnimatedRoundButton extends Image {
         final float pressedBlend = this.isMouseDownOverComponent() ? 0.1F : 0.0F;
 
         float expandFactor = getHoverExpandFactor();
-        if (this.hoverAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.hoverAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             expandFactor = getUnhoverExpandFactor();
         }
 

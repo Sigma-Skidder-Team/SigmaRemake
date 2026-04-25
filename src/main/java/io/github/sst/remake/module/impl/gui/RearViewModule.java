@@ -113,7 +113,7 @@ public class RearViewModule extends Module {
             return;
         }
 
-        if (visibilityAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
+        if (visibilityAnimation.direction != AnimationUtils.Direction.BACKWARDS) {
             yOffset = (int) ((float) yOffset * VecUtils.interpolate(anim, 0.49, 0.59, 0.16, 1.04));
         } else {
             yOffset = (int) ((float) yOffset * VecUtils.interpolate(anim, 0.3, 0.88, 0.47, 1.0));

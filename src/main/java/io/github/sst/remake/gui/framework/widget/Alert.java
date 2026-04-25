@@ -246,7 +246,7 @@ public class Alert extends InteractiveWidget {
     }
 
     public float calcOpenScale(float progress, float period) {
-        return this.openCloseAnimation.getDirection() != AnimationUtils.Direction.FORWARDS
+        return this.openCloseAnimation.direction != AnimationUtils.Direction.FORWARDS
                 ? (float) (Math.pow(2.0, -10.0F * progress)
                 * Math.sin((double) (progress - period / 4.0F) * (Math.PI * 2) / (double) period) + 1.0)
                 : 0.5F + QuadraticEasing.easeOutQuad(progress, 0.0F, 1.0F, 1.0F) * 0.5F;

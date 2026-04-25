@@ -106,7 +106,7 @@ public class ChangelogPage extends GuiComponent {
 
         float fadeFactor = VecUtils.interpolate(this.pageAnimation.calcPercent(), 0.17f, 1.0f, 0.51f, 1.0f);
 
-        if (this.pageAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.pageAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             fadeFactor = 1.0f;
         }
 

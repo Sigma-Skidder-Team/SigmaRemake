@@ -88,7 +88,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
     @Override
     public void draw(float partialTicks) {
         float transitionProgress = AnimationUtils.easeOutCubic(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.changelogTransitionAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.changelogTransitionAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             transitionProgress = AnimationUtils.easeInCubic(this.changelogTransitionAnimation.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -210,7 +210,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                 }
             }
 
-            if (this.goodbyeAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+            if (this.goodbyeAnimation.direction == AnimationUtils.Direction.BACKWARDS) {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_50,
                         (float) (this.width / 2),

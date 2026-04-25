@@ -118,7 +118,7 @@ public class Dropdown extends InteractiveWidget {
         float percent = this.expandAnimation.calcPercent();
         float progress = AnimationUtils.easeOutCubic(percent, 0.0F, 1.0F, 1.0F);
 
-        if (this.expandAnimation.getDirection() != AnimationUtils.Direction.BACKWARDS) {
+        if (this.expandAnimation.direction != AnimationUtils.Direction.BACKWARDS) {
             progress = QuadraticEasing.easeInQuad(percent, 0.0F, 1.0F, 1.0F);
         }
 
@@ -129,7 +129,7 @@ public class Dropdown extends InteractiveWidget {
     public void updatePanelDimensions(int mouseX, int mouseY) {
         super.updatePanelDimensions(mouseX, mouseY);
 
-        if (!this.isMouseOverComponent(mouseX, mouseY) && this.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS) {
+        if (!this.isMouseOverComponent(mouseX, mouseY) && this.expandAnimation.direction == AnimationUtils.Direction.BACKWARDS) {
             this.setExpanded(false);
         }
 
@@ -137,13 +137,13 @@ public class Dropdown extends InteractiveWidget {
         boolean isMouseInBounds = mouseX - this.getAbsoluteX() < this.getWidth();
 
         if (hoveredOptionIndex >= 0 && hoveredOptionIndex < this.options.size()
-                && this.expandAnimation.getDirection() == AnimationUtils.Direction.BACKWARDS
+                && this.expandAnimation.direction == AnimationUtils.Direction.BACKWARDS
                 && this.expandAnimation.calcPercent() == 1.0F && isMouseInBounds) {
 
             for (Entry<Integer, DropdownMenu> entry : this.subMenusByIndex.entrySet()) {
                 entry.getValue().setSelfVisible(entry.getKey() == hoveredOptionIndex);
             }
-        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.expandAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        } else if (!this.isMouseOverComponent(mouseX, mouseY) || this.expandAnimation.direction == AnimationUtils.Direction.FORWARDS) {
             for (DropdownMenu menu : this.subMenusByIndex.values()) {
                 menu.setSelfVisible(false);
             }

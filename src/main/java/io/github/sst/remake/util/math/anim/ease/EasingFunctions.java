@@ -35,7 +35,6 @@ public class EasingFunctions {
     public static float easeInOutCustomBack(float progress, float start, float change, float duration, float overshoot) {
         float ratio;
         float s2;
-        float overshoot2;
         return !((ratio = progress / (duration / 2.0F)) < 1.0F)
                 ? change / 2.0F * ((s2 = ratio - 2.0F) * s2 * (((overshoot * 1.525F) + 1.0F) * s2 + overshoot * 1.525F) + 2.0F) + start
                 : change / 2.0F * ratio * ratio * (((overshoot * 1.525F) + 1.0F) * ratio - overshoot * 1.525F) + start;

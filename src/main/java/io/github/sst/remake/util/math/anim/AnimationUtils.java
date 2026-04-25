@@ -7,7 +7,7 @@ import java.util.Date;
 public class AnimationUtils {
     public int duration;
     public int reverseDuration;
-    @Getter
+
     public Direction direction;
     public Date startTime;
     public Date reverseStartTime;
@@ -25,20 +25,12 @@ public class AnimationUtils {
         this.changeDirection(direction);
     }
 
-    public static float calculateProgressWithReverse(final Date date, final Date date2, final float a, final float a2) {
-        return Math.max(0.0f, Math.min(1.0f, Math.min(a, (float) (new Date().getTime() - ((date != null) ? date.getTime() : new Date().getTime()))) / a * (1.0f - Math.min(a2, (float) (new Date().getTime() - ((date2 != null) ? date2.getTime() : new Date().getTime()))) / a2)));
+    public static float calculateProgressWithReverse(Date primaryStartTime, Date secondaryStartTime, float primaryDurationMs, float secondaryDurationMs) {
+        return Math.max(0.0f, Math.min(1.0f, Math.min(primaryDurationMs, (float) (new Date().getTime() - ((primaryStartTime != null) ? primaryStartTime.getTime() : new Date().getTime()))) / primaryDurationMs * (1.0f - Math.min(secondaryDurationMs, (float) (new Date().getTime() - ((secondaryStartTime != null) ? secondaryStartTime.getTime() : new Date().getTime()))) / secondaryDurationMs)));
     }
 
-    public static float calculateProgress(final Date date, final float a) {
-        return Math.max(0.0f, Math.min(1.0f, Math.min(a, (float) (new Date().getTime() - ((date != null) ? date.getTime() : new Date().getTime()))) / a));
-    }
-
-    public static float calculateProgressWithReverse(final Date date, final Date date2, final float max) {
-        return calculateProgressWithReverse(date, date2, max, max);
-    }
-
-    public static boolean hasTimeElapsed(Date time, float elapsed) {
-        return time != null && (float) (new Date().getTime() - time.getTime()) > elapsed;
+    public static float calculateProgress(Date startTime, float durationMs) {
+        return Math.max(0.0f, Math.min(1.0f, Math.min(durationMs, (float) (new Date().getTime() - ((startTime != null) ? startTime.getTime() : new Date().getTime()))) / durationMs));
     }
 
     public static float easeInOutQuad(float time, float startValue, float changeInValue, float duration) {
@@ -52,19 +44,21 @@ public class AnimationUtils {
         return -changeInValue / 2.0F * (time * (time - 2.0F) - 1.0F) + startValue;
     }
 
-    public void changeDirection(final Direction direction) {
+    public void changeDirection(Direction direction) {
         if (this.direction == direction) {
             return;
         }
+        
         if (direction == Direction.BACKWARDS) {
             this.startTime = new Date(new Date().getTime() - (long) (this.calcPercent() * this.duration));
         } else {
             this.reverseStartTime = new Date(new Date().getTime() - (long) ((1.0f - this.calcPercent()) * this.reverseDuration));
         }
+
         this.direction = direction;
     }
 
-    public void updateStartTime(final float progress) {
+    public void updateStartTime(float progress) {
         switch (this.direction) {
             case BACKWARDS: {
                 this.startTime = new Date(new Date().getTime() - (long) (progress * this.duration));
@@ -84,11 +78,6 @@ public class AnimationUtils {
         return Math.min(1.0f, (new Date().getTime() - this.startTime.getTime()) / (float) this.duration);
     }
 
-    public enum Direction {
-        BACKWARDS,
-        FORWARDS
-    }
-
     public static float easeOutCubic(float elapsedTime, float startValue, float change, float duration) {
         elapsedTime /= duration;
         elapsedTime--; // equivalent to --t in classic easing formula
@@ -98,5 +87,10 @@ public class AnimationUtils {
     public static float easeInCubic(float elapsedTime, float startValue, float change, float duration) {
         elapsedTime /= duration;
         return change * elapsedTime * elapsedTime * elapsedTime + startValue;
+    }
+
+    public enum Direction {
+        BACKWARDS,
+        FORWARDS
     }
 }

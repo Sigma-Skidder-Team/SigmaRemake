@@ -170,7 +170,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
             profileScreen = null;
         }
 
-        if (openCloseAnimation.getDirection() == AnimationUtils.Direction.FORWARDS && moduleSettingsModal != null && !moduleSettingsModal.closing) {
+        if (openCloseAnimation.direction == AnimationUtils.Direction.FORWARDS && moduleSettingsModal != null && !moduleSettingsModal.closing) {
             moduleSettingsModal.closing = true;
         }
 
@@ -182,13 +182,13 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         }
 
         if (animationActive) {
-            AnimationUtils.Direction direction = openCloseAnimation.getDirection();
+            AnimationUtils.Direction direction = openCloseAnimation.direction;
             openCloseAnimation.changeDirection(!openState ? AnimationUtils.Direction.BACKWARDS : AnimationUtils.Direction.FORWARDS);
 
             if (openCloseAnimation.calcPercent() <= 0.0F && openState) {
                 openState = false;
                 handleAnimationCompletion(openState);
-            } else if (openCloseAnimation.calcPercent() >= 1.0F && openCloseAnimation.getDirection() == direction) {
+            } else if (openCloseAnimation.calcPercent() >= 1.0F && openCloseAnimation.direction == direction) {
                 openState = true;
                 handleAnimationCompletion(openState);
             }
@@ -244,7 +244,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
     }
 
     public float computeOpenCloseEasing(float progress, float period) {
-        return openCloseAnimation.getDirection() != AnimationUtils.Direction.FORWARDS
+        return openCloseAnimation.direction != AnimationUtils.Direction.FORWARDS
                 ? (float) (Math.pow(2.0, -10.0F * progress) * Math.sin((double) (progress - period / 4.0F) * (Math.PI * 2) / (double) period) + 1.0)
                 : QuadraticEasing.easeOutQuad(progress, 0.0F, 1.0F, 1.0F);
     }
@@ -273,7 +273,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
             float modalFadeProgress = this.moduleSettingsModal.fadeAnimation.calcPercent();
 
             float modalEasedScale = EasingFunctions.easeOutBack(modalFadeProgress, 0.0F, 1.0F, 1.0F);
-            if (this.moduleSettingsModal.fadeAnimation.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            if (this.moduleSettingsModal.fadeAnimation.direction == AnimationUtils.Direction.FORWARDS) {
                 modalEasedScale = AnimationUtils.easeInCubic(modalFadeProgress, 0.0F, 1.0F, 1.0F);
             }
 

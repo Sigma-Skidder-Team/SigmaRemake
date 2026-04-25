@@ -90,7 +90,7 @@ public class BanEntry extends Widget {
             int centerX = this.width / 2;
             int centerY = this.height / 2;
 
-            if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+            if (this.hoverPulseAnim.direction == AnimationUtils.Direction.FORWARDS) {
                 hoverBackEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
@@ -139,7 +139,7 @@ public class BanEntry extends Widget {
         GL11.glPushMatrix();
 
         float iconScaleEase = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.hoverPulseAnim.direction == AnimationUtils.Direction.FORWARDS) {
             iconScaleEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
@@ -186,7 +186,7 @@ public class BanEntry extends Widget {
         GL11.glPushMatrix();
 
         float infoScaleEase = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
-        if (this.hoverPulseAnim.getDirection() == AnimationUtils.Direction.FORWARDS) {
+        if (this.hoverPulseAnim.direction == AnimationUtils.Direction.FORWARDS) {
             infoScaleEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
