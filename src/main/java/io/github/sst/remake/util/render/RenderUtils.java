@@ -1,7 +1,6 @@
 package io.github.sst.remake.util.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import io.github.sst.remake.util.porting.StateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
@@ -55,23 +54,7 @@ public class RenderUtils implements IMinecraft {
         float blue = (float) (color & 0xFF) / 255.0F;
         float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
 
-        Tessellator tesselator = Tessellator.getInstance();
-        BufferBuilder buffer = tesselator.getBuffer();
-
-        RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        GlStateManager.color4f(red, green, blue, alpha);
-
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
-        buffer.vertex(x, height, 0.0).next();
-        buffer.vertex(width, height, 0.0).next();
-        buffer.vertex(width, y, 0.0).next();
-        buffer.vertex(x, y, 0.0).next();
-        tesselator.draw();
-
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
+        buildTessellator(x, y, width, height, alpha, red, green, blue);
     }
 
     public static void drawRoundedRect2(float x, float y, float width, float height, int color) {
@@ -138,14 +121,17 @@ public class RenderUtils implements IMinecraft {
         if (texture != null) {
             GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
             GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+
             x = (float) Math.round(x);
             width = (float) Math.round(width);
             y = (float) Math.round(y);
             height = (float) Math.round(height);
+
             float red = (float) (color >> 16 & 0xFF) / 255.0F;
             float green = (float) (color >> 8 & 0xFF) / 255.0F;
             float blue = (float) (color & 0xFF) / 255.0F;
             float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();
 
@@ -154,12 +140,14 @@ public class RenderUtils implements IMinecraft {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             texture.bind();
 
-            float var17 = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
-            float var18 = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
-            float var19 = siW / (float) texture.getImageWidth() * var17;
-            float var20 = siH / (float) texture.getImageHeight() * var18;
-            float var21 = tlX / (float) texture.getImageWidth() * var17;
-            float var22 = tlY / (float) texture.getImageHeight() * var18;
+            float uScale = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
+            float vScale = height / (float) texture.getTextureHeight() / (height / (float) texture.getImageHeight());
+
+            float u0 = siW / (float) texture.getImageWidth() * uScale;
+            float v0 = siH / (float) texture.getImageHeight() * vScale;
+            float u1 = tlX / (float) texture.getImageWidth() * uScale;
+            float v1 = tlY / (float) texture.getImageHeight() * vScale;
+
             if (!linearFiltering) {
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             } else {
@@ -167,16 +155,16 @@ public class RenderUtils implements IMinecraft {
             }
 
             GL11.glBegin(GL11.GL_QUADS);
-            GL11.glTexCoord2f(var21, var22);
+            GL11.glTexCoord2f(u1, v1);
             GL11.glVertex2f(x, y);
 
-            GL11.glTexCoord2f(var21, var22 + var20);
+            GL11.glTexCoord2f(u1, v1 + v0);
             GL11.glVertex2f(x, y + height);
 
-            GL11.glTexCoord2f(var21 + var19, var22 + var20);
+            GL11.glTexCoord2f(u1 + u0, v1 + v0);
             GL11.glVertex2f(x + width, y + height);
 
-            GL11.glTexCoord2f(var21 + var19, var22);
+            GL11.glTexCoord2f(u1 + u0, v1);
             GL11.glVertex2f(x + width, y);
             GL11.glEnd();
 
@@ -189,9 +177,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawTexture(float x, float y, float width, float height, Texture texture, int color) {
-        if (texture == null) {
-            return;
-        }
+        if (texture == null) return;
 
         drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), true);
         drawImage(x, y, width, height, texture, color, 0.0F, 0.0F, (float) texture.getImageWidth(), (float) texture.getImageHeight(), false);
@@ -401,15 +387,15 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
-        Tessellator tesselator = Tessellator.getInstance();
-        BufferBuilder buffer = tesselator.getBuffer();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(width, y, 0.0).color(red1, green1, blue1, alpha1).next();
         buffer.vertex(x, y, 0.0).color(red1, green1, blue1, alpha1).next();
         buffer.vertex(x, height, 0.0).color(red2, green2, blue2, alpha2).next();
         buffer.vertex(width, height, 0.0).color(red2, green2, blue2, alpha2).next();
-        tesselator.draw();
+        tessellator.draw();
 
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
@@ -473,12 +459,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+        resetGlUnpackState();
 
         float texU = u / textureWidth;
         float texV = v / textureHeight;
@@ -513,64 +494,7 @@ public class RenderUtils implements IMinecraft {
         int padding = 10;
         int innerOffset = tileSize - padding;
 
-        drawRoundedRect(
-                (float) (x + padding),
-                (float) (y + padding),
-                (float) (x + width - padding),
-                (float) (y + height - padding),
-                color
-        );
-
-        drawImage(
-                (float) (x - innerOffset),
-                (float) (y - innerOffset),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + width - innerOffset),
-                (float) (y - innerOffset),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + width - innerOffset),
-                (float) (y + padding + height),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + padding),
-                (float) (y + padding + height),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
+        renderTile(tileSize, padding, innerOffset, x, y, width, height, color);
 
         ScissorUtils.startScissorNoGL(
                 scissorX - tileSize,
@@ -600,10 +524,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate90Tile(x, y, tileSize);
             drawImage(
                     (float) (x - innerOffset),
                     (float) (y - padding - offsetX),
@@ -625,10 +546,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate180Tile(x, y, tileSize);
             drawImage(
                     (float) (x - width + padding),
                     (float) (y - padding - offsetY),
@@ -650,10 +568,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate270Tile(x, y, tileSize);
             drawImage(
                     (float) (x - height + padding),
                     (float) (y + padding + offsetX),
@@ -673,64 +588,7 @@ public class RenderUtils implements IMinecraft {
         int padding = 10;
         int innerOffset = tileSize - padding;
 
-        drawRoundedRect(
-                (float) (x + padding),
-                (float) (y + padding),
-                (float) (x + width - padding),
-                (float) (y + height - padding),
-                color
-        );
-
-        drawImage(
-                (float) (x - innerOffset),
-                (float) (y - innerOffset),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + width - innerOffset),
-                (float) (y - innerOffset),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + width - innerOffset),
-                (float) (y + padding + height),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
-        drawImage(
-                (float) (x + padding),
-                (float) (y + padding + height),
-                (float) tileSize,
-                (float) tileSize,
-                Resources.FLOATING_CORNER,
-                color
-        );
-        GL11.glPopMatrix();
+        renderTile(tileSize, padding, innerOffset, x, y, width, height, color);
 
         ScissorUtils.startScissor(
                 x - tileSize,
@@ -762,10 +620,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate90Tile(x, y, tileSize);
             drawImage(
                     (float) (x - innerOffset),
                     (float) (y - padding - offsetX) - 0.4F,
@@ -788,10 +643,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetY = 0; offsetY < height; offsetY += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate180Tile(x, y, tileSize);
             drawImage(
                     (float) (x - width + padding),
                     (float) (y - padding - offsetY) - 0.4F,
@@ -814,10 +666,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         for (int offsetX = 0; offsetX < width; offsetX += tileSize) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-            GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+            rotate270Tile(x, y, tileSize);
             drawImage(
                     (float) (x - height + padding),
                     (float) (y + padding + offsetX) - 0.4F,
@@ -830,6 +679,88 @@ public class RenderUtils implements IMinecraft {
         }
 
         ScissorUtils.restoreScissor();
+    }
+
+    private static void renderTile(int tileSize, int padding, int innerOffset, float x, float y, float width, float height, int color) {
+        drawRoundedRect(
+                x + padding,
+                y + padding,
+                x + width - padding,
+                y + height - padding,
+                color
+        );
+
+        drawImage(
+                x - innerOffset,
+                y - innerOffset,
+                (float) tileSize,
+                (float) tileSize,
+                Resources.FLOATING_CORNER,
+                color
+        );
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        drawImage(
+                x + width - innerOffset,
+                y - innerOffset,
+                (float) tileSize,
+                (float) tileSize,
+                Resources.FLOATING_CORNER,
+                color
+        );
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                x + width - innerOffset,
+                y + padding + height,
+                (float) tileSize,
+                (float) tileSize,
+                Resources.FLOATING_CORNER,
+                color
+        );
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        drawImage(
+                x + padding,
+                y + padding + height,
+                (float) tileSize,
+                (float) tileSize,
+                Resources.FLOATING_CORNER,
+                color
+        );
+        GL11.glPopMatrix();
+    }
+
+    private static void rotate90Tile(int x, int y, int tileSize) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+    }
+
+    private static void rotate270Tile(int x, int y, int tileSize) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+    }
+
+    private static void rotate180Tile(int x, int y, int tileSize) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
     }
 
     public static void drawPanelShadow(float x, float y, float width, float height, float shadowSize, float alpha) {
@@ -939,20 +870,7 @@ public class RenderUtils implements IMinecraft {
         drawRoundedRect(xEnd - (float) thickness, yStart, xEnd, yEnd, color);
     }
 
-    public static void drawTexturedQuad(
-            float x,
-            float y,
-            float width,
-            float height,
-            ByteBuffer pixelBuffer,
-            int color,
-            float textureOffsetX,
-            float textureOffsetY,
-            float textureWidth,
-            float textureHeight,
-            boolean flipX,
-            boolean flipY
-    ) {
+    public static void drawTexturedQuad(float x, float y, float width, float height, ByteBuffer pixelBuffer, int color, float textureOffsetX, float textureOffsetY, float textureWidth, float textureHeight, boolean flipX, boolean flipY) {
         x = (float) Math.round(x);
         y = (float) Math.round(y);
         width = (float) Math.round(width);
@@ -977,17 +895,14 @@ public class RenderUtils implements IMinecraft {
             dynamicPixelTextureWidth = -1;
             dynamicPixelTextureHeight = -1;
         }
+
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, dynamicPixelTextureId);
 
-        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+        resetGlUnpackState();
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+
         if (dynamicPixelTextureWidth != (int) textureWidth || dynamicPixelTextureHeight != (int) textureHeight) {
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, (int) textureWidth, (int) textureHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
             dynamicPixelTextureWidth = (int) textureWidth;
@@ -1054,6 +969,10 @@ public class RenderUtils implements IMinecraft {
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
         float blue = (float) (color & 0xFF) / 255.0F;
 
+        buildTessellator(x1, y1, x2, y2, alpha, red, green, blue);
+    }
+
+    private static void buildTessellator(float x1, float y1, float x2, float y2, float alpha, float red, float green, float blue) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -1131,7 +1050,6 @@ public class RenderUtils implements IMinecraft {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
 
-        // Draw shadow circle
         GL11.glPushMatrix();
         GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.114F);
@@ -1140,7 +1058,6 @@ public class RenderUtils implements IMinecraft {
         drawFilledCircle(0.5F);
         GL11.glPopMatrix();
 
-        // Draw rotating outline circle
         GL11.glPushMatrix();
         GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
         GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
@@ -1149,14 +1066,12 @@ public class RenderUtils implements IMinecraft {
         drawCircleOutline(0.6F);
         GL11.glPopMatrix();
 
-        // Draw rotating triangles
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
         GL11.glRotatef((float) (client.player.age % 90 * 4), 0.0F, 1.0F, 0.0F);
         drawRotatingTriangles(color);
         GL11.glPopMatrix();
 
-        // Draw label background and text
         GL11.glPushMatrix();
         GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
         GL11.glTranslated(x + 0.5, y + 1.9, z + 0.5);
@@ -1200,11 +1115,13 @@ public class RenderUtils implements IMinecraft {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+
         if (lightingWasEnabled) {
             GL11.glEnable(GL11.GL_LIGHTING);
         } else {
             GL11.glDisable(GL11.GL_LIGHTING);
         }
+
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
@@ -1236,6 +1153,7 @@ public class RenderUtils implements IMinecraft {
                 -client.gameRenderer.getCamera().getPos().getX(),
                 -client.gameRenderer.getCamera().getPos().getY(),
                 -client.gameRenderer.getCamera().getPos().getZ());
+
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
@@ -1270,6 +1188,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+
         int angleStep = (int) (360.0F / (40.0F * ringRadius));
         float red = (float) baseColor.getRed() / 255.0F;
         float green = (float) baseColor.getGreen() / 255.0F;
@@ -1380,18 +1299,15 @@ public class RenderUtils implements IMinecraft {
         float screenWidth = (float) client.getWindow().getWidth();
         float screenHeight = (float) client.getWindow().getHeight();
 
-        // Background image + dark overlay
         drawImage(0.0F, 0.0F, screenWidth, screenHeight, Resources.LOADING_SCREEN_BACKGROUND, backgroundOpacity);
         drawRoundedRect2(0.0F, 0.0F, screenWidth, screenHeight, ColorHelper.applyAlpha(0, 0.75F));
 
-        // Centered logo layout
         final int logoWidth = 455;
         final int logoHeight = 78;
 
         int logoX = (client.getWindow().getWidth() - logoWidth) / 2;
         int logoY = Math.round(((client.getWindow().getHeight() - logoHeight) / 2.0F) - (14.0F * backgroundOpacity));
 
-        // Slight scale animation based on opacity
         float logoScale = 0.75F + (float) (Math.pow(backgroundOpacity, 4.0) * 0.25F);
 
         GL11.glPushMatrix();
@@ -1411,7 +1327,6 @@ public class RenderUtils implements IMinecraft {
         float clampedProgress = Math.min(1.0F, progress * 1.02F);
         final float progressBarYOffset = 80.0F;
 
-        // Only draw the progress bar background when fully visible
         if (backgroundOpacity == 1.0F) {
             drawRoundedRect(
                     (float) logoX,
@@ -1431,7 +1346,6 @@ public class RenderUtils implements IMinecraft {
             );
         }
 
-        // Progress fill
         drawRoundedRect(
                 (float) (logoX + 2),
                 logoY + logoHeight + progressBarYOffset + 2,
@@ -1463,14 +1377,12 @@ public class RenderUtils implements IMinecraft {
                 GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
         );
 
-        // Smooth shading so the colors interpolate across the quad.
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
         buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
-        // Top edge uses topColor, bottom edge uses bottomColor.
         buf.vertex(right, top, 0.0).color(topR, topG, topB, topA).next();
         buf.vertex(left, top, 0.0).color(topR, topG, topB, topA).next();
         buf.vertex(left, bottom, 0.0).color(botR, botG, botB, botA).next();
@@ -1478,7 +1390,7 @@ public class RenderUtils implements IMinecraft {
 
         tess.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT); // GL_FLAT
+        RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
@@ -1534,6 +1446,7 @@ public class RenderUtils implements IMinecraft {
             float red = (float) (color >> 16 & 0xFF) / 255.0f;
             float green = (float) (color >> 8 & 0xFF) / 255.0f;
             float blue = (float) (color & 0xFF) / 255.0f;
+
             GL11.glColor4f(red, green, blue, alpha);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_TEXTURE_2D);

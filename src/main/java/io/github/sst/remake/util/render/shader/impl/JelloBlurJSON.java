@@ -16,8 +16,13 @@ public class JelloBlurJSON implements Resource {
 
     @Override
     public InputStream getInputStream() {
-        String var3 = "{\"targets\":[\"jelloswap\",\"jello\"],\"passes\":[{\"name\":\"blur\",\"intarget\":\"minecraft:main\",\"outtarget\":\"jelloswap\",\"uniforms\":[{\"name\":\"BlurDir\",\"values\":[1,0]},{\"name\":\"Radius\",\"values\":[20]}]},{\"name\":\"blur\",\"intarget\":\"jelloswap\",\"outtarget\":\"jello\",\"uniforms\":[{\"name\":\"BlurDir\",\"values\":[0,1]},{\"name\":\"Radius\",\"values\":[20]}]}]}";
-        return new ByteArrayInputStream(var3.getBytes());
+        InputStream stream = this.getClass().getResourceAsStream("/assets/sigma/shader/blur.json");
+
+        if (stream == null) {
+            throw new RuntimeException("Failed to find blur.json in the assets folder!");
+        }
+
+        return stream;
     }
 
     @Override
