@@ -1,5 +1,8 @@
 package io.github.sst.remake.util.client.waypoint;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum WaypointColors {
     GRAY("Gray", -2565928),
     RED("Red", -35477),
@@ -11,9 +14,4 @@ public enum WaypointColors {
 
     public final String name;
     public final int color;
-
-    WaypointColors(String name, int color) {
-        this.name = name;
-        this.color = color;
-    }
 }

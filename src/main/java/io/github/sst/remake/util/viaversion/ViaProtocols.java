@@ -1,8 +1,11 @@
 package io.github.sst.remake.util.viaversion;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public enum ViaProtocols {
     R1_7_6(5, "1.7.6 - 1.7.10"),
     R1_8_X(47, "1.8.x"),
@@ -56,11 +59,6 @@ public enum ViaProtocols {
     private static final Map<Integer, ViaProtocols> LOOKUP = new LinkedHashMap<>();
     public final int protocol;
     public final String name;
-
-    ViaProtocols(int protocol, String name) {
-        this.protocol = protocol;
-        this.name = name;
-    }
 
     public boolean newerThan(ViaProtocols other) {
         return this.protocol > other.protocol;

@@ -1,6 +1,7 @@
 package io.github.sst.remake.util.porting;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.RequiredArgsConstructor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL11;
@@ -30,6 +31,7 @@ public class StateManager {
     }
 
     @Environment(EnvType.CLIENT)
+    @RequiredArgsConstructor
     public enum SrcFactor {
         CONSTANT_ALPHA(GL14.GL_CONSTANT_ALPHA),
         CONSTANT_COLOR(GL14.GL_CONSTANT_COLOR),
@@ -48,12 +50,9 @@ public class StateManager {
         ZERO(GL11.GL_ZERO);
 
         public final int value;
-
-        private SrcFactor(int value) {
-            this.value = value;
-        }
     }
 
+    @RequiredArgsConstructor
     public enum DstFactor {
         CONSTANT_ALPHA(GL14.GL_CONSTANT_ALPHA),
         CONSTANT_COLOR(GL14.GL_CONSTANT_COLOR),
@@ -71,9 +70,5 @@ public class StateManager {
         ZERO(GL11.GL_ZERO);
 
         public final int value;
-
-        private DstFactor(int value) {
-            this.value = value;
-        }
     }
 }

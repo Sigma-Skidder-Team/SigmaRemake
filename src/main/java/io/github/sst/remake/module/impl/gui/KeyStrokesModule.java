@@ -14,6 +14,7 @@ import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
+import lombok.RequiredArgsConstructor;
 import net.minecraft.client.option.KeyBinding;
 
 import java.util.ArrayList;
@@ -133,6 +134,7 @@ public class KeyStrokesModule extends Module {
         return null;
     }
 
+    @RequiredArgsConstructor
     public enum Keystroke {
         LEFT(0.0F, 1.0F, client.options.keyLeft),
         RIGHT(2.0F, 1.0F, client.options.keyRight),
@@ -156,15 +158,6 @@ public class KeyStrokesModule extends Module {
 
         Keystroke(float positionX, float positionY, int width, KeyBinding bind) {
             this(positionX, positionY, width, 48, 3, bind);
-        }
-
-        Keystroke(float positionX, float positionY, int width, int height, int padding, KeyBinding bind) {
-            this.positionX = positionX;
-            this.positionY = positionY;
-            this.bind = bind;
-            this.width = width;
-            this.height = height;
-            this.padding = padding;
         }
 
         public KeyPosition getTopLeftPosition() {
