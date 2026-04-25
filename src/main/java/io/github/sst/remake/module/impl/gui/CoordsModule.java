@@ -49,7 +49,7 @@ public class CoordsModule extends Module {
         String coordinatesText = String.format("%.0f %.0f %.0f", client.player.getX(), client.player.getY(), client.player.getZ());
 
         float textX = 85;
-        int textY = event.getOffset();
+        int textY = event.offset;
         float maxTextWidth = 150;
         float textWidth = (float) FontUtils.HELVETICA_LIGHT_18.getWidth(coordinatesText);
         float scaleFactor = Math.min(1.0F, maxTextWidth / textWidth);

@@ -187,7 +187,7 @@ public class TabGuiModule extends Module {
         categoryScrollOffset = categoryScrollOffset
                 + Math.min(delta, delta * 0.14F * animSpeed) * (scrollUp ? -1.0F : 1.0F);
 
-        y = event.getOffset();
+        y = event.offset;
         this.selectedCategory = this.categories.get(this.selectedCategoryIndex);
 
         drawPanelBackground(

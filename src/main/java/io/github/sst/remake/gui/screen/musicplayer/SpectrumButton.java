@@ -9,8 +9,7 @@ import io.github.sst.remake.util.render.RenderUtils;
 import lombok.Setter;
 
 public class SpectrumButton extends InteractiveWidget {
-    @Setter
-    private boolean spectrumEnabled;
+    public boolean spectrumEnabled;
     private final AnimationUtils hoverAnimation = new AnimationUtils(100, 100);
 
     public SpectrumButton(GuiComponent parent, String name, int x, int y, int width, int height, boolean spectrumEnabled) {

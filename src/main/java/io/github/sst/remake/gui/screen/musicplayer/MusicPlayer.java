@@ -85,7 +85,7 @@ public class MusicPlayer extends Widget {
         spectrumButton.setReAddChildren(true);
         spectrumButton.onClick((clicked, mouseButton) -> {
             this.musicManager.spectrum = !this.musicManager.spectrum;
-            ((SpectrumButton) clicked).setSpectrumEnabled(this.musicManager.spectrum);
+            ((SpectrumButton) clicked).spectrumEnabled = this.musicManager.spectrum;
         });
 
         this.playlistTabsPanel.setListening(false);

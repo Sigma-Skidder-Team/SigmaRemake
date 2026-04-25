@@ -122,7 +122,7 @@ public class MiniMapModule extends Module {
             return;
         }
 
-        int yOffset = event.getOffset();
+        int yOffset = event.offset;
         int mapSize = 150;
         int mapX = 10;
 

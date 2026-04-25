@@ -30,7 +30,7 @@ public class KeyStrokesModule extends Module {
     public void onRender(RenderClient2DEvent event) {
         if (client.player == null || client.options.debugEnabled || client.options.hudHidden) return;
 
-        int y = event.getOffset();
+        int y = event.offset;
         int x = 10;
 
         if (Client.INSTANCE.configManager.hqBlur) {
