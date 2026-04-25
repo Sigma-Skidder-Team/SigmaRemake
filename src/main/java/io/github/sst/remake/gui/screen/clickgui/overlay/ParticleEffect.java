@@ -40,8 +40,8 @@ public class ParticleEffect {
     }
 
     public void updatePosition(AnimationManager animationManager) {
-        this.initialXPosition = this.initialXPosition + animationManager.getCurrentValue() + this.direction;
-        this.xPosition = this.xPosition + animationManager.getCurrentValue() + this.direction;
+        this.initialXPosition = this.initialXPosition + animationManager.currentValue + this.direction;
+        this.xPosition = this.xPosition + animationManager.currentValue + this.direction;
         this.yPosition = this.yPosition + this.movementSpeed;
     }
 }

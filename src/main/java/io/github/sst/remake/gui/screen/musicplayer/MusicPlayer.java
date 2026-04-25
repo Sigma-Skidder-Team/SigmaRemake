@@ -94,7 +94,7 @@ public class MusicPlayer extends Widget {
         this.edgeReShowHandle.setListening(false);
 
         ColorHelper playlistButtonTheme = new ColorHelper(1250067, -15329770)
-                .setTextColor(ClientColors.LIGHT_GREYISH_BLUE.getColor())
+                .setTextColor(ClientColors.LIGHT_GREYISH_BLUE)
                 .setHeightAlignment(FontAlignment.CENTER);
 
         List<Thread> refreshThreads = new ArrayList<>();
@@ -115,22 +115,22 @@ public class MusicPlayer extends Widget {
 
         controlBar.addToList(this.playButton = new Image(
                 controlBar, "play", centerX, 27, 38, 38, Resources.PLAY,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), null
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE), null
         ));
 
         controlBar.addToList(this.pauseButton = new Image(
                 controlBar, "pause", centerX, 27, 38, 38, Resources.PAUSE,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), null
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE), null
         ));
 
         controlBar.addToList(this.nextTrackButton = new Image(
                 controlBar, "forwards", centerX + 114, 23, 46, 46, Resources.FORWARDS,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), null
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE), null
         ));
 
         controlBar.addToList(this.previousTrackButton = new Image(
                 controlBar, "backwards", centerX - 114, 23, 46, 46, Resources.BACKWARDS,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()), null
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE), null
         ));
 
         controlBar.addToList(this.volumeSlider = new VolumeSlider(
@@ -253,7 +253,7 @@ public class MusicPlayer extends Widget {
 
         partialTicks *= 0.5F + (1.0F - this.edgeDockAnimation.calcPercent()) * 0.5F;
 
-        if (this.musicManager.isPlaying()) {
+        if (this.musicManager.playing) {
             this.playButton.setSelfVisible(false);
             this.pauseButton.setSelfVisible(true);
         } else {
@@ -286,14 +286,14 @@ public class MusicPlayer extends Widget {
                 brandOffsetX + this.getX(),
                 (float) (this.getY() + 20),
                 "Jello",
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_20,
                 brandOffsetX + this.getX() + 80,
                 (float) (this.getY() + 40),
                 "music",
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
 
         RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) this.getHeight(), 14.0F, partialTicks);
@@ -314,7 +314,7 @@ public class MusicPlayer extends Widget {
                 (float) (this.getX() + PLAYER_WIDTH + 14),
                 (float) (this.getY() + this.getHeight() - 10) - 22.0F * partialTicks,
                 YoutubeUtils.formatSecondsAsTimestamp(totalSeconds),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * partialTicks)
         );
 
         String currentTimeText = YoutubeUtils.formatSecondsAsTimestamp(currentSeconds);
@@ -323,13 +323,13 @@ public class MusicPlayer extends Widget {
                 (float) (this.getX() + this.getWidth() - 14 - FontUtils.HELVETICA_LIGHT_14.getWidth(currentTimeText)),
                 (float) (this.getY() + this.getHeight() - 10) - 22.0F * partialTicks,
                 currentTimeText,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * partialTicks)
         );
     }
 
     private void drawThumbnail(float partialTicks) {
-        Texture notificationTexture = this.musicManager.getNotification();
-        Texture songThumbnailTexture = this.musicManager.getSongThumbnail();
+        Texture notificationTexture = this.musicManager.notification;
+        Texture songThumbnailTexture = this.musicManager.songThumbnail;
 
         if (notificationTexture != null && songThumbnailTexture != null) {
             drawPlayerArtwork(partialTicks, songThumbnailTexture, notificationTexture);
@@ -342,7 +342,7 @@ public class MusicPlayer extends Widget {
                 (float) this.getWidth(),
                 (float) FOOTER_HEIGHT,
                 Resources.BACKGROUND,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * partialTicks)
         );
 
         drawArtworkOverlays(partialTicks);
@@ -353,7 +353,7 @@ public class MusicPlayer extends Widget {
                 114.0F,
                 114.0F,
                 Resources.ARTWORK,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
         RenderUtils.drawRoundedRect(
                 (float) (this.getX() + (PLAYER_WIDTH - 114) / 2),
@@ -372,7 +372,7 @@ public class MusicPlayer extends Widget {
                 (float) this.getWidth(),
                 (float) FOOTER_HEIGHT,
                 backgroundArtwork,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * partialTicks)
         );
 
         drawArtworkOverlays(partialTicks);
@@ -383,7 +383,7 @@ public class MusicPlayer extends Widget {
                 114.0F,
                 114.0F,
                 notificationArtwork,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
         RenderUtils.drawRoundedRect(
                 (float) (this.getX() + (PLAYER_WIDTH - 114) / 2),
@@ -401,14 +401,14 @@ public class MusicPlayer extends Widget {
                 (float) (this.getY() + this.getHeight() - FOOTER_HEIGHT),
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + this.getHeight() - 5),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.43F * partialTicks)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),
                 (float) (this.getY() + this.getHeight() - 5),
                 (float) (this.getX() + PLAYER_WIDTH),
                 (float) (this.getY() + this.getHeight()),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.43F * partialTicks)
         );
     }
 
@@ -466,7 +466,7 @@ public class MusicPlayer extends Widget {
                 (float) clipY,
                 text,
                 ColorHelper.applyAlpha(
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.LIGHT_GREYISH_BLUE,
                         alpha * alpha * Math.min(1.0F, Math.max(0.0F, 1.0F - scroll * 0.75F))
                 )
         );
@@ -477,7 +477,7 @@ public class MusicPlayer extends Widget {
                     (float) clipX - (float) textWidth * scroll + (float) textWidth,
                     (float) clipY,
                     text,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha * alpha)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha * alpha)
             );
         }
 
@@ -518,7 +518,7 @@ public class MusicPlayer extends Widget {
                     (float) (this.getWidth() - PLAYER_WIDTH),
                     (float) HEADER_HEIGHT,
                     this.headerBlurTexture,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), headerAlpha * partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, headerAlpha * partialTicks)
             );
         }
 
@@ -527,7 +527,7 @@ public class MusicPlayer extends Widget {
                 0.0F,
                 (float) this.getWidth(),
                 (float) HEADER_HEIGHT,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), headerAlpha * partialTicks * 0.2F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, headerAlpha * partialTicks * 0.2F)
         );
 
         float titleXLight = (float) ((this.getWidth() - FontUtils.HELVETICA_LIGHT_25.getWidth(this.currentPlaylistName) + PLAYER_WIDTH) / 2);
@@ -539,14 +539,14 @@ public class MusicPlayer extends Widget {
                 titleXLight,
                 titleY,
                 this.currentPlaylistName,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), headerAlpha)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, headerAlpha)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_25,
                 titleXMedium,
                 titleY,
                 this.currentPlaylistName,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 1.0F - headerAlpha)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 1.0F - headerAlpha)
         );
 
         RenderUtils.drawImage(
@@ -555,7 +555,7 @@ public class MusicPlayer extends Widget {
                 (float) (this.getWidth() - PLAYER_WIDTH),
                 20.0F,
                 Resources.SHADOW_BOTTOM,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), headerAlpha * partialTicks * 0.5F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, headerAlpha * partialTicks * 0.5F)
         );
 
         this.lastPlaylistScrollOffset = this.activePlaylistPanel.getScrollOffset();

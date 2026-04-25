@@ -57,7 +57,7 @@ public class SettingSlider extends InteractiveWidget {
                 (float) filledWidth,
                 (float) barHeight,
                 cornerRadius,
-                ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), baseAlpha)
+                ColorHelper.applyAlpha(this.textColor.primaryColor, baseAlpha)
         );
 
         RenderUtils.drawRoundedRect(
@@ -66,7 +66,7 @@ public class SettingSlider extends InteractiveWidget {
                 (float) (trackRightX - filledWidth),
                 (float) barHeight,
                 cornerRadius,
-                ColorHelper.applyAlpha(ColorHelper.adjustColorTowardsWhite(this.textColor.getPrimaryColor(), 0.8F), baseAlpha)
+                ColorHelper.applyAlpha(ColorHelper.adjustColorTowardsWhite(this.textColor.primaryColor, 0.8F), baseAlpha)
         );
 
         if (this.getText() != null) {
@@ -78,7 +78,7 @@ public class SettingSlider extends InteractiveWidget {
                     (float) (trackY - 5),
                     this.getText(),
                     ColorHelper.applyAlpha(
-                            ClientColors.DEEP_TEAL.getColor(),
+                            ClientColors.DEEP_TEAL,
                             0.5F * this.labelFade.calcPercent() * partialTicks
                     )
             );

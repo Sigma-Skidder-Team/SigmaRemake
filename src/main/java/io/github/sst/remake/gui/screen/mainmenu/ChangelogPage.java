@@ -118,7 +118,7 @@ public class ChangelogPage extends GuiComponent {
                 100.0F,
                 100.0F,
                 "Changelog",
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
 
         String versionText = "You're currently using Sigma Remake " + Client.VERSION;
@@ -128,7 +128,7 @@ public class ChangelogPage extends GuiComponent {
                 100.0f,
                 150.0f,
                 versionText,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6f * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.6f * partialTicks)
         );
 
         super.draw(partialTicks);

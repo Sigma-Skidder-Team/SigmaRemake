@@ -83,7 +83,7 @@ public class AnimatedRoundButton extends Image {
                 fit[3] + (shadowPadding * 2.0F),
                 Resources.SHADOW,
                 ColorHelper.applyAlpha(
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.LIGHT_GREYISH_BLUE,
                         this.hoverAnimation.calcPercent() * 0.7F * partialTicks
                 )
         );
@@ -96,8 +96,8 @@ public class AnimatedRoundButton extends Image {
                 this.getTexture(),
                 ColorHelper.applyAlpha(
                         ColorHelper.shiftTowardsOther(
-                                this.textColor.getPrimaryColor(),
-                                this.textColor.getSecondaryColor(),
+                                this.textColor.primaryColor,
+                                this.textColor.secondaryColor,
                                 1.0F - pressedBlend
                         ),
                         partialTicks
@@ -110,9 +110,9 @@ public class AnimatedRoundButton extends Image {
                     (float) (drawX + scaledWidth / 2),
                     (float) (drawY + scaledHeight / 2),
                     this.getText(),
-                    ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
-                    this.textColor.getWidthAlignment(),
-                    this.textColor.getHeightAlignment()
+                    ColorHelper.applyAlpha(this.textColor.textColor, partialTicks),
+                    this.textColor.widthAlignment,
+                    this.textColor.heightAlignment
             );
         }
 
@@ -146,7 +146,7 @@ public class AnimatedRoundButton extends Image {
                     (1.0F - hoverTextScale) * (float) font.getWidth(label) / 2.0F + 1.0F,
                     40.0F,
                     label,
-                    ColorHelper.applyAlpha(this.getTextColor().getPrimaryColor(), expandFactor * 0.6F * partialTicks)
+                    ColorHelper.applyAlpha(this.getTextColor().primaryColor, expandFactor * 0.6F * partialTicks)
             );
 
             GL11.glPopMatrix();

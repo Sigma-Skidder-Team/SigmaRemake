@@ -26,8 +26,8 @@ public final class BindManager extends Manager implements IMinecraft {
     public void save(JsonObject object) {
         JsonObject moduleBinds = new JsonObject();
         for (Module module : Client.INSTANCE.moduleManager.modules) {
-            if (module.getKeycode() != 0) {
-                moduleBinds.addProperty(module.getName(), module.getKeycode());
+            if (module.keycode != 0) {
+                moduleBinds.addProperty(module.name, module.keycode);
             }
         }
         object.add("Modules", moduleBinds);
@@ -166,7 +166,7 @@ public final class BindManager extends Manager implements IMinecraft {
         List<Bind> binds = new ArrayList<>();
 
         for (Module mod : Client.INSTANCE.moduleManager.modules) {
-            if (mod.getKeycode() == key) {
+            if (mod.keycode == key) {
                 binds.add(new Bind(key, mod));
             }
         }

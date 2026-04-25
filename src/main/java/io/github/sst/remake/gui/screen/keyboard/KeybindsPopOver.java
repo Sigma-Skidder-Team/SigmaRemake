@@ -151,7 +151,7 @@ public class KeybindsPopOver extends InteractiveWidget {
                 (float) (this.y + 10 / 2),
                 (float) (this.x - 10 / 2 + this.width),
                 (float) (this.y - 10 / 2 + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), anim * 0.25F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, anim * 0.25F)
         );
 
         RenderUtils.drawRoundedRect(
@@ -183,7 +183,7 @@ public class KeybindsPopOver extends InteractiveWidget {
                 (float) (this.x + 25),
                 (float) (this.y + 20),
                 this.text + " Key",
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F * anim)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.8F * anim)
         );
 
         RenderUtils.drawRoundedRect(
@@ -191,7 +191,7 @@ public class KeybindsPopOver extends InteractiveWidget {
                 (float) (this.y + 68),
                 (float) (this.x + this.width - 25),
                 (float) (this.y + 69),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * anim)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.05F * anim)
         );
 
         super.draw(anim);

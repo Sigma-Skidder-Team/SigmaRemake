@@ -82,9 +82,9 @@ public class ActionSelectionPanel extends InteractiveWidget {
             BindableAction screenAction = new BindableAction(entry.getKey());
 
             ColorHelper style = new ColorHelper(
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.02F),
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.02F),
                     -986896
-            ).setTextColor(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F))
+            ).setTextColor(ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.5F))
                     .setWidthAlignment(FontAlignment.CENTER);
 
             Button button = new Button(
@@ -111,12 +111,12 @@ public class ActionSelectionPanel extends InteractiveWidget {
 
         for (Module module : Client.INSTANCE.moduleManager.modules) {
             ColorHelper style = new ColorHelper(16777215, -986896)
-                    .setTextColor(ClientColors.DEEP_TEAL.getColor())
+                    .setTextColor(ClientColors.DEEP_TEAL)
                     .setWidthAlignment(FontAlignment.LEFT);
 
             Button button = new Button(
                     this.listPanel,
-                    module.getName(),
+                    module.name,
                     0,
                     yIndex++ * 40,
                     this.listPanel.getWidth(),
@@ -272,7 +272,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F * anim)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.3F * anim)
         );
 
         super.applyScaleTransforms();
@@ -283,7 +283,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
                 (float) this.panelWidth,
                 (float) this.panelHeight,
                 10.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), anim)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, anim)
         );
 
         RenderUtils.drawString(
@@ -291,7 +291,7 @@ public class ActionSelectionPanel extends InteractiveWidget {
                 (float) (30 + this.panelX),
                 (float) (30 + this.panelY),
                 "Select mod to bind",
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), anim * 0.7F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, anim * 0.7F)
         );
 
         super.draw(anim);

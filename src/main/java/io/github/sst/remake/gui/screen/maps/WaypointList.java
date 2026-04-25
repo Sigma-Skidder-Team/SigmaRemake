@@ -109,8 +109,8 @@ public class WaypointList extends ScrollablePanel {
                 Resources.TRASHCAN,
                 ColorHelper.applyAlpha(
                         !this.isMouseOverTrashcan
-                                ? ClientColors.DEEP_TEAL.getColor()
-                                : ClientColors.PALE_YELLOW.getColor(),
+                                ? ClientColors.DEEP_TEAL
+                                : ClientColors.PALE_YELLOW,
                         this.trashcanAnimation.calcPercent() * 0.5F
                 ),
                 false

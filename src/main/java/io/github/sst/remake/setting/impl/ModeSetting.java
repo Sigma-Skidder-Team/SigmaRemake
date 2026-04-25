@@ -5,12 +5,10 @@ import io.github.sst.remake.data.setting.DropdownSetting;
 import io.github.sst.remake.setting.Setting;
 import io.github.sst.remake.setting.SettingType;
 import io.github.sst.remake.util.system.io.GsonUtils;
-import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Getter
 public class ModeSetting extends Setting<String> implements DropdownSetting {
     public final List<String> modes;
 

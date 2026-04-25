@@ -54,7 +54,7 @@ public class BezierDot extends Widget {
                 (float) (this.y + 5),
                 10.0F,
                 ColorHelper.applyAlpha(
-                        !this.isDragging() ? ClientColors.DARK_GREEN.getColor() : ClientColors.DARK_BLUE_GREY.getColor(),
+                        !this.isDragging() ? ClientColors.DARK_GREEN : ClientColors.DARK_BLUE_GREY,
                         partialTicks
                 )
         );

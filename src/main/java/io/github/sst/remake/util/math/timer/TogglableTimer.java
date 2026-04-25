@@ -1,13 +1,10 @@
 package io.github.sst.remake.util.math.timer;
 
-import lombok.Getter;
-
 public class TogglableTimer {
     private long systemCurrentTime = 0L;
     private long currentTime = 0L;
 
-    @Getter
-    private boolean enabled = false;
+    public boolean enabled = false;
 
     public void start() {
         this.enabled = true;

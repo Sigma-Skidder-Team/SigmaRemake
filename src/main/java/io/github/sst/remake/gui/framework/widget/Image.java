@@ -9,7 +9,7 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 import org.newdawn.slick.opengl.texture.Texture;
 
 public class Image extends Button {
-    private static final ColorHelper DEFAULT_COLORS = new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.1F));
+    private static final ColorHelper DEFAULT_COLORS = new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE, 0.1F));
     public Texture texture;
 
     public Image(GuiComponent parent, String id, int x, int y, int width, int height, Texture texture, ColorHelper colors, String label, TrueTypeFont font) {
@@ -51,8 +51,8 @@ public class Image extends Button {
                 (float) this.getHeight(),
                 this.getTexture(),
                 ColorHelper.applyAlpha(
-                        ColorHelper.shiftTowardsOther(this.textColor.getPrimaryColor(), this.textColor.getSecondaryColor(), 1.0F - opacityFactor),
-                        (float) (this.textColor.getPrimaryColor() >> 24 & 0xFF) / 255.0F * partialTicks
+                        ColorHelper.shiftTowardsOther(this.textColor.primaryColor, this.textColor.secondaryColor, 1.0F - opacityFactor),
+                        (float) (this.textColor.primaryColor >> 24 & 0xFF) / 255.0F * partialTicks
                 )
         );
 
@@ -62,9 +62,9 @@ public class Image extends Button {
                     (float) (this.getX() + this.getWidth() / 2),
                     (float) (this.getY() + this.getHeight() / 2),
                     this.getText(),
-                    ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
-                    this.textColor.getWidthAlignment(),
-                    this.textColor.getHeightAlignment()
+                    ColorHelper.applyAlpha(this.textColor.textColor, partialTicks),
+                    this.textColor.widthAlignment,
+                    this.textColor.heightAlignment
             );
         }
 

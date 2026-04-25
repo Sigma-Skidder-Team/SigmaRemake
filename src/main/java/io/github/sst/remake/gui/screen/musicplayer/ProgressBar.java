@@ -28,7 +28,7 @@ public class ProgressBar extends InteractiveWidget {
             }
 
             int duration = this.musicManager.getDuration();
-            int playbackProgress = (int) this.musicManager.getPlaybackProgress();
+            int playbackProgress = (int) this.musicManager.playbackProgress;
 
             int targetMs = Math.min((int) (this.dragProgress * (float) duration), playbackProgress);
             this.musicManager.seekTo(targetMs);
@@ -38,7 +38,7 @@ public class ProgressBar extends InteractiveWidget {
     @Override
     public void draw(float partialTicks) {
         int totalDuration = this.musicManager.getTotalDuration();
-        double playbackProgress = this.musicManager.getPlaybackProgress();
+        double playbackProgress = this.musicManager.playbackProgress;
         int duration = this.musicManager.getDuration();
 
         if (duration <= 0) {
@@ -47,7 +47,7 @@ public class ProgressBar extends InteractiveWidget {
                     (float) this.getY(),
                     (float) this.getWidth(),
                     (float) this.getHeight(),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.43F * partialTicks)
             );
             return;
         }
@@ -70,7 +70,7 @@ public class ProgressBar extends InteractiveWidget {
                 (float) this.getY(),
                 (float) this.getWidth(),
                 (float) this.getHeight(),
-                ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.075F)
+                ColorHelper.applyAlpha(ClientColors.MID_GREY, 0.075F)
         );
 
         // Unplayed portion overlay.
@@ -79,7 +79,7 @@ public class ProgressBar extends InteractiveWidget {
                 (float) this.getY(),
                 (float) this.getWidth() * (1.0F - playedPercent),
                 (float) this.getHeight(),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.43F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.43F * partialTicks)
         );
 
         // Buffered/preview portion.
@@ -88,7 +88,7 @@ public class ProgressBar extends InteractiveWidget {
                 (float) this.getY(),
                 (float) this.getWidth() * bufferedPercent,
                 (float) this.getHeight(),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * partialTicks)
         );
 
         if (bufferedPercent != 0.0F) {

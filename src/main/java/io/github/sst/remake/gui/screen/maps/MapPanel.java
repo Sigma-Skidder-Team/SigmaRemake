@@ -91,7 +91,7 @@ public class MapPanel extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 14.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), panelAlpha)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, panelAlpha)
         );
 
         RenderUtils.drawRoundedButton(
@@ -110,7 +110,7 @@ public class MapPanel extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 14.0F,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
         StencilUtils.configureStencilTest();
 
@@ -131,10 +131,10 @@ public class MapPanel extends InteractiveWidget {
                 (float) this.y,
                 1.0F,
                 (float) this.height,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.14F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.14F)
         );
 
-        int headerColor = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F);
+        int headerColor = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.6F);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_25,
                 (float) (this.x + 30),
@@ -148,7 +148,7 @@ public class MapPanel extends InteractiveWidget {
                 (float) this.x,
                 (float) ((this.parent.getHeight() - this.height) / 2 - 70),
                 "Jello Maps",
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
 
         String worldLabel = WaypointUtils.getWorldIdentifier().replace("/", " - ");
@@ -157,7 +157,7 @@ public class MapPanel extends InteractiveWidget {
                 (float) (this.x + this.width - FontUtils.HELVETICA_LIGHT_24.getWidth(worldLabel) - 10),
                 (float) ((this.parent.getHeight() - this.height) / 2 - 62),
                 worldLabel,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F)
         );
     }
 }

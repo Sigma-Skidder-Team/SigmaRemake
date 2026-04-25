@@ -85,7 +85,7 @@ public class TellyBlockFly extends SubModule {
     @Subscribe
     public void onSafeWalk(SafeWalkEvent event) {
         assert client.player != null;
-        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()) {
+        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled) {
             event.setSafe(true);
         }
     }

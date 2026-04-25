@@ -19,7 +19,7 @@ public class ScissorUtils {
     }
 
     public static void startScissor(GuiComponent screen) {
-        startScissor(screen.getX(), screen.getY(), screen.getWidth() + screen.getX(), screen.getHeight() + screen.getY(), true);
+        startScissor(screen.x, screen.y, screen.width + screen.x, screen.height + screen.y, true);
     }
 
     public static void startScissor(float x, float y, float width, float height) {

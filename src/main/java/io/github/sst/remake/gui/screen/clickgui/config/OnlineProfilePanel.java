@@ -138,7 +138,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                 50.0F,
                 Resources.SHADOW_BOTTOM,
                 ColorHelper.applyAlpha(
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.LIGHT_GREYISH_BLUE,
                         this.expandAnimation.calcPercent() * partialTicks * 0.3F
                 )
         );
@@ -159,7 +159,7 @@ public class OnlineProfilePanel extends InteractiveWidget {
                     (float) (this.x + 40),
                     (float) (this.y + 110),
                     "No Default Profiles Available",
-                    ClientColors.MID_GREY.getColor()
+                    ClientColors.MID_GREY
             );
         }
 

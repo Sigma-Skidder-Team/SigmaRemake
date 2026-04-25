@@ -39,19 +39,19 @@ public class WaypointColorBadge extends Button {
                 centerX,
                 centerY,
                 25.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.025F * partialTicks * animPercent)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.025F * partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
                 centerX,
                 centerY,
                 23.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks * animPercent)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.05F * partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
                 centerX,
                 centerY,
                 (float) (18 + pulse),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * animPercent)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * animPercent)
         );
         RenderUtils.drawCircle(
                 centerX,

@@ -66,14 +66,14 @@ public class BindableActionEntry extends InteractiveWidget {
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F - 17.5F,
                 this.bindableAction.getName(),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.6F * partialTicks)
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_12,
                 (float) (this.x + 25),
                 (float) this.y + (float) this.height / 2.0F + 7.5F,
                 this.bindableAction.getType(),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.6F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.6F * partialTicks)
         );
         this.keybindDeleteButton.setY((int) ((float) this.height / 2.0F - 7.5F));
         super.draw(partialTicks);

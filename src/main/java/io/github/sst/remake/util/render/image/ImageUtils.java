@@ -265,7 +265,7 @@ public class ImageUtils {
 
         BufferedImage result = new BufferedImage(newWidth, newHeight, source.getType());
 
-        if (fillColor != ClientColors.DEEP_TEAL.getColor()) {
+        if (fillColor != ClientColors.DEEP_TEAL) {
             for (int x = 0; x < newWidth; x++) {
                 for (int y = 0; y < newHeight; y++) {
                     result.setRGB(x, y, fillColor);
@@ -302,7 +302,7 @@ public class ImageUtils {
                 height,
                 downscaleFactor,
                 blurRadius,
-                ClientColors.DEEP_TEAL.getColor(),
+                ClientColors.DEEP_TEAL,
                 padBeforeBlur
         );
     }
@@ -384,7 +384,7 @@ public class ImageUtils {
 
         BufferedImage padded = new BufferedImage(newWidth, newHeight, source.getType());
 
-        if (color != ClientColors.DEEP_TEAL.getColor()) {
+        if (color != ClientColors.DEEP_TEAL) {
             for (int x = 0; x < newWidth; x++) {
                 for (int y = 0; y < newHeight; y++) {
                     padded.setRGB(x, y, color);
@@ -402,7 +402,7 @@ public class ImageUtils {
     }
 
     public static BufferedImage captureAndProcessRegion(int x, int y, int width, int height, int downscaleFactor, int blurRadius) {
-        return captureAndProcessRegion(x, y, width, height, downscaleFactor, blurRadius, ClientColors.DEEP_TEAL.getColor(), false);
+        return captureAndProcessRegion(x, y, width, height, downscaleFactor, blurRadius, ClientColors.DEEP_TEAL, false);
     }
 
     public static BufferedImage copyImage(BufferedImage image) {

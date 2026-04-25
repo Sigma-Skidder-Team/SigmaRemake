@@ -71,7 +71,7 @@ public class KillAuraModule extends Module {
     private final BooleanSetting deathToggle = new BooleanSetting("Disable on death", "Toggle Aura on death", true);
 
     private final BooleanSetting targetESP = new BooleanSetting("Outline target", "Render an outline for the target(s)", true);
-    private final ColorSetting targetESPColor = new ColorSetting("Outline color", "Color for the outline", ClientColors.LIGHT_GREYISH_BLUE.getColor()).hide(() -> !targetESP.value);
+    private final ColorSetting targetESPColor = new ColorSetting("Outline color", "Color for the outline", ClientColors.LIGHT_GREYISH_BLUE).hide(() -> !targetESP.value);
 
     private final ClickDelayCalculator cpsCalculator = new ClickDelayCalculator(minCPS.value, maxCPS.value);
     private final List<LivingEntity> targets = new ArrayList<>();

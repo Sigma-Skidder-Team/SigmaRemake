@@ -65,9 +65,7 @@ public enum Keys {
     MENU(905, 63, "Menu", 348, 5),
     RIGHT_CONTROL(978, 82, "Ctrl", 345, 5);
 
-    @Getter
     public final int x;
-    @Getter
     public final int y;
 
     public final String name;

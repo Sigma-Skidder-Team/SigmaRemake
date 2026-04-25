@@ -279,7 +279,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
                 114,
                 (int) (client.getWindow().getWidth() * rightPaneRatio) - titleOffset,
                 client.getWindow().getHeight() - 119 - titleOffset,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
         updateEntrySlideAnimations();
         drawHeaderTitle();
@@ -289,7 +289,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
     private void drawHeaderTitle() {
         int xPos = this.x + titleOffset;
         int yPos = this.y + titleOffset;
-        int color = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F);
+        int color = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.8F);
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_40, (float) xPos, (float) yPos, "Jello", color);
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, (float) (xPos + 87), (float) (yPos + 15), "Alt Manager", color);
     }
@@ -348,7 +348,7 @@ public class AltManagerScreen extends Screen implements IMinecraft {
         backgroundOffsetX += (int) ((mouseX - backgroundOffsetX) * 0.5F);
 
         RenderUtils.drawImage((float) backgroundOffsetX, backgroundOffsetY, (float) (getWidth() * 2), (float) (getHeight() + 114), Resources.MENU_PANORAMA);
-        RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) getWidth(), (float) getHeight(), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.95F));
+        RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) getWidth(), (float) getHeight(), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.95F));
     }
 
     public void updateAccountList(boolean forceRefresh) {

@@ -26,9 +26,9 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class TabGuiModule extends Module {
-    private static final int HIGHTLIGHT_FILL = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0625f);
-    private static final int HIGHTLIGHT_SHADOW_TINT = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3f);
-    private static final int HQ_BLUR_BACKGROUND = ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.05f);
+    private static final int HIGHTLIGHT_FILL = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.0625f);
+    private static final int HIGHTLIGHT_SHADOW_TINT = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.3f);
+    private static final int HQ_BLUR_BACKGROUND = ColorHelper.applyAlpha(ClientColors.MID_GREY, 0.05f);
 
     private static final int ROW_HEIGHT = 30;
     private static final int ROW_PADDING = 4;
@@ -105,10 +105,6 @@ public class TabGuiModule extends Module {
 
     @Subscribe
     public void onKeyPress(KeyPressEvent event) {
-        if (!this.isEnabled()) {
-            return;
-        }
-
         switch (event.key) {
             case GLFW.GLFW_KEY_ENTER: // Enter
                 if (this.submenuOpen && this.selectedModule != null) {
@@ -291,21 +287,21 @@ public class TabGuiModule extends Module {
                 moduleTextOffset.put(module, moduleTextOffset.get(module) - animSpeed);
             }
 
-            if (module.isEnabled()) {
+            if (module.enabled) {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_20,
                         (float) (TabGuiModule.MODULE_WIDTH + 11) + moduleTextOffset.get(module),
                         (float) (y + ROW_HEIGHT / 2 - FontUtils.HELVETICA_MEDIUM_20.getHeight() / 2 + 3 + i * ROW_HEIGHT),
-                        module.getName(),
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                        module.name,
+                        ClientColors.LIGHT_GREYISH_BLUE
                 );
             } else {
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_LIGHT_20,
                         (float) (TabGuiModule.MODULE_WIDTH + 11) + moduleTextOffset.get(module),
                         (float) (y + ROW_HEIGHT / 2 - FontUtils.HELVETICA_LIGHT_20.getHeight() / 2 + 2 + i * ROW_HEIGHT),
-                        module.getName(),
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                        module.name,
+                        ClientColors.LIGHT_GREYISH_BLUE
                 );
             }
 

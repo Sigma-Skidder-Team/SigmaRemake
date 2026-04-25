@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ESPModule extends Module {
     private final SubModuleSetting mode = new SubModuleSetting("Mode", "ESP mode", new SimsESP(), new ShadowESP(), new VanillaESP(), new BoxOutlineESP());
-    public final ColorSetting color = new ColorSetting("Color", "ESP color", ClientColors.LIGHT_GREYISH_BLUE.getColor()).hide(() -> !mode.value.name.equals("Shadow") && !mode.value.name.equals("Box Outline"));
+    public final ColorSetting color = new ColorSetting("Color", "ESP color", ClientColors.LIGHT_GREYISH_BLUE).hide(() -> !mode.value.name.equals("Shadow") && !mode.value.name.equals("Box Outline"));
     private final BooleanSetting showPlayers = new BooleanSetting("Show players", "Outline players?", true);
     private final BooleanSetting showMonsters = new BooleanSetting("Show monsters", "Outline monsters?", false);
     private final BooleanSetting showAnimals = new BooleanSetting("Show animals", "Outline animals/passive mobs?", false);
@@ -54,7 +54,7 @@ public class ESPModule extends Module {
     }
 
     public void renderShadowSprites() {
-        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8f);
+        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8f);
         getTargets().forEach(entity -> {
             Vec3d pos = EntityUtils.getRelativePosition(entity);
             GL11.glPushMatrix();

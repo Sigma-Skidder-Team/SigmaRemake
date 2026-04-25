@@ -77,7 +77,7 @@ public class BoxOutlineESP extends SubModule {
             if (inside) {
                 RenderUtils.renderWireframeBox(box, 3.0f, ColorHelper.applyAlpha(color, 0.35f));
             } else {
-                RenderUtils.render3DColoredBox(box, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+                RenderUtils.render3DColoredBox(box, ClientColors.LIGHT_GREYISH_BLUE);
             }
 
             GL11.glDisable(GL11.GL_BLEND);

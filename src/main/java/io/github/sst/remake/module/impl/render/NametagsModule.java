@@ -47,7 +47,7 @@ import java.util.Map.Entry;
 @SuppressWarnings("unused")
 public class NametagsModule extends Module {
     private static final int BACKGROUND_COLOR = ColorHelper.applyAlpha(
-            ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 75.0F), 0.5F);
+            ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL, 75.0F), 0.5F);
 
     private final BooleanSetting magnify = new BooleanSetting("Magnify", "Scales nametags to keep them readable", true);
     private final BooleanSetting furnaces = new BooleanSetting("Furnaces", "Shows furnaces info once open", true);
@@ -322,20 +322,20 @@ public class NametagsModule extends Module {
         RenderUtils.drawRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, BACKGROUND_COLOR);
         RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, 20.0F, 0.5F);
 
-        RenderUtils.drawString(font, padding, (float) (padding - 5), "Furnace", ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(font, padding, (float) (padding - 5), "Furnace", ClientColors.LIGHT_GREYISH_BLUE);
         if (outputItem == null) {
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_20, (float) (padding + 15), (float) (padding + 40), "Empty",
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F));
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.6F));
         }
 
         ItemStack itemStack = furnace.refreshOutput();
         if (itemStack != null) {
             RenderUtils.renderItemStack(itemStack, padding, padding + 27, 45, 45);
             RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_20, (float) (padding + 51), 40.0F,
-                    itemStack.getName().getString(), ClientColors.LIGHT_GREYISH_BLUE.getColor());
+                    itemStack.getName().getString(), ClientColors.LIGHT_GREYISH_BLUE);
             RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_14, (float) (padding + 51), 62.0F,
-                    "Count: " + itemStack.getCount(), ClientColors.LIGHT_GREYISH_BLUE.getColor());
+                    "Count: " + itemStack.getCount(), ClientColors.LIGHT_GREYISH_BLUE);
         }
 
         // Cooldown bar: x1=0, y1=boxHeight-12, x2=clamped, y2=boxHeight-6 → width=x2, height=6
@@ -344,7 +344,7 @@ public class NametagsModule extends Module {
         // Smelting bar: x1=0, y1=boxHeight-6, x2=clamped, y2=boxHeight → width=x2, height=6
         RenderUtils.drawRect(
                 0.0F, (float) boxHeight - 6.0F, Math.min((float) boxWidth * smeltingProgress, (float) boxWidth), 6.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.75F));
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.75F));
 
         GL11.glPopMatrix();
         GL11.glPopMatrix();
@@ -389,7 +389,7 @@ public class NametagsModule extends Module {
         // Team color for health bar
         int teamColor = ColorHelper.applyAlpha(
                 !(entity instanceof PlayerEntity)
-                        ? ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                        ? ClientColors.LIGHT_GREYISH_BLUE
                         : new Color(PlayerUtils.getTeamColor((PlayerEntity) entity)).getRGB(),
                 0.5F);
 
@@ -419,9 +419,9 @@ public class NametagsModule extends Module {
             healthPrefix = "H: ";
         }
 
-        RenderUtils.drawString(font, 0.0F, -20.0F, name, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(font, 0.0F, -20.0F, name, ClientColors.LIGHT_GREYISH_BLUE);
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_14, 0.0F, 10.0F, healthPrefix + healthStr,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor());
+                ClientColors.LIGHT_GREYISH_BLUE);
 
         GL11.glPopMatrix();
 

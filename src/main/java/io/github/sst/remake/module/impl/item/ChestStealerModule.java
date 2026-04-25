@@ -119,7 +119,7 @@ public class ChestStealerModule extends Module {
             silentStealing = true;
             stealingInProgress = true;
             clickTimer.reset();
-            if (!clickTimer.isEnabled()) {
+            if (!clickTimer.enabled) {
                 clickTimer.start();
             }
         }
@@ -135,7 +135,7 @@ public class ChestStealerModule extends Module {
                 stealingInProgress = false;
             }
 
-            if (!auraTimer.isEnabled()) {
+            if (!auraTimer.enabled) {
                 auraTimer.start();
             }
 
@@ -289,7 +289,7 @@ public class ChestStealerModule extends Module {
                 auraTimer.reset();
             }
         } else {
-            if (!clickTimer.isEnabled()) {
+            if (!clickTimer.enabled) {
                 clickTimer.start();
             }
 

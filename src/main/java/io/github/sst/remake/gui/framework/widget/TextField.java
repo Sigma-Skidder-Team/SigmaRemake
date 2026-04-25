@@ -24,7 +24,7 @@ public class TextField extends Widget implements IMinecraft {
     public static final ColorHelper DEFAULT_COLORS = new ColorHelper(
             -892679478,
             -892679478,
-            ClientColors.DEEP_TEAL.getColor(),
+            ClientColors.DEEP_TEAL,
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );
@@ -32,7 +32,7 @@ public class TextField extends Widget implements IMinecraft {
     public static final ColorHelper INVERTED_COLORS = new ColorHelper(
             -1,
             -1,
-            ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+            ClientColors.LIGHT_GREYISH_BLUE,
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );
@@ -330,7 +330,7 @@ public class TextField extends Widget implements IMinecraft {
                     (float) (this.y + this.height / 2 - this.font.getHeight(visibleText) / 2 + 2),
                     caretX + (float) (visibleText.isEmpty() ? 1 : 0),
                     (float) (this.y + this.height / 2 + this.font.getHeight(visibleText) / 2 - 1),
-                    ColorHelper.applyAlpha(this.textColor.getTextColor(), !cursorDim ? 0.1F * partialTicks : 0.8F)
+                    ColorHelper.applyAlpha(this.textColor.textColor, !cursorDim ? 0.1F * partialTicks : 0.8F)
             );
 
             float caretXNoSmooth = (float) (textStartX + this.font.getWidth(visibleText.substring(0, this.caretIndex)))
@@ -364,8 +364,8 @@ public class TextField extends Widget implements IMinecraft {
                 ColorHelper.applyAlpha(-5516546, partialTicks)
         );
 
-        FontAlignment widthAlignment = this.textColor.getWidthAlignment();
-        FontAlignment heightAlignment = this.textColor.getHeightAlignment();
+        FontAlignment widthAlignment = this.textColor.widthAlignment;
+        FontAlignment heightAlignment = this.textColor.heightAlignment;
 
         RenderUtils.drawString(
                 this.font,
@@ -373,7 +373,7 @@ public class TextField extends Widget implements IMinecraft {
                 (float) (this.y + this.height / 2),
                 visibleText.isEmpty() && (!this.focused || visibleText.length() <= 0) ? this.placeholder : visibleText,
                 ColorHelper.applyAlpha(
-                        this.textColor.getTextColor(),
+                        this.textColor.textColor,
                         (this.focusFade / 2.0F + 0.4F) * partialTicks * (this.focused && visibleText.length() > 0 ? 1.0F : 0.5F)
                 ),
                 widthAlignment,
@@ -389,7 +389,7 @@ public class TextField extends Widget implements IMinecraft {
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
                     ColorHelper.applyAlpha(
-                            this.textColor.getPrimaryColor(),
+                            this.textColor.primaryColor,
                             (this.focusFade / 2.0F + 0.5F) * partialTicks
                     )
             );

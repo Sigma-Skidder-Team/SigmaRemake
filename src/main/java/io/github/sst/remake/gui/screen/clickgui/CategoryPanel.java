@@ -115,7 +115,7 @@ public class CategoryPanel extends Widget {
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + 60),
                 ColorHelper.applyAlpha(
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.LIGHT_GREYISH_BLUE,
                         Math.min(1.0F, partialTicks * 0.9F * this.expandProgress)
                 )
         );
@@ -125,7 +125,7 @@ public class CategoryPanel extends Widget {
                 (float) this.getY() + 60.0F * this.expandProgress,
                 (float) this.getWidth(),
                 (float) this.getHeight() - 60.0F * this.expandProgress,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
 
         updateCornerRadius();
@@ -136,7 +136,7 @@ public class CategoryPanel extends Widget {
                 (float) (this.getX() + 20),
                 (float) (this.getY() + 30),
                 categoryName,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.5F * this.expandProgress),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, partialTicks * 0.5F * this.expandProgress),
                 FontAlignment.LEFT,
                 FontAlignment.CENTER
         );
@@ -152,7 +152,7 @@ public class CategoryPanel extends Widget {
                     (float) this.getWidth(),
                     18.0F,
                     Resources.SHADOW_BOTTOM,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * this.expandProgress * 0.5F)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * this.expandProgress * 0.5F)
             );
         }
     }

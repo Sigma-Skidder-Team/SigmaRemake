@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.List;
 
 public class DropdownMenu extends InteractiveWidget {
-    public static final ColorHelper color = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
+    public static final ColorHelper color = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL).setHeightAlignment(FontAlignment.CENTER);
     public List<String> values;
     public int selectedIndex;
 
@@ -39,9 +39,9 @@ public class DropdownMenu extends InteractiveWidget {
                             this.getWidth(),
                             this.getHeight(),
                             new ColorHelper(
-                                    ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                                    ClientColors.LIGHT_GREYISH_BLUE,
                                     -1381654,
-                                    this.textColor.getPrimaryColor(),
+                                    this.textColor.primaryColor,
                                     FontAlignment.LEFT,
                                     FontAlignment.CENTER
                             ),
@@ -75,7 +75,7 @@ public class DropdownMenu extends InteractiveWidget {
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + this.getHeight() + this.getExpandedHeight()),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.getX(),

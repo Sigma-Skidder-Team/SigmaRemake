@@ -85,7 +85,7 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawRoundedRect(float x, float y, float width, float height, float radius, float alpha) {
         GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
-        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
+        int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha);
 
         drawImage(x - radius, y - radius, radius, radius, Resources.SHADOW_CORNER_1, color);
         drawImage(x + width, y - radius, radius, radius, Resources.SHADOW_CORNER_2, color);
@@ -98,7 +98,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawImage(float x, float y, float width, float height, Texture tex, float alphaValue) {
-        drawImage(x, y, width, height, tex, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaValue));
+        drawImage(x, y, width, height, tex, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alphaValue));
     }
 
     public static void drawImage(float x, float y, float width, float height, Texture texture) {
@@ -764,7 +764,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawPanelShadow(float x, float y, float width, float height, float shadowSize, float alpha) {
-        int shadowColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
+        int shadowColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha);
 
         drawImage(x, y, shadowSize, height, Resources.SHADOW_RIGHT, shadowColor, false);
         drawImage(x + width - shadowSize, y, shadowSize, height, Resources.SHADOW_LEFT, shadowColor, false);
@@ -1027,14 +1027,14 @@ public class RenderUtils implements IMinecraft {
             GL11.glPushMatrix();
             GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
-            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL.getColor(), color, 0.04F * angle / 90.0F));
+            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL, color, 0.04F * angle / 90.0F));
             GL11.glPopMatrix();
         }
 
         for (int angle = 0; angle <= 270; angle += 90) {
             GL11.glPushMatrix();
             GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
-            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL.getColor(), color, 0.04F * angle / 90.0F));
+            drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL, color, 0.04F * angle / 90.0F));
             GL11.glPopMatrix();
         }
     }
@@ -1085,8 +1085,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glTranslated(0.0, -20.0 * Math.sqrt(Math.sqrt(scale)), 0.0);
 
         int bgColor = ColorHelper.applyAlpha(
-                ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE.getColor(),
-                        ClientColors.DEEP_TEAL.getColor(), 75.0F),
+                ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL, 75.0F),
                 0.5F
         );
 
@@ -1108,7 +1107,7 @@ public class RenderUtils implements IMinecraft {
         );
 
         GL11.glTranslated((double) -font.getWidth(label) / 2, 0.0, 0.0);
-        drawString(font, 0.0F, 0.0F, label, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F));
+        drawString(font, 0.0F, 0.0F, label, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F));
 
         GL11.glPopMatrix();
         GL11.glPopMatrix();
@@ -1264,25 +1263,25 @@ public class RenderUtils implements IMinecraft {
                 (float) centerX,
                 (float) centerY,
                 baseRadius,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F * alpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.1F * alpha)
         );
         drawCircle(
                 (float) centerX,
                 (float) centerY,
                 baseRadius - 1.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.14F * alpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.14F * alpha)
         );
         drawCircle(
                 (float) centerX,
                 (float) centerY,
                 baseRadius - 2.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
         );
         drawCircle(
                 (float) centerX,
                 (float) centerY,
                 baseRadius - 6.0F,
-                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(color, ClientColors.DEEP_TEAL.getColor(), 0.7F), alpha)
+                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(color, ClientColors.DEEP_TEAL, 0.7F), alpha)
         );
         drawCircle(
                 (float) centerX,
@@ -1321,7 +1320,7 @@ public class RenderUtils implements IMinecraft {
                 (float) logoWidth,
                 (float) logoHeight,
                 Resources.LOGO,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), backgroundOpacity)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, backgroundOpacity)
         );
 
         float clampedProgress = Math.min(1.0F, progress * 1.02F);
@@ -1334,7 +1333,7 @@ public class RenderUtils implements IMinecraft {
                     (float) logoWidth,
                     20.0F,
                     10.0F,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F * backgroundOpacity)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.3F * backgroundOpacity)
             );
             drawRoundedRect(
                     (float) (logoX + 1),
@@ -1342,7 +1341,7 @@ public class RenderUtils implements IMinecraft {
                     (float) (logoWidth - 2),
                     18.0F,
                     9.0F,
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), backgroundOpacity)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, backgroundOpacity)
             );
         }
 
@@ -1352,7 +1351,7 @@ public class RenderUtils implements IMinecraft {
                 (float) ((int) ((float) (logoWidth - 4) * clampedProgress)),
                 16.0F,
                 8.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.9F * backgroundOpacity)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.9F * backgroundOpacity)
         );
 
         GL11.glPopMatrix();

@@ -55,7 +55,7 @@ public class CompassModule extends Module {
                     (float) (halfMarkers * markerSpacing * 2) * 1.5F,
                     (float) (220 + debugOffset),
                     Resources.SHADOW,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.25F)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.25F)
             );
 
             int index = 0;
@@ -79,7 +79,7 @@ public class CompassModule extends Module {
                         (float) (x + (width - FontUtils.HELVETICA_LIGHT_25.getWidth(label)) / 2),
                         (float) (y + 20),
                         label,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
                 );
             } else {
                 RenderUtils.drawString(
@@ -87,7 +87,7 @@ public class CompassModule extends Module {
                         (float) (x + (width - FontUtils.HELVETICA_MEDIUM_40.getWidth(label)) / 2),
                         (float) (y + 10),
                         label,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
                 );
             }
         } else {
@@ -96,14 +96,14 @@ public class CompassModule extends Module {
                     (float) (y + 28),
                     (float) (x + width / 2 + 1),
                     (float) (y + 38),
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha * 0.5F)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha * 0.5F)
             );
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_18,
                     (float) (x + (width - FontUtils.HELVETICA_LIGHT_18.getWidth(label)) / 2),
                     (float) (y + 40),
                     label,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
             );
         }
     }

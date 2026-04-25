@@ -114,7 +114,7 @@ public class MapZoomControl extends InteractiveWidget {
                         (float) this.width,
                         (float) this.height,
                         8.0F,
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                        ClientColors.LIGHT_GREYISH_BLUE
                 );
 
                 StencilUtils.configureStencilTest();
@@ -125,7 +125,7 @@ public class MapZoomControl extends InteractiveWidget {
                         (float) (this.width + 2),
                         (float) (this.height + 2),
                         this.blurredBackgroundTexture,
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                        ClientColors.LIGHT_GREYISH_BLUE
                 );
 
                 while (rippleIterator.hasNext()) {
@@ -144,7 +144,7 @@ public class MapZoomControl extends InteractiveWidget {
                             (float) (this.x + halfWidth),
                             (float) (regionY + this.height / 4),
                             radius,
-                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaFactor)
+                            ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alphaFactor)
                     );
 
                     ScissorUtils.restoreScissor();
@@ -163,7 +163,7 @@ public class MapZoomControl extends InteractiveWidget {
                         (float) this.width,
                         (float) this.height,
                         6.0F,
-                        ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F)
+                        ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.3F)
                 );
 
                 GL11.glPopMatrix();
@@ -173,7 +173,7 @@ public class MapZoomControl extends InteractiveWidget {
                         (float) (this.x + 14),
                         (float) (this.y + 8),
                         "+",
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F)
                 );
 
                 RenderUtils.drawRoundedRect2(
@@ -181,7 +181,7 @@ public class MapZoomControl extends InteractiveWidget {
                         (float) (this.y + 65),
                         8.0F,
                         2.0F,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F)
                 );
             }
         } catch (IOException e) {

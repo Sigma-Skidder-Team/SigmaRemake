@@ -57,12 +57,12 @@ public class OptionsScreen extends Screen {
 
         int bgTop = ColorHelper.shiftTowardsOther(
                 -1072689136,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.1F),
                 blend
         );
         int bgBottom = ColorHelper.shiftTowardsOther(
                 -804253680,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.1F),
                 blend
         );
 

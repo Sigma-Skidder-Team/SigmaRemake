@@ -114,7 +114,7 @@ public class MiniMapModule extends Module {
 
     @Subscribe(priority = Priority.HIGH)
     public void onRender2D(RenderClient2DEvent event) {
-        if (!isEnabled() || client.player == null || client.world == null) {
+        if ( client.player == null || client.world == null) {
             return;
         }
 
@@ -155,7 +155,7 @@ public class MiniMapModule extends Module {
                 scaledWidth,
                 scaledHeight,
                 minimapBuffer,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                ClientColors.LIGHT_GREYISH_BLUE,
                 0.0F,
                 0.0F,
                 mapChunkRadius * 16.0F,
@@ -196,7 +196,7 @@ public class MiniMapModule extends Module {
                 mapX + mapSize / 2.0F - 4,
                 yOffset + mapSize / 2.0F - 8,
                 arrow,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
         GL11.glPopMatrix();
 

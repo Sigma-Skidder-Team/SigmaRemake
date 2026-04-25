@@ -27,7 +27,7 @@ public class SpectrumButton extends InteractiveWidget {
         float alphaMultiplier = 0.09F + 0.25F * hoverPercent + (this.spectrumEnabled ? 0.2F : 0.0F);
         float alpha = partialTicks * alphaMultiplier;
 
-        int barColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha);
+        int barColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha);
 
         RenderUtils.drawRoundedRect2((float) (this.x + 10), (float) (this.y + 16), 5.0F, 14.0F, barColor);
         RenderUtils.drawRoundedRect2((float) (this.x + 17), (float) (this.y + 10), 5.0F, 20.0F, barColor);

@@ -43,7 +43,7 @@ public class BirdGameScreen extends Screen implements IMinecraft {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), alpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, alpha)
         );
         super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
@@ -60,19 +60,19 @@ public class BirdGameScreen extends Screen implements IMinecraft {
                 (float) (this.birdGameWidget.getWidth() + 40),
                 (float) (this.birdGameWidget.getHeight() + 40),
                 14.0F,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
         super.draw(partialTicks);
         int widgetX = (this.width - this.birdGameWidget.getWidth()) / 2;
         int widgetY = (this.height - this.birdGameWidget.getHeight()) / 2;
-        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, (float) widgetX, (float) (widgetY - 60), "Flappy Bird", ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, (float) widgetX, (float) (widgetY - 60), "Flappy Bird", ClientColors.LIGHT_GREYISH_BLUE);
         String scoreText = "Max: " + this.maxScore + "   |   Score: " + this.birdGameWidget.score;
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_20,
                 (float) (widgetX + this.birdGameWidget.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(scoreText)),
                 (float) (widgetY - 50),
                 scoreText,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F)
         );
     }
 

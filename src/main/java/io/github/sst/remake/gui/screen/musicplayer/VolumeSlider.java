@@ -26,14 +26,14 @@ public class VolumeSlider extends InteractiveWidget {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) this.y + (float) this.height * this.volume,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.2F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.2F)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.x,
                 (float) (this.y + this.height),
                 (float) (this.x + this.width),
                 (float) this.y + (float) this.height * this.volume,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.2F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.2F)
         );
         super.draw(partialTicks);
     }

@@ -70,7 +70,7 @@ public class KeyButton extends InteractiveWidget {
                     (float) (this.x + 14),
                     (float) (this.y + 11) + 3.0F * this.hoverProgress,
                     10.0F,
-                    ColorHelper.applyAlpha(ClientColors.DARK_SLATE_GREY.getColor(), this.hoverProgress)
+                    ColorHelper.applyAlpha(ClientColors.DARK_SLATE_GREY, this.hoverProgress)
             );
         }
 
@@ -109,7 +109,7 @@ public class KeyButton extends InteractiveWidget {
                 (float) (this.y + 19) + 3.0F * this.hoverProgress,
                 this.text,
                 ColorHelper.applyAlpha(
-                        ClientColors.DEEP_TEAL.getColor(),
+                        ClientColors.DEEP_TEAL,
                         0.4F + (this.isBound ? 0.2F : 0.0F)
                 )
         );
@@ -117,7 +117,7 @@ public class KeyButton extends InteractiveWidget {
 
     private int getIconColor() {
         return ColorHelper.applyAlpha(
-                ClientColors.DEEP_TEAL.getColor(),
+                ClientColors.DEEP_TEAL,
                 0.3F + (this.isBound ? 0.2F : 0.0F)
         );
     }

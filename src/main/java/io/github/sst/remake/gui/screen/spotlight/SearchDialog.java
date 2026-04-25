@@ -67,7 +67,7 @@ public class SearchDialog extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 (float) padding,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.97F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.97F)
         );
 
         RenderUtils.drawImage(
@@ -76,25 +76,25 @@ public class SearchDialog extends InteractiveWidget {
                 20.0F,
                 20.0F,
                 Resources.SEARCH_ICON,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.3F)
         );
 
         List<Module> matches = this.getMatchingModules();
-        if (!matches.isEmpty() && this.matchesQueryPrefix(this.queryText, matches.get(0).getName())) {
+        if (!matches.isEmpty() && this.matchesQueryPrefix(this.queryText, matches.get(0).name)) {
             Module first = matches.get(0);
 
-            String moduleName = first.getName();
+            String moduleName = first.name;
             String autoComplete =
                     this.queryText
                             + moduleName.substring(this.queryText.length())
-                            + (first.isEnabled() ? " - Enabled" : " - Disabled");
+                            + (first.enabled ? " - Enabled" : " - Disabled");
 
             RenderUtils.drawString(
                     this.queryInput.getFont(),
                     (float) (this.x + 54),
                     (float) (this.y + 14),
                     autoComplete,
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.25F)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.25F)
             );
         }
 
@@ -109,7 +109,7 @@ public class SearchDialog extends InteractiveWidget {
         }
 
         for (Module module : Client.INSTANCE.moduleManager.modules) {
-            if (this.matchesQueryPrefix(this.queryText, module.getName())) {
+            if (this.matchesQueryPrefix(this.queryText, module.name)) {
                 matches.add(module);
             }
         }

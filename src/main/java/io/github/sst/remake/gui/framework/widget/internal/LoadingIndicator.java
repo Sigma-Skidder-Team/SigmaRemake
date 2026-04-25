@@ -34,7 +34,7 @@ public class LoadingIndicator extends Widget {
                     (float) this.width,
                     (float) this.height,
                     Resources.LOADING_INDICATOR,
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), this.hoverAlpha * partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, this.hoverAlpha * partialTicks)
             );
             GL11.glPopMatrix();
         }

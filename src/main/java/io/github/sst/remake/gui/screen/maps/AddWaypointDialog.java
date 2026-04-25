@@ -155,7 +155,7 @@ public class AddWaypointDialog extends InteractiveWidget {
                 (float) (this.y + padding / 2),
                 (float) (this.x - padding / 2 + this.width),
                 (float) (this.y - padding / 2 + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), animProgress * 0.25F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, animProgress * 0.25F)
         );
 
         RenderUtils.drawRoundedRect(
@@ -187,7 +187,7 @@ public class AddWaypointDialog extends InteractiveWidget {
                 (float) (this.y + 68),
                 (float) (this.x + this.width - 25),
                 (float) (this.y + 69),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * animProgress)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.05F * animProgress)
         );
 
         super.draw(animProgress);

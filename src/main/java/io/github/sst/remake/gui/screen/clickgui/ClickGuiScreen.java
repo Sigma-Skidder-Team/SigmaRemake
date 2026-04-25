@@ -58,9 +58,9 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         this.addToList(this.brainFreeze = new BrainFreezeOverlay(this, "brainFreeze"));
 
         for (Module module : Client.INSTANCE.moduleManager.modules) {
-            if (!this.categoryPanels.containsKey(module.getCategory())) {
-                CategoryPanel categoryPanel = new CategoryPanel(this, x, y, module.getCategory());
-                this.categoryPanels.put(module.getCategory(), categoryPanel);
+            if (!this.categoryPanels.containsKey(module.category)) {
+                CategoryPanel categoryPanel = new CategoryPanel(this, x, y, module.category);
+                this.categoryPanels.put(module.category, categoryPanel);
                 this.addToList(categoryPanel);
 
                 x += categoryPanel.getWidth() + 10;
@@ -83,7 +83,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
         Image moreButton;
         this.addToList(moreButton = new Image(this, "more", this.getWidth() - 69, this.getHeight() - 55, 55, 41, Resources.MORE_ICON));
 
-        moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F));
+        moreButton.getTextColor().setPrimaryColor(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.3F));
         moreButton.setListening(false);
         moreButton.onClick((parent, mouseButton) -> this.addRunnable(() -> {
             if (this.profileScreen != null && this.hasChild(this.profileScreen)) {
@@ -264,7 +264,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), backgroundAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, backgroundAlpha)
         );
 
         float contentFadeMultiplier = 1.0F;
@@ -289,7 +289,7 @@ public class ClickGuiScreen extends Screen implements IMinecraft {
                     (float) (this.height - 47),
                     profileName,
                     ColorHelper.applyAlpha(
-                            ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                            ClientColors.LIGHT_GREYISH_BLUE,
                             0.5F * RandomUtils.clamp01(openCloseFactor)
                     )
             );

@@ -213,7 +213,7 @@ public class ProfileScreen extends InteractiveWidget {
                 (float) (this.y + OUTER_PADDING / 2),
                 (float) (this.x - OUTER_PADDING / 2 + this.width),
                 (float) (this.y - OUTER_PADDING / 2 + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), openPercent * 0.25F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, openPercent * 0.25F)
         );
         RenderUtils.drawRoundedRect(
                 (float) this.x,
@@ -237,7 +237,7 @@ public class ProfileScreen extends InteractiveWidget {
                 (float) (this.x + TITLE_X_OFFSET),
                 (float) (this.y + TITLE_Y_OFFSET),
                 "Profiles",
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F * openPercent)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.8F * openPercent)
         );
 
         RenderUtils.drawRoundedRect(
@@ -245,7 +245,7 @@ public class ProfileScreen extends InteractiveWidget {
                 (float) (this.y + DIVIDER_Y),
                 (float) (this.x + this.width - TITLE_X_OFFSET),
                 (float) (this.y + DIVIDER_Y + 1),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * openPercent)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.05F * openPercent)
         );
 
         super.draw(openPercent);

@@ -85,7 +85,7 @@ public class VerticalScrollThumb extends Widget {
                 (float) (this.y + texturePadding),
                 (float) (this.x + this.width),
                 (float) (this.y + this.getHeight() - texturePadding),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.45F * renderAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.45F * renderAlpha)
         );
 
         super.draw(partialTicks);

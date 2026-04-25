@@ -85,9 +85,9 @@ public class Alert extends InteractiveWidget {
                             this.contentWidth,
                             component.height,
                             new ColorHelper(
-                                    ClientColors.MID_GREY.getColor(),
-                                    ClientColors.MID_GREY.getColor(),
-                                    ClientColors.MID_GREY.getColor()
+                                    ClientColors.MID_GREY,
+                                    ClientColors.MID_GREY,
+                                    ClientColors.MID_GREY
                             ),
                             component.text,
                             FontUtils.HELVETICA_LIGHT_20
@@ -144,9 +144,9 @@ public class Alert extends InteractiveWidget {
                             this.contentWidth,
                             component.height,
                             new ColorHelper(
-                                    ClientColors.DEEP_TEAL.getColor(),
-                                    ClientColors.DEEP_TEAL.getColor(),
-                                    ClientColors.DEEP_TEAL.getColor()
+                                    ClientColors.DEEP_TEAL,
+                                    ClientColors.DEEP_TEAL,
+                                    ClientColors.DEEP_TEAL
                             ),
                             component.text,
                             FontUtils.HELVETICA_LIGHT_36
@@ -273,7 +273,7 @@ public class Alert extends InteractiveWidget {
                     (float) (this.getWidth() + 10),
                     (float) (this.getHeight() + 10),
                     this.backgroundBlurTexture,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
             );
 
             RenderUtils.drawRoundedRect(
@@ -281,7 +281,7 @@ public class Alert extends InteractiveWidget {
                     0.0F,
                     (float) this.getWidth(),
                     (float) this.getHeight(),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.1F * alpha)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.1F * alpha)
             );
 
             if (panelWidth > 0) {
@@ -290,7 +290,7 @@ public class Alert extends InteractiveWidget {
                         (this.height - panelHeight) / 2,
                         panelWidth,
                         panelHeight,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alpha)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha)
                 );
             }
 
@@ -348,7 +348,7 @@ public class Alert extends InteractiveWidget {
                                 this.getHeight(),
                                 5,
                                 10,
-                                ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                                ClientColors.LIGHT_GREYISH_BLUE,
                                 true
                         )
                 );

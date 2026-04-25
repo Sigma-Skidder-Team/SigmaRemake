@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @SuppressWarnings({"rawtypes", "DataFlowIssue"})
 public abstract class Module implements IMinecraft {
     public final List<Setting<?>> settings = new ArrayList<>();

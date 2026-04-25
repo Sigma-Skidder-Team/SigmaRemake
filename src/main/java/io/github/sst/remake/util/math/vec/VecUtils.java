@@ -28,8 +28,8 @@ public class VecUtils {
         double oneMinusT = 1.0 - t;
         double oneMinusTSquared = oneMinusT * oneMinusT;
 
-        double x = oneMinusTSquared * p0.getX() + 2.0 * t * oneMinusT * p1.getX() + t * t * p2.getX();
-        double y = oneMinusTSquared * p0.getY() + 2.0 * t * oneMinusT * p1.getY() + t * t * p2.getY();
+        double x = oneMinusTSquared * p0.x + 2.0 * t * oneMinusT * p1.x + t * t * p2.x;
+        double y = oneMinusTSquared * p0.y + 2.0 * t * oneMinusT * p1.y + t * t * p2.y;
 
         return new Vector2d(x, y);
     }
@@ -39,15 +39,15 @@ public class VecUtils {
         double oneMinusTSquared = oneMinusT * oneMinusT;
         double oneMinusTCubed = oneMinusTSquared * oneMinusT;
 
-        double x = p0.getX() * oneMinusTCubed
-                + p1.getX() * 3.0 * t * oneMinusTSquared
-                + p2.getX() * 3.0 * t * t * oneMinusT
-                + p3.getX() * t * t * t;
+        double x = p0.x * oneMinusTCubed
+                + p1.x * 3.0 * t * oneMinusTSquared
+                + p2.x * 3.0 * t * t * oneMinusT
+                + p3.x * t * t * t;
 
-        double y = p0.getY() * oneMinusTCubed
-                + p1.getY() * 3.0 * t * oneMinusTSquared
-                + p2.getY() * 3.0 * t * t * oneMinusT
-                + p3.getY() * t * t * t;
+        double y = p0.y * oneMinusTCubed
+                + p1.y * 3.0 * t * oneMinusTSquared
+                + p2.y * 3.0 * t * t * oneMinusT
+                + p3.y * t * t * t;
 
         return new Vector2d(x, y);
     }
@@ -61,19 +61,19 @@ public class VecUtils {
 
             for (int i = 0; i < processedPoints.size(); i++) {
                 Vector2d currentPoint = processedPoints.get(i);
-                if (!(currentPoint.getX() <= (double) t)) {
+                if (!(currentPoint.x <= (double) t)) {
                     break;
                 }
 
-                result = currentPoint.getY();  // Inferred that this might be the interpolation value.
+                result = currentPoint.y;
                 Vector2d nextPoint = new Vector2d(1.0, 1.0);
                 if (i + 1 < processedPoints.size()) {
                     nextPoint = processedPoints.get(i + 1);
                 }
 
-                double deltaX = nextPoint.getX() - currentPoint.getX();
-                double deltaY = nextPoint.getY() - currentPoint.getY();
-                double deltaT = (double) t - currentPoint.getX();
+                double deltaX = nextPoint.x - currentPoint.x;
+                double deltaY = nextPoint.y - currentPoint.y;
+                double deltaT = (double) t - currentPoint.x;
                 double ratio = deltaT / deltaX;
                 result += deltaY * ratio;
             }
@@ -101,7 +101,7 @@ public class VecUtils {
 
                 return interpolatedPoints;
             } else {
-                return null; // Not enough points to interpolate
+                return null;
             }
         } else {
             throw new AssertionError("Provided list had no reference");

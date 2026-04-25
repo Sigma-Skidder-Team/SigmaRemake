@@ -39,7 +39,7 @@ public class SnakeGameScreen extends Screen implements IMinecraft {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), alpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, alpha)
         );
         super.applyScaleTransforms();
         RenderUtils.drawRoundedRect(
@@ -56,12 +56,12 @@ public class SnakeGameScreen extends Screen implements IMinecraft {
                 (float) (this.snakeGameWidget.getWidth() + 40),
                 (float) (this.snakeGameWidget.getHeight() + 40),
                 14.0F,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
         super.draw(partialTicks);
         int widgetX = (this.width - this.snakeGameWidget.getWidth()) / 2;
         int widgetY = (this.height - this.snakeGameWidget.getHeight()) / 2;
-        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, (float) widgetX, (float) (widgetY - 60), "Snake", ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, (float) widgetX, (float) (widgetY - 60), "Snake", ClientColors.LIGHT_GREYISH_BLUE);
         this.maxScore = Math.max(this.snakeGameWidget.getScore(), this.maxScore);
         String scoreText = "Max: " + this.maxScore + "   |   Score: " + this.snakeGameWidget.getScore();
         RenderUtils.drawString(
@@ -69,7 +69,7 @@ public class SnakeGameScreen extends Screen implements IMinecraft {
                 (float) (widgetX + this.snakeGameWidget.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(scoreText)),
                 (float) (widgetY - 50),
                 scoreText,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F)
         );
     }
 

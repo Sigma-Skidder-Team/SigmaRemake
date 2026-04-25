@@ -89,7 +89,7 @@ public class AACBlockFly extends SubModule{
     public void onSafeWalk(SafeWalkEvent event) {
         if (client.player == null) return;
 
-        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()) {
+        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled) {
             event.setSafe(true);
         }
     }

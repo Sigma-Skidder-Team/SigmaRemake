@@ -26,14 +26,14 @@ public class KeybindDeleteButton extends InteractiveWidget {
                 (float) (this.x + this.width / 2),
                 (float) (this.y + this.height / 2),
                 (float) this.width,
-                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW.getColor(), (0.5F + this.hoverAnimationProgress * 0.3F + (!this.isMouseDownOverComponent ? 0.0F : 0.2F)) * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.PALE_YELLOW, (0.5F + this.hoverAnimationProgress * 0.3F + (!this.isMouseDownOverComponent ? 0.0F : 0.2F)) * partialTicks)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + (this.width - 10) / 2),
                 (float) (this.y + this.height / 2 - 1),
                 10.0F,
                 2.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.75F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.75F * partialTicks)
         );
         super.draw(partialTicks);
     }

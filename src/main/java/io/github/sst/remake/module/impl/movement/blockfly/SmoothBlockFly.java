@@ -101,7 +101,7 @@ public class SmoothBlockFly extends SubModule {
             return;
         }
 
-        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()) {
+        if (client.player.isOnGround() && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled) {
             event.setSafe(true);
         }
     }

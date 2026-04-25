@@ -85,7 +85,7 @@ public class AccountDetailPanel extends Widget {
                 (float) (this.x + (this.width - FontUtils.HELVETICA_LIGHT_36.getWidth(this.selectedAccount.name)) / 2),
                 (float) this.y - 20,
                 this.selectedAccount.name,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.7F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.7F)
         );
 
         super.draw(partialTicks);

@@ -71,7 +71,7 @@ public class WaypointRow extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 ColorHelper.applyAlpha(
-                        ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.03F),
+                        ColorHelper.shiftTowardsBlack(ClientColors.LIGHT_GREYISH_BLUE, 0.03F),
                         this.dragHighlightAnimation.calcPercent()
                 )
         );
@@ -81,7 +81,7 @@ public class WaypointRow extends InteractiveWidget {
                 (float) (this.x + 68),
                 (float) (this.y + 14),
                 this.name,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.8F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.8F)
         );
 
         RenderUtils.drawString(
@@ -89,7 +89,7 @@ public class WaypointRow extends InteractiveWidget {
                 (float) (this.x + 68),
                 (float) (this.y + 38),
                 "x:" + this.position.getX() + " z:" + this.position.getZ(),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.5F)
         );
 
         int dragHandleX = this.width - 43;
@@ -100,28 +100,28 @@ public class WaypointRow extends InteractiveWidget {
                 (float) (this.y + 27),
                 20.0F,
                 2.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), dragHandleAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, dragHandleAlpha)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + dragHandleX),
                 (float) (this.y + 32),
                 20.0F,
                 2.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), dragHandleAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, dragHandleAlpha)
         );
         RenderUtils.drawRoundedRect2(
                 (float) (this.x + dragHandleX),
                 (float) (this.y + 37),
                 20.0F,
                 2.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), dragHandleAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, dragHandleAlpha)
         );
 
         RenderUtils.drawCircle(
                 (float) (this.x + 35),
                 (float) (this.y + this.height / 2),
                 20.0F,
-                ColorHelper.shiftTowardsOther(this.color, ClientColors.DEEP_TEAL.getColor(), 0.9F)
+                ColorHelper.shiftTowardsOther(this.color, ClientColors.DEEP_TEAL, 0.9F)
         );
         RenderUtils.drawCircle(
                 (float) (this.x + 35),

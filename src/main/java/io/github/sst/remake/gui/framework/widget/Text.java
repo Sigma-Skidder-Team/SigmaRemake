@@ -12,9 +12,9 @@ import org.newdawn.slick.opengl.font.TrueTypeFont;
 
 public class Text extends Widget {
     public static ColorHelper DEFAULT_TEXT_STYLE = new ColorHelper(
-            ClientColors.DEEP_TEAL.getColor(),
-            ClientColors.DEEP_TEAL.getColor(),
-            ClientColors.DEEP_TEAL.getColor(),
+            ClientColors.DEEP_TEAL,
+            ClientColors.DEEP_TEAL,
+            ClientColors.DEEP_TEAL,
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );
@@ -72,7 +72,7 @@ public class Text extends Widget {
                     (float) this.getX(),
                     (float) this.getY(),
                     this.getText(),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, partialTicks)
             );
             GL11.glAlphaFunc(519, 0.0F);
         }
@@ -83,7 +83,7 @@ public class Text extends Widget {
                     (float) this.getX(),
                     (float) this.getY(),
                     this.getText(),
-                    ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks * ColorHelper.getAlpha(this.textColor.getTextColor()))
+                    ColorHelper.applyAlpha(this.textColor.textColor, partialTicks * ColorHelper.getAlpha(this.textColor.textColor))
             );
         }
     }

@@ -53,7 +53,7 @@ public class SaturationValuePanel extends InteractiveWidget {
     public void draw(float partialTicks) {
         int leftColor = ColorHelper.applyAlpha(Color.HSBtoRGB(this.hue, 0.0F, 1.0F), partialTicks);
         int rightColor = ColorHelper.applyAlpha(Color.HSBtoRGB(this.hue, 1.0F, 1.0F), partialTicks);
-        int overlayBottom = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks);
+        int overlayBottom = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, partialTicks);
 
         ScissorUtils.startScissor(this);
 
@@ -73,8 +73,8 @@ public class SaturationValuePanel extends InteractiveWidget {
                 this.getY(),
                 this.getX() + this.getWidth(),
                 this.getY() + this.getHeight(),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0F),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.0F),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.0F),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.0F),
                 overlayBottom,
                 overlayBottom
         );
@@ -91,7 +91,7 @@ public class SaturationValuePanel extends InteractiveWidget {
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + this.getHeight()),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.25F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.25F * partialTicks)
         );
 
         ScissorUtils.restoreScissor();

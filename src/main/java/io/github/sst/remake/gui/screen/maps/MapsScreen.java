@@ -130,7 +130,7 @@ public class MapsScreen extends Screen implements IMinecraft {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), overlayAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, overlayAlpha)
         );
 
         super.applyScaleTransforms();

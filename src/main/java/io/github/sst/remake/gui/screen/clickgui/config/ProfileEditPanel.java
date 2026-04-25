@@ -53,7 +53,7 @@ public class ProfileEditPanel extends Widget {
                 (float) this.height,
                 Resources.SHADOW_RIGHT,
                 ColorHelper.applyAlpha(
-                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                        ClientColors.LIGHT_GREYISH_BLUE,
                         collapseProgress * partialTicks
                 )
         );

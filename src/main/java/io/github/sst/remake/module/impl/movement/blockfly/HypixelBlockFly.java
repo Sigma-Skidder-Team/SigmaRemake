@@ -100,7 +100,7 @@ public class HypixelBlockFly extends SubModule {
         }
 
         if (client.player.isOnGround()
-                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()
+                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled
                 && (!isSneakDownwards || !getParent().downwards.value)) {
             event.setSafe(true);
         }
@@ -235,7 +235,6 @@ public class HypixelBlockFly extends SubModule {
 
     @Subscribe(priority = Priority.LOW)
     public void onMotion(MotionEvent event) {
-        if (!getParent().isEnabled()) return;
         if (client.player == null) return;
         if (getParent().countPlaceableBlocks() == 0) return;
 

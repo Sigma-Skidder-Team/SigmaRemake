@@ -32,7 +32,7 @@ public class MusicParticlesModule extends Module {
     public void onRender(RenderClient2DEvent event) {
         if (client.player == null) return;
 
-        if (!Client.INSTANCE.musicManager.isPlaying()
+        if (!Client.INSTANCE.musicManager.playing
                 || Client.INSTANCE.musicManager.visualizer.isEmpty()) {
             this.lastRenderTime = System.nanoTime();
             return;

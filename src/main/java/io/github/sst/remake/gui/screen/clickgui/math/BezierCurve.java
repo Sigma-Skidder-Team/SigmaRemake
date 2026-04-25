@@ -94,7 +94,7 @@ public class BezierCurve extends InteractiveWidget {
                 usableWidth,
                 usableHeight,
                 3.0F,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.05F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.05F * partialTicks)
         );
 
         List<Vector2d> curvePoints = new ArrayList<>();
@@ -112,7 +112,7 @@ public class BezierCurve extends InteractiveWidget {
                 (float) (this.x + usableWidth * xAlongCurve + padding),
                 (float) (this.y - padding / 2 + this.height),
                 14.0F,
-                ColorHelper.applyAlpha(ClientColors.DARK_BLUE_GREY.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.DARK_BLUE_GREY, partialTicks)
         );
 
         List<Vector2d> sampledCurve = vecUtils.generateInterpolatedPoints(curvePoints);
@@ -122,7 +122,7 @@ public class BezierCurve extends InteractiveWidget {
 
         GL11.glLineWidth(1.0F);
         GL11.glColor4d(0.0, 0.0, 0.0, 0.6F * partialTicks);
-        GL11.glAlphaFunc(519, 0.0F);
+        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
@@ -133,13 +133,13 @@ public class BezierCurve extends InteractiveWidget {
                 GlStateManager.DstFactor.ZERO
         );
 
-        GL11.glEnable(2848);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
 
-        GL11.glBegin(GL11.GL_LINE_STRIP); // GL_LINE_STRIP
+        GL11.glBegin(GL11.GL_LINE_STRIP);
         GL11.glVertex2f(0.0F, usableHeight);
 
         for (Vector2d p : sampledCurve) {
-            GL11.glVertex2d(p.getX() * (double) usableWidth, (1.0 - p.getY()) * (double) usableHeight);
+            GL11.glVertex2d(p.x * (double) usableWidth, (1.0 - p.y) * (double) usableHeight);
         }
 
         GL11.glVertex2f(usableWidth, 0.0F);
@@ -148,7 +148,7 @@ public class BezierCurve extends InteractiveWidget {
         GL11.glLineWidth(3.0F);
         GL11.glColor4d(0.0, 0.2F, 0.4F, 0.2F);
 
-        GL11.glBegin(3); // GL_LINE_STRIP
+        GL11.glBegin(GL11.GL_LINE_STRIP);
         GL11.glVertex2f(0.0F, usableHeight);
         GL11.glVertex2f(
                 (float) (this.controlPoint1.getX() - padding + 5),
@@ -156,7 +156,7 @@ public class BezierCurve extends InteractiveWidget {
         );
         GL11.glEnd();
 
-        GL11.glBegin(3); // GL_LINE_STRIP
+        GL11.glBegin(GL11.GL_LINE_STRIP);
         GL11.glVertex2f(usableWidth, 0.0F);
         GL11.glVertex2f(
                 (float) (this.controlPoint2.getX() - padding + 5),

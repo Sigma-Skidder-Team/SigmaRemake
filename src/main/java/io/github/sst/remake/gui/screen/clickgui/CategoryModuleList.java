@@ -41,13 +41,13 @@ public class CategoryModuleList extends ScrollablePanel {
 
             Button moduleButton = new Button(
                     this.getContent(),
-                    currentModule.getName() + "Button",
+                    currentModule.name + "Button",
                     0,
                     rowIndex * 30,
                     this.getWidth(),
                     30,
                     buttonStyle,
-                    currentModule.getName(),
+                    currentModule.name,
                     FontUtils.HELVETICA_LIGHT_20
             );
 
@@ -107,15 +107,15 @@ public class CategoryModuleList extends ScrollablePanel {
     }
 
     private static void applyModuleButtonPadding(Button button, Module module) {
-        button.setTextOffsetX(module.isEnabled() ? 30 : 22);
+        button.setTextOffsetX(module.enabled ? 30 : 22);
     }
 
     private static ColorHelper createModuleButtonStyle(Module module, int transparentBackground) {
-        boolean enabled = module.isEnabled();
+        boolean enabled = module.enabled;
 
         int background = enabled ? -14047489 : 1895167477;
         int hoverBackground = enabled ? -14042881 : transparentBackground;
-        int textColor = enabled ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : ClientColors.DEEP_TEAL.getColor();
+        int textColor = enabled ? ClientColors.LIGHT_GREYISH_BLUE : ClientColors.DEEP_TEAL;
 
         ColorHelper style = new ColorHelper(background, hoverBackground).setTextColor(textColor);
         style.setWidthAlignment(FontAlignment.LEFT);

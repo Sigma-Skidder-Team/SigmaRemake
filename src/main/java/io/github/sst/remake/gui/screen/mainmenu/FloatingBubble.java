@@ -89,7 +89,7 @@ public class FloatingBubble extends GuiComponent implements IMinecraft {
                 (float) this.x,
                 (float) this.y,
                 (float) this.getWidth(),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.07F + (!(this.interactionStrength > 0.0F) ? 0.0F : this.interactionStrength * 0.3F))
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.07F + (!(this.interactionStrength > 0.0F) ? 0.0F : this.interactionStrength * 0.3F))
         );
         super.draw(partialTicks);
     }

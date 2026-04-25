@@ -43,22 +43,22 @@ public class TextButton extends InteractiveWidget {
             return;
         }
 
-        int baseColor = this.textColor.getPrimaryColor();
+        int baseColor = this.textColor.primaryColor;
 
         int textX = this.getX()
                 + (
-                this.textColor.getWidthAlignment() != FontAlignment.CENTER
+                this.textColor.widthAlignment != FontAlignment.CENTER
                         ? 0
-                        : (this.textColor.getWidthAlignment() != FontAlignment.RIGHT
+                        : (this.textColor.widthAlignment != FontAlignment.RIGHT
                         ? this.getWidth() / 2
                         : this.getWidth())
         );
 
         int textY = this.getY()
                 + (
-                this.textColor.getHeightAlignment() != FontAlignment.CENTER
+                this.textColor.heightAlignment != FontAlignment.CENTER
                         ? 0
-                        : (this.textColor.getHeightAlignment() != FontAlignment.BOTTOM
+                        : (this.textColor.heightAlignment != FontAlignment.BOTTOM
                         ? this.getHeight() / 2
                         : this.getHeight())
         );
@@ -78,8 +78,8 @@ public class TextButton extends InteractiveWidget {
                 (float) textY,
                 this.getText(),
                 animatedColor,
-                this.textColor.getWidthAlignment(),
-                this.textColor.getHeightAlignment()
+                this.textColor.widthAlignment,
+                this.textColor.heightAlignment
         );
 
         RenderUtils.drawRoundedRect(

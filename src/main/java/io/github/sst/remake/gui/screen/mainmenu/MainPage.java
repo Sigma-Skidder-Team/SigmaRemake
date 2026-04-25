@@ -51,7 +51,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 128,
                 128,
                 Resources.SINGLEPLAYER_ICON,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL)
         );
         this.addToList(this.singleplayerButton);
 
@@ -63,7 +63,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 128,
                 128,
                 Resources.MULTIPLAYER_ICON,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL)
         );
         this.addToList(this.multiplayerButton);
 
@@ -75,7 +75,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 128,
                 128,
                 Resources.WORLD_ICON,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL)
         );
         this.addToList(this.realmsButton);
 
@@ -87,7 +87,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 128,
                 128,
                 Resources.OPTIONS_ICON,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL)
         );
         this.addToList(this.optionsButton);
 
@@ -99,7 +99,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 128,
                 128,
                 Resources.ALT_ICON,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL)
         );
         this.addToList(this.altManagerButton);
 
@@ -110,7 +110,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 this.getHeight() - 31,
                 textFont.getWidth(copyright),
                 128,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()),
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE),
                 copyright,
                 textFont,
                 true
@@ -123,7 +123,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 this.getHeight() - 31,
                 128,
                 128,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor()),
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE),
                 versionText,
                 textFont,
                 true
@@ -136,7 +136,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 24,
                 110,
                 50,
-                new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F)),
+                new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.7F)),
                 "Changelog",
                 FontUtils.HELVETICA_LIGHT_20
         );
@@ -149,7 +149,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
                 24,
                 50,
                 50,
-                new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F)),
+                new ColorHelper(ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.4F)),
                 "Exit",
                 FontUtils.HELVETICA_LIGHT_20
         );
@@ -187,7 +187,7 @@ public class MainPage extends GuiComponent implements IMinecraft {
             largeLogo = Resources.LOGO_LARGE_2X;
         }
 
-        RenderUtils.drawImage((float) (this.getWidth() / 2 - imageWidth / 2), (float) (this.getHeight() / 2 - imageHeight), (float) imageWidth, (float) imageHeight, largeLogo, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
+        RenderUtils.drawImage((float) (this.getWidth() / 2 - imageWidth / 2), (float) (this.getHeight() / 2 - imageHeight), (float) imageWidth, (float) imageHeight, largeLogo, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks));
 
         super.draw(partialTicks);
     }

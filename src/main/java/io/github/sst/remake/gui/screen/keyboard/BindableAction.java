@@ -18,11 +18,11 @@ public class BindableAction {
     }
 
     public String getName() {
-        return this.module == null ? ScreenUtils.screenToScreenName.get(this.screen) : this.module.getName();
+        return this.module == null ? ScreenUtils.screenToScreenName.get(this.screen) : this.module.name;
     }
 
     public String getType() {
-        return this.module == null ? "Screen" : this.module.getCategory().toString();
+        return this.module == null ? "Screen" : this.module.category.toString();
     }
 
     public void setBind(int keycode) {

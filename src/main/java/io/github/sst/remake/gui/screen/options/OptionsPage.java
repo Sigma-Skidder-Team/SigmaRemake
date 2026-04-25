@@ -20,7 +20,7 @@ public class OptionsPage extends GuiComponent {
         super(parent, name, x, y, width, height);
         this.setListening(false);
         ColorHelper color = ColorHelper.DEFAULT_COLOR.clone();
-        color.setPrimaryColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        color.setPrimaryColor(ClientColors.LIGHT_GREYISH_BLUE);
         TextButton openKeybinds;
         this.addToList(openKeybinds = new TextButton(this, "openKeybinds", width / 2 - 300, height - 80, 300, 38, color, "Open Keybind Manager", FontUtils.HELVETICA_LIGHT_24));
         TextButton openGui;
@@ -45,8 +45,8 @@ public class OptionsPage extends GuiComponent {
         float x = this.x + (this.getWidth() - 202) / 2f;
         float y = this.y + 10;
 
-        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, x, y + 1, "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks));
-        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, x + 95, y + 14, "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.86F * partialTicks));
+        RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_40, x, y + 1, "Jello", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks));
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, x + 95, y + 14, "for Sigma", ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.86F * partialTicks));
 
         String versionInfo = "You're currently using Sigma " + Client.VERSION;
         RenderUtils.drawString(
@@ -54,7 +54,7 @@ public class OptionsPage extends GuiComponent {
                 (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(versionInfo)) / 2),
                 (float) (this.getY() + 70),
                 versionInfo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.4F * partialTicks)
         );
 
         String clickGuiInfo = "Click GUI is currently bound to: " + BindUtils.getKeyName(Keys.RIGHT_SHIFT.keycode) + " Key";
@@ -63,7 +63,7 @@ public class OptionsPage extends GuiComponent {
                 (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(clickGuiInfo)) / 2),
                 (float) (this.getY() + this.getHeight() - 180),
                 clickGuiInfo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.6F * partialTicks)
         );
 
         String keybindInfo = "Configure all your keybinds in the keybind manager!";
@@ -72,7 +72,7 @@ public class OptionsPage extends GuiComponent {
                 (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_14.getWidth(keybindInfo)) / 2),
                 (float) (this.getY() + this.getHeight() - 150),
                 keybindInfo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.4F * partialTicks)
         );
 
         String blurInfo = "GUI Blur: ";
@@ -81,7 +81,7 @@ public class OptionsPage extends GuiComponent {
                 (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(blurInfo)) / 2 - 114),
                 (float) (this.getY() + this.getHeight() - 221),
                 blurInfo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F * partialTicks)
         );
 
         String gpuInfo = "GPU Accelerated: ";
@@ -90,7 +90,7 @@ public class OptionsPage extends GuiComponent {
                 (float) (this.getX() + (this.getWidth() - FontUtils.HELVETICA_LIGHT_20.getWidth(gpuInfo)) / 2 + 52),
                 (float) (this.getY() + this.getHeight() - 221),
                 gpuInfo,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F * partialTicks)
         );
 
         super.draw(partialTicks);

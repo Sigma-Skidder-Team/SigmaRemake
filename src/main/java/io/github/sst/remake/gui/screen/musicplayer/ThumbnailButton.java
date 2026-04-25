@@ -25,9 +25,9 @@ import java.net.URL;
 
 public class ThumbnailButton extends Widget {
     private static final ColorHelper DEFAULT_TEXT_STYLE = new ColorHelper(
-            ClientColors.DEEP_TEAL.getColor(),
-            ClientColors.DEEP_TEAL.getColor(),
-            ClientColors.DEEP_TEAL.getColor(),
+            ClientColors.DEEP_TEAL,
+            ClientColors.DEEP_TEAL,
+            ClientColors.DEEP_TEAL,
             FontAlignment.LEFT,
             FontAlignment.CENTER
     );
@@ -152,14 +152,14 @@ public class ThumbnailButton extends Widget {
             RenderUtils.drawImage(
                     x, y, w, h,
                     Resources.ARTWORK,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - hoverPercent))
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * (1.0F - hoverPercent))
             );
 
             if (this.blurredThumbnailTexture != null) {
                 RenderUtils.drawImage(
                         x, y, w, h,
                         Resources.ARTWORK,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, hoverPercent * partialTicks)
                 );
             }
             return;
@@ -190,14 +190,14 @@ public class ThumbnailButton extends Widget {
         RenderUtils.drawImage(
                 x, y, w, h,
                 this.thumbnailTexture,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks * (1.0F - hoverPercent))
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks * (1.0F - hoverPercent))
         );
 
         if (this.blurredThumbnailTexture != null) {
             RenderUtils.drawImage(
                     x, y, w, h,
                     this.blurredThumbnailTexture,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, hoverPercent * partialTicks)
             );
         }
     }
@@ -212,7 +212,7 @@ public class ThumbnailButton extends Widget {
                 playIconSize * scale,
                 playIconSize * scale,
                 Resources.PLAY_ICON,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), hoverPercent * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, hoverPercent * partialTicks)
         );
     }
 
@@ -236,14 +236,14 @@ public class ThumbnailButton extends Widget {
                     (float) (this.getX() + (this.getWidth() - font.getWidth(parts[1])) / 2),
                     (float) (this.getY() + this.getWidth() - 2),
                     parts[1],
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
             );
             RenderUtils.drawString(
                     font,
                     (float) (this.getX() + (this.getWidth() - font.getWidth(parts[0])) / 2),
                     (float) (this.getY() + this.getWidth() - 2 + 13),
                     parts[0],
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
             );
         } else {
             RenderUtils.drawString(
@@ -251,7 +251,7 @@ public class ThumbnailButton extends Widget {
                     (float) (this.getX() + (this.getWidth() - font.getWidth(parts[0])) / 2),
                     (float) (this.getY() + this.getWidth() - 2 + 6),
                     parts[0],
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
             );
         }
 

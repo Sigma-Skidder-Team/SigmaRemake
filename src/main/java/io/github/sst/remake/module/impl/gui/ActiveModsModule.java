@@ -55,14 +55,14 @@ public class ActiveModsModule extends Module {
         super.onInit();
 
         for (Module module : Client.INSTANCE.moduleManager.modules) {
-            if (module.getCategory() != Category.GUI) {
+            if (module.category != Category.GUI) {
                 this.activeModules.add(module);
                 this.scaleInAnimations.put(module, new AnimationUtils(150, 150, AnimationUtils.Direction.FORWARDS));
 
                 if (!this.animations.value) {
                     continue;
                 }
-                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+                this.scaleInAnimations.get(module).changeDirection(!module.enabled ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
             }
         }
 
@@ -90,7 +90,7 @@ public class ActiveModsModule extends Module {
         int offset = 0;
 
         for (Module module : this.activeModules) {
-            if (module.isEnabled()) {
+            if (module.enabled) {
                 offset++;
             }
         }
@@ -115,7 +115,7 @@ public class ActiveModsModule extends Module {
 
         for (Module module : this.scaleInAnimations.keySet()) {
             if (animations.value) {
-                this.scaleInAnimations.get(module).changeDirection(!module.isEnabled() ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
+                this.scaleInAnimations.get(module).changeDirection(!module.enabled ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
             }
         }
 
@@ -147,12 +147,12 @@ public class ActiveModsModule extends Module {
                 transparency = animation.calcPercent();
                 animationScale = 0.86F + 0.14F * transparency;
             } else {
-                if (!module.isEnabled()) {
+                if (!module.enabled) {
                     continue;
                 }
             }
 
-            String moduleName = module.getName();
+            String moduleName = module.name;
             GL11.glAlphaFunc(519, 0.0F);
             GL11.glPushMatrix();
 
@@ -170,7 +170,7 @@ public class ActiveModsModule extends Module {
                     (float) this.font.getWidth(moduleName) * 3.0F,
                     this.font.getHeight() + scale + 40,
                     Resources.SHADOW,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.36F * transparency * scaleFactor)
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.36F * transparency * scaleFactor)
             );
             RenderUtils.drawString(
                     this.font, (float) (screenWidth - margin - this.font.getWidth(moduleName)), (float) screenHeight, moduleName, transparency != 1.0F ? ColorHelper.applyAlpha(-1, transparency * 0.95F) : color

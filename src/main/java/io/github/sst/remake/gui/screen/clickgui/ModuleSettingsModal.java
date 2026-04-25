@@ -83,7 +83,7 @@ public class ModuleSettingsModal extends InteractiveWidget {
                 (float) this.y,
                 (float) this.width,
                 (float) this.height,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.45F * animationProgress)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.45F * animationProgress)
         );
 
         super.applyScaleTransforms();
@@ -94,23 +94,23 @@ public class ModuleSettingsModal extends InteractiveWidget {
                 (float) this.dialogWidth,
                 (float) this.dialogHeight,
                 10.0F,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), animationProgress)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, animationProgress)
         );
 
         RenderUtils.drawString(
                 FontUtils.HELVETICA_MEDIUM_40,
                 (float) this.dialogX,
                 (float) (this.dialogY - 60),
-                this.module.getName(),
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), animationProgress)
+                this.module.name,
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, animationProgress)
         );
 
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_20,
                 (float) (30 + this.dialogX),
                 (float) (30 + this.dialogY),
-                fitWithEllipsis(this.module.getDescription(), this.dialogWidth - 60),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), animationProgress * 0.7F)
+                fitWithEllipsis(this.module.description, this.dialogWidth - 60),
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, animationProgress * 0.7F)
         );
 
         super.draw(animationProgress);

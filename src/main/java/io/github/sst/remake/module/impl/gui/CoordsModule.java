@@ -70,7 +70,7 @@ public class CoordsModule extends Module {
                 FontAlignment.CENTER, FontAlignment.LEFT);
 
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, textX, textY, coordinatesText,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F * animationScale),
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F * animationScale),
                 FontAlignment.CENTER, FontAlignment.LEFT);
 
         RenderSystem.popMatrix();

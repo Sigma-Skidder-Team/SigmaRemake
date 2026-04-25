@@ -5,8 +5,7 @@ import io.github.sst.remake.util.math.timer.TogglableTimer;
 import lombok.Getter;
 
 public class AnimationManager {
-    @Getter
-    private float currentValue;
+    public float currentValue;
     private final RandomIntGenerator random = new RandomIntGenerator();
     private final TogglableTimer timer = new TogglableTimer();
     private long nextInterval;

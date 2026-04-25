@@ -61,6 +61,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
         if (!ViaInstance.VIAVERSION_EXISTS) return;
 
         versionSelectorWidget.render(matrices, mouseX, mouseY, delta);
-        drawStringWithShadow(matrices, textRenderer, "Jello Portal:", width / 2 - 30, 13, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F));
+        drawStringWithShadow(matrices, textRenderer, "Jello Portal:", width / 2 - 30, 13, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F));
     }
 }

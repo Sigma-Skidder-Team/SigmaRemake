@@ -58,7 +58,7 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
         super.updatePanelDimensions(mouseX, mouseY);
         this.isHoveredInHierarchy = this.isMouseOverComponentConsideringZOrder(mouseX, mouseY, false);
 
-        boolean isTimerExpired = !this.scrollActivityTimer.isEnabled() || this.scrollActivityTimer.getElapsedTime() >= 500L;
+        boolean isTimerExpired = !this.scrollActivityTimer.enabled || this.scrollActivityTimer.getElapsedTime() >= 500L;
         float fadeDirection = (this.thumb.getHeight() >= this.getHeight()) ? -1.0F :
                 (!this.isHoveredInHierarchy() && !this.thumb.isDragging() && isTimerExpired ? -0.05F : 0.05F);
 
@@ -76,7 +76,7 @@ public class VerticalScrollBar extends Widget implements OffsetProvider {
     public void draw(float partialTicks) {
         float effectiveAlpha = partialTicks * this.fadeAlpha;
         int padding = 5;
-        int trackColor = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.2F * effectiveAlpha);
+        int trackColor = ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.2F * effectiveAlpha);
 
         RenderUtils.drawImage((float) this.x, (float) this.y, (float) this.width, 5.0F, Resources.VERTICAL_SCROLL_BAR_TOP, 0.45F * effectiveAlpha);
         RenderUtils.drawImage((float) this.x, (float) (this.y + this.height - padding), (float) this.width, 5.0F, Resources.VERTICAL_SCROLL_BAR_BOTTOM, 0.45F * effectiveAlpha);

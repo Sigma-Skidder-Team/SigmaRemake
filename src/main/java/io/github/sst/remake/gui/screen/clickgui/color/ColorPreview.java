@@ -20,7 +20,7 @@ public class ColorPreview extends InteractiveWidget {
         float centerY = (float) this.y + (float) this.width / 2.0F;
 
         int outerRingColor = ColorHelper.applyAlpha(
-                ColorHelper.shiftTowardsOther(this.previewColor, ClientColors.DEEP_TEAL.getColor(), 0.8F),
+                ColorHelper.shiftTowardsOther(this.previewColor, ClientColors.DEEP_TEAL, 0.8F),
                 partialTicks
         );
         RenderUtils.drawCircle(centerX, centerY, (float) this.width, outerRingColor);
@@ -37,7 +37,7 @@ public class ColorPreview extends InteractiveWidget {
                     centerX,
                     centerY,
                     (float) (this.width - 2),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), partialTicks * 0.2F)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, partialTicks * 0.2F)
             );
         }
 

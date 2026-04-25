@@ -23,7 +23,7 @@ public class AccountListEntry extends Widget {
     public AnimationUtils slideAnim = new AnimationUtils(800, 300, AnimationUtils.Direction.FORWARDS);
     private int errorBlinkTicks = 0;
     private int errorBlinkMaxTicks = 0;
-    private int hoverColor = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 20.0F);
+    private int hoverColor = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL, 20.0F);
 
     public AccountListEntry(GuiComponent parent, String id, int x, int y, int width, int height, Account account) {
         super(parent, id, x, y, width, height, false);
@@ -46,7 +46,7 @@ public class AccountListEntry extends Widget {
     @Override
     public void draw(float partialTicks) {
         this.applyTranslationTransforms();
-        this.hoverColor = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE.getColor(), ClientColors.DEEP_TEAL.getColor(), 2.0F);
+        this.hoverColor = ColorHelper.shiftTowardsOther(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL, 2.0F);
 
         int scrollOffset = ((ScrollablePanel) this.parent.getParent()).getScrollOffset();
         int drawY = Math.max(0, this.y - scrollOffset);
@@ -61,7 +61,7 @@ public class AccountListEntry extends Widget {
                     drawY,
                     this.width,
                     Math.max(20, drawHeight),
-                    ColorHelper.applyAlpha(!this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.hoverColor, alphaScale)
+                    ColorHelper.applyAlpha(!this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE : this.hoverColor, alphaScale)
             );
 
             ScissorUtils.startScissor(this.x, drawY, this.x + this.width + 20, drawY + drawHeight, true);
@@ -77,7 +77,7 @@ public class AccountListEntry extends Widget {
                             18.0F * this.selectionAnim.calcPercent() * (float) drawHeight / 100.0F,
                             (float) (47 * drawHeight) / 100.0F,
                             Resources.SELECTED_ICON,
-                            !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.hoverColor
+                            !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE : this.hoverColor
                     );
                 }
 
@@ -88,14 +88,14 @@ public class AccountListEntry extends Widget {
     }
 
     public void drawAccountHead() {
-        RenderUtils.drawImage((float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, this.account.setHeadTexture(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), true);
+        RenderUtils.drawImage((float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, this.account.setHeadTexture(), ClientColors.LIGHT_GREYISH_BLUE, true);
         RenderUtils.drawPanelShadow((float) (this.x + 13), (float) (this.y + 13), 75.0F, 75.0F, 20.0F, 1.0F);
-        RenderUtils.drawImage((float) (this.x + 1), (float) this.y, 100.0F, 100.0F, Resources.OUTLINE, !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE.getColor() : this.hoverColor);
+        RenderUtils.drawImage((float) (this.x + 1), (float) this.y, 100.0F, 100.0F, Resources.OUTLINE, !this.isMouseDownOverComponent() ? ClientColors.LIGHT_GREYISH_BLUE : this.hoverColor);
     }
 
     public void drawAccountUsername() {
-        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, (float) (this.x + 110), (float) (this.y + 18), this.account.name, ClientColors.DEEP_TEAL.getColor());
-        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_14, (float) (this.x + 110), (float) (this.y + 50), "Token: " + "asdddddddddddddddddddddddddddddddddddddddddddd".replaceAll(".", "·"), ClientColors.MID_GREY.getColor());
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_25, (float) (this.x + 110), (float) (this.y + 18), this.account.name, ClientColors.DEEP_TEAL);
+        RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_14, (float) (this.x + 110), (float) (this.y + 50), "Token: " + "asdddddddddddddddddddddddddddddddddddddddddddd".replaceAll(".", "·"), ClientColors.MID_GREY);
     }
 
     public void drawStatusIcons(float alphaScale) {
@@ -108,10 +108,10 @@ public class AccountListEntry extends Widget {
 
         float invalidTokenAlpha = this.account != null && this.account.invalidToken ? alphaScale : 0.0F;
         float errorAlpha = Math.max(blinkProgress * alphaScale, invalidTokenAlpha);
-        int errorColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), errorAlpha);
+        int errorColor = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, errorAlpha);
 
         RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 42), 17.0F, 17.0F, Resources.X_ICON, errorColor);
-        RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 45), 17.0F, 13.0F, Resources.CHECKMARK_ICON, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.refreshFade * alphaScale));
+        RenderUtils.drawImage((float) (this.x + this.width - 45), (float) (this.y + 45), 17.0F, 13.0F, Resources.CHECKMARK_ICON, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, this.refreshFade * alphaScale));
     }
 
     public void setAccountListRefreshing(boolean refreshing) {

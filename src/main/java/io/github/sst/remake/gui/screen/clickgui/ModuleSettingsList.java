@@ -321,21 +321,21 @@ public class ModuleSettingsList extends ScrollablePanel {
                 (float) (this.getX() + 10),
                 (float) (this.getY() + this.getHeight() + 24),
                 this.hoveredSettingName,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F * this.tooltipFade.calcPercent())
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 11),
                 (float) (this.getY() + this.getHeight() + 24),
                 this.hoveredSettingName,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F * this.tooltipFade.calcPercent())
         );
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (this.getX() + 14 + FontUtils.HELVETICA_LIGHT_14.getWidth(this.hoveredSettingName) + 2),
                 (float) (this.getY() + this.getHeight() + 24),
                 this.hoveredSettingDescription,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.5F * this.tooltipFade.calcPercent())
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.5F * this.tooltipFade.calcPercent())
         );
     }
 

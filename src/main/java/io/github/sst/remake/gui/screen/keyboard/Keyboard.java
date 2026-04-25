@@ -16,9 +16,9 @@ public class Keyboard extends InteractiveWidget {
             KeyButton keyButton = new KeyButton(
                     this,
                     "KEY_" + key.keycode + this.getChildren().size(),
-                    key.getX(),
+                    key.x,
                     key.getRowY(),
-                    key.getY(),
+                    key.y,
                     key.getHeight(),
                     key.name,
                     key.keycode
@@ -71,7 +71,7 @@ public class Keyboard extends InteractiveWidget {
     public int[] getKeyAnchorPosition(int keyCode) {
         for (Keys key : Keys.values()) {
             if (key.keycode == keyCode) {
-                return new int[]{key.getX() + key.getY() / 2, key.getRowY() + key.getHeight()};
+                return new int[]{key.x + key.y / 2, key.getRowY() + key.getHeight()};
             }
         }
 
@@ -99,7 +99,7 @@ public class Keyboard extends InteractiveWidget {
                 (float) bgWidth,
                 (float) bgHeight,
                 14.0F,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
 
         super.draw(partialTicks);

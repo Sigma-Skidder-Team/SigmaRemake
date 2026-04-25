@@ -100,7 +100,7 @@ public class NCPBlockFly extends SubModule {
         }
 
         if (client.player.isOnGround()
-                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()
+                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled
                 && (!isSneakDownwards || !getParent().downwards.value)) {
             event.setSafe(true);
         }

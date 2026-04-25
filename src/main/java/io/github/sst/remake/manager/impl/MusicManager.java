@@ -56,16 +56,14 @@ public final class MusicManager extends Manager implements IMinecraft {
             totalDuration = 0,
             duration = -1;
 
-    @Getter
-    private double playbackProgress = 0;
+    public double playbackProgress = 0;
     private double seekTime = 0;
 
     public int volume = 50;
     public boolean spectrum = true;
     public int repeat = 0; //0 - NO REPEAT, 1 - REPEAT, 2 - LOOP
 
-    @Getter
-    private volatile boolean playing = false;
+    public volatile boolean playing = false;
     private volatile boolean seekRequested = false;
     private volatile boolean processing = false;
 
@@ -75,8 +73,7 @@ public final class MusicManager extends Manager implements IMinecraft {
     private final AtomicInteger thumbnailProcessGeneration = new AtomicInteger(0);
 
     private PlaylistData playlist;
-    @Getter
-    private volatile SongData currentPlayingSongData;
+    public volatile SongData currentPlayingSongData;
     private volatile SongData thumbnailProcessingSongData;
     private volatile SongData thumbnailPreparedForSong;
 
@@ -87,8 +84,7 @@ public final class MusicManager extends Manager implements IMinecraft {
     private int startVideoIndex;
     private int currentlyPlayingVideoIndex;
 
-    @Getter
-    private Texture notification, songThumbnail;
+    public Texture notification, songThumbnail;
     private volatile BufferedImage thumbnailImage, scaledThumbnailImage;
     private volatile boolean thumbnailFailed = false;
 
@@ -840,7 +836,7 @@ public final class MusicManager extends Manager implements IMinecraft {
                     (float) client.getWindow().getHeight() - height,
                     width,
                     height,
-                    ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.2F * alpha)
+                    ColorHelper.applyAlpha(ClientColors.MID_GREY, 0.2F * alpha)
             );
         }
 
@@ -849,7 +845,7 @@ public final class MusicManager extends Manager implements IMinecraft {
             for (int i = 0; i < barCount; i++) {
                 float heightRatio = (float) client.getWindow().getHeight() / 1080.0F;
                 float height = ((float) (Math.sqrt(amplitudes.get(i)) / 12.0) - 5.0F) * heightRatio;
-                RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+                RenderUtils.drawRoundedRect2((float) i * width, (float) client.getWindow().getHeight() - height, width, height, ClientColors.LIGHT_GREYISH_BLUE);
             }
             StencilUtils.configureStencilTest();
             if (notification != null && songThumbnail != null) {
@@ -860,7 +856,7 @@ public final class MusicManager extends Manager implements IMinecraft {
                         (float) client.getWindow().getWidth(),
                         (float) client.getWindow().getHeight(),
                         songThumbnail,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.4F),
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.4F),
                         false
                 );
             }
@@ -891,13 +887,13 @@ public final class MusicManager extends Manager implements IMinecraft {
         if (currentPlayingSongData == null) return;
         String[] titleParts = currentPlayingSongData.title.split(" - ");
         if (titleParts.length <= 1) {
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.5F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 70), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.7F));
         } else {
-            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.4F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5F));
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.7F));
-            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F));
+            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.4F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18_BASIC, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.5F));
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, 130.0F, (float) (client.getWindow().getHeight() - 56), titleParts[1], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.7F));
+            RenderUtils.drawString(FontUtils.HELVETICA_MEDIUM_20, 130.0F, (float) (client.getWindow().getHeight() - 81), titleParts[0], ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.6F));
         }
     }
 }

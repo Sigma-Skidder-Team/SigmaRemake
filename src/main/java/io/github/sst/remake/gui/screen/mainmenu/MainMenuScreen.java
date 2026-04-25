@@ -164,7 +164,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     (float) (this.getWidth() * 2),
                     (float) (this.getHeight() + 200),
                     Resources.MENU_PANORAMA_2,
-                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), transitionProgress),
+                    ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, transitionProgress),
                     false
             );
 
@@ -174,7 +174,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                     0.0F,
                     (float) this.getWidth(),
                     (float) this.getHeight(),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), transitionProgress * 0.3F)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, transitionProgress * 0.3F)
             );
 
             for (GuiComponent object : this.getChildren()) {
@@ -216,7 +216,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                         (float) (this.width / 2),
                         (float) (this.height / 2 - 30),
                         StringUtils.RANDOM_GOODBYE_TITLE,
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.goodbyeAnimation.calcPercent()),
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, this.goodbyeAnimation.calcPercent()),
                         FontAlignment.CENTER,
                         FontAlignment.CENTER
                 );
@@ -225,7 +225,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                         (float) (this.width / 2),
                         (float) (this.height / 2 + 30),
                         "\"" + StringUtils.RANDOM_GOODBYE_MESSAGE + "\"",
-                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), this.goodbyeAnimation.calcPercent() * 0.5F),
+                        ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, this.goodbyeAnimation.calcPercent() * 0.5F),
                         FontAlignment.CENTER,
                         FontAlignment.CENTER
                 );

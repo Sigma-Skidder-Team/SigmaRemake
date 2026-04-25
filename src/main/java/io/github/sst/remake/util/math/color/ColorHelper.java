@@ -2,14 +2,12 @@ package io.github.sst.remake.util.math.color;
 
 import io.github.sst.remake.Client;
 import io.github.sst.remake.util.render.font.FontAlignment;
-import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.nio.ByteBuffer;
 
-@Getter
 public class ColorHelper {
     public static final ColorHelper DEFAULT_COLOR = new ColorHelper(-12871171);
 
@@ -26,7 +24,7 @@ public class ColorHelper {
     }
 
     public ColorHelper(int primary, int secondary) {
-        this(primary, secondary, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        this(primary, secondary, ClientColors.LIGHT_GREYISH_BLUE);
     }
 
     public ColorHelper(int primary, int secondary, int text) {

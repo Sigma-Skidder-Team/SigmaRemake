@@ -14,7 +14,7 @@ public class VanillaESP extends SubModule {
 
     @Override
     public ESPModule getParent() {
-        return (ESPModule) super.getParent();
+        return (ESPModule) super.parent;
     }
 
     @Override

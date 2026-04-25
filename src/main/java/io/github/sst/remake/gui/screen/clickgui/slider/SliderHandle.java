@@ -18,7 +18,7 @@ public class SliderHandle extends Button {
                 0,
                 size,
                 size,
-                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE.getColor())
+                new ColorHelper(ClientColors.LIGHT_GREYISH_BLUE)
         );
 
         this.interactionAnimation.changeDirection(AnimationUtils.Direction.FORWARDS);
@@ -60,7 +60,7 @@ public class SliderHandle extends Button {
                 (float) (this.getX() + this.getWidth() / 2),
                 (float) (this.getY() + this.getWidth() / 2),
                 radius,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), partialTicks)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, partialTicks)
         );
 
         super.drawChildren(partialTicks);

@@ -6,10 +6,10 @@ import lombok.Getter;
 
 public class SubModule implements IMinecraft {
     public final String name;
+    public boolean enabled;
+
     @Getter
     public Module parent;
-    @Getter
-    private boolean enabled;
 
     public SubModule(String name) {
         this.name = name;

@@ -70,7 +70,7 @@ public class WaypointsModule extends Module {
                                     (int) player.getX(),
                                     (int) player.getY(),
                                     (int) player.getZ(),
-                                    ClientColors.DARK_OLIVE.getColor()
+                                    ClientColors.DARK_OLIVE
                             )
                     );
                 }

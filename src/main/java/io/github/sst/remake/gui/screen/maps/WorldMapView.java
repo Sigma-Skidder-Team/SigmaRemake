@@ -267,7 +267,7 @@ public class WorldMapView extends InteractiveWidget implements IMinecraft {
                 (float) squareSize,
                 (float) squareSize,
                 this.currentTexture.mapTexture.pixelBuffer,
-                ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                ClientColors.LIGHT_GREYISH_BLUE,
                 0.0F,
                 0.0F,
                 (float) this.currentTexture.mapTexture.width,
@@ -294,7 +294,7 @@ public class WorldMapView extends InteractiveWidget implements IMinecraft {
                 (float) (this.x - FontUtils.HELVETICA_LIGHT_14.getWidth(label) - 23),
                 (float) (this.y + 35),
                 label,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.4F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.4F)
         );
     }
 

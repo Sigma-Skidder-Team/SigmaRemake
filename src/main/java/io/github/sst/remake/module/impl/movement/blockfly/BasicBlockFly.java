@@ -98,7 +98,7 @@ public class BasicBlockFly extends SubModule  {
         if (client.player == null) return;
 
         if (client.player.isOnGround()
-                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).isEnabled()) {
+                && Client.INSTANCE.moduleManager.getModule(SafeWalkModule.class).enabled) {
             event.setSafe(true);
         }
     }

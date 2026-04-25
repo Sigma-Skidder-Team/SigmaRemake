@@ -53,7 +53,7 @@ public class Checkbox extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 10.0F,
-                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(-14047489, ClientColors.DEEP_TEAL.getColor(), !this.isMouseDownOverComponent() ? 1.0F : 0.9F), scale)
+                ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(-14047489, ClientColors.DEEP_TEAL, !this.isMouseDownOverComponent() ? 1.0F : 0.9F), scale)
         );
         GL11.glPushMatrix();
         GL11.glTranslatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
@@ -65,7 +65,7 @@ public class Checkbox extends InteractiveWidget {
                 (float) this.width,
                 (float) this.height,
                 Resources.CHECKMARK,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), scale)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, scale)
         );
         GL11.glPopMatrix();
         super.draw(partialTicks);

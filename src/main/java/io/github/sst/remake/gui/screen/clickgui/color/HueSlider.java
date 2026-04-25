@@ -47,7 +47,7 @@ public class HueSlider extends InteractiveWidget {
                 (float) this.getY(),
                 (float) (this.getX() + this.getWidth()),
                 (float) (this.getY() + this.getHeight()),
-                ColorHelper.applyAlpha(ClientColors.MID_GREY.getColor(), 0.5F * partialTicks)
+                ColorHelper.applyAlpha(ClientColors.MID_GREY, 0.5F * partialTicks)
         );
 
         int thumbX = this.x + Math.round((float) this.width * this.hue) + 1;

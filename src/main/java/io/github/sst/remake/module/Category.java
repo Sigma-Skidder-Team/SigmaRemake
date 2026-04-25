@@ -1,5 +1,8 @@
 package io.github.sst.remake.module;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum Category {
     RENDER("Render"),
     PLAYER("Player"),
@@ -12,10 +15,6 @@ public enum Category {
     ITEM("Item");
 
     public final String name;
-
-    Category(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString() {

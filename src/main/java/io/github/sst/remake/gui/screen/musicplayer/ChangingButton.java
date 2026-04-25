@@ -31,7 +31,7 @@ public class ChangingButton extends InteractiveWidget {
                 (float) (this.width * 3),
                 (float) this.height,
                 Resources.REPEAT,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.35F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.35F)
         );
         ScissorUtils.restoreScissor();
         super.draw(partialTicks);

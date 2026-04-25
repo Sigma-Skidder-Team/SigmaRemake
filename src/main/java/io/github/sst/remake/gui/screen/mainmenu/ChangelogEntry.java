@@ -48,7 +48,7 @@ public class ChangelogEntry extends GuiComponent {
                     y,
                     0,
                     0,
-                    new ColorHelper(0, 0, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.8F)),
+                    new ColorHelper(0, 0, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F)),
                     changeText,
                     FontUtils.HELVETICA_LIGHT_20
             ));

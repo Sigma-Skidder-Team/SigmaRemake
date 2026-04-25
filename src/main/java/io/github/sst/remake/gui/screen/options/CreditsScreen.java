@@ -58,7 +58,7 @@ public class CreditsScreen extends Screen {
                 0.0F,
                 (float) this.width,
                 (float) this.height,
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), fade * 0.95F)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, fade * 0.95F)
         );
 
         RenderUtils.drawString(
@@ -66,7 +66,7 @@ public class CreditsScreen extends Screen {
                 40.0F,
                 40.0F,
                 "Credits and third party licensing information",
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
 
         super.draw(fade);

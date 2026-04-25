@@ -54,14 +54,14 @@ public class SubModuleSetting extends Setting<SubModule> implements DropdownSett
         SubModule previous = this.value;
         super.setValue(value, false);
 
-        if (previous != null && previous != value && previous.isEnabled()) {
+        if (previous != null && previous != value && previous.enabled) {
             previous.setEnabled(false);
         }
 
         if (value != null
-                && value.getParent() != null
-                && value.getParent().isEnabled()
-                && !value.isEnabled()) {
+                && value.parent != null
+                && value.parent.enabled
+                && !value.enabled) {
             value.setEnabled(true);
         }
 

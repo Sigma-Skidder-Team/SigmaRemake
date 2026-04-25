@@ -187,7 +187,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                 (float) this.y,
                 (float) (this.x + this.width),
                 (float) (this.y + this.height),
-                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), overlayAlpha)
+                ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, overlayAlpha)
         );
 
         super.applyScaleTransforms();
@@ -197,7 +197,7 @@ public class KeyboardScreen extends Screen implements IMinecraft {
                 (float) ((this.width - 1060) / 2),
                 (float) ((this.height - 357) / 2 - 90),
                 "Keybind Manager",
-                ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                ClientColors.LIGHT_GREYISH_BLUE
         );
 
         super.draw(introProgress);

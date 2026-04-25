@@ -109,8 +109,8 @@ public class BirdGameWidget extends Widget {
             float pipeX = (float) timeUntilSpawn / 12.0F;
             float initialPipeX = pipeSpawnTime / 12.0F;
             float pipeOnScreenX = (float) this.x + initialPipeX + pipeX;
-            RenderUtils.drawImage(pipeOnScreenX, this.y - 320 + (int) ((double) groundY * entry.getValue()) - pipeGap / 2.0F, 52.0F, 320.0F, Resources.GAME_PIPE_DOWN, ClientColors.LIGHT_GREYISH_BLUE.getColor());
-            RenderUtils.drawImage(pipeOnScreenX, this.y + (int) ((double) groundY * entry.getValue()) + pipeGap / 2.0F, 52.0F, 320.0F, Resources.GAME_PIPE_UP, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+            RenderUtils.drawImage(pipeOnScreenX, this.y - 320 + (int) ((double) groundY * entry.getValue()) - pipeGap / 2.0F, 52.0F, 320.0F, Resources.GAME_PIPE_DOWN, ClientColors.LIGHT_GREYISH_BLUE);
+            RenderUtils.drawImage(pipeOnScreenX, this.y + (int) ((double) groundY * entry.getValue()) + pipeGap / 2.0F, 52.0F, 320.0F, Resources.GAME_PIPE_UP, ClientColors.LIGHT_GREYISH_BLUE);
 
             if (this.hasStarted && !this.gameOver) {
                 float pipeLeft = pipeOnScreenX;
@@ -160,7 +160,7 @@ public class BirdGameWidget extends Widget {
         GL11.glRotatef(rotation, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-(birdDrawX + birdWidth / 2.0F), -(birdDrawY + birdHeight / 2.0F), 0.0F);
 
-        RenderUtils.drawImage(birdDrawX, birdDrawY, birdWidth, birdHeight, Resources.GAME_BIRD, ClientColors.LIGHT_GREYISH_BLUE.getColor(), textureX, 0.0F, spriteWidth, spriteHeight, true);
+        RenderUtils.drawImage(birdDrawX, birdDrawY, birdWidth, birdHeight, Resources.GAME_BIRD, ClientColors.LIGHT_GREYISH_BLUE, textureX, 0.0F, spriteWidth, spriteHeight, true);
         GL11.glPopMatrix();
 
         ScissorUtils.restoreScissor();

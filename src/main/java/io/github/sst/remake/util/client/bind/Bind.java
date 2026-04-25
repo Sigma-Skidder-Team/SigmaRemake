@@ -11,10 +11,8 @@ import net.minecraft.client.gui.screen.Screen;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Bind {
-    @Setter
-    private int key = -1;
-    @Getter
-    private Object target;
+    public int key = -1;
+    public Object target;
 
     public Bind(JsonObject json) {
         this.loadFromJSON(json);
@@ -42,7 +40,7 @@ public class Bind {
                     switch (var4) {
                         case "mod":
                             for (Module module : Client.INSTANCE.moduleManager.modules) {
-                                if (from.get("target").getAsString().equals(module.getName())) {
+                                if (from.get("target").getAsString().equals(module.name)) {
                                     this.target = module;
                                 }
                             }
@@ -64,7 +62,7 @@ public class Bind {
         switch (this.getType()) {
             case MODULE:
                 obj.addProperty("type", "mod");
-                obj.addProperty("target", ((Module) this.target).getName());
+                obj.addProperty("target", ((Module) this.target).name);
                 break;
             case SCREEN:
                 obj.addProperty("type", "screen");

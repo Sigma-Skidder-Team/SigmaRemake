@@ -40,12 +40,12 @@ public class ProfileListEntry extends Widget {
         ColorHelper renameButtonColors = ColorHelper.DEFAULT_COLOR.clone();
         renameButtonColors.setPrimaryColor(-11371052);
         renameButtonColors.setSecondaryColor(-12096331);
-        renameButtonColors.setTextColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        renameButtonColors.setTextColor(ClientColors.LIGHT_GREYISH_BLUE);
 
         ColorHelper deleteButtonColors = ColorHelper.DEFAULT_COLOR.clone();
         deleteButtonColors.setPrimaryColor(-3254955);
         deleteButtonColors.setSecondaryColor(-4700859);
-        deleteButtonColors.setTextColor(ClientColors.LIGHT_GREYISH_BLUE.getColor());
+        deleteButtonColors.setTextColor(ClientColors.LIGHT_GREYISH_BLUE);
 
         this.editButtons = new ProfileEditPanel(this, "edit", width - this.editButtonsWidth, 0, this.editButtonsWidth, height);
         this.addToList(this.editButtons);
@@ -79,7 +79,7 @@ public class ProfileListEntry extends Widget {
         ColorHelper textFieldColor = new ColorHelper(
                 -892679478,
                 -892679478,
-                ClientColors.DEEP_TEAL.getColor(),
+                ClientColors.DEEP_TEAL,
                 FontAlignment.LEFT,
                 FontAlignment.CENTER
         );
@@ -202,7 +202,7 @@ public class ProfileListEntry extends Widget {
                 (float) this.width,
                 (float) this.height,
                 ColorHelper.applyAlpha(
-                        ClientColors.DEEP_TEAL.getColor(),
+                        ClientColors.DEEP_TEAL,
                         0.04F * this.hoverAnimation.calcPercent() + pressedExtra
                 )
         );
@@ -213,7 +213,7 @@ public class ProfileListEntry extends Widget {
                     (float) (this.x + 20) - slidePercent * (float) this.width,
                     (float) (this.y + 18),
                     this.profile.name,
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.9F * partialTicks)
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.9F * partialTicks)
             );
         }
 
@@ -227,7 +227,7 @@ public class ProfileListEntry extends Widget {
                     13.0F,
                     Resources.CHECKMARK_ICON,
                     ColorHelper.applyAlpha(
-                            ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                            ClientColors.LIGHT_GREYISH_BLUE,
                             (1.0F - this.slideAnimation.calcPercent()) * partialTicks
                     )
             );

@@ -59,9 +59,9 @@ public class KeyStrokesModule extends Module {
             String keyName = BindUtils.getKeyName(keystroke.bind.boundKey.getCode());
             keyName = keystroke.bind == client.options.keyAttack ? "L" : keystroke.bind == client.options.keyUse ? "R" : keyName;
 
-            RenderUtils.drawRoundedRect((float)(x + tLeft.x), (float)(y + tLeft.y), (float)(x + tLeft.x + bRight.x), (float)(y + tLeft.y + bRight.y), ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.5f * tLeftOpacity));
+            RenderUtils.drawRoundedRect((float)(x + tLeft.x), (float)(y + tLeft.y), (float)(x + tLeft.x + bRight.x), (float)(y + tLeft.y + bRight.y), ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.5f * tLeftOpacity));
             RenderUtils.drawRoundedRect((float)(x + tLeft.x), (float)(y + tLeft.y), (float)bRight.x, (float)bRight.y, 10.0f, 0.75f * bRightOpacity);
-            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, (float)(x + tLeft.x + (bRight.x - FontUtils.HELVETICA_LIGHT_18.getWidth(keyName)) / 2), (float)(y + tLeft.y + 12), keyName, ClientColors.LIGHT_GREYISH_BLUE.getColor());
+            RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_18, (float)(x + tLeft.x + (bRight.x - FontUtils.HELVETICA_LIGHT_18.getWidth(keyName)) / 2), (float)(y + tLeft.y + 12), keyName, ClientColors.LIGHT_GREYISH_BLUE);
         }
 
         Iterator<KeyAnimationData> iterator = this.animations.iterator();

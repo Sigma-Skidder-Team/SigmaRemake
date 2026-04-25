@@ -51,11 +51,11 @@ public class Button extends InteractiveWidget {
 
         int backgroundColor = ColorHelper.applyAlpha(
                 ColorHelper.shiftTowardsOther(
-                        this.textColor.getPrimaryColor(),
-                        this.textColor.getSecondaryColor(),
+                        this.textColor.primaryColor,
+                        this.textColor.secondaryColor,
                         1.0F - hoverBlendFactor
                 ),
-                ((this.textColor.getPrimaryColor() >> 24) & 0xFF) / 255.0F * partialTicks
+                ((this.textColor.primaryColor >> 24) & 0xFF) / 255.0F * partialTicks
         );
 
         if (this.cornerRadius <= 0) {
@@ -86,9 +86,9 @@ public class Button extends InteractiveWidget {
                     (float) (this.textOffsetX + textAnchorX),
                     (float) textAnchorY,
                     this.getText(),
-                    ColorHelper.applyAlpha(this.textColor.getTextColor(), partialTicks),
-                    this.textColor.getWidthAlignment(),
-                    this.textColor.getHeightAlignment()
+                    ColorHelper.applyAlpha(this.textColor.textColor, partialTicks),
+                    this.textColor.widthAlignment,
+                    this.textColor.heightAlignment
             );
         }
 
@@ -117,19 +117,19 @@ public class Button extends InteractiveWidget {
     }
 
     private int computeTextAnchorX() {
-        if (this.textColor.getWidthAlignment() != FontAlignment.CENTER) {
+        if (this.textColor.widthAlignment != FontAlignment.CENTER) {
             return this.getX();
         }
-        return this.textColor.getWidthAlignment() != FontAlignment.RIGHT
+        return this.textColor.widthAlignment != FontAlignment.RIGHT
                 ? this.getX() + this.getWidth() / 2
                 : this.getX() + this.getWidth();
     }
 
     private int computeTextAnchorY() {
-        if (this.textColor.getHeightAlignment() != FontAlignment.CENTER) {
+        if (this.textColor.heightAlignment != FontAlignment.CENTER) {
             return this.getY();
         }
-        return this.textColor.getHeightAlignment() != FontAlignment.BOTTOM
+        return this.textColor.heightAlignment != FontAlignment.BOTTOM
                 ? this.getY() + this.getHeight() / 2
                 : this.getY() + this.getHeight();
     }

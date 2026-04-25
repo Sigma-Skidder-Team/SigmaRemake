@@ -32,14 +32,14 @@ public class SnakeGameWidget extends Widget implements IMinecraft {
 
         GL11.glPushMatrix();
         GL11.glTranslatef((float) this.x, (float) this.y, 0.0F);
-        RenderUtils.drawRoundedRect2(0.0F, 0.0F, (float) this.width, (float) this.height, ClientColors.DEEP_TEAL.getColor());
+        RenderUtils.drawRoundedRect2(0.0F, 0.0F, (float) this.width, (float) this.height, ClientColors.DEEP_TEAL);
         RenderUtils.drawRoundedButton(
                 (float) (this.gameLogic.getFood().width * this.cellSize),
                 (float) (this.gameLogic.getFood().height * this.cellSize),
                 (float) this.cellSize,
                 (float) this.cellSize,
                 5.0F,
-                ClientColors.PALE_ORANGE.getColor()
+                ClientColors.PALE_ORANGE
         );
 
         for (ScreenDimension bodyPart : this.gameLogic.getSnake().getBodyParts()) {
@@ -48,7 +48,7 @@ public class SnakeGameWidget extends Widget implements IMinecraft {
                     (float) (bodyPart.height * this.cellSize),
                     (float) this.cellSize,
                     (float) this.cellSize,
-                    ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                    ClientColors.LIGHT_GREYISH_BLUE
             );
         }
 

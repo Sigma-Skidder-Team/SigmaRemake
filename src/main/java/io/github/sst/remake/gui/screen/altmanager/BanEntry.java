@@ -81,7 +81,7 @@ public class BanEntry extends Widget {
                     (float) this.y,
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
-                    ClientColors.LIGHT_GREYISH_BLUE.getColor()
+                    ClientColors.LIGHT_GREYISH_BLUE
             );
 
             GL11.glTexParameteri(3553, 10241, 9728);
@@ -107,8 +107,8 @@ public class BanEntry extends Widget {
                         this.serverBannerTexture,
                         ColorHelper.applyAlpha(
                                 ColorHelper.shiftTowardsOther(
-                                        ClientColors.LIGHT_GREYISH_BLUE.getColor(),
-                                        ClientColors.DEEP_TEAL.getColor(),
+                                        ClientColors.LIGHT_GREYISH_BLUE,
+                                        ClientColors.DEEP_TEAL,
                                         0.7F
                                 ),
                                 0.8F
@@ -124,7 +124,7 @@ public class BanEntry extends Widget {
                     (float) this.y,
                     (float) (this.x + this.width),
                     (float) (this.y + this.height),
-                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL.getColor(), 0.3F + 0.3F * this.hoverPulseAnim.calcPercent())
+                    ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.3F + 0.3F * this.hoverPulseAnim.calcPercent())
             );
         }
 
@@ -154,7 +154,7 @@ public class BanEntry extends Widget {
                     (float) (this.y + 12),
                     64.0F,
                     64.0F,
-                    ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                    ClientColors.LIGHT_GREYISH_BLUE,
                     0.0F,
                     0.0F,
                     64.0F,
@@ -167,7 +167,7 @@ public class BanEntry extends Widget {
                     64.0F,
                     64.0F,
                     this.serverIconTexture,
-                    ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                    ClientColors.LIGHT_GREYISH_BLUE,
                     true
             );
         }
@@ -208,7 +208,7 @@ public class BanEntry extends Widget {
                 (float) (this.x + 94),
                 (float) (this.y + 16),
                 displayName,
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.9F)
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.9F)
         );
 
         int textX = 94;
@@ -222,7 +222,7 @@ public class BanEntry extends Widget {
                         (float) (this.x + textX),
                         (float) (this.y + textY),
                         "Permanently banned!",
-                        ColorHelper.shiftTowardsOther(ClientColors.PALE_YELLOW.getColor(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F)
+                        ColorHelper.shiftTowardsOther(ClientColors.PALE_YELLOW, ClientColors.LIGHT_GREYISH_BLUE, 0.3F)
                 );
             } else {
                 long millisUntilUnban = banTime - new Date().getTime();
@@ -238,7 +238,7 @@ public class BanEntry extends Widget {
                             (float) (this.x + textX),
                             (float) (this.y + textY),
                             "Unban: " + days + " days, " + hours + "h " + minutes + "m " + seconds + "s",
-                            ColorHelper.shiftTowardsOther(ClientColors.DEEP_TEAL.getColor(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.2F)
+                            ColorHelper.shiftTowardsOther(ClientColors.DEEP_TEAL, ClientColors.LIGHT_GREYISH_BLUE, 0.2F)
                     );
                 } else {
                     RenderUtils.drawString(
@@ -246,7 +246,7 @@ public class BanEntry extends Widget {
                             (float) (this.x + textX),
                             (float) (this.y + textY),
                             "Unbanned!",
-                            ColorHelper.shiftTowardsOther(ClientColors.DARK_SLATE_GREY.getColor(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F)
+                            ColorHelper.shiftTowardsOther(ClientColors.DARK_SLATE_GREY, ClientColors.LIGHT_GREYISH_BLUE, 0.3F)
                     );
                 }
             }
@@ -256,7 +256,7 @@ public class BanEntry extends Widget {
                     (float) (this.x + textX),
                     (float) (this.y + textY),
                     "Compromised ban (unbannable)!",
-                    ColorHelper.shiftTowardsOther(ClientColors.DARK_OLIVE.getColor(), ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.3F)
+                    ColorHelper.shiftTowardsOther(ClientColors.DARK_OLIVE, ClientColors.LIGHT_GREYISH_BLUE, 0.3F)
             );
         }
 

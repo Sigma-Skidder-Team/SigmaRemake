@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Dropdown extends InteractiveWidget {
-    public static final ColorHelper DEFAULT_COLORS = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL.getColor()).setHeightAlignment(FontAlignment.CENTER);
+    public static final ColorHelper DEFAULT_COLORS = new ColorHelper(1250067, -15329770).setTextColor(ClientColors.DEEP_TEAL).setHeightAlignment(FontAlignment.CENTER);
     public List<String> options;
     public int selectedIndex;
     public boolean expanded;
@@ -79,9 +79,9 @@ public class Dropdown extends InteractiveWidget {
                     this.getWidth(),
                     this.getHeight(),
                     new ColorHelper(
-                            ClientColors.LIGHT_GREYISH_BLUE.getColor(),
+                            ClientColors.LIGHT_GREYISH_BLUE,
                             -1381654,
-                            this.textColor.getPrimaryColor(),
+                            this.textColor.primaryColor,
                             FontAlignment.LEFT,
                             FontAlignment.CENTER
                     ),
@@ -154,7 +154,7 @@ public class Dropdown extends InteractiveWidget {
     public void draw(float partialTicks) {
         float animationProgress = partialTicks * this.expandAnimation.calcPercent();
 
-        RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) (this.getX() + this.getWidth()), (float) (this.getY() + this.getHeight()), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), animationProgress));
+        RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) (this.getX() + this.getWidth()), (float) (this.getY() + this.getHeight()), ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, animationProgress));
         RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) (this.getHeight() + this.getAnimatedExpandHeight() - 1), 6.0F, partialTicks * 0.1F * this.expandAnimation.calcPercent());
         RenderUtils.drawRoundedRect((float) this.getX(), (float) this.getY(), (float) this.getWidth(), (float) (this.getHeight() + this.getAnimatedExpandHeight() - 1), 20.0F, partialTicks * 0.2F * this.expandAnimation.calcPercent());
 
@@ -166,7 +166,7 @@ public class Dropdown extends InteractiveWidget {
                 subLabel = " (" + activeSub.values.get(activeSub.selectedIndex) + ")";
             }
 
-            RenderUtils.drawString(this.getFont(), (float) (this.getX() + 10), (float) (this.getY() + (this.getHeight() - this.getFont().getHeight()) / 2 + 1), this.getText() + subLabel, ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), partialTicks * 0.7F));
+            RenderUtils.drawString(this.getFont(), (float) (this.getX() + 10), (float) (this.getY() + (this.getHeight() - this.getFont().getHeight()) / 2 + 1), this.getText() + subLabel, ColorHelper.applyAlpha(this.textColor.primaryColor, partialTicks * 0.7F));
             ScissorUtils.restoreScissor();
         }
 
@@ -192,7 +192,7 @@ public class Dropdown extends InteractiveWidget {
         GL11.glTranslatef((float) (this.getX() + iconX), (float) (this.getY() + iconY), 0.0F);
         GL11.glRotatef(90.0F * this.expandAnimation.calcPercent(), 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef((float) (-this.getX() - iconX), (float) (-this.getY() - iconY), 0.0F);
-        RenderUtils.drawString(this.font, (float) (this.getX() + iconX - 6), (float) (this.getY() + iconY - 14), ">", ColorHelper.applyAlpha(this.textColor.getPrimaryColor(), partialTicks * 0.7F * (!this.isMouseOverComponent(this.getMouseX(), this.getMouseY()) ? 0.5F : 1.0F)));
+        RenderUtils.drawString(this.font, (float) (this.getX() + iconX - 6), (float) (this.getY() + iconY - 14), ">", ColorHelper.applyAlpha(this.textColor.primaryColor, partialTicks * 0.7F * (!this.isMouseOverComponent(this.getMouseX(), this.getMouseY()) ? 0.5F : 1.0F)));
         GL11.glPopMatrix();
     }
 

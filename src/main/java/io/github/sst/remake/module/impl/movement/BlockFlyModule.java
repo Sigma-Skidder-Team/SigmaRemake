@@ -461,14 +461,14 @@ public class BlockFlyModule extends Module {
                 (float) (x + 10),
                 (float) (y + 4),
                 cachedBlockCount + "",
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), alphaPercent));
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alphaPercent));
 
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,
                 (float) (x + 10 + numberWidth),
                 (float) (y + 8),
                 "Blocks",
-                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE.getColor(), 0.6F * alphaPercent));
+                ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.6F * alphaPercent));
 
         int arrowX = x + 11 + boxWidth / 2;
         int arrowY = y + boxHeight;
