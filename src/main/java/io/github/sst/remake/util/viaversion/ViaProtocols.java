@@ -96,15 +96,15 @@ public enum ViaProtocols {
 
     public static ViaProtocols getByProtocol(int protocol) {
         if (protocol == -1 || !ViaInstance.VIAVERSION_EXISTS) {
-            return R1_16_4;
+            return R1_17;
         }
 
-        return LOOKUP.getOrDefault(protocol, R1_16_4);
+        return LOOKUP.getOrDefault(protocol, R1_17);
     }
 
     public static ViaProtocols getByIndex(int index) {
         ViaProtocols[] values = values();
-        if (index < 0 || index >= values.length) return R1_16_4;
+        if (index < 0 || index >= values.length) return R1_17;
         return values[index];
     }
 }
