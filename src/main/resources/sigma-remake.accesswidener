@@ -75,3 +75,8 @@ accessible method net/minecraft/entity/Entity setFlag (IZ)V
 accessible field net/minecraft/client/render/BufferBuilderStorage entityBuilders Ljava/util/SortedMap;
 
 accessible field net/minecraft/client/render/WorldRenderer entityRenderDispatcher Lnet/minecraft/client/render/entity/EntityRenderDispatcher;
+
+accessible field net/minecraft/entity/Entity yaw F
+accessible field net/minecraft/entity/Entity pitch F
+
+accessible field net/minecraft/entity/player/PlayerEntity abilities Lnet/minecraft/entity/player/PlayerAbilities;
