@@ -26,6 +26,11 @@ public class JelloBlurJSON implements Resource {
     }
 
     @Override
+    public boolean hasMetadata() {
+        return false;
+    }
+
+    @Override
     public @Nullable <T> T getMetadata(ResourceMetadataReader<T> metaReader) {
         return null;
     }

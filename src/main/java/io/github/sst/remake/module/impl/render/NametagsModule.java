@@ -16,6 +16,7 @@ import io.github.sst.remake.util.game.player.PlayerUtils;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import net.minecraft.block.FurnaceBlock;
@@ -190,7 +191,7 @@ public class NametagsModule extends Module {
     public void on3D(Render3DEvent event) {
         if (client.world == null) return;
 
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        StateManager.glMultiTexCoord2f(33986, 240.0F, 240.0F);
         for (Entity entity : this.entities) {
             if (entity instanceof PlayerEntity && BotTracker.isBot((PlayerEntity) entity)) continue;
 
@@ -264,7 +265,7 @@ public class NametagsModule extends Module {
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        StateManager.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
     private FurnaceTracker getFurnaceTrackerByWindowId(int windowId) {

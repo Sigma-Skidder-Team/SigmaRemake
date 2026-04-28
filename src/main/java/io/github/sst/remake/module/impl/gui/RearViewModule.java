@@ -14,11 +14,14 @@ import io.github.sst.remake.setting.impl.SliderSetting;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.vec.VecUtils;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gl.SimpleFramebuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -133,7 +136,7 @@ public class RearViewModule extends Module {
         int scaledPadding = (int) (padding * Client.INSTANCE.screenManager.scaleFactor);
         int scaledYOffset = (int) (yOffset * Client.INSTANCE.screenManager.scaleFactor);
 
-        RenderSystem.pushMatrix();
+        StateManager.pushMatrix();
         blitFramebufferToScreen(
                 rearViewFramebuffer,
                 scaledWidth,
@@ -141,13 +144,13 @@ public class RearViewModule extends Module {
                 client.getWindow().getFramebufferWidth() - scaledPadding - scaledWidth,
                 client.getWindow().getFramebufferHeight() + scaledYOffset
         );
-        RenderSystem.popMatrix();
+        StateManager.popMatrix();
 
         // Restore UI projection after custom ortho/viewport.
         RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-        RenderSystem.matrixMode(5889);
-        RenderSystem.loadIdentity();
-        RenderSystem.ortho(
+        StateManager.matrixMode(5889);
+        StateManager.loadIdentity();
+        StateManager.ortho(
                 0.0,
                 (double) client.getWindow().getFramebufferWidth() / client.getWindow().getScaleFactor(),
                 (double) client.getWindow().getFramebufferHeight() / client.getWindow().getScaleFactor(),
@@ -155,9 +158,9 @@ public class RearViewModule extends Module {
                 1000.0,
                 3000.0
         );
-        RenderSystem.matrixMode(5888);
-        RenderSystem.loadIdentity();
-        RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+        StateManager.matrixMode(5888);
+        StateManager.loadIdentity();
+        StateManager.translatef(0.0F, 0.0F, -2000.0F);
         GL11.glScaled(
                 1.0 / client.getWindow().getScaleFactor() * (double) Client.INSTANCE.screenManager.scaleFactor,
                 1.0 / client.getWindow().getScaleFactor() * (double) Client.INSTANCE.screenManager.scaleFactor,
@@ -187,7 +190,7 @@ public class RearViewModule extends Module {
         rearViewFramebuffer.beginWrite(true);
         RenderSystem.clear(16640, false);
         RenderSystem.enableTexture();
-        RenderSystem.enableColorMaterial();
+        StateManager.enableColorMaterial();
         RenderSystem.enableDepthTest();
         GL11.glAlphaFunc(519, 0.0F);
 
@@ -234,24 +237,24 @@ public class RearViewModule extends Module {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
 
-        RenderSystem.matrixMode(5889);
-        RenderSystem.loadIdentity();
-        RenderSystem.ortho(0.0, (double) width + posX, height, 0.0, 1000.0, 3000.0);
+        StateManager.matrixMode(5889);
+        StateManager.loadIdentity();
+        StateManager.ortho(0.0, (double) width + posX, height, 0.0, 1000.0, 3000.0);
 
-        RenderSystem.matrixMode(5888);
-        RenderSystem.loadIdentity();
-        RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+        StateManager.matrixMode(5888);
+        StateManager.loadIdentity();
+        StateManager.translatef(0.0F, 0.0F, -2000.0F);
 
         RenderSystem.viewport(0, 0, width + (int) posX, height - (int) posY);
 
         RenderSystem.enableTexture();
-        RenderSystem.disableLighting();
-        RenderSystem.disableAlphaTest();
+        StateManager.disableLighting();
+        StateManager.disableAlphaTest();
         RenderSystem.disableBlend();
-        RenderSystem.enableColorMaterial();
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        StateManager.enableColorMaterial();
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        source.beginRead();
+        source.method_35610();
 
         float w = (float) width;
         float h = (float) height;
@@ -261,7 +264,7 @@ public class RearViewModule extends Module {
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
         buffer.vertex(posX, (double) h + posY, 0.0).color(255, 255, 255, 255).texture(0.0F, 0.0F).next();
         buffer.vertex((double) w + posX, (double) h + posY, 0.0).color(255, 255, 255, 255).texture(uMax, 0.0F).next();
         buffer.vertex((double) w + posX, posY, 0.0).color(255, 255, 255, 255).texture(uMax, vMax).next();
@@ -272,12 +275,12 @@ public class RearViewModule extends Module {
 
         RenderSystem.depthMask(true);
         RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.enableAlphaTest();
+        StateManager.enableAlphaTest();
         RenderSystem.enableBlend();
     }
 
     private void rebuild() {
-        rearViewFramebuffer = new Framebuffer(
+        rearViewFramebuffer = new SimpleFramebuffer(
                 client.getWindow().getFramebufferWidth(),
                 client.getWindow().getFramebufferHeight(),
                 true,

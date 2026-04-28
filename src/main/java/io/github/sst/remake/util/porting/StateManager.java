@@ -1,11 +1,18 @@
 package io.github.sst.remake.util.porting;
 
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.RequiredArgsConstructor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.util.Untracker;
+import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.FloatBuffer;
 
 /**
  * Tiny little GlStateManager for porting to 1.17,
@@ -13,21 +20,231 @@ import org.lwjgl.opengl.GL14;
  */
 @Environment(EnvType.CLIENT)
 public class StateManager {
+    private static final FloatBuffer MATRIX_BUFFER = GLX.make(MemoryUtil.memAllocFloat(16), fb -> Untracker.untrack(MemoryUtil.memAddress(fb)));
+    private static final AlphaTestState ALPHA_TEST = new AlphaTestState();
+    private static final ColorMaterialState COLOR_MATERIAL = new ColorMaterialState();
+    private static final CapabilityTracker LIGHTING = new CapabilityTracker(2896);
+    private static final Color4 COLOR = new Color4();
+    private static int modelShadeMode = 7425;
+
+    @Deprecated
     public static void disableAlphaTest() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        ALPHA_TEST.capState.disable();
     }
 
     @Deprecated
     public static void enableAlphaTest() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        ALPHA_TEST.capState.enable();
+    }
+
+    @Deprecated
+    public static void alphaFunc(int func, float ref) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        if (func != ALPHA_TEST.func || ref != ALPHA_TEST.ref) {
+            ALPHA_TEST.func = func;
+            ALPHA_TEST.ref = ref;
+            GL11.glAlphaFunc(func, ref);
+        }
+    }
+
+    @Deprecated
+    public static void enableColorMaterial() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        COLOR_MATERIAL.capState.enable();
+    }
+
+    @Deprecated
+    public static void disableColorMaterial() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        COLOR_MATERIAL.capState.enable();
+    }
+
+    @Deprecated
+    public static void colorMaterial(int face, int mode) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        if (face != COLOR_MATERIAL.face || mode != COLOR_MATERIAL.mode) {
+            COLOR_MATERIAL.face = face;
+            COLOR_MATERIAL.mode = mode;
+            GL11.glColorMaterial(face, mode);
+        }
     }
 
     @Deprecated
     public static void translatef(float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         GL11.glTranslatef(x, y, z);
+    }
+
+    @Deprecated
+    public static void scalef(float x, float y, float z) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GL11.glScalef(x, y, z);
+    }
+
+    @Deprecated
+    public static void pushMatrix() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GL11.glPushMatrix();
+    }
+
+    @Deprecated
+    public static void popMatrix() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GL11.glPopMatrix();
+    }
+
+    @Deprecated
+    public static void multMatrix(FloatBuffer matrix) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GL11.glMultMatrixf(matrix);
+    }
+
+    @Deprecated
+    public static void multMatrix(Matrix4f matrix) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        matrix.writeColumnMajor(MATRIX_BUFFER);
+        MATRIX_BUFFER.rewind();
+        multMatrix(MATRIX_BUFFER);
+    }
+
+    @Deprecated
+    public static void matrixMode(int mode) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        GL11.glMatrixMode(mode);
+    }
+
+    @Deprecated
+    public static void enableLighting() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        LIGHTING.enable();
+    }
+
+    @Deprecated
+    public static void disableLighting() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        LIGHTING.disable();
+    }
+
+    @Deprecated
+    public static void color4f(float red, float green, float blue, float alpha) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        if (red != COLOR.red || green != COLOR.green || blue != COLOR.blue || alpha != COLOR.alpha) {
+            COLOR.red = red;
+            COLOR.green = green;
+            COLOR.blue = blue;
+            COLOR.alpha = alpha;
+            GL11.glColor4f(red, green, blue, alpha);
+        }
+    }
+
+    @Deprecated
+    public static void clearCurrentColor() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        COLOR.red = -1.0f;
+        COLOR.green = -1.0f;
+        COLOR.blue = -1.0f;
+        COLOR.alpha = -1.0f;
+    }
+
+    @Deprecated
+    public static void shadeModel(int mode) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        if (mode != modelShadeMode) {
+            modelShadeMode = mode;
+            GL11.glShadeModel(mode);
+        }
+    }
+
+    @Deprecated
+    public static void glMultiTexCoord2f(int texture, float s, float t) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        GL13.glMultiTexCoord2f(texture, s, t);
+    }
+
+    @Deprecated
+    public static void loadIdentity() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        GL11.glLoadIdentity();
+    }
+
+    @Deprecated
+    public static void ortho(double l, double r, double b, double t, double n, double f) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        GL11.glOrtho(l, r, b, t, n, f);
+    }
+
+    @Deprecated
+    @Environment(EnvType.CLIENT)
+    static class AlphaTestState {
+        public final CapabilityTracker capState = new CapabilityTracker(3008);
+        public int func = 519;
+        public float ref = -1.0f;
+
+        private AlphaTestState() {
+        }
+    }
+
+    @Deprecated
+    @Environment(EnvType.CLIENT)
+    static class ColorMaterialState {
+        public final CapabilityTracker capState = new CapabilityTracker(2903);
+        public int face = 1032;
+        public int mode = 5634;
+
+        private ColorMaterialState() {
+        }
+    }
+
+    @Deprecated
+    @Environment(EnvType.CLIENT)
+    static class Color4 {
+        public float red = 1.0f;
+        public float green = 1.0f;
+        public float blue = 1.0f;
+        public float alpha = 1.0f;
+
+        public Color4() {
+            this(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+
+        public Color4(float red, float green, float blue, float alpha) {
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+            this.alpha = alpha;
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    static class CapabilityTracker {
+        private final int cap;
+        private boolean state;
+
+        public CapabilityTracker(int cap) {
+            this.cap = cap;
+        }
+
+        public void disable() {
+            this.setState(false);
+        }
+
+        public void enable() {
+            this.setState(true);
+        }
+
+        public void setState(boolean state) {
+            RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+            if (this.state != state) {
+                this.state = state;
+                if (state) {
+                    GL11.glEnable(this.cap);
+                } else {
+                    GL11.glDisable(this.cap);
+                }
+            }
+        }
     }
 
     @Environment(EnvType.CLIENT)

@@ -6,12 +6,14 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
@@ -119,7 +121,7 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
-            GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+            StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
             GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
             x = (float) Math.round(x);
@@ -135,7 +137,7 @@ public class RenderUtils implements IMinecraft {
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();
 
-            GlStateManager.color4f(red, green, blue, alpha);
+            StateManager.color4f(red, green, blue, alpha);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             texture.bind();
@@ -193,7 +195,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawCircle(float x, float y, float size, int color) {
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         float red = (float) (color >> 16 & 0xFF) / 255.0F;
@@ -203,7 +205,7 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
 
         GL11.glEnable(GL11.GL_POINT_SMOOTH);
         GL11.glEnable(GL11.GL_BLEND);
@@ -228,7 +230,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontAlignment widthAlignment, FontAlignment heightAlignment, boolean shadow) {
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         int adjustedX = 0;
@@ -323,7 +325,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawFilledArc(float x, float y, float startAngle, float endAngle, float hRadius, float vRadius, int color) {
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         if (startAngle > endAngle) {
@@ -340,7 +342,7 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
 
         if (alpha > 0.5F) {
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
@@ -383,23 +385,23 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        StateManager.disableAlphaTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        StateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(width, y, 0.0).color(red1, green1, blue1, alpha1).next();
         buffer.vertex(x, y, 0.0).color(red1, green1, blue1, alpha1).next();
         buffer.vertex(x, height, 0.0).color(red2, green2, blue2, alpha2).next();
         buffer.vertex(width, height, 0.0).color(red2, green2, blue2, alpha2).next();
         tessellator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        StateManager.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        StateManager.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
@@ -415,7 +417,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawTriangle(float left, float top, float right, float bottom, float tipX, float tipY, int color) {
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         float red = (float) (color >> 16 & 0xFF) / 255.0F;
@@ -426,7 +428,7 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         GL11.glVertex2f(left, top);
         GL11.glVertex2f(tipX, tipY);
@@ -438,7 +440,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawTexturedQuad(float x, float y, float width, float height, int color, float u, float v, float textureWidth, float textureHeight) {
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         x = (float) Math.round(x);
@@ -454,7 +456,7 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -788,8 +790,8 @@ public class RenderUtils implements IMinecraft {
             RenderHelper.setupGuiFlatDiffuseLighting();
             GL11.glLightModelfv(GL11.GL_LIGHT_MODEL_AMBIENT, new float[]{0.4F, 0.4F, 0.4F, 1.0F});
 
-            RenderSystem.enableColorMaterial();
-            RenderSystem.disableLighting();
+            StateManager.enableColorMaterial();
+            StateManager.disableLighting();
             RenderSystem.enableBlend();
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -798,10 +800,10 @@ public class RenderUtils implements IMinecraft {
             itemRenderer.renderInGui(stack, 0, 0);
 
             GL11.glDepthFunc(GL11.GL_LEQUAL);
-            RenderSystem.popMatrix();
+            StateManager.popMatrix();
 
             GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
-            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0F, 240.0F);
+            StateManager.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0F, 240.0F);
             RenderSystem.disableDepthTest();
             TextureImpl.unbind();
 
@@ -833,19 +835,18 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        StateManager.disableAlphaTest();
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA,
                 GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SrcFactor.ONE,
                 GlStateManager.DstFactor.ZERO
         );
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        StateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(x2, y1, 0.0).color(r2, g2, b2, a2).next();
         buffer.vertex(x1, y1, 0.0).color(r1, g1, b1, a1).next();
         buffer.vertex(x1, y2, 0.0).color(r4, g4, b4, a4).next();
@@ -853,9 +854,9 @@ public class RenderUtils implements IMinecraft {
 
         tessellator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        StateManager.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        StateManager.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
@@ -884,7 +885,7 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -985,9 +986,9 @@ public class RenderUtils implements IMinecraft {
                 GlStateManager.DstFactor.ZERO
         );
 
-        GlStateManager.color4f(red, green, blue, alpha);
+        StateManager.color4f(red, green, blue, alpha);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(x1, y2, 0.0).next();
         buffer.vertex(x2, y2, 0.0).next();
         buffer.vertex(x2, y1, 0.0).next();
@@ -1183,7 +1184,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawAnimatedRing(java.awt.Color baseColor, boolean reverseGradient, float ringHeight, float ringRadius, float ringAlphaScale, float progressAlpha) {
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        StateManager.shadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
@@ -1225,13 +1226,13 @@ public class RenderUtils implements IMinecraft {
 
         GL11.glEnd();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        StateManager.shadeModel(GL11.GL_FLAT);
     }
 
     public static void resetHudGlState() {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         TextureImpl.unbind();
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glColorMask(true, true, true, true);
         GL11.glDepthMask(true);
@@ -1370,28 +1371,28 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        StateManager.disableAlphaTest();
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
         );
 
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        StateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuffer();
-        buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = tess.getBuffer();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
-        buf.vertex(right, top, 0.0).color(topR, topG, topB, topA).next();
-        buf.vertex(left, top, 0.0).color(topR, topG, topB, topA).next();
-        buf.vertex(left, bottom, 0.0).color(botR, botG, botB, botA).next();
-        buf.vertex(right, bottom, 0.0).color(botR, botG, botB, botA).next();
+        buffer.vertex(right, top, 0.0).color(topR, topG, topB, topA).next();
+        buffer.vertex(left, top, 0.0).color(topR, topG, topB, topA).next();
+        buffer.vertex(left, bottom, 0.0).color(botR, botG, botB, botA).next();
+        buffer.vertex(right, bottom, 0.0).color(botR, botG, botB, botA).next();
 
         tess.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        StateManager.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        StateManager.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 

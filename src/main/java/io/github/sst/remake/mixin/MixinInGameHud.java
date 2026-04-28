@@ -43,21 +43,21 @@ public class MixinInGameHud {
         GL11.glDisable(2912);
 
         RenderSystem.disableDepthTest();
-        RenderSystem.translatef(0.0F, 0.0F, 1000.0F);
-        RenderSystem.alphaFunc(519, 0.0F);
+        StateManager.translatef(0.0F, 0.0F, 1000.0F);
+        StateManager.alphaFunc(519, 0.0F);
         RenderSystem.enableBlend();
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(2896);
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 
         new RenderHudEvent().call();
         RenderUtils.resetHudGlState();
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(518, 0.1F);
+        StateManager.alphaFunc(518, 0.1F);
 
         GL11.glPopMatrix();
     }

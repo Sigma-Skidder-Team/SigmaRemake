@@ -7,6 +7,7 @@ import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.render.ESPModule;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.StencilUtils;
 import net.minecraft.entity.LivingEntity;
@@ -36,8 +37,8 @@ public class BoxOutlineESP extends SubModule {
         renderBox(false);
         StencilUtils.configureStencilTest(StencilUtils.RenderShapeMode.OUTLINE);
         GL11.glLineWidth(3.0f);
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.0F);
-        RenderSystem.enableAlphaTest();
+        StateManager.alphaFunc(GL11.GL_GEQUAL, 0.0F);
+        StateManager.enableAlphaTest();
         getParent().renderShadowSprites();
 
         GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
@@ -54,7 +55,7 @@ public class BoxOutlineESP extends SubModule {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
+        StateManager.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
     }
 

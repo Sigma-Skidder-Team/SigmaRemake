@@ -1,6 +1,7 @@
 package io.github.sst.remake.util.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.sst.remake.util.porting.StateManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
@@ -12,19 +13,18 @@ public class RenderHelper {
     private static final Vec3f GUI_3D_DIFFUSE_LIGHTING = Util.make(new Vec3f(-0.2F, -1.0F, 0.7F), Vec3f::normalize);
 
     public static void enableStandardItemLighting() {
-        RenderSystem.enableLighting();
-        RenderSystem.enableColorMaterial();
-        RenderSystem.colorMaterial(1032, 5634);
+        StateManager.enableLighting();
+        StateManager.enableColorMaterial();
+        StateManager.colorMaterial(1032, 5634);
     }
 
     /**
      * Disables the OpenGL lighting properties enabled by enableStandardItemLighting
      */
     public static void disableStandardItemLighting() {
-        RenderSystem.disableLighting();
-        RenderSystem.disableColorMaterial();
+        StateManager.disableLighting();
+        StateManager.disableColorMaterial();
     }
-
     public static void setupDiffuseGuiLighting(Matrix4f matrix) {
         RenderSystem.setupLevelDiffuseLighting(GUI_FLAT_DIFFUSE_LIGHTING, GUI_3D_DIFFUSE_LIGHTING, matrix);
     }
