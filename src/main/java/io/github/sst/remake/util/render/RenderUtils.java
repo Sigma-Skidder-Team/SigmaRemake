@@ -119,8 +119,6 @@ public class RenderUtils implements IMinecraft {
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
             RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-            StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-            StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
 
             x = (float) Math.round(x);
             width = (float) Math.round(width);
@@ -135,8 +133,7 @@ public class RenderUtils implements IMinecraft {
             RenderSystem.enableBlend();
             RenderSystem.enableTexture();
 
-            StateManager.color4f(red, green, blue, alpha);
-
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, texture.getTextureID());
 
             float uScale = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
@@ -158,19 +155,16 @@ public class RenderUtils implements IMinecraft {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-            buffer.vertex(x, y, 0.0).texture(u1, v1).next();
-            buffer.vertex(x, y + height, 0.0).texture(u1, v1 + v0).next();
-            buffer.vertex(x + width, y + height, 0.0).texture(u1 + u0, v1 + v0).next();
-            buffer.vertex(x + width, y, 0.0).texture(u1 + u0, v1).next();
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            buffer.vertex(x, y, 0.0).texture(u1, v1).color(red, green, blue, alpha).next();
+            buffer.vertex(x, y + height, 0.0).texture(u1, v1 + v0).color(red, green, blue, alpha).next();
+            buffer.vertex(x + width, y + height, 0.0).texture(u1 + u0, v1 + v0).color(red, green, blue, alpha).next();
+            buffer.vertex(x + width, y, 0.0).texture(u1 + u0, v1).color(red, green, blue, alpha).next();
 
             tessellator.draw();
 
             RenderSystem.disableTexture();
-            RenderSystem.disableBlend();
-
-            RenderSystem.enableTexture();
             RenderSystem.disableBlend();
         }
     }
@@ -846,6 +840,7 @@ public class RenderUtils implements IMinecraft {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(x2, y1, 0.0).color(r2, g2, b2, a2).next();
@@ -987,8 +982,7 @@ public class RenderUtils implements IMinecraft {
                 GlStateManager.DstFactor.ZERO
         );
 
-        StateManager.color4f(red, green, blue, alpha);
-
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(x1, y2, 0.0).color(red, green, blue, alpha).next();
