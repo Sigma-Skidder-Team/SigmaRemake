@@ -132,16 +132,16 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
             if (this.hasVehicle()) {
                 Vec3d vec3d = this.getVelocity();
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(vec3d.x, -999.0, vec3d.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(vec3d.x, -999.0, vec3d.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
                 moving = false;
             } else if (moving && looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(motionEvent.x, motionEvent.y, motionEvent.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(motionEvent.x, motionEvent.y, motionEvent.z, RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
             } else if (moving) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionOnly(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(motionEvent.x, motionEvent.y, motionEvent.z, motionEvent.onGround));
             } else if (looking) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(RotationTracker.yaw, RotationTracker.pitch, motionEvent.onGround));
             } else if (this.lastOnGround != motionEvent.onGround) {
-                this.networkHandler.sendPacket(new PlayerMoveC2SPacket(motionEvent.onGround));
+                this.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(motionEvent.onGround));
             }
 
             if (moving) {

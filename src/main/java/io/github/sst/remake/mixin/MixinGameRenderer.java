@@ -10,6 +10,7 @@ import io.github.sst.remake.event.impl.game.render.Render2DEvent;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.event.impl.game.render.RenderLevelEvent;
 import io.github.sst.remake.module.impl.gui.RearViewModule;
+import io.github.sst.remake.util.porting.StateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -33,7 +34,7 @@ public class MixinGameRenderer {
         new RenderLevelEvent(tickDelta, startTime).call();
     }
 
-    @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE, opcode = Opcodes.GETFIELD))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;", ordinal = 0, shift = At.Shift.BEFORE))
     private void injectBeforeUIRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
         new Render2DEvent(tickDelta, startTime, tick).call();
     }
@@ -44,8 +45,8 @@ public class MixinGameRenderer {
             return;
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.multMatrix(matrix.peek().getModel());
+        StateManager.pushMatrix();
+        StateManager.multMatrix(matrix.peek().getModel());
         if (client != null && client.world != null && client.player != null) {
             GL11.glTranslatef(0.0F, 0.0F, 0.0F);
             RenderSystem.disableDepthTest();
@@ -56,7 +57,7 @@ public class MixinGameRenderer {
             RenderSystem.depthMask(true);
             client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
         }
-        RenderSystem.popMatrix();
+        StateManager.popMatrix();
     }
 
     @WrapOperation(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 1, opcode = Opcodes.GETFIELD))

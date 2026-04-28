@@ -22,7 +22,7 @@ import io.github.sst.remake.util.viaversion.fixes.AttackOrderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.SplashScreen;
+import net.minecraft.client.gui.screen.SplashOverlay;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
@@ -99,8 +99,8 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "setOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;", opcode = Opcodes.PUTFIELD))
     private void redirectOverlay(MinecraftClient instance, Overlay value) {
-        if (value instanceof SplashScreen) {
-            SplashScreen splash = (SplashScreen) value;
+        if (value instanceof SplashOverlay) {
+            SplashOverlay splash = (SplashOverlay) value;
             value = new LoadingScreen(
                     splash.reload,
                     splash.exceptionHandler,
@@ -137,9 +137,9 @@ public abstract class MixinMinecraftClient {
         return true;
     }
 
-    @ModifyReturnValue(method = "isOnlineChatEnabled", at = @At("RETURN"))
-    private boolean modifyIsOnlineChatEnabled(boolean original) {
-        return true;
+    @ModifyReturnValue(method = "getChatRestriction", at = @At("RETURN"))
+    private MinecraftClient.ChatRestriction modifyGetChatRestriction(MinecraftClient.ChatRestriction original) {
+        return MinecraftClient.ChatRestriction.ENABLED;
     }
 
     @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))

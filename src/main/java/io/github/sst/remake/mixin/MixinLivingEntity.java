@@ -26,9 +26,8 @@ public abstract class MixinLivingEntity extends Entity {
     @Redirect(
             method = "turnHead(FF)F",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/entity/LivingEntity;yaw:F",
-                    opcode = Opcodes.GETFIELD,
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;getYaw()F",
                     ordinal = 0
             )
     )
@@ -39,9 +38,8 @@ public abstract class MixinLivingEntity extends Entity {
     @Redirect(
             method = "turnHead(FF)F",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/entity/LivingEntity;yaw:F",
-                    opcode = Opcodes.GETFIELD,
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;getYaw()F",
                     ordinal = 1
             )
     )
