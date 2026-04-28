@@ -4,6 +4,7 @@ import io.github.sst.remake.Client;
 import io.github.sst.remake.gui.screen.holder.OptionsHolder;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
@@ -27,7 +28,7 @@ public class InGameOptionsScreen extends GameMenuScreen {
 
     @Override
     public void init() {
-        addButton(new ButtonWidget(
+        addDrawableChild(new ButtonWidget(
                 width / 2 - 102,
                 height - 45,
                 204, 20,
@@ -36,7 +37,10 @@ public class InGameOptionsScreen extends GameMenuScreen {
         ));
         super.init();
 
-        this.buttons.removeIf(widget -> widget.y == this.height / 4 + 72 - 16);
+        this.drawables.removeIf(widget ->
+                widget instanceof ClickableWidget clickableWidget &&
+                        clickableWidget.y == this.height / 4 + 72 - 16
+        );
     }
 
     @Override

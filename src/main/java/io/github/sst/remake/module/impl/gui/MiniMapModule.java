@@ -58,6 +58,8 @@ public class MiniMapModule extends Module {
             return;
         }
 
+        var playerChunkPos = client.player.getChunkPos();
+
         tickCounter++;
 
         if (smoothedPlayerY < client.player.getY() && client.player.isOnGround()) {
@@ -70,7 +72,7 @@ public class MiniMapModule extends Module {
         while (iterator.hasNext()) {
             ChunkColorCache cache = iterator.next();
             int distance = cache.chunk.getPos()
-                    .method_24022(new ChunkPos(client.player.chunkX, client.player.chunkZ));
+                    .getChebyshevDistance(new ChunkPos(playerChunkPos.x, playerChunkPos.z));
             if (distance > 7) {
                 iterator.remove();
             }
@@ -104,10 +106,11 @@ public class MiniMapModule extends Module {
             }
         }
 
+
         playerChunkOffsetX =
-                (client.player.getX() - client.player.chunkX * 16.0) / 16.0;
+                (client.player.getX() - playerChunkPos.x * 16.0) / 16.0;
         playerChunkOffsetZ =
-                (client.player.getZ() - client.player.chunkZ * 16.0) / 16.0;
+                (client.player.getZ() - playerChunkPos.z * 16.0) / 16.0;
 
         minimapBuffer = buildMinimapBuffer();
     }
@@ -208,9 +211,12 @@ public class MiniMapModule extends Module {
 
     private List<WorldChunk> collectNearbyChunks() {
         List<WorldChunk> chunks = new ArrayList<>();
+
+        var playerChunkPos = client.player.getChunkPos();
+
         for (int x = -mapChunkRadius / 2; x < mapChunkRadius / 2; x++) {
             for (int z = -mapChunkRadius / 2; z < mapChunkRadius / 2; z++) {
-                chunks.add(client.world.getChunk(client.player.chunkX + x, client.player.chunkZ + z));
+                chunks.add(client.world.getChunk(playerChunkPos.x + x, playerChunkPos.z + z));
             }
         }
         return chunks;

@@ -33,6 +33,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.chunk.BlockEntityTickInvoker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -437,15 +438,17 @@ public class ChestStealerModule extends Module {
         return false;
     }
 
-    // --- Aura: scan world for chest tile entities ---
-
     private void scanForChests() {
-        List<BlockEntity> blockEntities = new ArrayList<>(client.world.blockEntities);
-        blockEntities.removeIf(be -> !(be instanceof ChestBlockEntity));
+        List<BlockEntityTickInvoker> blockEntities = new ArrayList<>(client.world.blockEntityTickers);
 
-        for (BlockEntity be : blockEntities) {
-            if (!chests.containsKey((ChestBlockEntity) be)) {
-                chests.put((ChestBlockEntity) be, false);
+        for (BlockEntityTickInvoker ticker : blockEntities) {
+            var be = client.world.getBlockEntity(ticker.getPos());
+            if (be == null) continue;
+
+            if (be instanceof ChestBlockEntity cbe) {
+                if (!chests.containsKey(cbe)) {
+                    chests.put(cbe, false);
+                }
             }
         }
 

@@ -1,6 +1,5 @@
 package io.github.sst.remake.module.impl.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.net.ReceivePacketEvent;
@@ -12,11 +11,12 @@ import io.github.sst.remake.setting.impl.BooleanSetting;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
-import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityDestroyS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.MobSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnS2CPacket;
@@ -54,26 +54,22 @@ public class WaypointsModule extends Module {
 
         Packet<?> packet = event.packet;
 
-        if (packet instanceof EntitiesDestroyS2CPacket) {
-            EntitiesDestroyS2CPacket destroyPacket = (EntitiesDestroyS2CPacket) packet;
+        if (packet instanceof EntityDestroyS2CPacket destroyPacket) {
+            Entity entity = client.world.getEntityById(destroyPacket.getEntityId());
+            if (entity instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) entity;
 
-            for (int entityId : destroyPacket.getEntityIds()) {
-                Entity entity = client.world.getEntityById(entityId);
-                if (entity instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) entity;
-
-                    this.unspawnedWaypoints.remove(player.getUuid());
-                    this.unspawnedWaypoints.put(
-                            player.getUuid(),
-                            new Waypoint(
-                                    player.getName().getString() + " Unspawn",
-                                    (int) player.getX(),
-                                    (int) player.getY(),
-                                    (int) player.getZ(),
-                                    ClientColors.DARK_OLIVE
-                            )
-                    );
-                }
+                this.unspawnedWaypoints.remove(player.getUuid());
+                this.unspawnedWaypoints.put(
+                        player.getUuid(),
+                        new Waypoint(
+                                player.getName().getString() + " Unspawn",
+                                (int) player.getX(),
+                                (int) player.getY(),
+                                (int) player.getZ(),
+                                ClientColors.DARK_OLIVE
+                        )
+                );
             }
             return;
         }
@@ -149,7 +145,7 @@ public class WaypointsModule extends Module {
             }
         }
 
-        RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+        StateManager.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
     private List<Waypoint> collectAndSortWaypointsByDistance() {
