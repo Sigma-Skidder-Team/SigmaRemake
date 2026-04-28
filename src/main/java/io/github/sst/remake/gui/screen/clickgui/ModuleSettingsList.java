@@ -16,6 +16,7 @@ import io.github.sst.remake.util.java.RandomUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import org.lwjgl.opengl.GL11;
@@ -312,9 +313,9 @@ public class ModuleSettingsList extends ScrollablePanel {
             }
         }
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         super.draw(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         this.tooltipFade.changeDirection(!visible ? AnimationUtils.Direction.FORWARDS : AnimationUtils.Direction.BACKWARDS);
         RenderUtils.drawString(
                 FontUtils.HELVETICA_LIGHT_14,

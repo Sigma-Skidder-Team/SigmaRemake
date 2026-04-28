@@ -62,8 +62,8 @@ public class BoxOutlineESP extends SubModule {
     private void renderBox(boolean inside) {
         Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
         for (LivingEntity target : getParent().getTargets()) {
-            GL11.glPushMatrix();
-            GL11.glTranslated(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+            StateManager.pushMatrix();
+            StateManager.translated(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
             GL11.glDisable(GL11.GL_DEPTH_TEST);
             GL11.glEnable(GL11.GL_BLEND);
@@ -82,7 +82,7 @@ public class BoxOutlineESP extends SubModule {
             }
 
             GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
     }
 }

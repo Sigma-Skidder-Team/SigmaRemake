@@ -3,6 +3,7 @@ package io.github.sst.remake.gui.screen.bird;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.image.Resources;
@@ -150,18 +151,18 @@ public class BirdGameWidget extends Widget {
         float birdWidth = 40.0F;
         float birdHeight = 20.0F;
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         float rotation = 0.0f;
         if (this.hasStarted) {
             rotation = this.birdVelocityY * -2000.0F; // Flipped sign
             rotation = Math.max(-90.0F, Math.min(30.0F, rotation));
         }
-        GL11.glTranslatef(birdDrawX + birdWidth / 2.0F, birdDrawY + birdHeight / 2.0F, 0.0F);
-        GL11.glRotatef(rotation, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-(birdDrawX + birdWidth / 2.0F), -(birdDrawY + birdHeight / 2.0F), 0.0F);
+        StateManager.translatef(birdDrawX + birdWidth / 2.0F, birdDrawY + birdHeight / 2.0F, 0.0F);
+        StateManager.rotatef(rotation, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-(birdDrawX + birdWidth / 2.0F), -(birdDrawY + birdHeight / 2.0F), 0.0F);
 
         RenderUtils.drawImage(birdDrawX, birdDrawY, birdWidth, birdHeight, Resources.GAME_BIRD, ClientColors.LIGHT_GREYISH_BLUE, textureX, 0.0F, spriteWidth, spriteHeight, true);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         ScissorUtils.restoreScissor();
         super.draw(partialTicks);

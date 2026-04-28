@@ -6,6 +6,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
@@ -48,7 +49,7 @@ public class CompassModule extends Module {
             float angleOffset = 7.0F + wrapDegrees(client.player.yaw) - (float) baseAngle;
             double scrollOffset = angleOffset / 15.0F * (float) markerSpacing;
 
-            GL11.glAlphaFunc(519, 0.0F);
+            StateManager.alphaFunc(519, 0.0F);
             RenderUtils.drawImage(
                     (float) (client.getWindow().getWidth() / 2) - (float) (halfMarkers * markerSpacing) * 1.5F,
                     -40.0F,

@@ -5,6 +5,7 @@ import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
@@ -55,10 +56,10 @@ public class Checkbox extends InteractiveWidget {
                 10.0F,
                 ColorHelper.applyAlpha(ColorHelper.shiftTowardsOther(-14047489, ClientColors.DEEP_TEAL, !this.isMouseDownOverComponent() ? 1.0F : 0.9F), scale)
         );
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
-        GL11.glScalef(1.5F - 0.5F * scale, 1.5F - 0.5F * scale, 0.0F);
-        GL11.glTranslatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
+        StateManager.scalef(1.5F - 0.5F * scale, 1.5F - 0.5F * scale, 0.0F);
+        StateManager.translatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
         RenderUtils.drawImage(
                 (float) this.x,
                 (float) this.y,
@@ -67,7 +68,7 @@ public class Checkbox extends InteractiveWidget {
                 Resources.CHECKMARK,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, scale)
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         super.draw(partialTicks);
     }
 

@@ -7,6 +7,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -60,8 +61,8 @@ public class WaypointColorBadge extends Button {
                 ColorHelper.applyAlpha(this.color.color, partialTicks)
         );
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         super.drawChildren(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 }

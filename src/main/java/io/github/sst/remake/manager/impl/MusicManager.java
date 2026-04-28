@@ -14,6 +14,7 @@ import io.github.sst.remake.util.client.yt.SongData;
 import io.github.sst.remake.util.client.yt.YtDlpUtils;
 import io.github.sst.remake.util.http.NetUtils;
 import io.github.sst.remake.util.http.YoutubeUtils;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.system.io.audio.stream.MusicStream;
 import io.github.sst.remake.util.math.fft.JavaFFT;
 import io.github.sst.remake.util.math.color.ClientColors;
@@ -874,13 +875,13 @@ public final class MusicManager extends Manager implements IMinecraft {
         }
 
         float scale = 1.0F + (float) Math.round((float) (var9 / (double) (var16 - 1000)) * 0.14F * 75.0F) / 75.0F;
-        GL11.glPushMatrix();
-        GL11.glTranslated(60.0, client.getWindow().getHeight() - 55, 0.0);
-        GL11.glScalef(scale, scale, 0.0F);
-        GL11.glTranslated(-60.0, -(client.getWindow().getHeight() - 55), 0.0);
+        StateManager.pushMatrix();
+        StateManager.translated(60.0, client.getWindow().getHeight() - 55, 0.0);
+        StateManager.scalef(scale, scale, 0.0F);
+        StateManager.translated(-60.0, -(client.getWindow().getHeight() - 55), 0.0);
         RenderUtils.drawImage(10.0F, (float) (client.getWindow().getHeight() - 110), 100.0F, 100.0F, notification);
         RenderUtils.drawRoundedRect(10.0F, (float) (client.getWindow().getHeight() - 110), 100.0F, 100.0F, 14.0F, 0.3F);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     private void renderSongTitle() {

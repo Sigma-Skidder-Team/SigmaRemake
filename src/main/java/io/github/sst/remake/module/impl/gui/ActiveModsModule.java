@@ -153,15 +153,15 @@ public class ActiveModsModule extends Module {
             }
 
             String moduleName = module.name;
-            GL11.glAlphaFunc(519, 0.0F);
-            GL11.glPushMatrix();
+            StateManager.alphaFunc(519, 0.0F);
+            StateManager.pushMatrix();
 
             int xPos = screenWidth - margin - this.font.getWidth(moduleName) / 2;
             int yPos = screenHeight + 12;
 
-            GL11.glTranslatef((float) xPos, (float) yPos, 0.0F);
-            GL11.glScalef(animationScale, animationScale, 1.0F);
-            GL11.glTranslatef((float) (-xPos), (float) (-yPos), 0.0F);
+            StateManager.translatef((float) xPos, (float) yPos, 0.0F);
+            StateManager.scalef(animationScale, animationScale, 1.0F);
+            StateManager.translatef((float) (-xPos), (float) (-yPos), 0.0F);
 
             float scaleFactor = (float) Math.sqrt(Math.min(1.2F, (float) this.font.getWidth(moduleName) / 63.0F));
             RenderUtils.drawImage(
@@ -175,7 +175,7 @@ public class ActiveModsModule extends Module {
             RenderUtils.drawString(
                     this.font, (float) (screenWidth - margin - this.font.getWidth(moduleName)), (float) screenHeight, moduleName, transparency != 1.0F ? ColorHelper.applyAlpha(-1, transparency * 0.95F) : color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
             screenHeight = (int) ((float) screenHeight + (this.font.getHeight() + scale) * QuadraticEasing.easeInOutQuad(transparency, 0.0F, 1.0F, 1.0F));
         }
     }

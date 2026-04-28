@@ -124,7 +124,7 @@ public class ShadowESP extends SubModule {
         }
 
         for (LivingEntity entity : getParent().getTargets()) {
-            GL11.glPushMatrix();
+            StateManager.pushMatrix();
 
             Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
             double renderPosX = cameraPos.getX();
@@ -151,7 +151,7 @@ public class ShadowESP extends SubModule {
             entity.setOnFireFor(fireTimer);
             entity.setFlag(0, burning);
             client.options.entityShadows = previousShadowState;
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         this.renderBuffer.draw(RenderLayer.getEntitySolid(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));

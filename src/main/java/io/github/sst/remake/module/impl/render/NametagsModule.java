@@ -297,15 +297,15 @@ public class NametagsModule extends Module {
         float cooldownProgress = furnace.cooldown != 0 ? Math.min((float) furnace.smeltDelay / (float) furnace.cooldown, 1.0F) : 0;
         int padding = 14;
 
-        GL11.glPushMatrix();
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
-        GL11.glTranslated(renderX, renderY + 0.6F - 0.33333334F * (1.0F - partialTicks), renderZ);
-        GL11.glRotatef(camera.getYaw(), 0.0F, -1.0F, 0.0F);
-        GL11.glRotatef(camera.getPitch(), 1.0F, 0.0F, 0.0F);
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
+        StateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
+        StateManager.translated(renderX, renderY + 0.6F - 0.33333334F * (1.0F - partialTicks), renderZ);
+        StateManager.rotatef(camera.getYaw(), 0.0F, -1.0F, 0.0F);
+        StateManager.rotatef(camera.getPitch(), 1.0F, 0.0F, 0.0F);
+        StateManager.pushMatrix();
 
         float scale = 0.008F;
-        GL11.glScalef(-scale * partialTicks, -scale * partialTicks, -scale * partialTicks);
+        StateManager.scalef(-scale * partialTicks, -scale * partialTicks, -scale * partialTicks);
 
         int nameplateWidth;
         ItemStack outputItem = furnace.refreshOutput();
@@ -318,7 +318,7 @@ public class NametagsModule extends Module {
         int boxWidth = 51 + nameplateWidth + padding * 2;
         int boxHeight = 85 + padding * 2;
 
-        GL11.glTranslated(-boxWidth / 2d, -boxHeight / 2d, 0.0);
+        StateManager.translated(-boxWidth / 2d, -boxHeight / 2d, 0.0);
 
         RenderUtils.drawRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, BACKGROUND_COLOR);
         RenderUtils.drawRoundedRect(0.0F, 0.0F, (float) boxWidth, (float) boxHeight, 20.0F, 0.5F);
@@ -347,8 +347,8 @@ public class NametagsModule extends Module {
                 0.0F, (float) boxHeight - 6.0F, Math.min((float) boxWidth * smeltingProgress, (float) boxWidth), 6.0F,
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.75F));
 
-        GL11.glPopMatrix();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
+        StateManager.popMatrix();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -380,12 +380,12 @@ public class NametagsModule extends Module {
         String healthStr = (float) Math.round(((LivingEntity) entity).getHealth() * 10.0F) / 10.0F + "";
         float healthPercent = Math.min(((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth(), 1.0F);
 
-        GL11.glPushMatrix();
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
-        GL11.glTranslated(renderX, renderY + 0.6F - 0.33333334F * (1.0F - scale), renderZ);
-        GL11.glRotatef(camera.getYaw(), 0.0F, -1.0F, 0.0F);
-        GL11.glRotatef(camera.getPitch(), 1.0F, 0.0F, 0.0F);
-        GL11.glScalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
+        StateManager.pushMatrix();
+        StateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
+        StateManager.translated(renderX, renderY + 0.6F - 0.33333334F * (1.0F - scale), renderZ);
+        StateManager.rotatef(camera.getYaw(), 0.0F, -1.0F, 0.0F);
+        StateManager.rotatef(camera.getPitch(), 1.0F, 0.0F, 0.0F);
+        StateManager.scalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
 
         // Team color for health bar
         int teamColor = ColorHelper.applyAlpha(
@@ -412,7 +412,7 @@ public class NametagsModule extends Module {
                 healthBarX2 - healthBarX1,
                 (float) (font.getHeight() + 2) - healthBarY1, teamColor);
 
-        GL11.glTranslated(-font.getWidth(name) / 2d, 0.0, 0.0);
+        StateManager.translated(-font.getWidth(name) / 2d, 0.0, 0.0);
         int healthLabelWidth = FontUtils.HELVETICA_LIGHT_14.getWidth("Health: 20.0");
         String healthPrefix = "Health: ";
         int nameWidth = font.getWidth(name);
@@ -424,7 +424,7 @@ public class NametagsModule extends Module {
         RenderUtils.drawString(FontUtils.HELVETICA_LIGHT_14, 0.0F, 10.0F, healthPrefix + healthStr,
                 ClientColors.LIGHT_GREYISH_BLUE);
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         // Reset GL state
         GL11.glEnable(GL11.GL_DEPTH_TEST);

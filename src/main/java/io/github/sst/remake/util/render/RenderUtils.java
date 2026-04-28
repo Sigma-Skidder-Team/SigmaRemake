@@ -11,10 +11,7 @@ import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
@@ -86,7 +83,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawRoundedRect(float x, float y, float width, float height, float radius, float alpha) {
-        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
+        StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
         int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, alpha);
 
         drawImage(x - radius, y - radius, radius, radius, Resources.SHADOW_CORNER_1, color);
@@ -121,8 +118,9 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawImage(float x, float y, float width, float height, Texture texture, int color, float tlX, float tlY, float siW, float siH, boolean linearFiltering) {
         if (texture != null) {
+            RenderSystem.assertThread(RenderSystem::isOnRenderThread);
             StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+            StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
 
             x = (float) Math.round(x);
             width = (float) Math.round(width);
@@ -140,6 +138,7 @@ public class RenderUtils implements IMinecraft {
             StateManager.color4f(red, green, blue, alpha);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
+            RenderSystem.bindTexture(texture.getTextureID());
             texture.bind();
 
             float uScale = width / (float) texture.getTextureWidth() / (width / (float) texture.getImageWidth());
@@ -151,24 +150,22 @@ public class RenderUtils implements IMinecraft {
             float v1 = tlY / (float) texture.getImageHeight() * vScale;
 
             if (!linearFiltering) {
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             } else {
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             }
 
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glTexCoord2f(u1, v1);
-            GL11.glVertex2f(x, y);
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
 
-            GL11.glTexCoord2f(u1, v1 + v0);
-            GL11.glVertex2f(x, y + height);
+            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            buffer.vertex(x, y, 0.0).color(red, green, blue, alpha).texture(u1, v1).next();
+            buffer.vertex(x, y + height, 0.0).color(red, green, blue, alpha).texture(u1, v1 + v0).next();
+            buffer.vertex(x + width, y + height, 0.0).color(red, green, blue, alpha).texture(u1 + u0, v1 + v0).next();
+            buffer.vertex(x + width, y, 0.0).color(red, green, blue, alpha).texture(u1 + u0, v1).next();
 
-            GL11.glTexCoord2f(u1 + u0, v1 + v0);
-            GL11.glVertex2f(x + width, y + height);
-
-            GL11.glTexCoord2f(u1 + u0, v1);
-            GL11.glVertex2f(x + width, y);
-            GL11.glEnd();
+            tessellator.draw();
 
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_BLEND);
@@ -196,7 +193,7 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawCircle(float x, float y, float size, int color) {
         StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         float red = (float) (color >> 16 & 0xFF) / 255.0F;
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
@@ -210,12 +207,24 @@ public class RenderUtils implements IMinecraft {
         GL11.glEnable(GL11.GL_POINT_SMOOTH);
         GL11.glEnable(GL11.GL_BLEND);
 
-        GL11.glPointSize(size * getScaleFactor());
-        GL11.glBegin(GL11.GL_POINTS);
-        GL11.glVertex2f(x, y);
-        GL11.glEnd();
-        GL11.glDisable(GL11.GL_POINT_SMOOTH);
-        GL11.glDisable(GL11.GL_BLEND);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        buffer.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+
+        float radius = size / 2.0F;
+        int segments = 360;
+
+        buffer.vertex(x, y, 0.0).color(red, green, blue, alpha).next();
+
+        for (int i = 0; i <= segments; i++) {
+            double angle = Math.PI * 2 * i / segments;
+            float vx = (float) (x + (Math.cos(angle) * radius));
+            float vy = (float) (y + (Math.sin(angle) * radius));
+            buffer.vertex(vx, vy, 0.0).color(red, green, blue, alpha).next();
+        }
+
+        tessellator.draw();
 
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
@@ -231,7 +240,7 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawString(TrueTypeFont font, float x, float y, String text, int color, FontAlignment widthAlignment, FontAlignment heightAlignment, boolean shadow) {
         StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 0.0F);
 
         int adjustedX = 0;
         int adjustedY = 0;
@@ -262,7 +271,7 @@ public class RenderUtils implements IMinecraft {
                 break;
         }
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
         boolean noHiDpiFontAvailable = false;
         if ((double) getScaleFactor() == 2.0) {
@@ -287,9 +296,9 @@ public class RenderUtils implements IMinecraft {
             }
 
             if (!noHiDpiFontAvailable) {
-                GL11.glTranslatef(x, y, 0.0F);
-                GL11.glScalef(1.0F / getScaleFactor(), 1.0F / getScaleFactor(), 1.0F / getScaleFactor());
-                GL11.glTranslatef(-x, -y, 0.0F);
+                StateManager.translatef(x, y, 0.0F);
+                StateManager.scalef(1.0F / getScaleFactor(), 1.0F / getScaleFactor(), 1.0F / getScaleFactor());
+                StateManager.translatef(-x, -y, 0.0F);
                 adjustedX = (int) ((float) adjustedX * getScaleFactor());
                 adjustedY = (int) ((float) adjustedY * getScaleFactor());
             }
@@ -313,7 +322,7 @@ public class RenderUtils implements IMinecraft {
         }
 
         RenderSystem.disableBlend();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     public static void drawFilledArc(float x, float y, float radius, int color) {
@@ -325,9 +334,6 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawFilledArc(float x, float y, float startAngle, float endAngle, float hRadius, float vRadius, int color) {
-        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-
         if (startAngle > endAngle) {
             float tempAngle = endAngle;
             endAngle = startAngle;
@@ -341,33 +347,35 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        StateManager.color4f(red, green, blue, alpha);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         if (alpha > 0.5F) {
-            GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glLineWidth(2.0F);
-            GL11.glBegin(GL11.GL_LINE_STRIP);
+            RenderSystem.lineWidth(2.0F);
 
+            buffer.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
             for (float angle = endAngle; angle >= startAngle; angle -= 4.0F) {
-                float radiusX = (float) Math.cos((double) angle * Math.PI / 180.0) * hRadius * 1.001F;
-                float radiusY = (float) Math.sin((double) angle * Math.PI / 180.0) * vRadius * 1.001F;
-                GL11.glVertex2f(x + radiusX, y + radiusY);
+                float radiusX = (float) Math.cos(Math.toRadians(angle)) * hRadius * 1.001F;
+                float radiusY = (float) Math.sin(Math.toRadians(angle)) * vRadius * 1.001F;
+                buffer.vertex(x + radiusX, y + radiusY, 0.0).color(red, green, blue, alpha).next();
             }
-
-            GL11.glEnd();
-            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+            tessellator.draw();
         }
 
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        buffer.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+        buffer.vertex(x, y, 0.0).color(red, green, blue, alpha).next();
 
         for (float angle = endAngle; angle >= startAngle; angle -= 4.0F) {
-            float radiusX = (float) Math.cos((double) angle * Math.PI / 180.0) * hRadius;
-            float radiusY = (float) Math.sin((double) angle * Math.PI / 180.0) * vRadius;
-            GL11.glVertex2f(x + radiusX, y + radiusY);
+            float radiusX = (float) Math.cos(Math.toRadians(angle)) * hRadius;
+            float radiusY = (float) Math.sin(Math.toRadians(angle)) * vRadius;
+            buffer.vertex(x + radiusX, y + radiusY, 0.0).color(red, green, blue, alpha).next();
         }
 
-        GL11.glEnd();
+        tessellator.draw();
+
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
@@ -417,9 +425,6 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawTriangle(float left, float top, float right, float bottom, float tipX, float tipY, int color) {
-        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-
         float red = (float) (color >> 16 & 0xFF) / 255.0F;
         float green = (float) (color >> 8 & 0xFF) / 255.0F;
         float blue = (float) (color & 0xFF) / 255.0F;
@@ -427,22 +432,26 @@ public class RenderUtils implements IMinecraft {
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        StateManager.color4f(red, green, blue, alpha);
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-        GL11.glVertex2f(left, top);
-        GL11.glVertex2f(tipX, tipY);
-        GL11.glVertex2f(right, bottom);
-        GL11.glVertex2f(left, top);
-        GL11.glEnd();
+        RenderSystem.defaultBlendFunc();
+
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+
+        buffer.vertex(left, top, 0.0).color(red, green, blue, alpha).next();
+        buffer.vertex(tipX, tipY, 0.0).color(red, green, blue, alpha).next();
+        buffer.vertex(right, bottom, 0.0).color(red, green, blue, alpha).next();
+
+        tessellator.draw();
+
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
     public static void drawTexturedQuad(float x, float y, float width, float height, int color, float u, float v, float textureWidth, float textureHeight) {
-        StateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.0F);
-
         x = (float) Math.round(x);
         y = (float) Math.round(y);
         width = (float) Math.round(width);
@@ -454,36 +463,26 @@ public class RenderUtils implements IMinecraft {
         float blue = (float) (color & 0xFF) / 255.0F;
 
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        StateManager.color4f(red, green, blue, alpha);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-        resetGlUnpackState();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
         float texU = u / textureWidth;
         float texV = v / textureHeight;
+        float texU2 = texU + 1.0f;
+        float texV2 = texV + 1.0f;
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(texU, texV);
-        GL11.glVertex2f(x, y);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
-        GL11.glTexCoord2f(texU, texV + 1.0f);
-        GL11.glVertex2f(x, y + height);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        GL11.glTexCoord2f(texU + 1.0f, texV + 1.0f);
-        GL11.glVertex2f(x + width, y + height);
+        buffer.vertex(x, y, 0.0f).texture(texU, texV).color(red, green, blue, alpha).next();
+        buffer.vertex(x, y + height, 0.0f).texture(texU, texV2).color(red, green, blue, alpha).next();
+        buffer.vertex(x + width, y + height, 0.0f).texture(texU2, texV2).color(red, green, blue, alpha).next();
+        buffer.vertex(x + width, y, 0.0f).texture(texU2, texV).color(red, green, blue, alpha).next();
 
-        GL11.glTexCoord2f(texU + 1.0f, texV);
-        GL11.glVertex2f(x + width, y);
-        GL11.glEnd();
+        tessellator.draw();
 
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-
-        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -535,7 +534,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -557,7 +556,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -579,7 +578,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -631,7 +630,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -654,7 +653,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -677,7 +676,7 @@ public class RenderUtils implements IMinecraft {
                     Resources.FLOATING_BORDER,
                     color
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         ScissorUtils.restoreScissor();
@@ -701,10 +700,10 @@ public class RenderUtils implements IMinecraft {
                 color
         );
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x + width - tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - width - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
         drawImage(
                 x + width - innerOffset,
                 y - innerOffset,
@@ -713,12 +712,12 @@ public class RenderUtils implements IMinecraft {
                 Resources.FLOATING_CORNER,
                 color
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x + width - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - width - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
         drawImage(
                 x + width - innerOffset,
                 y + padding + height,
@@ -727,12 +726,12 @@ public class RenderUtils implements IMinecraft {
                 Resources.FLOATING_CORNER,
                 color
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x - tileSize / 2.0f, y + height + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(270.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - tileSize / 2.0f, -y - height - tileSize / 2.0f, 0.0F);
         drawImage(
                 x + padding,
                 y + padding + height,
@@ -741,28 +740,28 @@ public class RenderUtils implements IMinecraft {
                 Resources.FLOATING_CORNER,
                 color
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     private static void rotate90Tile(int x, int y, int tileSize) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
     }
 
     private static void rotate270Tile(int x, int y, int tileSize) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(270.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(270.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
     }
 
     private static void rotate180Tile(int x, int y, int tileSize) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(x + tileSize / 2.0f, y + tileSize / 2.0f, 0.0F);
+        StateManager.rotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-x - tileSize / 2.0f, -y - tileSize / 2.0f, 0.0F);
     }
 
     public static void drawPanelShadow(float x, float y, float width, float height, float shadowSize, float alpha) {
@@ -778,9 +777,9 @@ public class RenderUtils implements IMinecraft {
         if (stack != null) {
             MinecraftClient.getInstance().getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) x, (float) y, 0.0F);
-            GL11.glScalef((float) width / 16.0F, (float) height / 16.0F, 0.0F);
+            StateManager.pushMatrix();
+            StateManager.translatef((float) x, (float) y, 0.0F);
+            StateManager.scalef((float) width / 16.0F, (float) height / 16.0F, 0.0F);
 
             ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
             if (stack.getCount() == 0) {
@@ -794,7 +793,7 @@ public class RenderUtils implements IMinecraft {
             StateManager.disableLighting();
             RenderSystem.enableBlend();
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDepthFunc(GL11.GL_ALWAYS);
 
             itemRenderer.renderInGui(stack, 0, 0);
@@ -802,7 +801,7 @@ public class RenderUtils implements IMinecraft {
             GL11.glDepthFunc(GL11.GL_LEQUAL);
             StateManager.popMatrix();
 
-            GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
+            StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
             StateManager.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0F, 240.0F);
             RenderSystem.disableDepthTest();
             TextureImpl.unbind();
@@ -901,8 +900,8 @@ public class RenderUtils implements IMinecraft {
 
         resetGlUnpackState();
 
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
         if (dynamicPixelTextureWidth != (int) textureWidth || dynamicPixelTextureHeight != (int) textureHeight) {
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, (int) textureWidth, (int) textureHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, pixelBuffer);
@@ -941,7 +940,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawRotatedTriangle() {
-        GL11.glTranslatef(0.0F, 0.0F, 0.3F);
+        StateManager.translatef(0.0F, 0.0F, 0.3F);
         GL11.glNormal3f(0.0F, 0.0F, 1.0F);
         GL11.glRotated(-37.0, 1.0, 0.0, 0.0);
 
@@ -989,10 +988,10 @@ public class RenderUtils implements IMinecraft {
         StateManager.color4f(red, green, blue, alpha);
 
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        buffer.vertex(x1, y2, 0.0).next();
-        buffer.vertex(x2, y2, 0.0).next();
-        buffer.vertex(x2, y1, 0.0).next();
-        buffer.vertex(x1, y1, 0.0).next();
+        buffer.vertex(x1, y2, 0.0).color(red, green, blue, alpha).next();
+        buffer.vertex(x2, y2, 0.0).color(red, green, blue, alpha).next();
+        buffer.vertex(x2, y1, 0.0).color(red, green, blue, alpha).next();
+        buffer.vertex(x1, y1, 0.0).color(red, green, blue, alpha).next();
 
         tessellator.draw();
 
@@ -1025,18 +1024,18 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawRotatingTriangles(int color) {
         for (int angle = 0; angle <= 270; angle += 90) {
-            GL11.glPushMatrix();
-            GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+            StateManager.pushMatrix();
+            StateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
+            StateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
             drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL, color, 0.04F * angle / 90.0F));
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         for (int angle = 0; angle <= 270; angle += 90) {
-            GL11.glPushMatrix();
-            GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
+            StateManager.pushMatrix();
+            StateManager.rotatef(angle, 0.0F, 1.0F, 0.0F);
             drawColoredRotatedTriangle(ColorHelper.blendColors(ClientColors.DEEP_TEAL, color, 0.04F * angle / 90.0F));
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
     }
 
@@ -1051,39 +1050,39 @@ public class RenderUtils implements IMinecraft {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
 
-        GL11.glPushMatrix();
-        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
-        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.114F);
-        GL11.glTranslated(x + 0.5, y, z + 0.5);
-        GL11.glRotatef(90.0F, -1.0F, 0.0F, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
+        StateManager.color4f(0.0F, 0.0F, 0.0F, 0.114F);
+        StateManager.translated(x + 0.5, y, z + 0.5);
+        StateManager.rotatef(90.0F, -1.0F, 0.0F, 0.0F);
         drawFilledCircle(0.5F);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
-        GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
-        GL11.glRotatef((float) (client.player.age % 90 * 4), 0.0F, -1.0F, 0.0F);
+        StateManager.translated(x + 0.5, y + 0.7F, z + 0.5);
+        StateManager.rotatef((float) (client.player.age % 90 * 4), 0.0F, -1.0F, 0.0F);
         GL11.glLineWidth(1.4F + 1.4F / scale);
         drawCircleOutline(0.6F);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslated(x + 0.5, y + 0.7F, z + 0.5);
-        GL11.glRotatef((float) (client.player.age % 90 * 4), 0.0F, 1.0F, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translated(x + 0.5, y + 0.7F, z + 0.5);
+        StateManager.rotatef((float) (client.player.age % 90 * 4), 0.0F, 1.0F, 0.0F);
         drawRotatingTriangles(color);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
-        GL11.glTranslated(x + 0.5, y + 1.9, z + 0.5);
-        GL11.glRotatef(client.gameRenderer.getCamera().getYaw(), 0.0F, -1.0F, 0.0F);
-        GL11.glRotatef(client.gameRenderer.getCamera().getPitch(), 1.0F, 0.0F, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
+        StateManager.translated(x + 0.5, y + 1.9, z + 0.5);
+        StateManager.rotatef(client.gameRenderer.getCamera().getYaw(), 0.0F, -1.0F, 0.0F);
+        StateManager.rotatef(client.gameRenderer.getCamera().getPitch(), 1.0F, 0.0F, 0.0F);
 
         TrueTypeFont font = FontUtils.HELVETICA_LIGHT_25;
 
-        GL11.glPushMatrix();
-        GL11.glScalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
-        GL11.glTranslated(0.0, -20.0 * Math.sqrt(Math.sqrt(scale)), 0.0);
+        StateManager.pushMatrix();
+        StateManager.scalef(-0.009F * scale, -0.009F * scale, -0.009F * scale);
+        StateManager.translated(0.0, -20.0 * Math.sqrt(Math.sqrt(scale)), 0.0);
 
         int bgColor = ColorHelper.applyAlpha(
                 ColorHelper.blendColors(ClientColors.LIGHT_GREYISH_BLUE, ClientColors.DEEP_TEAL, 75.0F),
@@ -1107,11 +1106,11 @@ public class RenderUtils implements IMinecraft {
                 0.5F
         );
 
-        GL11.glTranslated((double) -font.getWidth(label) / 2, 0.0, 0.0);
+        StateManager.translated((double) -font.getWidth(label) / 2, 0.0, 0.0);
         drawString(font, 0.0F, 0.0F, label, ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8F));
 
-        GL11.glPopMatrix();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
+        StateManager.popMatrix();
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -1132,7 +1131,7 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawTargetIndicatorRing(java.awt.Color baseColor, Entity target, float progress) {
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -1145,11 +1144,11 @@ public class RenderUtils implements IMinecraft {
             tickDelta = 0.0;
         }
 
-        GL11.glTranslated(
+        StateManager.translated(
                 target.prevX + (target.getX() - target.prevX) * tickDelta,
                 target.prevY + (target.getY() - target.prevY) * tickDelta,
                 target.prevZ + (target.getZ() - target.prevZ) * tickDelta);
-        GL11.glTranslated(
+        StateManager.translated(
                 -client.gameRenderer.getCamera().getPos().getX(),
                 -client.gameRenderer.getCamera().getPos().getY(),
                 -client.gameRenderer.getCamera().getPos().getZ());
@@ -1157,7 +1156,7 @@ public class RenderUtils implements IMinecraft {
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
+        StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
 
         long animationPeriodMs = 1800;
         float phase = (float) (System.currentTimeMillis() % animationPeriodMs) / (float) animationPeriodMs;
@@ -1165,22 +1164,22 @@ public class RenderUtils implements IMinecraft {
 
         phase = !reverseGradient ? phase * 2.0F : 1.0F - phase * 2.0F % 1.0F;
 
-        GL11.glTranslatef(0.0F, (target.getHeight() + 0.4F) * phase, 0.0F);
+        StateManager.translatef(0.0F, (target.getHeight() + 0.4F) * phase, 0.0F);
         float pulse = (float) Math.sin((double) phase * Math.PI);
         drawAnimatedRing(baseColor, reverseGradient, 0.45F * pulse, 0.6F, 0.35F * pulse, progress);
-        GL11.glPushMatrix();
-        GL11.glTranslated(
+        StateManager.pushMatrix();
+        StateManager.translated(
                 client.gameRenderer.getCamera().getPos().getX(),
                 client.gameRenderer.getCamera().getPos().getY(),
                 client.gameRenderer.getCamera().getPos().getZ());
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL13.GL_MULTISAMPLE);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     public static void drawAnimatedRing(java.awt.Color baseColor, boolean reverseGradient, float ringHeight, float ringRadius, float ringAlphaScale, float progressAlpha) {
@@ -1202,9 +1201,9 @@ public class RenderUtils implements IMinecraft {
 
             double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
-            GL11.glColor4f(red, green, blue, !reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
+            StateManager.color4f(red, green, blue, !reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
             GL11.glVertex3d(x, 0.0, z);
-            GL11.glColor4f(red, green, blue, reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
+            StateManager.color4f(red, green, blue, reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
             GL11.glVertex3d(x, ringHeight, z);
         }
 
@@ -1220,7 +1219,7 @@ public class RenderUtils implements IMinecraft {
 
             double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
-            GL11.glColor4f(red, green, blue, (0.5F + 0.5F * ringAlphaScale) * progressAlpha);
+            StateManager.color4f(red, green, blue, (0.5F + 0.5F * ringAlphaScale) * progressAlpha);
             GL11.glVertex3d(x, !reverseGradient ? (double) ringHeight : 0.0, z);
         }
 
@@ -1233,7 +1232,7 @@ public class RenderUtils implements IMinecraft {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         TextureImpl.unbind();
         StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glColorMask(true, true, true, true);
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -1310,10 +1309,10 @@ public class RenderUtils implements IMinecraft {
 
         float logoScale = 0.75F + (float) (Math.pow(backgroundOpacity, 4.0) * 0.25F);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(client.getWindow().getWidth() / 2.0F, client.getWindow().getHeight() / 2.0F, 0.0F);
-        GL11.glScalef(logoScale, logoScale, 0.0F);
-        GL11.glTranslatef(-client.getWindow().getWidth() / 2.0F, -client.getWindow().getHeight() / 2.0F, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(client.getWindow().getWidth() / 2.0F, client.getWindow().getHeight() / 2.0F, 0.0F);
+        StateManager.scalef(logoScale, logoScale, 0.0F);
+        StateManager.translatef(-client.getWindow().getWidth() / 2.0F, -client.getWindow().getHeight() / 2.0F, 0.0F);
 
         drawImage(
                 (float) logoX,
@@ -1355,7 +1354,7 @@ public class RenderUtils implements IMinecraft {
                 ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.9F * backgroundOpacity)
         );
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     public static void drawVerticalGradientRect(int left, int top, int right, int bottom, int topColor, int bottomColor) {
@@ -1403,7 +1402,7 @@ public class RenderUtils implements IMinecraft {
             float blue = (float) (color & 0xFF) / 255.0f;
             float alpha = (float) (color >> 24 & 0xFF) / 255.0f;
 
-            GL11.glColor4f(red, green, blue, alpha);
+            StateManager.color4f(red, green, blue, alpha);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glLineWidth(width);
@@ -1447,7 +1446,7 @@ public class RenderUtils implements IMinecraft {
             float green = (float) (color >> 8 & 0xFF) / 255.0f;
             float blue = (float) (color & 0xFF) / 255.0f;
 
-            GL11.glColor4f(red, green, blue, alpha);
+            StateManager.color4f(red, green, blue, alpha);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_LIGHTING);

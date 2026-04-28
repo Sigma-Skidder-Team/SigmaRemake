@@ -48,7 +48,7 @@ public class MixinGameRenderer {
         StateManager.pushMatrix();
         StateManager.multMatrix(matrix.peek().getModel());
         if (client != null && client.world != null && client.player != null) {
-            GL11.glTranslatef(0.0F, 0.0F, 0.0F);
+            StateManager.translatef(0.0F, 0.0F, 0.0F);
             RenderSystem.disableDepthTest();
             RenderSystem.depthMask(false);
             GL11.glDisable(2896);

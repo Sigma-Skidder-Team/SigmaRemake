@@ -6,6 +6,7 @@ import io.github.sst.remake.event.impl.client.RenderClient2DEvent;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
@@ -119,10 +120,10 @@ public class MusicParticlesModule extends Module {
                 alpha = 1.0F;
             }
 
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) (client.getWindow().getWidth() / 2), (float) (client.getWindow().getHeight() / 2), 0.0F);
-            GL11.glScalef(scale, scale, 1.0F);
-            GL11.glTranslatef((float) (-client.getWindow().getWidth() / 2), (float) (-client.getWindow().getHeight() / 2), 0.0F);
+            StateManager.pushMatrix();
+            StateManager.translatef((float) (client.getWindow().getWidth() / 2), (float) (client.getWindow().getHeight() / 2), 0.0F);
+            StateManager.scalef(scale, scale, 1.0F);
+            StateManager.translatef((float) (-client.getWindow().getWidth() / 2), (float) (-client.getWindow().getHeight() / 2), 0.0F);
 
             int color = Color.getHSBColor((float) (System.currentTimeMillis() % 4000L) / 4000.0F, 0.3F, 1.0F).getRGB();
             float size = 60.0F * this.sizeFactor;
@@ -135,7 +136,7 @@ public class MusicParticlesModule extends Module {
                     ColorHelper.applyAlpha(color, alpha * 0.9F)
             );
 
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         public boolean isExpired() {

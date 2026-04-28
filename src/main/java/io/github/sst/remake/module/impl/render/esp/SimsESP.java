@@ -5,6 +5,7 @@ import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.module.SubModule;
 import io.github.sst.remake.module.impl.render.ESPModule;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
@@ -47,30 +48,30 @@ public class SimsESP extends SubModule {
         };
 
         for (int rotation = 0; rotation <= 315; rotation += 45) {
-            GL11.glPushMatrix();
-            GL11.glRotatef(rotation, 0.0F, 1.0F, 0.0F);
+            StateManager.pushMatrix();
+            StateManager.rotatef(rotation, 0.0F, 1.0F, 0.0F);
             int colorIndex = rotation / 45;
             renderTriangleIndicator((float) triangleColors[colorIndex].getRed() / 255.0F, (float) triangleColors[colorIndex].getGreen() / 255.0F, (float) triangleColors[colorIndex].getBlue() / 255.0F);
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
-        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+        StateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
 
         for (int rotation = 0; rotation <= 315; rotation += 45) {
-            GL11.glPushMatrix();
-            GL11.glRotatef(rotation, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+            StateManager.pushMatrix();
+            StateManager.rotatef(rotation, 0.0F, 1.0F, 0.0F);
+            StateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
             int colorIndex = rotation / 45;
             Color color = new Color(ColorHelper.darkenColor(triangleColors[colorIndex].getRGB(), 0.2F), false);
             renderTriangleIndicator((float) color.getRed() / 255.0F, (float) color.getGreen() / 255.0F, (float) color.getBlue() / 255.0F);
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
     }
 
     private static void renderTriangleIndicator(float red, float green, float blue) {
         GL11.glColor3f(red, green, blue);
 
-        GL11.glTranslatef(0.0F, 0.0F, 0.25F);
+        StateManager.translatef(0.0F, 0.0F, 0.25F);
         GL11.glNormal3f(0.0F, 0.0F, 1.0F);
 
         GL11.glRotated(-30.0, 1.0, 0.0, 0.0);
@@ -91,9 +92,9 @@ public class SimsESP extends SubModule {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         GL11.glDepthMask(false);
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
-        GL11.glTranslated(
+        StateManager.translated(
                 x - client.gameRenderer.getCamera().getPos().getX(),
                 y - client.gameRenderer.getCamera().getPos().getY(),
                 z - client.gameRenderer.getCamera().getPos().getZ()
@@ -106,9 +107,9 @@ public class SimsESP extends SubModule {
             bobOffset *= -1.0F;
         }
 
-        GL11.glTranslated(0.0, 0.7F + bobOffset / 500.0F, 0.0);
+        StateManager.translated(0.0, 0.7F + bobOffset / 500.0F, 0.0);
         renderDirectionalTriangleRing();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);

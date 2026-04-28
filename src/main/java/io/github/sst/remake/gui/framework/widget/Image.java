@@ -3,6 +3,7 @@ package io.github.sst.remake.gui.framework.widget;
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.font.TrueTypeFont;
@@ -68,8 +69,8 @@ public class Image extends Button {
             );
         }
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         super.drawChildren(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 }

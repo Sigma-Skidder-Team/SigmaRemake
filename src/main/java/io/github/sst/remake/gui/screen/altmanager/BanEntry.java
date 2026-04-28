@@ -9,6 +9,7 @@ import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -84,9 +85,9 @@ public class BanEntry extends Widget {
                     ClientColors.LIGHT_GREYISH_BLUE
             );
 
-            GL11.glTexParameteri(3553, 10241, 9728);
+            RenderSystem.texParameter(3553, 10241, 9728);
 
-            GL11.glPushMatrix();
+            StateManager.pushMatrix();
             int centerX = this.width / 2;
             int centerY = this.height / 2;
 
@@ -94,9 +95,9 @@ public class BanEntry extends Widget {
                 hoverBackEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
             }
 
-            GL11.glTranslatef((float) (this.getX() + centerX), (float) (this.getY() + centerY), 0.0F);
+            StateManager.translatef((float) (this.getX() + centerX), (float) (this.getY() + centerY), 0.0F);
             GL11.glScaled(1.0 + 0.4 * (double) hoverBackEase, 1.0 + 0.4 * (double) hoverBackEase, 0.0);
-            GL11.glTranslatef((float) (-this.getX() - centerX), (float) (-this.getY() - centerY), 0.0F);
+            StateManager.translatef((float) (-this.getX() - centerX), (float) (-this.getY() - centerY), 0.0F);
 
             if (this.serverBannerTexture != null) {
                 RenderUtils.drawImage(
@@ -116,7 +117,7 @@ public class BanEntry extends Widget {
                 );
             }
 
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
             ScissorUtils.restoreScissor();
 
             RenderUtils.drawRoundedRect(
@@ -136,16 +137,16 @@ public class BanEntry extends Widget {
     }
 
     private void drawServerIcon() {
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
         float iconScaleEase = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.hoverPulseAnim.direction == AnimationUtils.Direction.FORWARDS) {
             iconScaleEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
-        GL11.glTranslatef((float) (this.getX() + 44), (float) (this.getY() + 44), 0.0F);
+        StateManager.translatef((float) (this.getX() + 44), (float) (this.getY() + 44), 0.0F);
         GL11.glScaled(1.0 + 0.1 * (double) iconScaleEase, 1.0 + 0.1 * (double) iconScaleEase, 0.0);
-        GL11.glTranslatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
+        StateManager.translatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
 
         if (this.serverIconTexture == null) {
             MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/misc/unknown_server.png"));
@@ -172,7 +173,7 @@ public class BanEntry extends Widget {
             );
         }
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     private void drawBanInfo() {
@@ -183,16 +184,16 @@ public class BanEntry extends Widget {
                 this.getAbsoluteY() + this.getTranslateY() + this.height
         );
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
         float infoScaleEase = EasingFunctions.easeOutBack(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         if (this.hoverPulseAnim.direction == AnimationUtils.Direction.FORWARDS) {
             infoScaleEase = QuadraticEasing.easeInQuad(this.hoverPulseAnim.calcPercent(), 0.0F, 1.0F, 1.0F);
         }
 
-        GL11.glTranslatef((float) (this.getX() + 76), (float) (this.getY() + 44), 0.0F);
+        StateManager.translatef((float) (this.getX() + 76), (float) (this.getY() + 44), 0.0F);
         GL11.glScaled(1.0 - 0.1 * (double) infoScaleEase, 1.0 - 0.1 * (double) infoScaleEase, 0.0);
-        GL11.glTranslatef((float) (-this.getX() - 76), (float) (-this.getY() - 44), 0.0F);
+        StateManager.translatef((float) (-this.getX() - 76), (float) (-this.getY() - 44), 0.0F);
 
         String displayName;
         if (this.serverInfo != null) {
@@ -260,7 +261,7 @@ public class BanEntry extends Widget {
             );
         }
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         ScissorUtils.restoreScissor();
     }
 

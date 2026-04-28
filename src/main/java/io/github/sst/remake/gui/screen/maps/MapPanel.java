@@ -7,6 +7,7 @@ import io.github.sst.remake.util.game.world.WaypointUtils;
 import io.github.sst.remake.util.client.waypoint.Waypoint;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.shader.StencilUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -114,15 +115,15 @@ public class MapPanel extends InteractiveWidget {
         );
         StencilUtils.configureStencilTest();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) this.getX(), (float) this.getY(), 0.0F);
         this.waypointList.draw(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) this.getX(), (float) this.getY(), 0.0F);
         this.worldMapView.draw(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         StencilUtils.endStencil();
 

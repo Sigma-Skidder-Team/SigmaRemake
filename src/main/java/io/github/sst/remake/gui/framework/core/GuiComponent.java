@@ -205,13 +205,13 @@ public class GuiComponent implements InputListener {
     }
 
     public void applyScaleTransforms() {
-        GL11.glTranslatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
-        GL11.glScalef(this.getScaleX(), this.getScaleY(), 0.0F);
-        GL11.glTranslatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
+        StateManager.translatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
+        StateManager.scalef(this.getScaleX(), this.getScaleY(), 0.0F);
+        StateManager.translatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
     }
 
     public void applyTranslationTransforms() {
-        GL11.glTranslatef((float) this.getTranslateX(), (float) this.getTranslateY(), 0.0F);
+        StateManager.translatef((float) this.getTranslateX(), (float) this.getTranslateY(), 0.0F);
     }
 
     public void draw(float partialTicks) {
@@ -220,14 +220,14 @@ public class GuiComponent implements InputListener {
 
     public void drawChildren(float partialTicks) {
         StateManager.enableAlphaTest();
-        GL11.glAlphaFunc(519, 0.0F);
-        GL11.glTranslatef((float) this.getX(), (float) this.getY(), 0.0F);
+        StateManager.alphaFunc(519, 0.0F);
+        StateManager.translatef((float) this.getX(), (float) this.getY(), 0.0F);
 
         for (GuiComponent child : this.children) {
             if (child.isSelfVisible()) {
-                GL11.glPushMatrix();
+                StateManager.pushMatrix();
                 child.draw(partialTicks);
-                GL11.glPopMatrix();
+                StateManager.popMatrix();
             }
         }
     }

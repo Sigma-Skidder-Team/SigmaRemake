@@ -1,12 +1,13 @@
 package io.github.sst.remake.util.render.shader;
 
+import io.github.sst.remake.util.porting.StateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import org.lwjgl.opengl.*;
 
 public class StencilUtils {
     public static void beginStencilWrite() {
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         resetFramebufferDepth();
         GL11.glEnable(GL11.GL_STENCIL_TEST);
         GL11.glColorMask(false, false, false, false);
@@ -34,7 +35,7 @@ public class StencilUtils {
     public static void endStencil() {
         GL11.glStencilMask(-1);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     private static void recreateFramebufferDepth(Framebuffer framebuffer) {

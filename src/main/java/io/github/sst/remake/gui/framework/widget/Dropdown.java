@@ -8,6 +8,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
@@ -176,11 +177,11 @@ public class Dropdown extends InteractiveWidget {
             ScissorUtils.startScissorNoGL(this.getAbsoluteX(), this.getAbsoluteY(), this.getAbsoluteX() + this.getWidth() + 140, this.getAbsoluteY() + this.getHeight() + this.getExpandedContentHeight());
         }
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         if (this.expandAnimation.calcPercent() > 0.0F) {
             super.draw(partialTicks);
         }
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         if (isAnimating) {
             ScissorUtils.restoreScissor();
@@ -188,12 +189,12 @@ public class Dropdown extends InteractiveWidget {
 
         int iconX = this.getWidth() - (int) ((float) this.getHeight() / 2.0F + 0.5F);
         int iconY = (int) ((float) this.getHeight() / 2.0F + 0.5F) + 1;
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) (this.getX() + iconX), (float) (this.getY() + iconY), 0.0F);
-        GL11.glRotatef(90.0F * this.expandAnimation.calcPercent(), 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-this.getX() - iconX), (float) (-this.getY() - iconY), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) (this.getX() + iconX), (float) (this.getY() + iconY), 0.0F);
+        StateManager.rotatef(90.0F * this.expandAnimation.calcPercent(), 0.0F, 0.0F, 1.0F);
+        StateManager.translatef((float) (-this.getX() - iconX), (float) (-this.getY() - iconY), 0.0F);
         RenderUtils.drawString(this.font, (float) (this.getX() + iconX - 6), (float) (this.getY() + iconY - 14), ">", ColorHelper.applyAlpha(this.textColor.primaryColor, partialTicks * 0.7F * (!this.isMouseOverComponent(this.getMouseX(), this.getMouseY()) ? 0.5F : 1.0F)));
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     public List<String> getValues() {

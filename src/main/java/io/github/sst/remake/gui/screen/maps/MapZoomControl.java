@@ -5,6 +5,7 @@ import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.InteractiveWidget;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -105,7 +106,7 @@ public class MapZoomControl extends InteractiveWidget {
                         partialTicks
                 );
 
-                GL11.glPushMatrix();
+                StateManager.pushMatrix();
                 StencilUtils.beginStencilWrite();
 
                 RenderUtils.drawRoundedButton(
@@ -166,7 +167,7 @@ public class MapZoomControl extends InteractiveWidget {
                         ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, 0.3F)
                 );
 
-                GL11.glPopMatrix();
+                StateManager.popMatrix();
 
                 RenderUtils.drawString(
                         FontUtils.HELVETICA_MEDIUM_20,

@@ -117,12 +117,12 @@ public class BezierCurve extends InteractiveWidget {
 
         List<Vector2d> sampledCurve = vecUtils.generateInterpolatedPoints(curvePoints);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) (this.x + padding), (float) (this.y + padding), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) (this.x + padding), (float) (this.y + padding), 0.0F);
 
         GL11.glLineWidth(1.0F);
         GL11.glColor4d(0.0, 0.0, 0.0, 0.6F * partialTicks);
-        GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0F);
+        StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
 
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
@@ -167,7 +167,7 @@ public class BezierCurve extends InteractiveWidget {
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         super.draw(partialTicks);
     }

@@ -7,6 +7,7 @@ import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
 import io.github.sst.remake.util.math.vec.VecUtils;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
@@ -120,17 +121,17 @@ public class AnimatedRoundButton extends Image {
         float hoverTextScale = 0.8F + expandFactor * 0.2F;
 
         if (expandFactor > 0.0F) {
-            GL11.glPushMatrix();
+            StateManager.pushMatrix();
 
             String label = this.getText() != null ? this.getText() : this.name;
 
-            GL11.glTranslatef(
+            StateManager.translatef(
                     (float) (this.getX() + this.getWidth() / 2 - font.getWidth(label) / 2),
                     (float) (this.getY() + this.getHeight() - 40),
                     0.0F
             );
-            GL11.glScalef(hoverTextScale, hoverTextScale, hoverTextScale);
-            GL11.glAlphaFunc(519, 0.0F);
+            StateManager.scalef(hoverTextScale, hoverTextScale, hoverTextScale);
+            StateManager.alphaFunc(519, 0.0F);
 
             RenderUtils.drawImage(
                     (1.0F - hoverTextScale) * (float) font.getWidth(label) / 2.0F + 1.0F - (float) font.getWidth(label) / 2.0F,
@@ -149,7 +150,7 @@ public class AnimatedRoundButton extends Image {
                     ColorHelper.applyAlpha(this.getTextColor().primaryColor, expandFactor * 0.6F * partialTicks)
             );
 
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
 
         super.drawChildren(partialTicks);

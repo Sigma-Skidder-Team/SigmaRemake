@@ -6,6 +6,7 @@ import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.math.vec.ScreenDimension;
 import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -30,8 +31,8 @@ public class SnakeGameWidget extends Widget implements IMinecraft {
             this.gameLogic.update();
         }
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) this.x, (float) this.y, 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) this.x, (float) this.y, 0.0F);
         RenderUtils.drawRoundedRect2(0.0F, 0.0F, (float) this.width, (float) this.height, ClientColors.DEEP_TEAL);
         RenderUtils.drawRoundedButton(
                 (float) (this.gameLogic.getFood().width * this.cellSize),
@@ -52,7 +53,7 @@ public class SnakeGameWidget extends Widget implements IMinecraft {
             );
         }
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
         super.draw(partialTicks);
     }
 

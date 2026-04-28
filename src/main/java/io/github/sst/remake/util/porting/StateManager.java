@@ -7,6 +7,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.Untracker;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
@@ -45,86 +47,165 @@ public class StateManager {
         if (func != ALPHA_TEST.func || ref != ALPHA_TEST.ref) {
             ALPHA_TEST.func = func;
             ALPHA_TEST.ref = ref;
-            GL11.glAlphaFunc(func, ref);
         }
     }
 
     @Deprecated
     public static void enableColorMaterial() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        COLOR_MATERIAL.capState.enable();
     }
 
     @Deprecated
     public static void disableColorMaterial() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        COLOR_MATERIAL.capState.enable();
     }
 
     @Deprecated
     public static void colorMaterial(int face, int mode) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        if (face != COLOR_MATERIAL.face || mode != COLOR_MATERIAL.mode) {
-            COLOR_MATERIAL.face = face;
-            COLOR_MATERIAL.mode = mode;
-            GL11.glColorMaterial(face, mode);
-        }
     }
+
+    private static int currentMatrixMode = 5888;
 
     @Deprecated
     public static void translatef(float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glTranslatef(x, y, z);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(Matrix4f.translate(x, y, z));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().translate(x, y, z);
+            RenderSystem.applyModelViewMatrix();
+        }
     }
 
     @Deprecated
     public static void scalef(float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glScalef(x, y, z);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(Matrix4f.scale(x, y, z));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().scale(x, y, z);
+            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
+    @Deprecated
+    public static void scaled(double x, double y, double z) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(Matrix4f.scale((float) x, (float) y, (float) z));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().scale((float) x, (float) y, (float) z);
+            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
+    @Deprecated
+    public static void rotatef(float angle, float x, float y, float z) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(new Quaternion(new Vec3f(x, y, z), angle, true));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().multiply(new Quaternion(new Vec3f(x, y, z), angle, true));
+            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
+    @Deprecated
+    public static void translated(double x, double y, double z) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(Matrix4f.translate((float) x, (float) y, (float) z));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().translate(x, y, z);
+            RenderSystem.applyModelViewMatrix();
+        }
     }
 
     @Deprecated
     public static void pushMatrix() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glPushMatrix();
+        if (currentMatrixMode == 5889) {
+            throw new UnsupportedOperationException("Projection matrix stack not supported in 1.17 StateManager");
+        }
+        RenderSystem.getModelViewStack().push();
     }
 
     @Deprecated
     public static void popMatrix() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glPopMatrix();
+        if (currentMatrixMode == 5889) {
+            throw new UnsupportedOperationException("Projection matrix stack not supported in 1.17 StateManager");
+        }
+        RenderSystem.getModelViewStack().pop();
+        RenderSystem.applyModelViewMatrix();
     }
 
     @Deprecated
     public static void multMatrix(FloatBuffer matrix) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glMultMatrixf(matrix);
+        Matrix4f mat = new Matrix4f();
+        mat.readColumnMajor(matrix);
+        if (currentMatrixMode == 5889) {
+            Matrix4f proj = RenderSystem.getProjectionMatrix().copy();
+            proj.multiply(mat);
+            RenderSystem.setProjectionMatrix(proj);
+        } else {
+            RenderSystem.getModelViewStack().peek().getModel().multiply(mat);
+            RenderSystem.applyModelViewMatrix();
+        }
     }
 
     @Deprecated
     public static void multMatrix(Matrix4f matrix) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        matrix.writeColumnMajor(MATRIX_BUFFER);
-        MATRIX_BUFFER.rewind();
-        multMatrix(MATRIX_BUFFER);
+        if (currentMatrixMode == 5889) {
+            Matrix4f proj = RenderSystem.getProjectionMatrix().copy();
+            proj.multiply(matrix);
+            RenderSystem.setProjectionMatrix(proj);
+        } else {
+            RenderSystem.getModelViewStack().peek().getModel().multiply(matrix);
+            RenderSystem.applyModelViewMatrix();
+        }
     }
 
     @Deprecated
     public static void matrixMode(int mode) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        GL11.glMatrixMode(mode);
+        currentMatrixMode = mode;
+    }
+
+    @Deprecated
+    public static void loadIdentity() {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = new Matrix4f();
+            mat.loadIdentity();
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().loadIdentity();
+            RenderSystem.applyModelViewMatrix();
+        }
     }
 
     @Deprecated
     public static void enableLighting() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        LIGHTING.enable();
     }
 
     @Deprecated
     public static void disableLighting() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        LIGHTING.disable();
     }
 
     @Deprecated
@@ -135,7 +216,7 @@ public class StateManager {
             COLOR.green = green;
             COLOR.blue = blue;
             COLOR.alpha = alpha;
-            GL11.glColor4f(red, green, blue, alpha);
+            RenderSystem.setShaderColor(red, green, blue, alpha);
         }
     }
 
@@ -146,33 +227,24 @@ public class StateManager {
         COLOR.green = -1.0f;
         COLOR.blue = -1.0f;
         COLOR.alpha = -1.0f;
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     @Deprecated
     public static void shadeModel(int mode) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        if (mode != modelShadeMode) {
-            modelShadeMode = mode;
-            GL11.glShadeModel(mode);
-        }
     }
 
     @Deprecated
     public static void glMultiTexCoord2f(int texture, float s, float t) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        GL13.glMultiTexCoord2f(texture, s, t);
-    }
-
-    @Deprecated
-    public static void loadIdentity() {
-        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        GL11.glLoadIdentity();
     }
 
     @Deprecated
     public static void ortho(double l, double r, double b, double t, double n, double f) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        GL11.glOrtho(l, r, b, t, n, f);
+        Matrix4f mat = Matrix4f.projectionMatrix((float) l, (float) r, (float) b, (float) t, (float) n, (float) f);
+        RenderSystem.setProjectionMatrix(mat);
     }
 
     @Deprecated
@@ -238,11 +310,13 @@ public class StateManager {
             RenderSystem.assertThread(RenderSystem::isOnRenderThread);
             if (this.state != state) {
                 this.state = state;
+                /*
                 if (state) {
                     GL11.glEnable(this.cap);
                 } else {
                     GL11.glDisable(this.cap);
                 }
+                */
             }
         }
     }

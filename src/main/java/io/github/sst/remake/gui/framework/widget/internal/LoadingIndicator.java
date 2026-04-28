@@ -5,6 +5,7 @@ import io.github.sst.remake.gui.framework.core.Widget;
 import io.github.sst.remake.util.math.timer.TogglableTimer;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import org.lwjgl.opengl.GL11;
@@ -24,10 +25,10 @@ public class LoadingIndicator extends Widget {
         this.hoverAlpha = Math.min(1.0F, Math.max(0.0F, this.hoverAlpha));
         float rotation = (float) (this.rotationTimer.getElapsedTime() / 75L % 12L);
         if (this.hoverAlpha != 0.0F) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) (this.x + this.width / 2), (float) (this.y + this.height / 2), 0.0F);
-            GL11.glRotatef(rotation * 30.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef((float) (-this.x - this.width / 2), (float) (-this.y - this.height / 2), 0.0F);
+            StateManager.pushMatrix();
+            StateManager.translatef((float) (this.x + this.width / 2), (float) (this.y + this.height / 2), 0.0F);
+            StateManager.rotatef(rotation * 30.0F, 0.0F, 0.0F, 1.0F);
+            StateManager.translatef((float) (-this.x - this.width / 2), (float) (-this.y - this.height / 2), 0.0F);
             RenderUtils.drawImage(
                     (float) this.x,
                     (float) this.y,
@@ -36,7 +37,7 @@ public class LoadingIndicator extends Widget {
                     Resources.LOADING_INDICATOR,
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, this.hoverAlpha * partialTicks)
             );
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         }
     }
 }

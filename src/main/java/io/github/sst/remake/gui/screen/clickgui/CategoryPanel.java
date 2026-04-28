@@ -7,6 +7,7 @@ import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -141,9 +142,9 @@ public class CategoryPanel extends Widget {
                 FontAlignment.CENTER
         );
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         super.draw(partialTicks * partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         if (this.moduleList.getScrollOffset() > 0) {
             RenderUtils.drawImage(

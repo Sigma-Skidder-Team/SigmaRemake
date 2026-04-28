@@ -2,6 +2,7 @@ package io.github.sst.remake.gui.framework.widget;
 
 import io.github.sst.remake.gui.framework.core.GuiComponent;
 import io.github.sst.remake.gui.framework.core.Widget;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -66,7 +67,7 @@ public class Text extends Widget {
     @Override
     public void draw(float partialTicks) {
         if (this.shadowEnabled) {
-            GL11.glAlphaFunc(518, 0.01F);
+            StateManager.alphaFunc(518, 0.01F);
             RenderUtils.drawString(
                     FontUtils.HELVETICA_LIGHT_18_BASIC,
                     (float) this.getX(),
@@ -74,7 +75,7 @@ public class Text extends Widget {
                     this.getText(),
                     ColorHelper.applyAlpha(ClientColors.DEEP_TEAL, partialTicks)
             );
-            GL11.glAlphaFunc(519, 0.0F);
+            StateManager.alphaFunc(519, 0.0F);
         }
 
         if (this.text != null) {

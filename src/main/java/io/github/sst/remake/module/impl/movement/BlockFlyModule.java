@@ -21,6 +21,7 @@ import io.github.sst.remake.util.game.world.WorldUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
@@ -452,7 +453,7 @@ public class BlockFlyModule extends Module {
 
         x -= boxWidth / 2;
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         RenderUtils.drawFloatingPanel(x, y, boxWidth, boxHeight, ColorHelper.applyAlpha(-15461356, 0.8F * alphaPercent));
 
         RenderUtils.drawString(
@@ -472,10 +473,10 @@ public class BlockFlyModule extends Module {
         int arrowX = x + 11 + boxWidth / 2;
         int arrowY = y + boxHeight;
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) arrowX, (float) arrowY, 0.0F);
-        GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-arrowX), (float) (-arrowY), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) arrowX, (float) arrowY, 0.0F);
+        StateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef((float) (-arrowX), (float) (-arrowY), 0.0F);
 
         RenderUtils.drawImage(
                 (float) arrowX,
@@ -485,7 +486,7 @@ public class BlockFlyModule extends Module {
                 Resources.SELECTED_ICON,
                 ColorHelper.applyAlpha(-15461356, 0.8F * alphaPercent));
 
-        GL11.glPopMatrix();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
+        StateManager.popMatrix();
     }
 }

@@ -9,6 +9,7 @@ import io.github.sst.remake.util.game.world.WaypointUtils;
 import io.github.sst.remake.util.game.world.data.Chunk;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -254,12 +255,12 @@ public class WorldMapView extends InteractiveWidget implements IMinecraft {
 
         ScissorUtils.startScissor(this.x, this.y, this.x + this.width, this.y + this.height, true);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) (this.x + this.width / 2), (float) (this.y + this.height / 2), 0.0F);
-        GL11.glScalef(mapScale, mapScale, 0.0F);
-        GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-this.x - this.width / 2), (float) (-this.y - this.height / 2), 0.0F);
-        GL11.glTranslated(-translateX, translateY, 0.0);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) (this.x + this.width / 2), (float) (this.y + this.height / 2), 0.0F);
+        StateManager.scalef(mapScale, mapScale, 0.0F);
+        StateManager.rotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef((float) (-this.x - this.width / 2), (float) (-this.y - this.height / 2), 0.0F);
+        StateManager.translated(-translateX, translateY, 0.0);
 
         RenderUtils.drawTexturedQuad(
                 (float) (this.x + padX),
@@ -276,7 +277,7 @@ public class WorldMapView extends InteractiveWidget implements IMinecraft {
                 false
         );
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         drawWaypoints(squareSize);
 

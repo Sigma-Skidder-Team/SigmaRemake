@@ -6,6 +6,7 @@ import io.github.sst.remake.gui.framework.core.Screen;
 import io.github.sst.remake.util.IMinecraft;
 import io.github.sst.remake.util.java.StringUtils;
 import io.github.sst.remake.util.math.anim.AnimationUtils;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
@@ -144,9 +145,9 @@ public class MainMenuScreen extends Screen implements IMinecraft {
             );
 
             for (GuiComponent bubble : this.bubbles) {
-                GL11.glPushMatrix();
+                StateManager.pushMatrix();
                 bubble.draw(partialTicks);
-                GL11.glPopMatrix();
+                StateManager.popMatrix();
             }
 
             RenderUtils.drawImage(
@@ -179,7 +180,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
 
             for (GuiComponent object : this.getChildren()) {
                 if (object.isSelfVisible()) {
-                    GL11.glPushMatrix();
+                    StateManager.pushMatrix();
 
                     if (object instanceof ChangelogPage) {
                         if (transitionProgress > 0.0F) {
@@ -189,7 +190,7 @@ public class MainMenuScreen extends Screen implements IMinecraft {
                         object.draw(partialTicks * (1.0F - transitionProgress));
                     }
 
-                    GL11.glPopMatrix();
+                    StateManager.popMatrix();
                 }
             }
 

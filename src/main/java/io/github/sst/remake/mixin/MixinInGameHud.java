@@ -35,7 +35,7 @@ public class MixinInGameHud {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getArmorStack(I)Lnet/minecraft/item/ItemStack;", shift = At.Shift.BEFORE))
     private void injectAfterRenderVignette(CallbackInfo ci) {
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
         double scale = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
         GL11.glScaled(scale, scale, scale);
@@ -59,7 +59,7 @@ public class MixinInGameHud {
         RenderSystem.enableBlend();
         StateManager.alphaFunc(518, 0.1F);
 
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", shift = At.Shift.AFTER))

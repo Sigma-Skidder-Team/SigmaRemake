@@ -1,5 +1,8 @@
 package org.newdawn.slick.opengl.renderer.impl;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.sst.remake.util.porting.StateManager;
 import org.lwjgl.opengl.EXTSecondaryColor;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -40,16 +43,17 @@ public class ImmediateModeOGLRenderer implements SGL {
         this.width = width;
         this.height = height;
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        RenderSystem.enableTexture();
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        RenderSystem.disableDepthTest();
+        StateManager.disableLighting();
 
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GL11.glClearDepth(1.0);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
         GL11.glViewport(0, 0, width, height);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -61,10 +65,10 @@ public class ImmediateModeOGLRenderer implements SGL {
     @Override
     public void enterOrtho(int xsize, int ysize) {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0.0, (double) this.width, (double) this.height, 0.0, 1.0, -1.0);
+        StateManager.loadIdentity();
+        StateManager.ortho(0.0, this.width, this.height, 0.0, 1.0, -1.0);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glTranslatef((float) ((this.width - xsize) / 2), (float) ((this.height - ysize) / 2), 0.0F);
+        StateManager.translatef((float) ((this.width - xsize) / 2), (float) ((this.height - ysize) / 2), 0.0F);
     }
 
     /**
@@ -85,7 +89,7 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glBlendFunc(int, int)
      */
     public void glBlendFunc(int src, int dest) {
-        GL11.glBlendFunc(src, dest);
+        RenderSystem.blendFunc(src, dest);
     }
 
     /**
@@ -106,7 +110,7 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glClearColor(float, float, float, float)
      */
     public void glClearColor(float red, float green, float blue, float alpha) {
-        GL11.glClearColor(red, green, blue, alpha);
+        RenderSystem.clearColor(red, green, blue, alpha);
     }
 
     /**
@@ -127,14 +131,14 @@ public class ImmediateModeOGLRenderer implements SGL {
         current[2] = b;
         current[3] = a;
 
-        GL11.glColor4f(r, g, b, a);
+        StateManager.color4f(r, g, b, a);
     }
 
     /**
      * @see SGL#glColorMask(boolean, boolean, boolean, boolean)
      */
     public void glColorMask(boolean red, boolean green, boolean blue, boolean alpha) {
-        GL11.glColorMask(red, green, blue, alpha);
+        RenderSystem.colorMask(red, green, blue, alpha);
     }
 
     /**
@@ -211,14 +215,14 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glLineWidth(float)
      */
     public void glLineWidth(float width) {
-        GL11.glLineWidth(width);
+        RenderSystem.lineWidth(width);
     }
 
     /**
      * @see SGL#glLoadIdentity()
      */
     public void glLoadIdentity() {
-        GL11.glLoadIdentity();
+        StateManager.loadIdentity();
     }
 
     /**
@@ -239,42 +243,42 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glPopMatrix()
      */
     public void glPopMatrix() {
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     /**
      * @see SGL#glPushMatrix()
      */
     public void glPushMatrix() {
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
     }
 
     /**
      * @see SGL#glReadPixels(int, int, int, int, int, int, ByteBuffer)
      */
     public void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixels) {
-        GL11.glReadPixels(x, y, width, height, format, type, pixels);
+        RenderSystem.readPixels(x, y, width, height, format, type, pixels);
     }
 
     /**
      * @see SGL#glRotatef(float, float, float, float)
      */
     public void glRotatef(float angle, float x, float y, float z) {
-        GL11.glRotatef(angle, x, y, z);
+        StateManager.rotatef(angle, x, y, z);
     }
 
     /**
      * @see SGL#glScalef(float, float, float)
      */
     public void glScalef(float x, float y, float z) {
-        GL11.glScalef(x, y, z);
+        StateManager.scalef(x, y, z);
     }
 
     /**
      * @see SGL#glScissor(int, int, int, int)
      */
     public void glScissor(int x, int y, int width, int height) {
-        GL11.glScissor(x, y, width, height);
+        RenderSystem.enableScissor(x, y, width, height);
     }
 
     /**
@@ -295,7 +299,7 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glTranslatef(float, float, float)
      */
     public void glTranslatef(float x, float y, float z) {
-        GL11.glTranslatef(x, y, z);
+        StateManager.translatef(x, y, z);
     }
 
     /**
@@ -322,7 +326,7 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glTexParameteri(int, int, int)
      */
     public void glTexParameteri(int target, int param, int value) {
-        GL11.glTexParameteri(target, param, value);
+        RenderSystem.texParameter(target, param, value);
     }
 
     /**
@@ -343,21 +347,21 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glClearDepth(float)
      */
     public void glClearDepth(float value) {
-        GL11.glClearDepth(value);
+        RenderSystem.clearDepth(value);
     }
 
     /**
      * @see SGL#glDepthFunc(int)
      */
     public void glDepthFunc(int func) {
-        GL11.glDepthFunc(func);
+        RenderSystem.depthFunc(func);
     }
 
     /**
      * @see SGL#glDepthMask(boolean)
      */
     public void glDepthMask(boolean mask) {
-        GL11.glDepthMask(mask);
+        RenderSystem.depthMask(mask);
     }
 
     /**

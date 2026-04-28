@@ -192,7 +192,7 @@ public class RearViewModule extends Module {
         RenderSystem.enableTexture();
         StateManager.enableColorMaterial();
         RenderSystem.enableDepthTest();
-        GL11.glAlphaFunc(519, 0.0F);
+        StateManager.alphaFunc(519, 0.0F);
 
         float originalYaw = client.player.yaw;
         double originalFov = client.options.fov;

@@ -13,6 +13,7 @@ import io.github.sst.remake.tracker.impl.BotTracker;
 import io.github.sst.remake.util.game.world.EntityUtils;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.image.Resources;
 import net.minecraft.entity.Entity;
@@ -57,13 +58,13 @@ public class ESPModule extends Module {
         int color = ColorHelper.applyAlpha(ClientColors.LIGHT_GREYISH_BLUE, 0.8f);
         getTargets().forEach(entity -> {
             Vec3d pos = EntityUtils.getRelativePosition(entity);
-            GL11.glPushMatrix();
-            GL11.glAlphaFunc(GL11.GL_ALWAYS, 0.0f);
-            GL11.glTranslated(pos.x, pos.y, pos.z);
-            GL11.glTranslatef(0.0f, entity.getHeight(), 0.0f);
-            GL11.glTranslatef(0.0f, 0.1f, 0.0f);
-            GL11.glRotatef(client.gameRenderer.getCamera().getYaw(), 0.0f, -1.0f, 0.0f);
-            GL11.glScalef(-0.11f, -0.11f, -0.11f);
+            StateManager.pushMatrix();
+            StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0f);
+            StateManager.translated(pos.x, pos.y, pos.z);
+            StateManager.translatef(0.0f, entity.getHeight(), 0.0f);
+            StateManager.translatef(0.0f, 0.1f, 0.0f);
+            StateManager.rotatef(client.gameRenderer.getCamera().getYaw(), 0.0f, -1.0f, 0.0f);
+            StateManager.scalef(-0.11f, -0.11f, -0.11f);
             RenderUtils.drawImage(
                     -entity.getWidth() * 22.0f,
                     -entity.getHeight() * 5.5f,
@@ -72,7 +73,7 @@ public class ESPModule extends Module {
                     Resources.SHADOW,
                     color,
                     false);
-            GL11.glPopMatrix();
+            StateManager.popMatrix();
         });
     }
 

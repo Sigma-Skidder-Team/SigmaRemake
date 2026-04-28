@@ -10,6 +10,7 @@ import io.github.sst.remake.module.Module;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.data.ChunkColorCache;
 import io.github.sst.remake.util.math.color.ClientColors;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.ScissorUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -131,18 +132,18 @@ public class MiniMapModule extends Module {
 
         float scale = 1.5F;
 
-        GL11.glAlphaFunc(519, 0.0F);
+        StateManager.alphaFunc(519, 0.0F);
         RenderUtils.drawRect(mapX, yOffset, mapSize, mapSize, -7687425);
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
 
         float chunkPixelSize = (float) mapSize / mapChunkRadius;
         float offsetX = (float) (chunkPixelSize * scale * playerChunkOffsetZ);
         float offsetY = (float) (-chunkPixelSize * scale * playerChunkOffsetX);
 
-        GL11.glTranslatef(mapX + mapSize / 2.0F, yOffset + mapSize / 2.0F, 0.0F);
-        GL11.glRotatef(90.0F - client.player.yaw, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-mapSize / 2.0F, -mapSize / 2.0F, 0.0F);
+        StateManager.translatef(mapX + mapSize / 2.0F, yOffset + mapSize / 2.0F, 0.0F);
+        StateManager.rotatef(90.0F - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-mapSize / 2.0F, -mapSize / 2.0F, 0.0F);
 
         float scaledWidth = mapSize * scale;
         float scaledHeight = mapSize * scale;
@@ -168,14 +169,14 @@ public class MiniMapModule extends Module {
         );
 
         ScissorUtils.restoreScissor();
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         int direction = (int) RotationUtils.getDirectionYaw();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);
-        GL11.glRotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F + 3, 0.0F);
+        StateManager.rotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
 
         TrueTypeFont font = FontUtils.HELVETICA_MEDIUM_20;
         String arrow = "^";
@@ -187,12 +188,12 @@ public class MiniMapModule extends Module {
                 arrow,
                 1879048192
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F, 0.0F);
-        GL11.glRotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef(mapX + mapSize / 2.0F + 1, yOffset + mapSize / 2.0F, 0.0F);
+        StateManager.rotatef(direction - client.player.yaw, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef(-(mapX + mapSize / 2.0F + 1), -(yOffset + mapSize / 2.0F), 0.0F);
 
         RenderUtils.drawString(
                 font,
@@ -201,7 +202,7 @@ public class MiniMapModule extends Module {
                 arrow,
                 ClientColors.LIGHT_GREYISH_BLUE
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         RenderUtils.drawPanelShadow(mapX, yOffset, mapSize, mapSize, 23.0F, 0.75F);
         RenderUtils.drawRoundedRect(mapX, yOffset, mapSize, mapSize, 8.0F, 0.7F);

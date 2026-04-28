@@ -9,6 +9,7 @@ import io.github.sst.remake.util.math.anim.ease.EasingFunctions;
 import io.github.sst.remake.util.math.anim.ease.QuadraticEasing;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontUtils;
 import io.github.sst.remake.util.render.image.Resources;
@@ -167,10 +168,10 @@ public class AddWaypointDialog extends InteractiveWidget {
                 bgColor
         );
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) this.x, (float) this.y, 0.0F);
-        GL11.glRotatef(!this.openToLeft ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef((float) (-this.x), (float) (-this.y), 0.0F);
+        StateManager.pushMatrix();
+        StateManager.translatef((float) this.x, (float) this.y, 0.0F);
+        StateManager.rotatef(!this.openToLeft ? -90.0F : 90.0F, 0.0F, 0.0F, 1.0F);
+        StateManager.translatef((float) (-this.x), (float) (-this.y), 0.0F);
 
         RenderUtils.drawImage(
                 (float) (this.x + (!this.openToLeft ? 0 : this.height)),
@@ -180,7 +181,7 @@ public class AddWaypointDialog extends InteractiveWidget {
                 Resources.SELECTED_ICON,
                 bgColor
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         RenderUtils.drawRoundedRect(
                 (float) (this.x + 25),

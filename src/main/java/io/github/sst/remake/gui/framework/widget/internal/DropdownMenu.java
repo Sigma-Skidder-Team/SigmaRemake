@@ -6,6 +6,7 @@ import io.github.sst.remake.gui.framework.layout.GridLayoutVisitor;
 import io.github.sst.remake.gui.framework.widget.Button;
 import io.github.sst.remake.util.math.color.ClientColors;
 import io.github.sst.remake.util.math.color.ColorHelper;
+import io.github.sst.remake.util.porting.StateManager;
 import io.github.sst.remake.util.render.RenderUtils;
 import io.github.sst.remake.util.render.font.FontAlignment;
 import io.github.sst.remake.util.render.font.FontUtils;
@@ -93,9 +94,9 @@ public class DropdownMenu extends InteractiveWidget {
                 20.0F,
                 partialTicks * 0.2F
         );
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         super.draw(partialTicks);
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
     }
 
     public List<String> getValues() {

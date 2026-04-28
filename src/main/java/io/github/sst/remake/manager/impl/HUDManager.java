@@ -44,14 +44,14 @@ public final class HUDManager extends Manager implements IMinecraft {
         StateManager.pushMatrix();
 
         double localScaleFactor = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        GL11.glScaled(localScaleFactor, localScaleFactor, 1.0);
-        GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, 1.0);
+        StateManager.scalef((float) localScaleFactor, (float) localScaleFactor, 1.0F);
+        StateManager.scalef((float) Client.INSTANCE.screenManager.scaleFactor, (float) Client.INSTANCE.screenManager.scaleFactor, 1.0F);
         RenderSystem.disableDepthTest();
         StateManager.pushMatrix();
         StateManager.translatef(0.0F, 0.0F, 1000.0F);
 
         if (client.world != null) {
-            GL11.glDisable(GL11.GL_LIGHTING);
+            StateManager.disableLighting();
             int x = 0;
             int y = 0;
 
@@ -61,7 +61,7 @@ public final class HUDManager extends Manager implements IMinecraft {
                 x = client.getWindow().getWidth() / 2 - imageWidth / 2;
             }
 
-            GL11.glAlphaFunc(519, 0.0F);
+            StateManager.alphaFunc(519, 0.0F);
 
             RenderUtils.drawImage((float) x, y, 170.0F, 104.0F,
                     !(Client.INSTANCE.screenManager.scaleFactor > 1.0F) ? Resources.WATERMARK
@@ -77,7 +77,7 @@ public final class HUDManager extends Manager implements IMinecraft {
         StateManager.popMatrix();
         RenderSystem.enableDepthTest();
         StateManager.enableAlphaTest();
-        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.1F);
+        StateManager.alphaFunc(GL11.GL_GEQUAL, 0.1F);
 
         client.getTextureManager().bindTexture(TextureManager.MISSING_IDENTIFIER);
 
@@ -144,8 +144,8 @@ public final class HUDManager extends Manager implements IMinecraft {
             );
 
             RenderSystem.enableBlend();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            RenderSystem.disableDepthTest();
+            StateManager.disableAlphaTest();
             RenderSystem.disableBlend();
 
             blurFramebuffer.clear(true);
@@ -167,10 +167,10 @@ public final class HUDManager extends Manager implements IMinecraft {
             StateManager.loadIdentity();
             StateManager.translatef(0.0F, 0.0F, -2000.0F);
 
-            GL11.glScaled(
-                    1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
-                    1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
-                    1.0
+            StateManager.scalef(
+                    (float) (1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor),
+                    (float) (1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor),
+                    1.0F
             );
 
             int blurRadius = 35;
@@ -184,7 +184,7 @@ public final class HUDManager extends Manager implements IMinecraft {
             blurShaderGroup.render(client.renderTickCounter.tickDelta);
             ScissorUtils.restoreScissor();
 
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            StateManager.enableAlphaTest();
 
             blurFramebuffer.beginWrite(true);
             client.getFramebuffer().beginWrite(true);
@@ -208,13 +208,13 @@ public final class HUDManager extends Manager implements IMinecraft {
             return;
         }
 
-        GL11.glPushMatrix();
+        StateManager.pushMatrix();
         blurFramebuffer.method_35610();
         blurFramebuffer.draw(
                 client.getFramebuffer().viewportWidth,
                 client.getFramebuffer().viewportHeight
         );
-        GL11.glPopMatrix();
+        StateManager.popMatrix();
 
         RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
         StateManager.matrixMode(GL11.GL_PROJECTION);
@@ -232,10 +232,10 @@ public final class HUDManager extends Manager implements IMinecraft {
         StateManager.loadIdentity();
         StateManager.translatef(0.0F, 0.0F, -2000.0F);
 
-        GL11.glScaled(
-                1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
-                1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor,
-                1.0
+        StateManager.scalef(
+                (float) (1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor),
+                (float) (1.0 / client.getWindow().getScaleFactor() * Client.INSTANCE.screenManager.scaleFactor),
+                1.0F
         );
 
         client.getFramebuffer().beginWrite(true);
