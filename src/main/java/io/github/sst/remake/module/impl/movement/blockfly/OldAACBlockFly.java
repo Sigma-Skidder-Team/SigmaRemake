@@ -15,7 +15,6 @@ import io.github.sst.remake.util.game.combat.data.Rotation;
 import io.github.sst.remake.util.game.combat.RotationUtils;
 import io.github.sst.remake.util.game.world.BlockUtils;
 import io.github.sst.remake.util.game.world.data.PositionFacing;
-import io.github.sst.remake.util.system.io.MouseUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.Hand;
@@ -26,7 +25,7 @@ import net.minecraft.util.math.Direction;
 import java.util.List;
 
 @SuppressWarnings({"DataFlowIssue", "unused"})
-public class AACBlockFly extends SubModule{
+public class OldAACBlockFly extends SubModule{
     private static final float NO_ROTATION_SENTINEL = 999.0f;
 
     private final BooleanSetting haphe = new BooleanSetting("Haphe (AACAP)", "Never lets you touch the ground", false);
@@ -41,8 +40,8 @@ public class AACBlockFly extends SubModule{
     private int hopTicks;
     private int speedStage;
 
-    public AACBlockFly() {
-        super("AAC");
+    public OldAACBlockFly() {
+        super("Old AAC");
     }
 
     @Override

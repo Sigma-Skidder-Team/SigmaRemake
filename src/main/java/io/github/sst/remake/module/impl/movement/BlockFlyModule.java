@@ -40,19 +40,19 @@ import org.lwjgl.opengl.GL11;
 @SuppressWarnings({"unused", "DataFlowIssue"})
 public class BlockFlyModule extends Module {
     private final SubModuleSetting mode = new SubModuleSetting("Mode", "Scaffold mode",
-            new AACBlockFly(), new SmoothBlockFly(),
+            new OldAACBlockFly(), new SmoothBlockFly(),
             new BasicBlockFly(), new NCPBlockFly(),
-            new HypixelBlockFly(), new TellyBlockFly()
+            new OldHypixelBlockFly(), new TellyBlockFly()
     );
 
-    public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "AAC", "Slow", "Sneak", "Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
+    public final ModeSetting speedMode = new ModeSetting("Speed mode", "Scaffold speed mode", 0, "None", "Jump", "Old AAC", "Slow", "Sneak", "Old Cubecraft").hide(() -> !mode.value.name.equals("Smooth") && !mode.value.name.equals("NCP") && !mode.value.name.equals("Old Hypixel"));
 
     public final ModeSetting itemSpoofMode = new ModeSetting("Item spoof", "Item spoofing mode", 0, "None", "Switch", "Spoof", "LiteSpoof");
-    public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "AAC", "Vanilla");
+    public final ModeSetting towerMode = new ModeSetting("Tower mode", "Towering mode", 0, "None", "NCP", "Old AAC", "Vanilla");
     private final ModeSetting pickMode = new ModeSetting("Picking mode", "Item picking mode", 0, "Basic", "FakeInv", "OpenInv");
 
-    public final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
-    public final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Hypixel"));
+    public final BooleanSetting keepRotations = new BooleanSetting("Keep rotations", "Keeps your rotations", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Old Hypixel"));
+    public final BooleanSetting downwards = new BooleanSetting("Downwards", "Allows you to go down when sneaking", true).hide(() -> !mode.value.name.equals("NCP") && !mode.value.name.equals("Old Hypixel"));
 
     public final SliderSetting extend = new SliderSetting("Extend", "Block place extend", 0.0f, 0.0f, 6.0f, 0.1f).hide(() -> !mode.value.name.equals("NCP"));
 
@@ -60,7 +60,7 @@ public class BlockFlyModule extends Module {
     private final BooleanSetting showBlockAmount = new BooleanSetting("Show block amount", "Render available blocks in inventory", true);
     private final BooleanSetting intelligentBlockPicker = new BooleanSetting("Intelligent block picker", "Calculate block amount and more", true);
 
-    public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false).hide(() -> mode.value.name.equals("AAC"));
+    public final BooleanSetting noSprint = new BooleanSetting("No sprint", "Disable sprinting", false).hide(() -> mode.value.name.equals("Old AAC"));
     public final BooleanSetting noSwing = new BooleanSetting("No swing", "Removes the swing animation", false);
 
     private final AnimationUtils blockCountAnim = new AnimationUtils(114, 114, AnimationUtils.Direction.FORWARDS);
@@ -78,7 +78,7 @@ public class BlockFlyModule extends Module {
 
     @Subscribe
     public void onTick(ClientPlayerTickEvent event) {
-        if (noSprint.value && !mode.value.name.equals("AAC")) {
+        if (noSprint.value && !mode.value.name.equals("Old AAC")) {
             client.player.setSprinting(false);
             client.options.keySprint.setPressed(false);
         }
@@ -110,7 +110,6 @@ public class BlockFlyModule extends Module {
         }
     }
 
-    // Don't annotate with @Subscribe !!
     public void performTowering(MoveEvent event) {
         if (getTimer() == 0.8038576f) {
             setTimer(1.0f);
@@ -148,7 +147,7 @@ public class BlockFlyModule extends Module {
                         }
                         break;
 
-                    case "AAC":
+                    case "Old AAC":
                         if (event.getY() > 0.247 && event.getY() < 0.249) {
                             event.setY((double) ((int) (client.player.getY() + event.getY())) - client.player.getY());
                             if (client.options.keyJump.isPressed() && !MovementUtils.isMoving()) {
@@ -172,7 +171,7 @@ public class BlockFlyModule extends Module {
                         }
                 }
             }
-        } else if (!towerMode.value.equals("AAC")
+        } else if (!towerMode.value.equals("Old AAC")
                 || !WorldUtils.isAboveBounds(client.player, 0.001f)
                 || !client.options.keyJump.isPressed()) {
             if (!towerMode.value.equals("NCP")
@@ -393,7 +392,7 @@ public class BlockFlyModule extends Module {
     }
 
     public boolean applyCubecraftSafeWalk(SafeWalkEvent event) {
-        if (!speedMode.value.equals("Cubecraft")) {
+        if (!speedMode.value.equals("Old Cubecraft")) {
             return false;
         }
 

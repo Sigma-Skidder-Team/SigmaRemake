@@ -85,7 +85,7 @@ public class NCPBlockFly extends SubModule {
 
         MovementUtils.strafe(MovementUtils.getSpeed() * 0.9);
         setTimer(1.0f);
-        if (getParent().speedMode.value.equals("Cubecraft") && groundTicksSinceLeave == 0) {
+        if (getParent().speedMode.value.equals("Old Cubecraft") && groundTicksSinceLeave == 0) {
             MovementUtils.setPlayerYMotion(-0.0789);
         }
         client.options.keySneak.setPressed(false);
@@ -154,12 +154,12 @@ public class NCPBlockFly extends SubModule {
                 }
                 break;
 
-            case "AAC":
+            case "Old AAC":
                 if (rotationChangeTicks == 0 && client.player.isOnGround()) {
                     MovementUtils.setMotion(event, MovementUtils.getSpeed() * 0.82);
                 }
                 break;
-            case "Cubecraft":
+            case "Old Cubecraft":
                 double speed = 0.2;
                 float yaw = RotationUtils.getDirectionYaw(RotationUtils.normalizeYaw(client.player.yaw));
 
@@ -259,7 +259,7 @@ public class NCPBlockFly extends SubModule {
 
     @Subscribe
     public void onRender(RenderClient2DEvent event) {
-        if (!getParent().speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
+        if (!getParent().speedMode.value.equals("Old Cubecraft") || groundTicksSinceLeave < 0) return;
 
         if (client.player.fallDistance > 1.2f) return;
         if (client.player.capeY < lockedY) return;
@@ -329,7 +329,7 @@ public class NCPBlockFly extends SubModule {
             targetY += Math.min(client.player.getVelocity().y * 2.0, 4.0);
         } else if (isSneakDownwards && getParent().downwards.value) {
             targetY -= 1.0;
-        } else if ((getParent().speedMode.value.equals("Jump") || getParent().speedMode.value.equals("Cubecraft"))
+        } else if ((getParent().speedMode.value.equals("Jump") || getParent().speedMode.value.equals("Old Cubecraft"))
                 && !client.options.keyJump.isPressed()) {
             targetY = lockedY;
         }

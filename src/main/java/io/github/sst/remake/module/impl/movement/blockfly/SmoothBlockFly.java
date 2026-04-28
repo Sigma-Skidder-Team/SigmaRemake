@@ -79,7 +79,7 @@ public class SmoothBlockFly extends SubModule {
         MovementUtils.strafe(MovementUtils.getSpeed() * 0.9);
         setTimer(1.0f);
 
-        if (getParent().speedMode.value.equals("Cubecraft") && groundTicksSinceLeave == 0) {
+        if (getParent().speedMode.value.equals("Old Cubecraft") && groundTicksSinceLeave == 0) {
             MovementUtils.setPlayerYMotion(-0.0789);
         }
 
@@ -136,13 +136,13 @@ public class SmoothBlockFly extends SubModule {
                 }
                 break;
 
-            case "AAC":
+            case "Old AAC":
                 if (rotationChangeTicks == 0 && client.player.isOnGround()) {
                     MovementUtils.setMotion(event, MovementUtils.getSpeed() * 0.82);
                 }
                 break;
 
-            case "Cubecraft":
+            case "Old Cubecraft":
                 handleCubecraftSpeed(event);
                 break;
 
@@ -172,7 +172,7 @@ public class SmoothBlockFly extends SubModule {
 
     @Subscribe
     public void onRender(RenderClient2DEvent event) {
-        if (!getParent().speedMode.value.equals("Cubecraft") || groundTicksSinceLeave < 0) return;
+        if (!getParent().speedMode.value.equals("Old Cubecraft") || groundTicksSinceLeave < 0) return;
 
         if (client.player.fallDistance > 1.2f) return;
         if (client.player.capeY < lockedY) return;
@@ -263,7 +263,7 @@ public class SmoothBlockFly extends SubModule {
                 && RaytraceUtils.rayTrace(0.0f, 90.0f, 3.0f).getType() == HitResult.Type.MISS) {
             targetY += Math.min(client.player.getVelocity().y * 2.0, 4.0);
         } else if ((getParent().speedMode.value.equals("Jump")
-                || getParent().speedMode.value.equals("Cubecraft"))
+                || getParent().speedMode.value.equals("Old Cubecraft"))
                 && !client.options.keyJump.isPressed()) {
             targetY = lockedY;
         }
