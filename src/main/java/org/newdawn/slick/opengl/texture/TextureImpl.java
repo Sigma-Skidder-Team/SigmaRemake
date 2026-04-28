@@ -1,5 +1,6 @@
 package org.newdawn.slick.opengl.texture;
 
+import io.github.sst.remake.util.porting.StateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -171,7 +172,7 @@ public class TextureImpl implements Texture {
         if (lastBind != this) {
             lastBind = this;
             GL.glEnable(SGL.GL_TEXTURE_2D);
-            GL.glBindTexture(target, textureID);
+            StateManager.glBindTexture(target, textureID);
         }
     }
 

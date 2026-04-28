@@ -42,9 +42,6 @@ public class ESPModule extends Module {
 
     public void setup() {
         RenderSystem.lineWidth(3.0f);
-        GL11.glPointSize(3.0f);
-        GL11.glEnable(GL11.GL_POINT_SMOOTH);
-        GL11.glEnable(GL11.GL_LINE_SMOOTH);
         RenderSystem.enableBlend();
         StateManager.disableLighting();
         StateManager.enableAlphaTest();

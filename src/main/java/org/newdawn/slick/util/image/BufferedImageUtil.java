@@ -1,5 +1,6 @@
 package org.newdawn.slick.util.image;
 
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.image.ImageIOImageData;
 import org.newdawn.slick.opengl.texture.InternalTextureLoader;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -115,8 +116,8 @@ public class BufferedImageUtil {
                 Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_S, SGL.GL_MIRROR_CLAMP_TO_EDGE_EXT);
                 Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_T, SGL.GL_MIRROR_CLAMP_TO_EDGE_EXT);
             } else {
-                Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_S, SGL.GL_CLAMP);
-                Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_T, SGL.GL_CLAMP);
+                Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_S, GL13.GL_CLAMP_TO_EDGE);
+                Renderer.get().glTexParameteri(SGL.GL_TEXTURE_2D, SGL.GL_TEXTURE_WRAP_T, GL13.GL_CLAMP_TO_EDGE);
             }
         }
 

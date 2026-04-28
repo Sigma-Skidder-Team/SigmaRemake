@@ -2,6 +2,7 @@ package org.newdawn.slick.opengl.renderer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -204,7 +205,7 @@ public interface SGL {
     /**
      * OpenGL Enum - @url http://www.opengl.org/documentation
      */
-    public static final int GL_CLAMP = GL11.GL_CLAMP;
+    public static final int GL_CLAMP = GL13.GL_CLAMP_TO_EDGE;
 
     /**
      * OpenGL Enum - @url http://www.opengl.org/documentation

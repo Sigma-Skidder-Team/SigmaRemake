@@ -52,16 +52,6 @@ public class LoadingScreen extends Overlay implements IMinecraft {
 
         StateManager.pushMatrix();
 
-        float framebufferToWindowScale = 1111.0F;
-        if (client.getWindow().getWidth() != 0) {
-            framebufferToWindowScale = (float) (client.getWindow().getFramebufferWidth() / client.getWindow().getWidth());
-        }
-
-        float guiScale = (float) client.getWindow().calculateScaleFactor(client.options.guiScale, client.forcesUnicodeFont())
-                * framebufferToWindowScale;
-
-        StateManager.scalef(1.0F / guiScale, 1.0F / guiScale, 0.0F);
-
         RenderUtils.renderFadeOut(backgroundOpacity, this.smoothedProgress);
 
         StateManager.popMatrix();

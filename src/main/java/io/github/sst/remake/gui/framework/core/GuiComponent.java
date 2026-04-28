@@ -206,7 +206,7 @@ public class GuiComponent implements InputListener {
 
     public void applyScaleTransforms() {
         StateManager.translatef((float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2), 0.0F);
-        StateManager.scalef(this.getScaleX(), this.getScaleY(), 0.0F);
+        StateManager.scalef(this.getScaleX(), this.getScaleY(), 1.0F);
         StateManager.translatef((float) (-this.getX() - this.getWidth() / 2), (float) (-this.getY() - this.getHeight() / 2), 0.0F);
     }
 

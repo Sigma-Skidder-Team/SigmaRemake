@@ -332,6 +332,8 @@ public class InternalTextureLoader {
 
         GL.glTexParameteri(target, GL.GL_TEXTURE_MIN_FILTER, minFilter);
         GL.glTexParameteri(target, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_S, SGL.GL_CLAMP);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_T, SGL.GL_CLAMP);
 
         // produce a texture from the byte buffer
         GL.glTexImage2D(target,
@@ -431,6 +433,8 @@ public class InternalTextureLoader {
 
         GL.glTexParameteri(target, SGL.GL_TEXTURE_MIN_FILTER, filter);
         GL.glTexParameteri(target, SGL.GL_TEXTURE_MAG_FILTER, filter);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_S, SGL.GL_CLAMP);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_T, SGL.GL_CLAMP);
 
         // produce a texture from the byte buffer
         GL.glTexImage2D(target,
@@ -507,6 +511,8 @@ public class InternalTextureLoader {
 
         GL.glTexParameteri(target, SGL.GL_TEXTURE_MIN_FILTER, minFilter);
         GL.glTexParameteri(target, SGL.GL_TEXTURE_MAG_FILTER, magFilter);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_S, SGL.GL_CLAMP);
+        GL.glTexParameteri(target, SGL.GL_TEXTURE_WRAP_T, SGL.GL_CLAMP);
 
         // produce a texture from the byte buffer
         GL.glTexImage2D(target,

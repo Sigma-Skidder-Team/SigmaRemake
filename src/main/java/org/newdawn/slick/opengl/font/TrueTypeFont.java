@@ -1,5 +1,6 @@
 package org.newdawn.slick.opengl.font;
 
+import io.github.sst.remake.util.porting.StateManager;
 import org.newdawn.slick.opengl.texture.TextureImpl;
 import org.newdawn.slick.util.GLUtils;
 import org.newdawn.slick.opengl.texture.Texture;
@@ -349,7 +350,7 @@ public class TrueTypeFont implements Font {
     @Override
     public void drawString(float x, float y, String string, org.newdawn.slick.util.math.Color color, int startIndex, int endIndex) {
         color.bind();
-        this.fontTexture.bind();
+        StateManager.glBindTexture(SGL.GL_TEXTURE_2D, this.fontTexture.getTextureID());
         IntObject intObject = null;
         if (this.size > 0) {
             y -= (float) (this.size / 2 - 1);
