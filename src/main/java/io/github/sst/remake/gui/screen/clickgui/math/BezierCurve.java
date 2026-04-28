@@ -120,7 +120,7 @@ public class BezierCurve extends InteractiveWidget {
         StateManager.pushMatrix();
         StateManager.translatef((float) (this.x + padding), (float) (this.y + padding), 0.0F);
 
-        GL11.glLineWidth(1.0F);
+        RenderSystem.lineWidth(1.0F);
         GL11.glColor4d(0.0, 0.0, 0.0, 0.6F * partialTicks);
         StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
 
@@ -145,7 +145,7 @@ public class BezierCurve extends InteractiveWidget {
         GL11.glVertex2f(usableWidth, 0.0F);
         GL11.glEnd();
 
-        GL11.glLineWidth(3.0F);
+        RenderSystem.lineWidth(3.0F);
         GL11.glColor4d(0.0, 0.2F, 0.4F, 0.2F);
 
         GL11.glBegin(GL11.GL_LINE_STRIP);

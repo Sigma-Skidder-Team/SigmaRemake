@@ -1,5 +1,6 @@
 package io.github.sst.remake.util.render.shader;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.util.porting.StateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -10,30 +11,30 @@ public class StencilUtils {
         StateManager.pushMatrix();
         resetFramebufferDepth();
         GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glColorMask(false, false, false, false);
-        GL11.glDepthMask(false);
-        GL11.glStencilFunc(GL11.GL_ACCUM_BUFFER_BIT, 1, 1);
-        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
-        GL11.glStencilMask(1);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        RenderSystem.colorMask(false, false, false, false);
+        RenderSystem.depthMask(false);
+        RenderSystem.stencilFunc(GL11.GL_ACCUM_BUFFER_BIT, 1, 1);
+        RenderSystem.stencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+        RenderSystem.stencilMask(1);
+        RenderSystem.clear(GL11.GL_STENCIL_BUFFER_BIT, false);
     }
 
     public static void configureStencilTest(RenderShapeMode mode) {
-        GL11.glColorMask(true, true, true, true);
-        GL11.glDepthMask(true);
-        GL11.glStencilMask(0);
-        GL11.glStencilFunc(mode == RenderShapeMode.FILLED ? GL11.GL_EQUAL : GL11.GL_NOTEQUAL, 1, 1);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.depthMask(true);
+        RenderSystem.stencilMask(0);
+        RenderSystem.stencilFunc(mode == RenderShapeMode.FILLED ? GL11.GL_EQUAL : GL11.GL_NOTEQUAL, 1, 1);
     }
 
     public static void configureStencilTest() {
-        GL11.glColorMask(true, true, true, true);
-        GL11.glDepthMask(true);
-        GL11.glStencilMask(0);
-        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 1);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.depthMask(true);
+        RenderSystem.stencilMask(0);
+        RenderSystem.stencilFunc(GL11.GL_EQUAL, 1, 1);
     }
 
     public static void endStencil() {
-        GL11.glStencilMask(-1);
+        RenderSystem.stencilMask(-1);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
         StateManager.popMatrix();
     }

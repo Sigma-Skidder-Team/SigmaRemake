@@ -38,8 +38,8 @@ public class MixinInGameHud {
         StateManager.pushMatrix();
 
         double scale = client.getWindow().getScaleFactor() / (double) ((float) Math.pow(client.getWindow().getScaleFactor(), 2.0));
-        GL11.glScaled(scale, scale, scale);
-        GL11.glScaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor);
+        StateManager.scaled(scale, scale, scale);
+        StateManager.scaled(Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor, Client.INSTANCE.screenManager.scaleFactor);
         GL11.glDisable(2912);
 
         RenderSystem.disableDepthTest();

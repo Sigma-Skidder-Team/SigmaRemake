@@ -1,5 +1,6 @@
 package io.github.sst.remake.module.impl.render.esp;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.data.bus.Subscribe;
 import io.github.sst.remake.event.impl.game.render.Render3DEvent;
 import io.github.sst.remake.module.SubModule;
@@ -74,7 +75,7 @@ public class SimsESP extends SubModule {
         StateManager.translatef(0.0F, 0.0F, 0.25F);
         GL11.glNormal3f(0.0F, 0.0F, 1.0F);
 
-        GL11.glRotated(-30.0, 1.0, 0.0, 0.0);
+        StateManager.rotated(-30.0, 1.0, 0.0, 0.0);
 
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         GL11.glVertex2f(0.0F, 0.5F);
@@ -85,13 +86,13 @@ public class SimsESP extends SubModule {
 
     private static void renderEntityTriangleIndicator(double x, double y, double z, Entity entity) {
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_BLEND);
+        RenderSystem.enableBlend();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
 
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        RenderSystem.disableTexture();
+        RenderSystem.disableDepthTest();
 
-        GL11.glDepthMask(false);
+        RenderSystem.depthMask(false);
         StateManager.pushMatrix();
 
         StateManager.translated(
@@ -100,7 +101,7 @@ public class SimsESP extends SubModule {
                 z - client.gameRenderer.getCamera().getPos().getZ()
         );
 
-        GL11.glRotated(entity.age % 180 * 2, 0.0, -1.0, 0.0);
+        StateManager.rotated(entity.age % 180 * 2, 0.0, -1.0, 0.0);
 
         float bobOffset = (float) (entity.age % 100 - 50);
         if (bobOffset < 0.0F) {
@@ -110,12 +111,12 @@ public class SimsESP extends SubModule {
         StateManager.translated(0.0, 0.7F + bobOffset / 500.0F, 0.0);
         renderDirectionalTriangleRing();
         StateManager.popMatrix();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
 
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
     }
 }

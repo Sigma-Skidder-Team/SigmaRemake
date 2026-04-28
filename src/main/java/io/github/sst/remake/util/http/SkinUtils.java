@@ -1,5 +1,6 @@
 package io.github.sst.remake.util.http;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.Client;
 import org.newdawn.slick.opengl.texture.Texture;
 import org.newdawn.slick.opengl.texture.TextureLoader;
@@ -74,18 +75,18 @@ public class SkinUtils {
         int prevUnpackSkipRows = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_ROWS);
         int prevUnpackSkipPixels = GL11.glGetInteger(GL12.GL_UNPACK_SKIP_PIXELS);
 
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-        GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, 0);
-        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, 0);
-        GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_ALIGNMENT, 1);
+        RenderSystem.pixelStore(GL12.GL_UNPACK_ROW_LENGTH, 0);
+        RenderSystem.pixelStore(GL12.GL_UNPACK_SKIP_ROWS, 0);
+        RenderSystem.pixelStore(GL12.GL_UNPACK_SKIP_PIXELS, 0);
 
         try {
             return TextureLoader.getTexture(format, inputStream);
         } finally {
-            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, prevUnpackAlignment);
-            GL11.glPixelStorei(GL12.GL_UNPACK_ROW_LENGTH, prevUnpackRowLength);
-            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
-            GL11.glPixelStorei(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
+            RenderSystem.pixelStore(GL11.GL_UNPACK_ALIGNMENT, prevUnpackAlignment);
+            RenderSystem.pixelStore(GL12.GL_UNPACK_ROW_LENGTH, prevUnpackRowLength);
+            RenderSystem.pixelStore(GL12.GL_UNPACK_SKIP_ROWS, prevUnpackSkipRows);
+            RenderSystem.pixelStore(GL12.GL_UNPACK_SKIP_PIXELS, prevUnpackSkipPixels);
         }
     }
 }

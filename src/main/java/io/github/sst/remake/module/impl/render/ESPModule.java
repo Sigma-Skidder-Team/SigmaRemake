@@ -1,5 +1,6 @@
 package io.github.sst.remake.module.impl.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.module.Category;
 import io.github.sst.remake.module.Module;
 import io.github.sst.remake.module.impl.render.esp.BoxOutlineESP;
@@ -40,17 +41,17 @@ public class ESPModule extends Module {
     }
 
     public void setup() {
-        GL11.glLineWidth(3.0f);
+        RenderSystem.lineWidth(3.0f);
         GL11.glPointSize(3.0f);
         GL11.glEnable(GL11.GL_POINT_SMOOTH);
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.enableBlend();
+        StateManager.disableLighting();
+        StateManager.enableAlphaTest();
+        RenderSystem.disableTexture();
+        StateManager.disableColorMaterial();
+        RenderSystem.disableDepthTest();
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
     }
 

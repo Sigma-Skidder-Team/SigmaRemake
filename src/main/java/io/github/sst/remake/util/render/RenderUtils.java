@@ -1248,12 +1248,12 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void resetGlUnpackState() {
-        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 4);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_SWAP_BYTES, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_LSB_FIRST, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_ROW_LENGTH, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_SKIP_ROWS, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_SKIP_PIXELS, 0);
+        RenderSystem.pixelStore(GL11.GL_UNPACK_ALIGNMENT, 4);
     }
 
     public static void drawLayeredCircle(int centerX, int centerY, int color, float alpha) {

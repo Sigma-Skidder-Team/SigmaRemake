@@ -51,7 +51,7 @@ public class MixinGameRenderer {
             StateManager.translatef(0.0F, 0.0F, 0.0F);
             RenderSystem.disableDepthTest();
             RenderSystem.depthMask(false);
-            GL11.glDisable(2896);
+            StateManager.disableLighting();
             new Render3DEvent().call();
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(true);

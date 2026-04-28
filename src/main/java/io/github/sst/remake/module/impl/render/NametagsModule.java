@@ -264,7 +264,7 @@ public class NametagsModule extends Module {
             }
         }
 
-        GL11.glDisable(GL11.GL_LIGHTING);
+       StateManager.disableLighting();
         StateManager.glMultiTexCoord2f(33986, 240.0F, 240.0F);
     }
 
@@ -286,12 +286,12 @@ public class NametagsModule extends Module {
         float renderZ = (float) ((double) furnacePos.getZ() - camera.getPos().z + 0.5);
 
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_BLEND);
+        RenderSystem.enableBlend();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
+        RenderSystem.disableTexture();
+        RenderSystem.disableDepthTest();
+       StateManager.disableLighting();
+        RenderSystem.depthMask(false);
 
         float smeltingProgress = furnace.smeltProgress != 0 ? Math.min(furnace.smeltTime / furnace.smeltProgress, 1.0F) : 0;
         float cooldownProgress = furnace.cooldown != 0 ? Math.min((float) furnace.smeltDelay / (float) furnace.cooldown, 1.0F) : 0;
@@ -349,12 +349,12 @@ public class NametagsModule extends Module {
 
         StateManager.popMatrix();
         StateManager.popMatrix();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
     }
 
     private void drawNametag(double x, double y, double z, Entity entity, float scale, String overrideName) {
@@ -371,11 +371,11 @@ public class NametagsModule extends Module {
         float renderZ = (float) (z - camera.getPos().z);
 
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_BLEND);
+        RenderSystem.enableBlend();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
+        RenderSystem.disableDepthTest();
+       StateManager.disableLighting();
+        RenderSystem.depthMask(false);
 
         String healthStr = (float) Math.round(((LivingEntity) entity).getHealth() * 10.0F) / 10.0F + "";
         float healthPercent = Math.min(((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth(), 1.0F);
@@ -427,10 +427,10 @@ public class NametagsModule extends Module {
         StateManager.popMatrix();
 
         // Reset GL state
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        RenderSystem.enableDepthTest();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
     }
 }

@@ -33,27 +33,27 @@ public class BoxOutlineESP extends SubModule {
 
         getParent().setup();
         StencilUtils.beginStencilWrite();
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         renderBox(false);
         StencilUtils.configureStencilTest(StencilUtils.RenderShapeMode.OUTLINE);
-        GL11.glLineWidth(3.0f);
+        RenderSystem.lineWidth(3.0f);
         StateManager.alphaFunc(GL11.GL_GEQUAL, 0.0F);
         StateManager.enableAlphaTest();
         getParent().renderShadowSprites();
 
-        GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        StateManager.color4f(1.0f, 0.0f, 1.0f, 0.1f);
+        RenderSystem.enableBlend();
+       StateManager.disableLighting();
         renderBox(true);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         StencilUtils.endStencil();
         reset();
     }
 
     private void reset() {
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+       StateManager.disableLighting();
+        RenderSystem.enableTexture();
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         StateManager.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
@@ -65,8 +65,8 @@ public class BoxOutlineESP extends SubModule {
             StateManager.pushMatrix();
             StateManager.translated(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL11.GL_BLEND);
+            RenderSystem.disableDepthTest();
+            RenderSystem.enableBlend();
 
             int color = getParent().color.getValue();
             double x = (target.getX() - target.lastRenderX) * (double) client.getTickDelta() - (target.getX() - target.lastRenderX);
@@ -81,7 +81,7 @@ public class BoxOutlineESP extends SubModule {
                 RenderUtils.render3DColoredBox(box, ClientColors.LIGHT_GREYISH_BLUE);
             }
 
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderSystem.disableBlend();
             StateManager.popMatrix();
         }
     }

@@ -97,7 +97,7 @@ public class BanEntry extends Widget {
             }
 
             StateManager.translatef((float) (this.getX() + centerX), (float) (this.getY() + centerY), 0.0F);
-            GL11.glScaled(1.0 + 0.4 * (double) hoverBackEase, 1.0 + 0.4 * (double) hoverBackEase, 0.0);
+            StateManager.scaled(1.0 + 0.4 * (double) hoverBackEase, 1.0 + 0.4 * (double) hoverBackEase, 0.0);
             StateManager.translatef((float) (-this.getX() - centerX), (float) (-this.getY() - centerY), 0.0F);
 
             if (this.serverBannerTexture != null) {
@@ -146,7 +146,7 @@ public class BanEntry extends Widget {
         }
 
         StateManager.translatef((float) (this.getX() + 44), (float) (this.getY() + 44), 0.0F);
-        GL11.glScaled(1.0 + 0.1 * (double) iconScaleEase, 1.0 + 0.1 * (double) iconScaleEase, 0.0);
+        StateManager.scaled(1.0 + 0.1 * (double) iconScaleEase, 1.0 + 0.1 * (double) iconScaleEase, 0.0);
         StateManager.translatef((float) (-this.getX() - 44), (float) (-this.getY() - 44), 0.0F);
 
         if (this.serverIconTexture == null) {
@@ -193,7 +193,7 @@ public class BanEntry extends Widget {
         }
 
         StateManager.translatef((float) (this.getX() + 76), (float) (this.getY() + 44), 0.0F);
-        GL11.glScaled(1.0 - 0.1 * (double) infoScaleEase, 1.0 - 0.1 * (double) infoScaleEase, 0.0);
+        StateManager.scaled(1.0 - 0.1 * (double) infoScaleEase, 1.0 - 0.1 * (double) infoScaleEase, 0.0);
         StateManager.translatef((float) (-this.getX() - 76), (float) (-this.getY() - 44), 0.0F);
 
         String displayName;

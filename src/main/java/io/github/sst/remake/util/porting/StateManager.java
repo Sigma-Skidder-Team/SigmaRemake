@@ -77,7 +77,6 @@ public class StateManager {
         currentTex[1] = v;
     }
 
-    @Deprecated
     public static void glBindTexture(int target, int id) {
         RenderSystem.setShaderTexture(0, id);
     }
@@ -95,7 +94,6 @@ public class StateManager {
     @Deprecated
     public static void alphaFunc(int func, float ref) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-
     }
 
     @Deprecated
@@ -113,7 +111,6 @@ public class StateManager {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
     }
 
-    @Deprecated
     public static void translatef(float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -126,7 +123,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void scalef(float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -139,7 +135,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void scaled(double x, double y, double z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -152,7 +147,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void rotatef(float angle, float x, float y, float z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -165,7 +159,18 @@ public class StateManager {
         }
     }
 
-    @Deprecated
+    public static void rotated(double angle, double x, double y, double z) {
+        RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+        if (currentMatrixMode == 5889) {
+            Matrix4f mat = RenderSystem.getProjectionMatrix().copy();
+            mat.multiply(new Quaternion(new Vec3f((float) x, (float) y, (float) z), (float) angle, true));
+            RenderSystem.setProjectionMatrix(mat);
+        } else {
+            RenderSystem.getModelViewStack().multiply(new Quaternion(new Vec3f((float) x, (float) y, (float) z), (float) angle, true));
+            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
     public static void translated(double x, double y, double z) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -178,7 +183,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void pushMatrix() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -187,7 +191,6 @@ public class StateManager {
         RenderSystem.getModelViewStack().push();
     }
 
-    @Deprecated
     public static void popMatrix() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -197,7 +200,6 @@ public class StateManager {
         RenderSystem.applyModelViewMatrix();
     }
 
-    @Deprecated
     public static void multMatrix(FloatBuffer matrix) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         Matrix4f mat = new Matrix4f();
@@ -212,7 +214,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void multMatrix(Matrix4f matrix) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         if (currentMatrixMode == 5889) {
@@ -225,13 +226,11 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void matrixMode(int mode) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
         currentMatrixMode = mode;
     }
 
-    @Deprecated
     public static void loadIdentity() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
         if (currentMatrixMode == 5889) {
@@ -254,7 +253,6 @@ public class StateManager {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
     }
 
-    @Deprecated
     public static void color4fv(float[] color) {
         if (color != null && color.length >= 4) {
             color4f(color[0], color[1], color[2], color[3]);
@@ -265,7 +263,6 @@ public class StateManager {
     public static void glNormal3f(float x, float y, float z) {
     }
 
-    @Deprecated
     public static void color4f(float red, float green, float blue, float alpha) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
         if (red != COLOR.red || green != COLOR.green || blue != COLOR.blue || alpha != COLOR.alpha) {
@@ -277,7 +274,6 @@ public class StateManager {
         }
     }
 
-    @Deprecated
     public static void clearCurrentColor() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
         COLOR.red = -1.0f;
@@ -297,14 +293,12 @@ public class StateManager {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
     }
 
-    @Deprecated
     public static void ortho(double l, double r, double b, double t, double n, double f) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
         Matrix4f mat = Matrix4f.projectionMatrix((float) l, (float) r, (float) b, (float) t, (float) n, (float) f);
         RenderSystem.setProjectionMatrix(mat);
     }
 
-    @Deprecated
     @Environment(EnvType.CLIENT)
     static class Color4 {
         public float red;

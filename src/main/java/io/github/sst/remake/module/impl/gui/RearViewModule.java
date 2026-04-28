@@ -161,7 +161,7 @@ public class RearViewModule extends Module {
         StateManager.matrixMode(5888);
         StateManager.loadIdentity();
         StateManager.translatef(0.0F, 0.0F, -2000.0F);
-        GL11.glScaled(
+        StateManager.scaled(
                 1.0 / client.getWindow().getScaleFactor() * (double) Client.INSTANCE.screenManager.scaleFactor,
                 1.0 / client.getWindow().getScaleFactor() * (double) Client.INSTANCE.screenManager.scaleFactor,
                 1.0

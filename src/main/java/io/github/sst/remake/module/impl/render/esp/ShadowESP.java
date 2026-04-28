@@ -57,11 +57,11 @@ public class ShadowESP extends SubModule {
 
         getParent().setup();
         StencilUtils.beginStencilWrite();
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         applyRenderMode(RenderState.PRE_RENDER);
         StencilUtils.configureStencilTest(StencilUtils.RenderShapeMode.OUTLINE);
-        GL11.glLineWidth(1.0f);
+        RenderSystem.lineWidth(1.0f);
 
         getParent().renderShadowSprites();
         applyRenderMode(RenderState.OUTLINE);
@@ -69,10 +69,10 @@ public class ShadowESP extends SubModule {
         StateManager.alphaFunc(GL11.GL_GEQUAL, 0.0f);
         StateManager.enableAlphaTest();
 
-        GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        StateManager.color4f(1.0f, 0.0f, 1.0f, 0.1f);
+        RenderSystem.enableBlend();
+       StateManager.disableLighting();
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         StencilUtils.endStencil();
         reset();
@@ -89,9 +89,9 @@ public class ShadowESP extends SubModule {
     }
 
     public void reset() {
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        StateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+       StateManager.disableLighting();
+        RenderSystem.enableTexture();
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         StateManager.glMultiTexCoord2f(GL13.GL_TEXTURE2, 240.0f, 240.0f);
         client.gameRenderer.getLightmapTextureManager().enable();
@@ -116,10 +116,10 @@ public class ShadowESP extends SubModule {
 
         if (currentRenderMode == RenderState.OUTLINE) {
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-            GL11.glLineWidth(2.0f);
+            RenderSystem.lineWidth(2.0f);
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
+            RenderSystem.disableTexture();
+            StateManager.enableAlphaTest();
             GL11.glEnable(GL11.GL_LIGHTING);
         }
 
