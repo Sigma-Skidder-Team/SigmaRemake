@@ -1,7 +1,5 @@
 package io.github.sst.remake.util.math.anim;
 
-import lombok.Getter;
-
 import java.util.Date;
 
 public class AnimationUtils {
