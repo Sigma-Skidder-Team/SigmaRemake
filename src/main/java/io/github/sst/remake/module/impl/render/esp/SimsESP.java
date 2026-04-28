@@ -84,7 +84,7 @@ public class SimsESP extends SubModule {
     }
 
     private static void renderEntityTriangleIndicator(double x, double y, double z, Entity entity) {
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
 

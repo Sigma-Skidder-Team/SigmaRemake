@@ -3,6 +3,8 @@ package org.newdawn.slick.opengl.renderer.impl;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.sst.remake.util.porting.StateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
 import org.lwjgl.opengl.EXTSecondaryColor;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.renderer.SGL;
@@ -18,8 +20,14 @@ import java.nio.IntBuffer;
  * @author kevin
  */
 public class ImmediateModeOGLRenderer implements SGL {
+    private boolean texEnabled = true;
+    private boolean drawing;
+    private float[] currentTex = new float[2];
+    private int currentMode;
+
     /**
      * The width of the display
+     * ...
      */
     private int width;
     /**
@@ -44,19 +52,19 @@ public class ImmediateModeOGLRenderer implements SGL {
         this.height = height;
 
         RenderSystem.enableTexture();
-        GL11.glShadeModel(GL11.GL_SMOOTH);
+        StateManager.shadeModel(GL11.GL_SMOOTH);
         RenderSystem.disableDepthTest();
         StateManager.disableLighting();
 
-        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        GL11.glClearDepth(1.0);
+        RenderSystem.clearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        RenderSystem.clearDepth(1.0);
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
         GL11.glViewport(0, 0, width, height);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        StateManager.matrixMode(GL11.GL_MODELVIEW);
     }
 
     /**
@@ -64,10 +72,10 @@ public class ImmediateModeOGLRenderer implements SGL {
      */
     @Override
     public void enterOrtho(int xsize, int ysize) {
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        StateManager.matrixMode(GL11.GL_PROJECTION);
         StateManager.loadIdentity();
         StateManager.ortho(0.0, this.width, this.height, 0.0, 1.0, -1.0);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        StateManager.matrixMode(GL11.GL_MODELVIEW);
         StateManager.translatef((float) ((this.width - xsize) / 2), (float) ((this.height - ysize) / 2), 0.0F);
     }
 
@@ -75,14 +83,27 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glBegin(int)
      */
     public void glBegin(int geomType) {
-        GL11.glBegin(geomType);
+        this.currentMode = geomType;
+        this.drawing = true;
+
+        VertexFormat.DrawMode mode = switch (geomType) {
+            case GL11.GL_LINES -> VertexFormat.DrawMode.LINES;
+            case GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP;
+            case GL11.GL_TRIANGLES -> VertexFormat.DrawMode.TRIANGLES;
+            case GL11.GL_TRIANGLE_STRIP -> VertexFormat.DrawMode.TRIANGLE_STRIP;
+            case GL11.GL_TRIANGLE_FAN -> VertexFormat.DrawMode.TRIANGLE_FAN;
+            default -> VertexFormat.DrawMode.QUADS;
+        };
+
+        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+        bufferBuilder.begin(mode, VertexFormats.POSITION_TEXTURE_COLOR);
     }
 
     /**
      * @see SGL#glBindTexture(int, int)
      */
     public void glBindTexture(int target, int id) {
-        GL11.glBindTexture(target, id);
+        RenderSystem.setShaderTexture(0, id);
     }
 
     /**
@@ -96,14 +117,13 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glCallList(int)
      */
     public void glCallList(int id) {
-        GL11.glCallList(id);
     }
 
     /**
      * @see SGL#glClear(int)
      */
     public void glClear(int value) {
-        GL11.glClear(value);
+        RenderSystem.clear(value, MinecraftClient.IS_SYSTEM_MAC);
     }
 
     /**
@@ -117,7 +137,6 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glClipPlane(int, DoubleBuffer)
      */
     public void glClipPlane(int plane, DoubleBuffer buffer) {
-        GL11.glClipPlane(plane, buffer);
     }
 
     /**
@@ -131,7 +150,7 @@ public class ImmediateModeOGLRenderer implements SGL {
         current[2] = b;
         current[3] = a;
 
-        StateManager.color4f(r, g, b, a);
+        RenderSystem.setShaderColor(r, g, b, a);
     }
 
     /**
@@ -145,35 +164,62 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glCopyTexImage2D(int, int, int, int, int, int, int, int)
      */
     public void glCopyTexImage2D(int target, int level, int internalFormat, int x, int y, int width, int height, int border) {
-        GL11.glCopyTexImage2D(target, level, internalFormat, x, y, width, height, border);
     }
 
     /**
      * @see SGL#glDeleteTextures(IntBuffer)
      */
     public void glDeleteTextures(IntBuffer buffer) {
-        GL11.glDeleteTextures(buffer);
+        RenderSystem.recordRenderCall(() -> {
+            IntBuffer ids = buffer.duplicate();
+            while (ids.hasRemaining()) {
+                int id = ids.get();
+                GL11.glDeleteTextures(id);
+            }
+        });
     }
 
     /**
      * @see SGL#glDisable(int)
      */
     public void glDisable(int item) {
-        GL11.glDisable(item);
+        if (item == GL11.GL_TEXTURE_2D) {
+            this.texEnabled = false;
+        } else if (item == GL11.GL_BLEND) {
+            RenderSystem.disableBlend();
+        } else if (item == GL11.GL_DEPTH_TEST) {
+            RenderSystem.disableDepthTest();
+        } else if (item == GL11.GL_SCISSOR_TEST) {
+            RenderSystem.disableScissor();
+        }
     }
 
     /**
      * @see SGL#glEnable(int)
      */
     public void glEnable(int item) {
-        GL11.glEnable(item);
+        if (item == GL11.GL_TEXTURE_2D) {
+            this.texEnabled = true;
+        } else if (item == GL11.GL_BLEND) {
+            RenderSystem.enableBlend();
+        } else if (item == GL11.GL_DEPTH_TEST) {
+            RenderSystem.enableDepthTest();
+        } else if (item == GL11.GL_SCISSOR_TEST) {
+            RenderSystem.enableScissor(0, 0, 0, 0); // Need actual values, but usually set later
+        }
     }
 
     /**
      * @see SGL#glEnd()
      */
     public void glEnd() {
-        GL11.glEnd();
+        this.drawing = false;
+        if (texEnabled) {
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        } else {
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        }
+        Tessellator.getInstance().draw();
     }
 
     /**
@@ -285,14 +331,14 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glTexCoord2f(float, float)
      */
     public void glTexCoord2f(float u, float v) {
-        GL11.glTexCoord2f(u, v);
+        this.currentTex[0] = u;
+        this.currentTex[1] = v;
     }
 
     /**
      * @see SGL#glTexEnvi(int, int, int)
      */
     public void glTexEnvi(int target, int mode, int value) {
-        GL11.glTexEnvi(target, mode, value);
     }
 
     /**
@@ -306,14 +352,18 @@ public class ImmediateModeOGLRenderer implements SGL {
      * @see SGL#glVertex2f(float, float)
      */
     public void glVertex2f(float x, float y) {
-        GL11.glVertex2f(x, y);
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, 0.0F).texture(currentTex[0], currentTex[1]).color(current[0], current[1], current[2], current[3]).next();
+        }
     }
 
     /**
      * @see SGL#glVertex3f(float, float, float)
      */
     public void glVertex3f(float x, float y, float z) {
-        GL11.glVertex3f(x, y, z);
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, z).texture(currentTex[0], currentTex[1]).color(current[0], current[1], current[2], current[3]).next();
+        }
     }
 
     /**

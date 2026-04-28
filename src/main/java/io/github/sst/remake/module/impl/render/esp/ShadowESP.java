@@ -100,7 +100,7 @@ public class ShadowESP extends SubModule {
     }
 
     private void applyRenderMode(RenderState renderState) {
-        GL11.glDepthFunc(GL11.GL_ALWAYS);
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
         currentRenderMode = renderState;
 
         int color = getParent().color.getValue();
@@ -167,6 +167,6 @@ public class ShadowESP extends SubModule {
         }
 
         currentRenderMode = RenderState.DEFAULT;
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 }

@@ -1,18 +1,13 @@
 package io.github.sst.remake.util.porting;
 
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.RequiredArgsConstructor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.Untracker;
+import net.minecraft.client.render.*;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 
@@ -22,32 +17,85 @@ import java.nio.FloatBuffer;
  */
 @Environment(EnvType.CLIENT)
 public class StateManager {
-    private static final FloatBuffer MATRIX_BUFFER = GLX.make(MemoryUtil.memAllocFloat(16), fb -> Untracker.untrack(MemoryUtil.memAddress(fb)));
-    private static final AlphaTestState ALPHA_TEST = new AlphaTestState();
-    private static final ColorMaterialState COLOR_MATERIAL = new ColorMaterialState();
-    private static final CapabilityTracker LIGHTING = new CapabilityTracker(2896);
     private static final Color4 COLOR = new Color4();
-    private static int modelShadeMode = 7425;
+    private static final float[] currentTex = new float[2];
+    private static int currentMatrixMode = 5888;
+    private static boolean drawing;
+
+    @Deprecated
+    public static void glBegin(int mode) {
+        drawing = true;
+        VertexFormat.DrawMode drawMode = switch (mode) {
+            case GL11.GL_LINES -> VertexFormat.DrawMode.LINES;
+            case GL11.GL_LINE_STRIP, GL11.GL_LINE_LOOP -> VertexFormat.DrawMode.LINE_STRIP;
+            case GL11.GL_TRIANGLES -> VertexFormat.DrawMode.TRIANGLES;
+            case GL11.GL_TRIANGLE_STRIP -> VertexFormat.DrawMode.TRIANGLE_STRIP;
+            case GL11.GL_TRIANGLE_FAN -> VertexFormat.DrawMode.TRIANGLE_FAN;
+            default -> VertexFormat.DrawMode.QUADS;
+        };
+        Tessellator.getInstance().getBuffer().begin(drawMode, VertexFormats.POSITION_TEXTURE_COLOR);
+    }
+
+    @Deprecated
+    public static void glEnd() {
+        drawing = false;
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        Tessellator.getInstance().draw();
+    }
+
+    @Deprecated
+    public static void glVertex2d(double x, double y) {
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, 0.0).texture(currentTex[0], currentTex[1]).color(COLOR.red, COLOR.green, COLOR.blue, COLOR.alpha).next();
+        }
+    }
+
+    @Deprecated
+    public static void glVertex2f(float x, float y) {
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, 0.0F).texture(currentTex[0], currentTex[1]).color(COLOR.red, COLOR.green, COLOR.blue, COLOR.alpha).next();
+        }
+    }
+
+    @Deprecated
+    public static void glVertex3d(double x, double y, double z) {
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, z).texture(currentTex[0], currentTex[1]).color(COLOR.red, COLOR.green, COLOR.blue, COLOR.alpha).next();
+        }
+    }
+
+    @Deprecated
+    public static void glVertex3f(float x, float y, float z) {
+        if (drawing) {
+            Tessellator.getInstance().getBuffer().vertex(x, y, z).texture(currentTex[0], currentTex[1]).color(COLOR.red, COLOR.green, COLOR.blue, COLOR.alpha).next();
+        }
+    }
+
+    @Deprecated
+    public static void glTexCoord2f(float u, float v) {
+        currentTex[0] = u;
+        currentTex[1] = v;
+    }
+
+    @Deprecated
+    public static void glBindTexture(int target, int id) {
+        RenderSystem.setShaderTexture(0, id);
+    }
 
     @Deprecated
     public static void disableAlphaTest() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-        ALPHA_TEST.capState.disable();
     }
 
     @Deprecated
     public static void enableAlphaTest() {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        ALPHA_TEST.capState.enable();
     }
 
     @Deprecated
     public static void alphaFunc(int func, float ref) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        if (func != ALPHA_TEST.func || ref != ALPHA_TEST.ref) {
-            ALPHA_TEST.func = func;
-            ALPHA_TEST.ref = ref;
-        }
+
     }
 
     @Deprecated
@@ -64,8 +112,6 @@ public class StateManager {
     public static void colorMaterial(int face, int mode) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
     }
-
-    private static int currentMatrixMode = 5888;
 
     @Deprecated
     public static void translatef(float x, float y, float z) {
@@ -209,6 +255,17 @@ public class StateManager {
     }
 
     @Deprecated
+    public static void color4fv(float[] color) {
+        if (color != null && color.length >= 4) {
+            color4f(color[0], color[1], color[2], color[3]);
+        }
+    }
+
+    @Deprecated
+    public static void glNormal3f(float x, float y, float z) {
+    }
+
+    @Deprecated
     public static void color4f(float red, float green, float blue, float alpha) {
         RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
         if (red != COLOR.red || green != COLOR.green || blue != COLOR.blue || alpha != COLOR.alpha) {
@@ -249,33 +306,11 @@ public class StateManager {
 
     @Deprecated
     @Environment(EnvType.CLIENT)
-    static class AlphaTestState {
-        public final CapabilityTracker capState = new CapabilityTracker(3008);
-        public int func = 519;
-        public float ref = -1.0f;
-
-        private AlphaTestState() {
-        }
-    }
-
-    @Deprecated
-    @Environment(EnvType.CLIENT)
-    static class ColorMaterialState {
-        public final CapabilityTracker capState = new CapabilityTracker(2903);
-        public int face = 1032;
-        public int mode = 5634;
-
-        private ColorMaterialState() {
-        }
-    }
-
-    @Deprecated
-    @Environment(EnvType.CLIENT)
     static class Color4 {
-        public float red = 1.0f;
-        public float green = 1.0f;
-        public float blue = 1.0f;
-        public float alpha = 1.0f;
+        public float red;
+        public float green;
+        public float blue;
+        public float alpha;
 
         public Color4() {
             this(1.0f, 1.0f, 1.0f, 1.0f);
@@ -287,79 +322,5 @@ public class StateManager {
             this.blue = blue;
             this.alpha = alpha;
         }
-    }
-
-    @Environment(EnvType.CLIENT)
-    static class CapabilityTracker {
-        private final int cap;
-        private boolean state;
-
-        public CapabilityTracker(int cap) {
-            this.cap = cap;
-        }
-
-        public void disable() {
-            this.setState(false);
-        }
-
-        public void enable() {
-            this.setState(true);
-        }
-
-        public void setState(boolean state) {
-            RenderSystem.assertThread(RenderSystem::isOnRenderThread);
-            if (this.state != state) {
-                this.state = state;
-                /*
-                if (state) {
-                    GL11.glEnable(this.cap);
-                } else {
-                    GL11.glDisable(this.cap);
-                }
-                */
-            }
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    @RequiredArgsConstructor
-    public enum SrcFactor {
-        CONSTANT_ALPHA(GL14.GL_CONSTANT_ALPHA),
-        CONSTANT_COLOR(GL14.GL_CONSTANT_COLOR),
-        DST_ALPHA(GL11.GL_DST_ALPHA),
-        DST_COLOR(GL11.GL_DST_COLOR),
-        ONE(GL11.GL_ONE),
-        ONE_MINUS_CONSTANT_ALPHA(GL14.GL_ONE_MINUS_CONSTANT_ALPHA),
-        ONE_MINUS_CONSTANT_COLOR(GL14.GL_ONE_MINUS_CONSTANT_COLOR),
-        ONE_MINUS_DST_ALPHA(GL11.GL_ONE_MINUS_DST_ALPHA),
-        ONE_MINUS_DST_COLOR(GL11.GL_ONE_MINUS_DST_COLOR),
-        ONE_MINUS_SRC_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
-        ONE_MINUS_SRC_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
-        SRC_ALPHA(GL11.GL_SRC_ALPHA),
-        SRC_ALPHA_SATURATE(GL11.GL_SRC_ALPHA_SATURATE),
-        SRC_COLOR(GL11.GL_SRC_COLOR),
-        ZERO(GL11.GL_ZERO);
-
-        public final int value;
-    }
-
-    @RequiredArgsConstructor
-    public enum DstFactor {
-        CONSTANT_ALPHA(GL14.GL_CONSTANT_ALPHA),
-        CONSTANT_COLOR(GL14.GL_CONSTANT_COLOR),
-        DST_ALPHA(GL11.GL_DST_ALPHA),
-        DST_COLOR(GL11.GL_DST_COLOR),
-        ONE(GL11.GL_ONE),
-        ONE_MINUS_CONSTANT_ALPHA(GL14.GL_ONE_MINUS_CONSTANT_ALPHA),
-        ONE_MINUS_CONSTANT_COLOR(GL14.GL_ONE_MINUS_CONSTANT_COLOR),
-        ONE_MINUS_DST_ALPHA(GL11.GL_ONE_MINUS_DST_ALPHA),
-        ONE_MINUS_DST_COLOR(GL11.GL_ONE_MINUS_DST_COLOR),
-        ONE_MINUS_SRC_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
-        ONE_MINUS_SRC_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
-        SRC_ALPHA(GL11.GL_SRC_ALPHA),
-        SRC_COLOR(GL11.GL_SRC_COLOR),
-        ZERO(GL11.GL_ZERO);
-
-        public final int value;
     }
 }

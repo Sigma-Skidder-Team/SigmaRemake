@@ -285,7 +285,7 @@ public class NametagsModule extends Module {
         float renderY = (float) ((double) furnacePos.getY() - camera.getPos().y + 1.0);
         float renderZ = (float) ((double) furnacePos.getZ() - camera.getPos().z + 0.5);
 
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -370,7 +370,7 @@ public class NametagsModule extends Module {
         float renderY = (float) (y - camera.getPos().y);
         float renderZ = (float) (z - camera.getPos().z);
 
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glDisable(GL11.GL_DEPTH_TEST);

@@ -136,8 +136,8 @@ public class RenderUtils implements IMinecraft {
             RenderSystem.disableTexture();
 
             StateManager.color4f(red, green, blue, alpha);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            RenderSystem.enableBlend();
+            RenderSystem.enableTexture();
             RenderSystem.bindTexture(texture.getTextureID());
             texture.bind();
 
@@ -167,8 +167,8 @@ public class RenderUtils implements IMinecraft {
 
             tessellator.draw();
 
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderSystem.disableTexture();
+            RenderSystem.disableBlend();
 
             RenderSystem.enableTexture();
             RenderSystem.disableBlend();
@@ -205,7 +205,7 @@ public class RenderUtils implements IMinecraft {
         StateManager.color4f(red, green, blue, alpha);
 
         GL11.glEnable(GL11.GL_POINT_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
+        RenderSystem.enableBlend();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -305,7 +305,7 @@ public class RenderUtils implements IMinecraft {
         }
 
         RenderSystem.enableBlend();
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         if (shadow) {
             font.drawString((float) Math.round(x + (float) adjustedX), (float) (Math.round(y + (float) adjustedY) + 2), text, new Color(0.0F, 0.0F, 0.0F, 0.35F));
@@ -794,11 +794,11 @@ public class RenderUtils implements IMinecraft {
             RenderSystem.enableBlend();
 
             StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDepthFunc(GL11.GL_ALWAYS);
+            RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
             itemRenderer.renderInGui(stack, 0, 0);
 
-            GL11.glDepthFunc(GL11.GL_LEQUAL);
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
             StateManager.popMatrix();
 
             StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
@@ -886,8 +886,8 @@ public class RenderUtils implements IMinecraft {
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         StateManager.color4f(red, green, blue, alpha);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        RenderSystem.enableBlend();
+        RenderSystem.enableTexture();
 
         int previousTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         if (dynamicPixelTextureId == -1) {
@@ -896,7 +896,7 @@ public class RenderUtils implements IMinecraft {
             dynamicPixelTextureHeight = -1;
         }
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, dynamicPixelTextureId);
+        StateManager.glBindTexture(GL11.GL_TEXTURE_2D, dynamicPixelTextureId);
 
         resetGlUnpackState();
 
@@ -917,23 +917,23 @@ public class RenderUtils implements IMinecraft {
         float uMax = 1.0f;
         float vMax = 1.0f;
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? vMax : 0.0F));
-        GL11.glVertex2f(x, y);
+        StateManager.glBegin(GL11.GL_QUADS);
+        StateManager.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? vMax : 0.0F));
+        StateManager.glVertex2f(x, y);
 
-        GL11.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? 0.0F : vMax));
-        GL11.glVertex2f(x, y + height);
+        StateManager.glTexCoord2f(u + (flipX ? uMax : 0.0F), v + (flipY ? 0.0F : vMax));
+        StateManager.glVertex2f(x, y + height);
 
-        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? 0.0F : vMax));
-        GL11.glVertex2f(x + width, y + height);
+        StateManager.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? 0.0F : vMax));
+        StateManager.glVertex2f(x + width, y + height);
 
-        GL11.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? vMax : 0.0F));
-        GL11.glVertex2f(x + width, y);
-        GL11.glEnd();
+        StateManager.glTexCoord2f(u + (flipX ? 0.0F : uMax), v + (flipY ? vMax : 0.0F));
+        StateManager.glVertex2f(x + width, y);
+        StateManager.glEnd();
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, previousTexture);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
+        StateManager.glBindTexture(GL11.GL_TEXTURE_2D, previousTexture);
+        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
 
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
@@ -941,14 +941,14 @@ public class RenderUtils implements IMinecraft {
 
     public static void drawRotatedTriangle() {
         StateManager.translatef(0.0F, 0.0F, 0.3F);
-        GL11.glNormal3f(0.0F, 0.0F, 1.0F);
-        GL11.glRotated(-37.0, 1.0, 0.0, 0.0);
+        StateManager.glNormal3f(0.0F, 0.0F, 1.0F);
+        StateManager.rotated(-37.0, 1.0, 0.0, 0.0);
 
-        GL11.glBegin(GL11.GL_TRIANGLES);
-        GL11.glVertex2f(0.0F, 0.4985F);
-        GL11.glVertex2f(-0.3F, 0.0F);
-        GL11.glVertex2f(0.3F, 0.0F);
-        GL11.glEnd();
+        StateManager.glBegin(GL11.GL_TRIANGLES);
+        StateManager.glVertex2f(0.0F, 0.4985F);
+        StateManager.glVertex2f(-0.3F, 0.0F);
+        StateManager.glVertex2f(0.3F, 0.0F);
+        StateManager.glEnd();
     }
 
     public static void drawColoredRect(float x1, float y1, float x2, float y2, int color) {
@@ -1000,26 +1000,26 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void drawColoredRotatedTriangle(int color) {
-        GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
+        StateManager.color4fv(ColorHelper.unpackColorToRGBA(color));
         drawRotatedTriangle();
     }
 
     public static void drawCircleOutline(float radius) {
-        GL11.glBegin(GL11.GL_LINE_LOOP);
+        StateManager.glBegin(GL11.GL_LINE_LOOP);
         for (int angle = 0; angle < 360; angle++) {
             double rad = angle * Math.PI / 180.0;
-            GL11.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
+            StateManager.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
         }
-        GL11.glEnd();
+        StateManager.glEnd();
     }
 
     public static void drawFilledCircle(float radius) {
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        StateManager.glBegin(GL11.GL_TRIANGLE_FAN);
         for (int angle = 0; angle < 360; angle++) {
             double rad = angle * Math.PI / 180.0;
-            GL11.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
+            StateManager.glVertex2d(Math.cos(rad) * radius, Math.sin(rad) * radius);
         }
-        GL11.glEnd();
+        StateManager.glEnd();
     }
 
     public static void drawRotatingTriangles(int color) {
@@ -1042,13 +1042,13 @@ public class RenderUtils implements IMinecraft {
     public static void drawWaypointIndicator(float x, float y, float z, String label, int color, float scale) {
         boolean lightingWasEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_BLEND);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableBlend();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
+        RenderSystem.disableTexture();
+        RenderSystem.disableDepthTest();
+        StateManager.disableLighting();
+        RenderSystem.depthMask(false);
 
         StateManager.pushMatrix();
         StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
@@ -1059,10 +1059,10 @@ public class RenderUtils implements IMinecraft {
         StateManager.popMatrix();
 
         StateManager.pushMatrix();
-        GL11.glColor4fv(ColorHelper.unpackColorToRGBA(color));
+        StateManager.color4fv(ColorHelper.unpackColorToRGBA(color));
         StateManager.translated(x + 0.5, y + 0.7F, z + 0.5);
         StateManager.rotatef((float) (client.player.age % 90 * 4), 0.0F, -1.0F, 0.0F);
-        GL11.glLineWidth(1.4F + 1.4F / scale);
+        RenderSystem.lineWidth(1.4F + 1.4F / scale);
         drawCircleOutline(0.6F);
         StateManager.popMatrix();
 
@@ -1112,18 +1112,18 @@ public class RenderUtils implements IMinecraft {
         StateManager.popMatrix();
         StateManager.popMatrix();
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
 
         if (lightingWasEnabled) {
-            GL11.glEnable(GL11.GL_LIGHTING);
+            StateManager.enableLighting();
         } else {
-            GL11.glDisable(GL11.GL_LIGHTING);
+            StateManager.disableLighting();
         }
 
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
     }
 
     public static void drawRect(float x, float y, float width, float height, int color) {
@@ -1133,11 +1133,11 @@ public class RenderUtils implements IMinecraft {
     public static void drawTargetIndicatorRing(java.awt.Color baseColor, Entity target, float progress) {
         StateManager.pushMatrix();
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        RenderSystem.disableTexture();
+        StateManager.disableLighting();
         GL11.glEnable(GL13.GL_MULTISAMPLE);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glLineWidth(1.4F);
+        RenderSystem.enableDepthTest();
+        RenderSystem.lineWidth(1.4F);
 
         double tickDelta = client.getTickDelta();
         if (!target.isAlive()) {
@@ -1154,8 +1154,8 @@ public class RenderUtils implements IMinecraft {
                 -client.gameRenderer.getCamera().getPos().getZ());
 
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+        StateManager.enableAlphaTest();
+        RenderSystem.enableBlend();
         StateManager.alphaFunc(GL11.GL_ALWAYS, 0.0F);
 
         long animationPeriodMs = 1800;
@@ -1174,9 +1174,9 @@ public class RenderUtils implements IMinecraft {
                 client.gameRenderer.getCamera().getPos().getZ());
         StateManager.popMatrix();
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        StateManager.disableAlphaTest();
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        RenderSystem.enableTexture();
         GL11.glDisable(GL13.GL_MULTISAMPLE);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
         StateManager.popMatrix();
@@ -1185,8 +1185,8 @@ public class RenderUtils implements IMinecraft {
     public static void drawAnimatedRing(java.awt.Color baseColor, boolean reverseGradient, float ringHeight, float ringRadius, float ringAlphaScale, float progressAlpha) {
         StateManager.shadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
+        RenderSystem.disableDepthTest();
+        StateManager.glBegin(GL11.GL_TRIANGLE_STRIP);
 
         int angleStep = (int) (360.0F / (40.0F * ringRadius));
         float red = (float) baseColor.getRed() / 255.0F;
@@ -1202,14 +1202,14 @@ public class RenderUtils implements IMinecraft {
             double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             StateManager.color4f(red, green, blue, !reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
-            GL11.glVertex3d(x, 0.0, z);
+            StateManager.glVertex3d(x, 0.0, z);
             StateManager.color4f(red, green, blue, reverseGradient ? 0.0F : ringAlphaScale * progressAlpha);
-            GL11.glVertex3d(x, ringHeight, z);
+            StateManager.glVertex3d(x, ringHeight, z);
         }
 
-        GL11.glEnd();
-        GL11.glLineWidth(2.2F);
-        GL11.glBegin(GL11.GL_LINE_STRIP);
+        StateManager.glEnd();
+        RenderSystem.lineWidth(2.2F);
+        StateManager.glBegin(GL11.GL_LINE_STRIP);
 
         for (int angle = 0; angle <= 360 + angleStep; angle += angleStep) {
             int clampedAngle = angle;
@@ -1220,11 +1220,11 @@ public class RenderUtils implements IMinecraft {
             double x = Math.sin((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             double z = Math.cos((double) clampedAngle * Math.PI / 180.0) * (double) ringRadius;
             StateManager.color4f(red, green, blue, (0.5F + 0.5F * ringAlphaScale) * progressAlpha);
-            GL11.glVertex3d(x, !reverseGradient ? (double) ringHeight : 0.0, z);
+            StateManager.glVertex3d(x, !reverseGradient ? (double) ringHeight : 0.0, z);
         }
 
-        GL11.glEnd();
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        StateManager.glEnd();
+        RenderSystem.enableDepthTest();
         StateManager.shadeModel(GL11.GL_FLAT);
     }
 
@@ -1233,10 +1233,10 @@ public class RenderUtils implements IMinecraft {
         TextureImpl.unbind();
         StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         StateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glColorMask(true, true, true, true);
-        GL11.glDepthMask(true);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.depthMask(true);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        RenderSystem.disableScissor();
         RenderSystem.enableTexture();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(
@@ -1292,8 +1292,8 @@ public class RenderUtils implements IMinecraft {
     }
 
     public static void renderFadeOut(float backgroundOpacity, float progress) {
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+        StateManager.enableAlphaTest();
+        RenderSystem.enableBlend();
 
         float screenWidth = (float) client.getWindow().getWidth();
         float screenHeight = (float) client.getWindow().getHeight();
@@ -1403,39 +1403,39 @@ public class RenderUtils implements IMinecraft {
             float alpha = (float) (color >> 24 & 0xFF) / 255.0f;
 
             StateManager.color4f(red, green, blue, alpha);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glLineWidth(width);
+            RenderSystem.disableTexture();
+            StateManager.disableLighting();
+            RenderSystem.lineWidth(width);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBegin(GL11.GL_LINE_STRIP);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_LINE_STRIP);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_LINES);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_LIGHTING);
+            RenderSystem.enableBlend();
+            StateManager.glBegin(GL11.GL_LINE_STRIP);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_LINE_STRIP);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_LINES);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            RenderSystem.enableTexture();
+            StateManager.enableLighting();
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderSystem.disableBlend();
         }
     }
 
@@ -1447,88 +1447,88 @@ public class RenderUtils implements IMinecraft {
             float blue = (float) (color & 0xFF) / 255.0f;
 
             StateManager.color4f(red, green, blue, alpha);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glLineWidth(1.8f * getScaleFactor());
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderSystem.enableBlend();
+            RenderSystem.disableTexture();
+            StateManager.disableLighting();
+            RenderSystem.lineWidth(1.8f * getScaleFactor());
+            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.minZ);
-            GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glEnd();
-            GL11.glBegin(GL11.GL_QUADS);
-            GL11.glVertex3d(box.maxX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.minY, box.minZ);
-            GL11.glVertex3d(box.minX, box.minY, box.maxZ);
-            GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
-            GL11.glEnd();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_LIGHTING);
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.maxY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.maxY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glEnd();
+            StateManager.glBegin(GL11.GL_QUADS);
+            StateManager.glVertex3d(box.maxX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.minZ);
+            StateManager.glVertex3d(box.minX, box.minY, box.maxZ);
+            StateManager.glVertex3d(box.maxX, box.minY, box.maxZ);
+            StateManager.glEnd();
+            RenderSystem.enableTexture();
+            StateManager.enableLighting();
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderSystem.disableBlend();
         }
     }
 }
